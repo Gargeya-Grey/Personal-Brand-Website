@@ -88,7 +88,7 @@ export default function AboutPage() {
               { icon: Cpu, title: "Machine Learning", desc: "PyTorch, ONNX, TensorRT. Optimizing models for inference at the edge and in the cloud." },
               { icon: Network, title: "Distributed Systems", desc: "Kafka, Kubernetes, gRPC. Designing resilient architectures that scale horizontally." }
             ].map((item, i) => (
-              <div key={i} className="bg-white/40 backdrop-blur-xl p-8 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 flex flex-col gap-6 hover:bg-white/60 transition-all duration-500">
+              <div key={i} className="bg-white/40 backdrop-blur-xl p-8 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 flex flex-col gap-6 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300">
                 <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
                   <item.icon className="w-6 h-6 text-primary" />
                 </div>

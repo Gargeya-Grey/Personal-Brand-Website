@@ -43,7 +43,7 @@ export default function CommunityPage() {
         <section className="py-24 border-t border-outline-variant/20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <div className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 hover:bg-white/60 transition-all duration-500">
+            <div className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300">
               <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-6">
                 <Globe className="w-6 h-6 text-primary" />
               </div>
@@ -51,7 +51,7 @@ export default function CommunityPage() {
               <div className="text-sm font-label uppercase tracking-[0.2em] text-on-surface-variant font-bold">Countries</div>
             </div>
 
-            <div className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 hover:bg-white/60 transition-all duration-500">
+            <div className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300">
               <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-6">
                 <MessageSquare className="w-6 h-6 text-primary" />
               </div>
@@ -59,7 +59,7 @@ export default function CommunityPage() {
               <div className="text-sm font-label uppercase tracking-[0.2em] text-on-surface-variant font-bold">Monthly Messages</div>
             </div>
 
-            <div className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/10 group cursor-pointer relative overflow-hidden hover:bg-primary-container transition-all duration-500">
+            <div className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/10 group cursor-pointer relative overflow-hidden hover:bg-primary-container hover:border-white/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-[background-color,border-color,box-shadow] duration-300">
               <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-accent/20 blur-[60px] rounded-full translate-x-1/3 -translate-y-1/3"></div>
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="flex justify-between items-start">

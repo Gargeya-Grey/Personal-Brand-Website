@@ -46,7 +46,7 @@ export default function StartupPage() {
             {/* Project 1 */}
             <motion.div 
               whileHover={{ y: -4 }}
-              className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[400px] group border border-white/60 hover:bg-white/60 transition-all duration-500"
+              className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[400px] group border border-white/60 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
             >
               <div className="flex justify-between items-start">
                 <div className="w-14 h-14 bg-surface-container-low rounded-2xl flex items-center justify-center">
@@ -68,7 +68,7 @@ export default function StartupPage() {
             {/* Project 2 */}
             <motion.div 
               whileHover={{ y: -4 }}
-              className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[400px] group border border-white/60 hover:bg-white/60 transition-all duration-500"
+              className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[400px] group border border-white/60 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
             >
               <div className="flex justify-between items-start">
                 <div className="w-14 h-14 bg-surface-container-low rounded-2xl flex items-center justify-center">

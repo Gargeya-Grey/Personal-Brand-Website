@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import * as motion from 'motion/react-client';
-import { ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, Database, Network, Cpu } from 'lucide-react';
+import { ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, Database, Network, Cpu, User } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { TerminalCard } from '@/components/terminal-card';
 import { Footer } from '@/components/footer';
@@ -64,7 +64,7 @@ export default function Home() {
             <Link href="/startup" className="md:col-span-2 block">
               <motion.div 
                 whileHover={{ y: -4 }}
-                className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/60 h-full hover:bg-white/60 transition-all duration-500"
+                className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/60 h-full hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
               >
                 <div className="flex justify-between items-start">
                   <div className="w-14 h-14 bg-surface-container-low rounded-2xl flex items-center justify-center">
@@ -83,7 +83,7 @@ export default function Home() {
             <Link href="/community" className="block">
               <motion.div 
                 whileHover={{ y: -4 }}
-                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group h-full border border-white/10 hover:bg-primary-container transition-all duration-500"
+                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group h-full border border-white/10 hover:bg-primary-container hover:border-white/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-[background-color,border-color,box-shadow] duration-300"
               >
                 <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
                   <Users className="w-7 h-7 text-accent" />
@@ -99,7 +99,7 @@ export default function Home() {
             <Link href="/blog" className="block">
               <motion.div 
                 whileHover={{ y: -4 }}
-                className="bg-white/30 backdrop-blur-md p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/50 h-full hover:bg-white/50 transition-all duration-500"
+                className="bg-white/30 backdrop-blur-md p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/50 h-full hover:bg-white/60 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
               >
                 <div className="w-14 h-14 bg-surface-container-lowest rounded-2xl flex items-center justify-center shadow-sm">
                   <BookOpen className="w-7 h-7 text-primary" />
@@ -115,6 +115,41 @@ export default function Home() {
             <div className="md:col-span-2 min-h-[320px]">
               <TerminalCard />
             </div>
+
+            {/* YouTube Card */}
+            <Link href="/youtube" className="md:col-span-2 block">
+              <motion.div 
+                whileHover={{ y: -4 }}
+                className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/60 h-full hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
+              >
+                <div className="flex justify-between items-start">
+                  <div className="w-14 h-14 bg-surface-container-low rounded-2xl flex items-center justify-center">
+                    <PlayCircle className="w-7 h-7 text-primary" />
+                  </div>
+                  <ArrowUpRight className="w-6 h-6 text-outline-variant group-hover:text-accent transition-colors duration-300" />
+                </div>
+                <div className="mt-12">
+                  <h3 className="text-3xl font-headline font-extrabold text-primary mb-3">YouTube</h3>
+                  <p className="text-on-surface-variant text-lg max-w-md">Visualizing complex systems through video essays and technical deep dives.</p>
+                </div>
+              </motion.div>
+            </Link>
+
+            {/* About Card */}
+            <Link href="/about" className="block">
+              <motion.div 
+                whileHover={{ y: -4 }}
+                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group h-full border border-white/10 hover:bg-primary-container hover:border-white/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-[background-color,border-color,box-shadow] duration-300"
+              >
+                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
+                  <User className="w-7 h-7 text-accent" />
+                </div>
+                <div className="mt-12">
+                  <h3 className="text-2xl font-headline font-bold text-white mb-2">About</h3>
+                  <p className="text-white/60 text-sm">Engineering the future. Lead Architect & Strategist.</p>
+                </div>
+              </motion.div>
+            </Link>
 
           </div>
         </section>
@@ -167,7 +202,7 @@ export default function Home() {
               { icon: Database, title: "Vector Storage", desc: "Advanced indexing techniques for billion-scale retrieval." },
               { icon: Network, title: "Multi-Agent Systems", desc: "Protocol design for autonomous agent communication." }
             ].map((item, i) => (
-              <div key={i} className="bg-white/40 backdrop-blur-xl p-8 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 flex flex-col gap-6 hover:bg-white/60 transition-all duration-500">
+              <div key={i} className="bg-white/40 backdrop-blur-xl p-8 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 flex flex-col gap-6 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-300 ease-out">
                 <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
                   <item.icon className="w-6 h-6 text-primary" />
                 </div>
