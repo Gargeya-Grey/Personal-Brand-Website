@@ -5,6 +5,7 @@ import { ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, Database, Network, C
 import { Navigation } from '@/components/navigation';
 import { TerminalCard } from '@/components/terminal-card';
 import { Footer } from '@/components/footer';
+import profileImage from '@/src/assets/images/regenerated_image_1778002356085.png';
 import { InteractiveBackground } from '@/components/interactive-background';
 
 export default function Home() {
@@ -24,13 +25,15 @@ export default function Home() {
             className="lg:col-span-7 space-y-8"
           >
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
-              Command Center v1.0
+              Digital Existence
             </span>
-            <h1 className="font-headline text-5xl sm:text-6xl md:text-[5.5rem] font-extrabold tracking-[-0.04em] text-primary leading-[0.95]">
-              The Engineering Editorial<span className="text-accent">.</span>
+            <h1 className="font-headline text-5xl sm:text-6xl md:text-[5.5rem] font-extrabold tracking-[-0.04em] text-primary leading-[0.95] flex flex-col gap-4">
+              <span>Architecting <span className="text-[#10B981]">Intelligence</span><span className="text-accent">.</span></span>
+              <span>Curating <span className="text-[#10B981]">ART</span><span className="text-accent">.</span></span>
             </h1>
             <p className="font-body text-xl md:text-2xl text-on-surface-variant leading-relaxed max-w-2xl pt-4">
-              Where algorithmic precision meets architectural intuition. Building the next generation of intelligent systems.
+              Founder <a href="https://edudojo.ai" target="_blank" rel="noopener noreferrer" className="font-bold text-[#10B981] hover:underline">@ Edudojo.ai</a><br />
+              AI redesign for Evaluation &amp; Education
             </p>
           </motion.div>
           
@@ -41,7 +44,7 @@ export default function Home() {
             className="lg:col-span-5 relative h-[400px] md:h-[500px] rounded-soft overflow-hidden shadow-ambient"
           >
             <Image 
-              src="https://picsum.photos/seed/gargeya/800/1000"
+              src={profileImage}
               alt="Gargeya Sharma"
               fill
               className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
