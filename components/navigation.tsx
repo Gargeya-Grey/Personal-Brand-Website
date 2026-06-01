@@ -21,17 +21,19 @@ export function Navigation() {
         
         <div className="hidden md:flex items-center gap-1 bg-white/30 p-1.5 rounded-full border border-white/50 shadow-inner">
           {[
-            { name: 'Startup', path: '/startup' },
+            { name: 'Startup', path: 'https://edudojo.ai', external: true },
             { name: 'Community', path: '/community' },
             { name: 'Blog', path: '/blog' },
             { name: 'YouTube', path: '/youtube' },
             { name: 'About', path: '/about' }
           ].map((link) => {
-            const isActive = pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path));
+            const isActive = !link.external && (pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path)));
             return (
               <Link 
                 key={link.name} 
                 href={link.path} 
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
                 className={`px-5 py-2 rounded-full font-medium font-headline text-sm tracking-tight transition-all duration-300 border ${
                   isActive 
                     ? 'bg-accent/10 text-accent border-accent/20 shadow-sm backdrop-blur-md' 
@@ -45,9 +47,12 @@ export function Navigation() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="bg-primary/90 backdrop-blur-md text-white px-6 py-2.5 rounded-full font-headline font-bold text-sm tracking-tight hover:bg-primary active:scale-95 transition-all shadow-md border border-primary/20">
+          <Link 
+            href="/contact" 
+            className="bg-primary/90 backdrop-blur-md text-white px-6 py-2.5 rounded-full font-headline font-bold text-sm tracking-tight hover:bg-primary hover:shadow-[0_4px_20px_rgba(16,185,129,0.25)] active:scale-95 transition-all shadow-md border border-primary/20 inline-block text-center"
+          >
             Contact
-          </button>
+          </Link>
         </div>
       </nav>
     </div>

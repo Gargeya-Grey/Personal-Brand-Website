@@ -64,7 +64,12 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Startup Card */}
-            <Link href="/startup" className="md:col-span-2 block">
+            <Link 
+              href="https://edudojo.ai" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="md:col-span-2 block"
+            >
               <motion.div 
                 whileHover={{ y: -4 }}
                 className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/60 h-full hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
@@ -76,8 +81,9 @@ export default function Home() {
                   <ArrowUpRight className="w-6 h-6 text-outline-variant group-hover:text-accent transition-colors duration-300" />
                 </div>
                 <div className="mt-12">
-                  <h3 className="text-3xl font-headline font-extrabold text-primary mb-3">Startup</h3>
-                  <p className="text-on-surface-variant text-lg max-w-md">Venture architecture and node scaling. Building sustainable AI ventures from the ground up.</p>
+                  <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block mb-2">Live Venture</span>
+                  <h3 className="text-3xl font-headline font-extrabold text-primary mb-3">Edudojo.ai</h3>
+                  <p className="text-on-surface-variant text-lg max-w-xl">AI-driven redesign for evaluation, assessment, and education. Architecting intelligence in learning paradigms from zero to one.</p>
                 </div>
               </motion.div>
             </Link>
@@ -233,12 +239,18 @@ export default function Home() {
               </p>
               
               <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                <button className="bg-accent text-primary px-6 py-4 md:px-10 md:py-5 rounded-[0.25rem] font-headline font-extrabold text-base md:text-lg hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-all w-full sm:w-auto">
+                <Link 
+                  href="/contact" 
+                  className="bg-accent text-primary px-6 py-4 md:px-10 md:py-5 rounded-[0.25rem] font-headline font-extrabold text-base md:text-lg hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-all w-full sm:w-auto inline-block text-center"
+                >
                   Consult on AI Projects
-                </button>
-                <button className="bg-transparent border border-white/20 hover:bg-white/5 text-white px-6 py-4 md:px-10 md:py-5 rounded-[0.25rem] font-headline font-extrabold text-base md:text-lg transition-all active:scale-95 w-full sm:w-auto">
+                </Link>
+                <Link 
+                  href="/contact" 
+                  className="bg-transparent border border-white/20 hover:bg-white/5 text-white px-6 py-4 md:px-10 md:py-5 rounded-[0.25rem] font-headline font-extrabold text-base md:text-lg transition-all active:scale-95 w-full sm:w-auto inline-block text-center"
+                >
                   Work with me
-                </button>
+                </Link>
               </div>
             </div>
           </div>
