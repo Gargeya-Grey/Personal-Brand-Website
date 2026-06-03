@@ -1,6 +1,8 @@
 import type { Metadata } from 'next';
 import { Manrope, Inter } from 'next/font/google';
 import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
+import { InteractiveBackground } from '@/components/interactive-background';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -52,17 +54,31 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${manrope.variable} ${inter.variable}`}>
+    <html lang="en" className={`${manrope.variable} ${inter.variable}`} suppressHydrationWarning>
+      <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Stack+Sans+Text:wght@200..700&display=swap" rel="stylesheet" />
+        <script dangerouslySetInnerHTML={{ __html: `
+          try {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+              document.documentElement.classList.add('dark');
+            } else {
+              document.documentElement.classList.remove('dark');
+            }
+          } catch (_) {}
+        ` }} />
+      </head>
       <body className="antialiased selection:bg-accent/30 relative min-h-screen" suppressHydrationWarning>
-        {/* Ambient Background Elements for Glassmorphism */}
-        <div className="fixed inset-0 z-[-1] overflow-hidden pointer-events-none">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-accent/5 blur-[120px]"></div>
-          <div className="absolute top-[20%] right-[-5%] w-[30%] h-[50%] rounded-full bg-primary/5 blur-[150px]"></div>
-          <div className="absolute bottom-[-10%] left-[20%] w-[50%] h-[40%] rounded-full bg-accent/5 blur-[150px]"></div>
-        </div>
-        
-        {children}
+        <ThemeProvider>
+          {/* Global Interactive Canvas Background */}
+          <InteractiveBackground />
+
+
+          {children}
+        </ThemeProvider>
       </body>
     </html>
   );
 }
+

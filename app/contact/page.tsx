@@ -3,7 +3,6 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { Mail, MapPin, Globe } from 'lucide-react';
 import { ContactForm } from '@/components/contact-form';
-import { InteractiveBackground } from '@/components/interactive-background';
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -13,7 +12,6 @@ export const metadata: Metadata = {
 export default function ContactPage() {
   return (
     <div className="min-h-screen flex flex-col relative">
-      <InteractiveBackground />
       <Navigation />
       
       <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full">
@@ -34,8 +32,8 @@ export default function ContactPage() {
             </div>
 
             <div className="space-y-6 pt-6">
-              <div className="flex items-center gap-4 bg-white/40 backdrop-blur-xl p-5 border border-white/60 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-[#10B981]">
+              <div className="flex items-center gap-4 bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-5 border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] rounded-2xl hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out">
+                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center text-accent">
                   <Mail className="w-6 h-6" />
                 </div>
                 <div>
@@ -46,8 +44,8 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 bg-white/40 backdrop-blur-xl p-5 border border-white/60 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-[#10B981]">
+              <div className="flex items-center gap-4 bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-5 border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] rounded-2xl hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out">
+                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center text-accent">
                   <MapPin className="w-6 h-6" />
                 </div>
                 <div>
@@ -58,8 +56,8 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-4 bg-white/40 backdrop-blur-xl p-5 border border-white/60 rounded-2xl shadow-sm hover:shadow-md transition-all duration-300">
-                <div className="w-12 h-12 bg-primary/5 rounded-xl flex items-center justify-center text-[#10B981]">
+              <div className="flex items-center gap-4 bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-5 border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] rounded-2xl hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out">
+                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center text-accent">
                   <Globe className="w-6 h-6" />
                 </div>
                 <div>

@@ -64,7 +64,7 @@ export function YoutubeGrid() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.7, delay: index * 0.15, ease: [0.16, 1, 0.3, 1] }}
-              className="group bg-white/40 backdrop-blur-xl p-5 rounded-[2rem] border border-white/60 hover:bg-white/70 hover:border-white hover:shadow-[0_16px_40px_rgba(16,185,129,0.08)] transition-all duration-300 flex flex-col justify-between"
+              className="group bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-5 rounded-[2rem] border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out flex flex-col justify-between"
             >
               <div>
                 {/* Thumbnail Layer with play state trigger */}
@@ -140,7 +140,7 @@ export function YoutubeGrid() {
           href={channelUrl}
           target="_blank" 
           rel="noopener noreferrer"
-          className="group inline-flex items-center gap-3 bg-primary hover:bg-[#10B981] text-white px-8 py-4 rounded-full font-headline font-bold text-sm tracking-tight transition-all duration-300 active:scale-95 shadow-md hover:shadow-[0_8px_30px_rgba(16,185,129,0.25)]"
+          className="group inline-flex items-center gap-3 bg-primary dark:bg-accent text-white dark:text-slate-950 px-8 py-4 rounded-full font-headline font-bold text-sm tracking-tight transition-all duration-300 active:scale-95 shadow-md hover:shadow-[0_8px_30px_rgba(16,185,129,0.25)] hover:bg-[#10B981] dark:hover:bg-accent/90"
         >
           <Film className="w-4 h-4" />
           <span>View All Videos on YouTube</span>
@@ -150,7 +150,7 @@ export function YoutubeGrid() {
 
       {/* Immersive Cinematic Overlay Modal for Video Embeds */}
       {activeVideo && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-primary/90 backdrop-blur-xl transition-all duration-500">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-6 bg-slate-950/90 backdrop-blur-xl transition-all duration-500">
           <div className="absolute inset-0 cursor-pointer" onClick={() => setActiveVideo(null)} />
           
           <motion.div 
@@ -203,7 +203,7 @@ export function YoutubeGrid() {
                   href={`https://www.youtube.com/watch?v=${activeVideo.id}`}
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-2 w-full h-11 bg-primary text-white font-headline font-bold text-xs rounded-xl hover:bg-[#10B981] transition-colors shadow-sm"
+                  className="flex items-center justify-center gap-2 w-full h-11 bg-primary dark:bg-accent text-white dark:text-slate-950 font-headline font-bold text-xs rounded-xl hover:bg-[#10B981] dark:hover:bg-accent/90 transition-colors shadow-sm"
                 >
                   <span>Watch on YouTube</span>
                   <ExternalLink className="w-3.5 h-3.5" />

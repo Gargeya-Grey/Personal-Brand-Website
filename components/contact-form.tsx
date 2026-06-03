@@ -36,7 +36,7 @@ export function ContactForm() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="bg-white/40 backdrop-blur-xl p-10 md:p-12 border border-white/60 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)] text-center space-y-8 flex flex-col items-center justify-center min-h-[480px]"
+        className="bg-white/40 dark:bg-white/[0.02] backdrop-blur-xl p-10 md:p-12 border border-accent/20 dark:border-white/10 rounded-[2rem] shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] text-center space-y-8 flex flex-col items-center justify-center min-h-[480px]"
       >
         <div className="w-20 h-20 bg-[#10B981]/10 rounded-full flex items-center justify-center text-[#10B981] shadow-inner mb-2">
           <CheckCircle2 className="w-10 h-10" />
@@ -69,7 +69,7 @@ export function ContactForm() {
       initial={{ opacity: 0, y: 35 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-      className="bg-white/30 backdrop-blur-xl p-8 sm:p-10 border border-white/60 rounded-[2rem] shadow-[0_8px_32px_rgba(0,0,0,0.04)]"
+      className="bg-white/30 dark:bg-white/[0.01] backdrop-blur-xl p-8 sm:p-10 border border-accent/20 dark:border-white/10 rounded-[2rem] shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)]"
     >
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -83,10 +83,10 @@ export function ContactForm() {
               placeholder="Gargeya Sharma" 
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="w-full h-12 px-4 bg-white/40 border border-white/60 rounded-xl font-body text-primary focus:outline-none focus:border-[#10B981] placeholder-on-surface-variant/40 transition-colors"
+              className="w-full h-12 px-4 bg-white/40 dark:bg-white/[0.02] border border-white/60 dark:border-white/10 rounded-xl font-body text-primary focus:outline-none focus:border-[#10B981] placeholder-on-surface-variant/40 transition-colors"
             />
           </div>
-
+ 
           <div className="space-y-2">
             <label className="text-xs font-label uppercase tracking-wider text-primary font-extrabold block">
               Email Address
@@ -97,7 +97,7 @@ export function ContactForm() {
               placeholder="gargeya@example.com" 
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="w-full h-12 px-4 bg-white/40 border border-white/60 rounded-xl font-body text-primary focus:outline-none focus:border-[#10B981] placeholder-on-surface-variant/40 transition-colors"
+              className="w-full h-12 px-4 bg-white/40 dark:bg-white/[0.02] border border-white/60 dark:border-white/10 rounded-xl font-body text-primary focus:outline-none focus:border-[#10B981] placeholder-on-surface-variant/40 transition-colors"
             />
           </div>
         </div>
@@ -114,8 +114,8 @@ export function ContactForm() {
                 onClick={() => setFormData({ ...formData, projectType: type.id })}
                 className={`flex items-center justify-between px-4 py-3 rounded-xl border font-headline text-sm font-semibold transition-all h-12 ${
                   formData.projectType === type.id
-                    ? 'bg-[#10B981]/10 text-primary border-[#10B981]/40 shadow-sm'
-                    : 'bg-white/20 border-white/50 text-on-surface-variant hover:bg-white/40 hover:text-primary hover:border-white'
+                    ? 'bg-[#10B981]/10 text-primary dark:text-[#10B981] border-[#10B981]/40 dark:border-[#10B981]/60 shadow-sm'
+                    : 'bg-white/20 dark:bg-white/[0.01] border-white/50 dark:border-white/10 text-on-surface-variant hover:bg-white/40 dark:hover:bg-white/5 hover:text-primary dark:hover:text-white hover:border-white dark:hover:border-white/20'
                 }`}
               >
                 <span>{type.label}</span>
@@ -137,14 +137,14 @@ export function ContactForm() {
             placeholder="Tell us about your project, timeline, constraints, or the problem you're trying to solve..."
             value={formData.details}
             onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-            className="w-full p-4 bg-white/40 border border-white/60 rounded-xl font-body text-primary focus:outline-none focus:border-[#10B981] placeholder-on-surface-variant/40 resize-none transition-colors"
+            className="w-full p-4 bg-white/40 dark:bg-white/[0.02] border border-white/60 dark:border-white/10 rounded-xl font-body text-primary focus:outline-none focus:border-[#10B981] placeholder-on-surface-variant/40 resize-none transition-colors"
           />
         </div>
 
         <button 
           type="submit"
           disabled={formStatus === 'submitting'}
-          className="w-full h-14 bg-primary text-white font-headline font-bold text-sm tracking-tight hover:shadow-[0_4px_30px_rgba(16,185,129,0.25)] hover:bg-[#10B981] focus:bg-[#10B981] active:scale-[0.98] transition-all text-center rounded-xl flex items-center justify-center gap-3 disabled:opacity-50"
+          className="w-full h-14 bg-primary dark:bg-accent text-white dark:text-slate-950 font-headline font-bold text-sm tracking-tight hover:shadow-[0_4px_30px_rgba(16,185,129,0.25)] hover:bg-[#10B981] dark:hover:bg-accent/90 focus:bg-[#10B981] dark:focus:bg-accent/90 active:scale-[0.98] transition-all text-center rounded-xl flex items-center justify-center gap-3 disabled:opacity-50"
         >
           {formStatus === 'submitting' ? (
             <span>Processing Dispatch...</span>

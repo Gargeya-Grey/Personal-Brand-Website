@@ -43,24 +43,38 @@ export default function CommunityPage() {
         <section className="py-24 border-t border-outline-variant/20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <div className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300">
-              <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-6">
-                <Globe className="w-6 h-6 text-primary" />
+            <motion.div
+              className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center mb-6">
+                <Globe className="w-6 h-6 text-accent" />
               </div>
               <div className="text-5xl font-headline font-extrabold text-primary mb-2">120+</div>
               <div className="text-sm font-label uppercase tracking-[0.2em] text-on-surface-variant font-bold">Countries</div>
-            </div>
+            </motion.div>
 
-            <div className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300">
-              <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center mb-6">
-                <MessageSquare className="w-6 h-6 text-primary" />
+            <motion.div
+              className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
+              <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center mb-6">
+                <MessageSquare className="w-6 h-6 text-accent" />
               </div>
               <div className="text-5xl font-headline font-extrabold text-primary mb-2">50k+</div>
               <div className="text-sm font-label uppercase tracking-[0.2em] text-on-surface-variant font-bold">Monthly Messages</div>
-            </div>
+            </motion.div>
 
-            <div className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/10 group cursor-pointer relative overflow-hidden hover:bg-primary-container hover:border-white/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-[background-color,border-color,box-shadow] duration-300">
-              <div className="absolute top-0 right-0 w-[200px] h-[200px] bg-accent/20 blur-[60px] rounded-full translate-x-1/3 -translate-y-1/3"></div>
+            <motion.a 
+              href="https://discord.gg" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              className="discord-card-gradient backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] relative overflow-hidden hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out block cursor-pointer group"
+              whileHover={{ y: -4 }}
+              transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            >
               <div className="relative z-10 h-full flex flex-col justify-between">
                 <div className="flex justify-between items-start">
                   <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-6">
@@ -73,7 +87,7 @@ export default function CommunityPage() {
                   <p className="text-white/70 text-sm">Get access to private channels, code reviews, and exclusive events.</p>
                 </div>
               </div>
-            </div>
+            </motion.a>
 
           </div>
         </section>

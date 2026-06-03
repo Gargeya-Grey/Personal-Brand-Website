@@ -3,15 +3,12 @@ import Link from 'next/link';
 import * as motion from 'motion/react-client';
 import { ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, Database, Network, Cpu, User } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
-import { TerminalCard } from '@/components/terminal-card';
 import { Footer } from '@/components/footer';
 import profileImage from '@/src/assets/images/regenerated_image_1778002356085.png';
-import { InteractiveBackground } from '@/components/interactive-background';
 
 export default function Home() {
   return (
     <div className="min-h-screen flex flex-col relative">
-      <InteractiveBackground />
       <Navigation />
       
       <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full">
@@ -51,7 +48,7 @@ export default function Home() {
               referrerPolicy="no-referrer"
               priority
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-transparent to-transparent"></div>
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/80 dark:from-slate-950/80 via-transparent to-transparent"></div>
             <div className="absolute bottom-8 left-8 right-8">
               <p className="text-white font-headline font-bold text-xl">Gargeya Sharma</p>
               <p className="text-white/80 font-label text-sm tracking-widest uppercase mt-1">Lead Architect</p>
@@ -71,12 +68,13 @@ export default function Home() {
               className="md:col-span-2 block"
             >
               <motion.div 
+                className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
                 whileHover={{ y: -4 }}
-                className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/60 h-full hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="flex justify-between items-start">
-                  <div className="w-14 h-14 bg-surface-container-low rounded-2xl flex items-center justify-center">
-                    <Rocket className="w-7 h-7 text-primary" />
+                  <div className="w-14 h-14 bg-surface-container-low dark:bg-white/5 rounded-2xl flex items-center justify-center">
+                    <Rocket className="w-7 h-7 text-accent" />
                   </div>
                   <ArrowUpRight className="w-6 h-6 text-outline-variant group-hover:text-accent transition-colors duration-300" />
                 </div>
@@ -91,8 +89,9 @@ export default function Home() {
             {/* Community Card */}
             <Link href="/community" className="block">
               <motion.div 
+                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-primary-container hover:border-accent/50 dark:hover:border-white/30 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
                 whileHover={{ y: -4 }}
-                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group h-full border border-white/10 hover:bg-primary-container hover:border-white/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-[background-color,border-color,box-shadow] duration-300"
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
                   <Users className="w-7 h-7 text-accent" />
@@ -107,11 +106,12 @@ export default function Home() {
             {/* Blog Card */}
             <Link href="/blog" className="block">
               <motion.div 
+                className="bg-white/55 dark:bg-white/[0.01] backdrop-blur-md p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/80 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
                 whileHover={{ y: -4 }}
-                className="bg-white/30 backdrop-blur-md p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/50 h-full hover:bg-white/60 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="w-14 h-14 bg-surface-container-lowest rounded-2xl flex items-center justify-center shadow-sm">
-                  <BookOpen className="w-7 h-7 text-primary" />
+                <div className="w-14 h-14 bg-surface-container-lowest dark:bg-white/5 rounded-2xl flex items-center justify-center shadow-sm">
+                  <BookOpen className="w-7 h-7 text-accent" />
                 </div>
                 <div className="mt-12">
                   <h3 className="text-2xl font-headline font-bold text-primary mb-2">Blog</h3>
@@ -120,20 +120,18 @@ export default function Home() {
               </motion.div>
             </Link>
 
-            {/* Terminal Card */}
-            <div className="md:col-span-2 min-h-[320px]">
-              <TerminalCard />
-            </div>
+
 
             {/* YouTube Card */}
             <Link href="/youtube" className="md:col-span-2 block">
               <motion.div 
+                className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
                 whileHover={{ y: -4 }}
-                className="bg-white/40 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group border border-white/60 h-full hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300"
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
                 <div className="flex justify-between items-start">
-                  <div className="w-14 h-14 bg-surface-container-low rounded-2xl flex items-center justify-center">
-                    <PlayCircle className="w-7 h-7 text-primary" />
+                  <div className="w-14 h-14 bg-surface-container-low dark:bg-white/5 rounded-2xl flex items-center justify-center">
+                    <PlayCircle className="w-7 h-7 text-accent" />
                   </div>
                   <ArrowUpRight className="w-6 h-6 text-outline-variant group-hover:text-accent transition-colors duration-300" />
                 </div>
@@ -144,18 +142,26 @@ export default function Home() {
               </motion.div>
             </Link>
 
-            {/* About Card */}
-            <Link href="/about" className="block">
+            {/* About Card - Rebalanced as Full-Width Asymmetrical Callout */}
+            <Link href="/about" className="md:col-span-3 block">
               <motion.div 
+                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 min-h-[160px] group h-full hover:bg-primary-container hover:border-accent/50 dark:hover:border-white/30 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
                 whileHover={{ y: -4 }}
-                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] flex flex-col justify-between min-h-[320px] group h-full border border-white/10 hover:bg-primary-container hover:border-white/30 hover:shadow-[0_8px_32px_rgba(0,0,0,0.2)] transition-[background-color,border-color,box-shadow] duration-300"
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
-                  <User className="w-7 h-7 text-accent" />
+                <div className="flex flex-col sm:flex-row items-center gap-6">
+                  <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center shrink-0">
+                    <User className="w-7 h-7 text-accent" />
+                  </div>
+                  <div className="text-center sm:text-left">
+                    <h3 className="text-2xl font-headline font-bold text-white">About Gargeya</h3>
+                    <p className="text-white/60 text-sm mt-1">Engineering the future. Lead Architect & Strategist focusing on Soft Minimalism.</p>
+                  </div>
                 </div>
-                <div className="mt-12">
-                  <h3 className="text-2xl font-headline font-bold text-white mb-2">About</h3>
-                  <p className="text-white/60 text-sm">Engineering the future. Lead Architect & Strategist.</p>
+                <div className="flex justify-center md:justify-end shrink-0">
+                  <span className="text-xs font-label text-accent uppercase tracking-widest border border-accent/20 px-5 py-2.5 rounded-full bg-accent/5 group-hover:bg-accent group-hover:text-slate-950 transition-all duration-300">
+                    View Biography &rarr;
+                  </span>
                 </div>
               </motion.div>
             </Link>
@@ -164,7 +170,7 @@ export default function Home() {
         </section>
 
         {/* Architecture Section */}
-        <section className="py-32 bg-white/30 backdrop-blur-xl border border-white/60 shadow-[0_8px_32px_rgba(0,0,0,0.04)] -mx-6 md:-mx-12 px-6 md:px-12 rounded-[3rem] my-12" id="community">
+        <section className="py-32 bg-white/30 dark:bg-white/[0.01] backdrop-blur-xl border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] -mx-6 md:-mx-12 px-6 md:px-12 rounded-[3rem] my-12 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out" id="community">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center max-w-screen-2xl mx-auto">
             <div className="space-y-10">
               <div>
@@ -211,9 +217,9 @@ export default function Home() {
               { icon: Database, title: "Vector Storage", desc: "Advanced indexing techniques for billion-scale retrieval." },
               { icon: Network, title: "Multi-Agent Systems", desc: "Protocol design for autonomous agent communication." }
             ].map((item, i) => (
-              <div key={i} className="bg-white/40 backdrop-blur-xl p-8 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 flex flex-col gap-6 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] hover:-translate-y-1 transition-all duration-300 ease-out">
-                <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
-                  <item.icon className="w-6 h-6 text-primary" />
+              <div key={i} className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-8 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col gap-6 hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out">
+                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center">
+                  <item.icon className="w-6 h-6 text-accent" />
                 </div>
                 <div>
                   <h4 className="font-headline font-bold text-xl text-primary mb-2">{item.title}</h4>
@@ -224,14 +230,11 @@ export default function Home() {
           </div>
         </section>
 
-        {/* CTA Section */}
         <section className="py-20 md:py-32" id="youtube">
-          <div className="bg-primary-container/80 backdrop-blur-2xl border border-white/10 rounded-3xl md:rounded-[3rem] p-8 sm:p-12 md:p-24 text-center relative overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.1)]">
-            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-accent/20 blur-[120px] rounded-full translate-x-1/3 -translate-y-1/3"></div>
-            <div className="absolute bottom-0 left-0 w-[500px] h-[500px] bg-accent/10 blur-[120px] rounded-full -translate-x-1/3 translate-y-1/3"></div>
+          <div className="cta-card-gradient backdrop-blur-2xl border border-white/10 rounded-3xl md:rounded-[3rem] px-5 py-12 sm:p-12 md:p-24 text-center relative z-10 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)]">
             
             <div className="relative z-10 max-w-3xl mx-auto space-y-8 md:space-y-10">
-              <h2 className="text-4xl sm:text-5xl md:text-6xl font-headline font-extrabold tracking-tighter text-white leading-[1.1]">
+              <h2 className="text-3xl sm:text-5xl md:text-6xl font-headline font-extrabold tracking-tighter text-white leading-[1.1]">
                 Ready to build something meaningful?
               </h2>
               <p className="text-base sm:text-lg text-white/70 leading-relaxed">
@@ -241,13 +244,13 @@ export default function Home() {
               <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
                 <Link 
                   href="/contact" 
-                  className="bg-accent text-primary px-6 py-4 md:px-10 md:py-5 rounded-[0.25rem] font-headline font-extrabold text-base md:text-lg hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-all w-full sm:w-auto inline-block text-center"
+                  className="bg-accent text-[#0F172A] px-6 py-4 md:px-10 md:py-5 rounded-xl font-headline font-extrabold text-base md:text-lg hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-all w-full sm:w-auto inline-block text-center"
                 >
                   Consult on AI Projects
                 </Link>
                 <Link 
                   href="/contact" 
-                  className="bg-transparent border border-white/20 hover:bg-white/5 text-white px-6 py-4 md:px-10 md:py-5 rounded-[0.25rem] font-headline font-extrabold text-base md:text-lg transition-all active:scale-95 w-full sm:w-auto inline-block text-center"
+                  className="bg-transparent border border-white/20 hover:bg-white/5 text-white px-6 py-4 md:px-10 md:py-5 rounded-xl font-headline font-extrabold text-base md:text-lg transition-all active:scale-95 w-full sm:w-auto inline-block text-center"
                 >
                   Work with me
                 </Link>

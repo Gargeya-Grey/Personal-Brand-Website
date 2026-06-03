@@ -25,8 +25,8 @@ export default function AboutPage() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="lg:col-span-7 space-y-8"
           >
-            <div className="w-16 h-16 bg-surface-container-low rounded-2xl flex items-center justify-center mb-8">
-              <Terminal className="w-8 h-8 text-primary" />
+            <div className="w-16 h-16 bg-surface-container-low dark:bg-white/5 rounded-2xl flex items-center justify-center mb-8">
+              <Terminal className="w-8 h-8 text-accent" />
             </div>
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
               About Me
@@ -88,9 +88,9 @@ export default function AboutPage() {
               { icon: Cpu, title: "Machine Learning", desc: "PyTorch, ONNX, TensorRT. Optimizing models for inference at the edge and in the cloud." },
               { icon: Network, title: "Distributed Systems", desc: "Kafka, Kubernetes, gRPC. Designing resilient architectures that scale horizontally." }
             ].map((item, i) => (
-              <div key={i} className="bg-white/40 backdrop-blur-xl p-8 rounded-soft shadow-[0_8px_32px_rgba(0,0,0,0.04)] border border-white/60 flex flex-col gap-6 hover:bg-white/70 hover:border-white hover:shadow-[0_8px_32px_rgba(0,0,0,0.1)] transition-[background-color,border-color,box-shadow] duration-300">
-                <div className="w-12 h-12 bg-surface-container-low rounded-xl flex items-center justify-center">
-                  <item.icon className="w-6 h-6 text-primary" />
+              <div key={i} className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-8 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col gap-6 hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out">
+                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center">
+                  <item.icon className="w-6 h-6 text-accent" />
                 </div>
                 <div>
                   <h4 className="font-headline font-bold text-xl text-primary mb-2">{item.title}</h4>

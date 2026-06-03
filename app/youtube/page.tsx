@@ -4,7 +4,6 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { PlayCircle } from 'lucide-react';
 import { YoutubeGrid } from '@/components/youtube-grid';
-import { InteractiveBackground } from '@/components/interactive-background';
 
 export const metadata: Metadata = {
   title: 'YouTube Broadcasts',
@@ -14,7 +13,6 @@ export const metadata: Metadata = {
 export default function YouTubePage() {
   return (
     <div className="min-h-screen flex flex-col relative overflow-hidden">
-      <InteractiveBackground />
       <Navigation />
       
       <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full relative z-10 animate-fade-in">
@@ -27,7 +25,7 @@ export default function YouTubePage() {
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
             className="space-y-8"
           >
-            <div className="w-16 h-16 bg-white/40 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/60 shadow-sm">
+            <div className="w-16 h-16 bg-white/65 dark:bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center border border-white/60 dark:border-white/20 shadow-sm">
               <PlayCircle className="w-8 h-8 text-[#10B981]" />
             </div>
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">

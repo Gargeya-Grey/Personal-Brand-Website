@@ -84,8 +84,9 @@ export function InteractiveBackground() {
       mouseY += (targetMouseY - mouseY) * 0.1;
 
       ctx.lineWidth = 1;
-      // Accent color #10B981 with low opacity for translucent look
-      ctx.strokeStyle = 'rgba(16, 185, 129, 0.12)';
+      // Accent color #10B981 with low opacity, adapting dynamically to the theme
+      const isDark = document.documentElement.classList.contains('dark');
+      ctx.strokeStyle = isDark ? 'rgba(16, 185, 129, 0.18)' : 'rgba(16, 185, 129, 0.12)';
 
       strings.forEach((string, index) => {
         ctx.beginPath();
