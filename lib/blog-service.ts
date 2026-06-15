@@ -15,7 +15,7 @@ export interface Article {
   readTime: string;
   takeaways: string[];
   content: string; // Markdown text
-  illustrationType: 'diagram1' | 'diagram2' | 'diagram3' | 'diagram4' | 'diagram5' | 'diagram6' | 'diagram7' | 'diagram8';
+  illustrationType: 'diagram1' | 'diagram2' | 'diagram3' | 'diagram4' | 'diagram5' | 'diagram6' | 'diagram7' | 'diagram8' | 'cover';
   status: 'draft' | 'published';
   coverImage?: string;
   updatedAt?: string;

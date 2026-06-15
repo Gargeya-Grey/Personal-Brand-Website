@@ -5,7 +5,7 @@ interface RenderIllustrationProps {
   isBig?: boolean;
 }
 
-export function renderIllustration(type: string, isBig: boolean = false) {
+export function renderIllustration(type: string, isBig: boolean = true) {
   const strokeCol = "#10B981"; // Emerald
   const accentCol = "#3b82f6"; // Blue
   const borderCol = "var(--color-outline-variant)"; // Border
@@ -13,10 +13,13 @@ export function renderIllustration(type: string, isBig: boolean = false) {
   const bgCol = "var(--color-bg-primary)"; // Soft background
   const innerCardCol = "var(--color-canvas)"; // Card filling
 
+  const minHeightClass = isBig ? "min-h-[180px]" : "";
+  const getPaddingClass = (defaultPad: string) => isBig ? defaultPad : "p-1.5";
+
   switch (type) {
     case "diagram1":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-8" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-8")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           <path d="M40 100 H360" stroke="#cbd5e1" strokeWidth="2" strokeDasharray="4 4"/>
           <path d="M40 100 Q 120 40, 200 100 T 360 100" stroke={strokeCol} strokeWidth="3" fill="none" />
@@ -31,7 +34,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     case "diagram2":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-8" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-8")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           <circle cx="200" cy="170" r="14" fill={innerCardCol} stroke={strokeCol} strokeWidth="3"/>
           <path d="M200 156 L100 80 M200 156 L160 80 M200 156 L240 80 M200 156 L300 80" stroke="#cbd5e1" strokeWidth="2"/>
@@ -44,7 +47,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     case "diagram3":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-8" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-8")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           <g transform="translate(60, 40)">
             <rect width="80" height="120" rx="8" fill={innerCardCol} stroke="#cbd5e1" strokeWidth="2"/>
@@ -69,7 +72,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     case "diagram4":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-8" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-8")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           <line x1="50" y1="100" x2="350" y2="100" stroke="#e2e8f0" strokeWidth="2"/>
           <circle cx="90" cy="100" r="25" fill={innerCardCol} stroke={strokeCol} strokeWidth="3"/>
@@ -83,7 +86,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     case "diagram5":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-8" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-8")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           {/* Main system cycle with active validation gate */}
           <circle cx="120" cy="100" r="30" fill={innerCardCol} stroke={strokeCol} strokeWidth="3" />
@@ -101,7 +104,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     case "diagram6":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-6" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-6")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           {/* Inbound request -> router -> nodes -> result */}
           <circle cx="60" cy="100" r="18" fill={innerCardCol} stroke={accentCol} strokeWidth="3" />
@@ -120,7 +123,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     case "diagram7":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-6" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-6")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           {/* Cloud border and isolated containers */}
           <rect x="50" y="35" width="300" height="130" rx="16" fill="transparent" stroke={strokeCol} strokeWidth="2" strokeDasharray="6 4" />
@@ -142,7 +145,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     case "diagram8":
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-6" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-6")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           {/* Jittery token characters vs structured state boxes */}
           <g transform="translate(30, 20)">
@@ -167,7 +170,7 @@ export function renderIllustration(type: string, isBig: boolean = false) {
       );
     default:
       return (
-        <svg className="w-full h-full min-h-[180px] bg-transparent p-8" viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-8")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
           <rect width="400" height="200" rx="16" fill="transparent" />
           <line x1="50" y1="50" x2="350" y2="150" stroke={strokeCol} strokeWidth="2" opacity="0.3"/>
           <line x1="50" y1="150" x2="350" y2="50" stroke="#cbd5e1" strokeWidth="2" opacity="0.3"/>

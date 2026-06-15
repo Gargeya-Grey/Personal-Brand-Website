@@ -63,9 +63,9 @@
   --color-outline-variant: var(--color-outline-variant);
   --color-cta-glow: var(--color-cta-glow);
 
-  --font-headline: var(--font-manrope), sans-serif;
-  --font-body: var(--font-manrope), sans-serif;
-  --font-label: var(--font-inter), sans-serif;
+  --font-headline: "Google Sans Flex", var(--font-manrope), sans-serif;
+  --font-body: "Google Sans Flex", var(--font-manrope), sans-serif;
+  --font-label: "Stack Sans Text", var(--font-inter), sans-serif;
   --font-ui: 'Rethink Sans', var(--font-inter), sans-serif;
 
   --shadow-ambient: var(--color-elevation-shadow);

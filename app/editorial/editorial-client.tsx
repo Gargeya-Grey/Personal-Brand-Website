@@ -1,13 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import * as motion from 'motion/react-client';
 import { AnimatePresence } from 'motion/react';
 import {
   Plus, Search, ArrowLeft, LogOut,
   Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
-  Settings2, Columns, LayoutGrid, Maximize2
+  Settings2, Columns, LayoutGrid, Maximize2, Upload, Loader2
 } from 'lucide-react';
 import { Article } from '@/lib/blog-service';
 import { UserSession } from '@/lib/auth';
@@ -29,14 +30,46 @@ interface EditorialClientProps {
 // ────────────────────────────────────────────────────────────
 // Thumbnail — SVG illustration or cover image
 // ────────────────────────────────────────────────────────────
-function IllustrationThumb({ type, coverImage }: { type: string; coverImage?: string }) {
-  if (coverImage) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img src={coverImage} alt="Cover" className="w-full h-full object-cover" />;
-  }
+function IllustrationThumb({ 
+  type, 
+  coverImage, 
+  onPreview 
+}: { 
+  type: string; 
+  coverImage?: string; 
+  onPreview?: (type: string, url?: string) => void; 
+}) {
+  const isCover = type === 'cover' && coverImage;
+  
   return (
-    <div className="w-full h-full scale-[0.6] origin-center pointer-events-none opacity-80">
-      {renderIllustration(type, false)}
+    <div 
+      onClick={(e) => {
+        if (onPreview) {
+          e.stopPropagation();
+          onPreview(type, coverImage);
+        }
+      }}
+      className={`w-full h-full relative group ${onPreview ? 'cursor-pointer' : ''} overflow-hidden`}
+      title={onPreview ? "Click to preview" : undefined}
+    >
+      {isCover ? (
+        // eslint-disable-next-line @next/next/no-img-element
+        <img 
+          src={coverImage} 
+          alt="Cover" 
+          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" 
+        />
+      ) : (
+        <div className="w-full h-full origin-center opacity-80 transition-transform duration-300 group-hover:scale-105">
+          {renderIllustration(type === 'cover' ? 'diagram1' : type, false)}
+        </div>
+      )}
+      
+      {onPreview && (
+        <div className="absolute inset-0 bg-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+          <Maximize2 className="w-3.5 h-3.5 text-white drop-shadow-sm" />
+        </div>
+      )}
     </div>
   );
 }
@@ -65,13 +98,14 @@ function StatusBadge({ status }: { status: 'draft' | 'published' | undefined }) 
 // Article card — Curator's Canvas feed row
 // ────────────────────────────────────────────────────────────
 function ArticleCard({
-  post, index, onEdit, onDelete, isDeletingId,
+  post, index, onEdit, onDelete, isDeletingId, onPreview,
 }: {
   post: Article;
   index: number;
   onEdit: (a: Article) => void;
   onDelete: (id: number) => void;
   isDeletingId: number | null;
+  onPreview: (type: string, url?: string) => void;
 }) {
   const [hovered, setHovered] = useState(false);
 
@@ -105,7 +139,7 @@ function ArticleCard({
         }
         bg-slate-50 dark:bg-[#1a2535]
       `}>
-        <IllustrationThumb type={post.illustrationType} coverImage={post.coverImage} />
+        <IllustrationThumb type={post.illustrationType} coverImage={post.coverImage} onPreview={onPreview} />
       </div>
 
       {/* ── Main content ── */}
@@ -246,6 +280,110 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
   const [formStatus, setFormStatus] = useState<'draft' | 'published'>('draft');
   const [formCoverImage, setFormCoverImage] = useState('');
   const [lastAutosaved, setLastAutosaved] = useState<string | null>(null);
+  const [customTagInput, setCustomTagInput] = useState('');
+  const [isAiFilling, setIsAiFilling] = useState(false);
+  const [isUploadingImage, setIsUploadingImage] = useState(false);
+  const [previewItem, setPreviewItem] = useState<{ type: string; url?: string } | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setPreviewItem(null);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
+  const triggerImageUpload = () => {
+    const fileInput = document.getElementById('local-cover-upload') as HTMLInputElement;
+    if (fileInput) fileInput.click();
+  };
+
+  const handleLocalImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (file.size > 5 * 1024 * 1024) {
+      alert('File size exceeds the 5MB limit.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('slug', formSlug || 'cover');
+
+    setIsUploadingImage(true);
+    try {
+      const res = await fetch('/api/blog/upload', {
+        method: 'POST',
+        body: formData
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to upload image.');
+      }
+      setFormCoverImage(data.url);
+      setFormIllustration('cover');
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsUploadingImage(false);
+      e.target.value = '';
+    }
+  };
+
+  const handleAiFill = async () => {
+    if (!formContent.trim()) {
+      alert('Please write some content in the editor first so the AI can analyze it.');
+      return;
+    }
+    setIsAiFilling(true);
+    try {
+      const res = await fetch('/api/ai/fill', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ content: formContent })
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.error || 'Failed to auto-fill metadata.');
+      }
+      
+      const meta = data.metadata;
+      if (meta.title) setFormTitle(meta.title);
+      if (meta.slug) setFormSlug(meta.slug);
+      if (meta.excerpt) setFormExcerpt(meta.excerpt);
+      if (Array.isArray(meta.categories)) {
+        setFormCategories(meta.categories);
+      }
+      if (Array.isArray(meta.takeaways)) {
+        setFormTakeaways(meta.takeaways.filter(Boolean));
+      }
+      if (meta.illustrationType) {
+        setFormIllustration(meta.illustrationType);
+      }
+      if (meta.coverImage) {
+        setFormCoverImage(meta.coverImage);
+      }
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsAiFilling(false);
+    }
+  };
+
+  const handleAddCustomTag = (e?: React.FormEvent) => {
+    if (e) e.preventDefault();
+    const trimmed = customTagInput.trim();
+    if (!trimmed) return;
+    if (!formCategories.includes(trimmed)) {
+      setFormCategories([...formCategories, trimmed]);
+    }
+    setCustomTagInput('');
+  };
 
   useEffect(() => {
     if (localStorage.getItem('edudojo_draft_autosave')) setHasBackupDraft(true);
@@ -559,22 +697,38 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
 
               {/* ── Metadata panel (Row above) ── */}
               {sidebarOpen && (
-                <div className="bg-white dark:bg-[#1a2535] border border-slate-200 dark:border-white/[0.10] p-7 rounded-[1.75rem] shadow-sm dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] w-full space-y-6">
+                <div className="bg-white/95 dark:bg-[#111827]/85 border border-slate-200/80 dark:border-white/[0.08] backdrop-blur-md p-7 rounded-[2rem] shadow-[0_8px_30px_rgba(0,0,0,0.04)] dark:shadow-[0_12px_40px_-10px_rgba(0,0,0,0.3),_inset_0_2px_1px_rgba(255,255,255,0.1)] w-full space-y-6">
                   <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/5 pb-3">
-                    <h2 className="google-sans-flex text-lg font-bold text-slate-900 dark:text-white" style={{ fontWeight: 700 }}>
-                      Article Metadata
-                    </h2>
+                    <div className="flex items-center gap-3">
+                      <h2 className="google-sans-flex text-lg font-bold text-slate-900 dark:text-white" style={{ fontWeight: 700 }}>
+                        Article Metadata
+                      </h2>
+                      <button
+                        type="button"
+                        onClick={handleAiFill}
+                        disabled={isAiFilling}
+                        className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs google-sans-flex font-bold transition-all hover:scale-[1.03] active:scale-[0.97] cursor-pointer shadow-sm ${
+                          isAiFilling
+                            ? 'bg-accent/10 text-accent animate-pulse'
+                            : 'bg-gradient-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white shadow-violet-500/15'
+                        }`}
+                        title="Auto-generate metadata using AI"
+                      >
+                        <Sparkles className={`w-3.5 h-3.5 ${isAiFilling ? 'animate-spin' : ''}`} />
+                        <span>{isAiFilling ? 'AI Curation...' : 'AI Fill'}</span>
+                      </button>
+                    </div>
                     <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold stack-sans-text">Horizontal Curation Dashboard</span>
                   </div>
 
                   {/* Section 1: Core Fields (Title, Slug, Status) */}
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                     {/* Title */}
                     <div className="md:col-span-6 space-y-1.5">
                       <label className="stack-sans-text text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Title <span className="text-red-400">*</span></label>
                       <input type="text" required value={formTitle} onChange={e => handleTitleChange(e.target.value)}
                         placeholder="e.g. Designing stateful agent workflows"
-                        className="w-full google-sans-flex text-base bg-slate-50 dark:bg-[#111e2c] border border-slate-200 dark:border-white/[0.08] rounded-xl px-4 py-3 focus:outline-none focus:border-accent text-slate-800 dark:text-white"
+                        className="w-full google-sans-flex text-base bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] rounded-xl px-4 h-[44px] focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 text-slate-800 dark:text-white transition-all duration-200 focus:shadow-[0_0_12px_-3px_rgba(16,185,129,0.15)]"
                       />
                     </div>
 
@@ -583,22 +737,22 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
                       <label className="stack-sans-text text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Slug</label>
                       <input type="text" required value={formSlug} onChange={e => setFormSlug(e.target.value)}
                         placeholder="e.g. designing-stateful-agent-workflows"
-                        className="w-full stack-sans-text text-sm bg-slate-50 dark:bg-[#111e2c] border border-slate-200 dark:border-white/[0.08] rounded-xl px-4 py-3 focus:outline-none focus:border-accent text-slate-800 dark:text-white font-medium"
+                        className="w-full stack-sans-text text-sm bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] rounded-xl px-4 h-[44px] focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 text-slate-800 dark:text-white font-medium transition-all duration-200 focus:shadow-[0_0_12px_-3px_rgba(16,185,129,0.15)]"
                       />
                     </div>
 
                     {/* Status toggle */}
                     <div className="md:col-span-2 space-y-1.5">
                       <label className="stack-sans-text text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Release Status</label>
-                      <div className="grid grid-cols-2 gap-2 bg-slate-50 dark:bg-[#111e2c] p-1.5 border border-slate-200 dark:border-white/[0.08] rounded-xl">
+                      <div className="grid grid-cols-2 gap-1 bg-slate-50/60 dark:bg-white/[0.02] p-1 border border-slate-200/80 dark:border-white/[0.08] rounded-full h-[44px] items-center">
                         {(['draft', 'published'] as const).map(s => (
                           <button key={s} type="button" onClick={() => setFormStatus(s)}
-                            className={`google-sans-flex text-xs py-2 rounded-lg font-bold transition-all cursor-pointer capitalize ${
+                            className={`google-sans-flex text-[11px] py-1.5 rounded-full font-bold transition-all cursor-pointer capitalize ${
                               formStatus === s
                                 ? s === 'draft'
-                                  ? 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25'
-                                  : 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25'
-                                : 'text-slate-400 dark:text-slate-500 border border-transparent hover:text-slate-700'
+                                  ? 'bg-amber-500/15 text-amber-600 dark:text-amber-400 shadow-sm'
+                                  : 'bg-emerald-500/15 text-emerald-600 dark:text-accent shadow-sm'
+                                : 'text-slate-400 dark:text-slate-500 border border-transparent hover:text-slate-700 dark:hover:text-slate-300'
                             }`}
                           >{s}</button>
                         ))}
@@ -607,23 +761,41 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
                   </div>
 
                   {/* Section 2: Media & Details (Excerpt, Cover Image, Illustration, Feature Checkbox) */}
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-end">
+                  <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-start">
                     {/* Excerpt */}
-                    <div className="md:col-span-5 space-y-1.5">
+                    <div className="md:col-span-4 space-y-1.5">
                       <label className="stack-sans-text text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Excerpt</label>
-                      <textarea rows={2} value={formExcerpt} onChange={e => setFormExcerpt(e.target.value)}
+                      <textarea rows={1} value={formExcerpt} onChange={e => setFormExcerpt(e.target.value)}
                         placeholder="Brief summary…"
-                        className="w-full google-sans-flex text-sm bg-slate-50 dark:bg-[#111e2c] border border-slate-200 dark:border-white/[0.08] rounded-xl px-4 py-2 focus:outline-none focus:border-accent text-slate-800 dark:text-white resize-none"
+                        className="w-full google-sans-flex text-sm bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] rounded-xl px-4 py-2.5 h-[44px] focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 text-slate-800 dark:text-white resize-none transition-all duration-200 focus:shadow-[0_0_12px_-3px_rgba(16,185,129,0.15)] leading-tight"
                       />
                     </div>
 
                     {/* Cover Image */}
                     <div className="md:col-span-3 space-y-1.5">
-                      <label className="stack-sans-text text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Cover Image URL</label>
-                      <input type="text" value={formCoverImage} onChange={e => setFormCoverImage(e.target.value)}
-                        placeholder="https://…"
-                        className="w-full stack-sans-text text-sm bg-slate-50 dark:bg-[#111e2c] border border-slate-200 dark:border-white/[0.08] rounded-xl px-4 py-3 focus:outline-none focus:border-accent text-slate-800 dark:text-white"
-                      />
+                      <label className="stack-sans-text text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Cover Image</label>
+                      <div className="flex gap-2 items-center">
+                        <input type="text" value={formCoverImage} onChange={e => setFormCoverImage(e.target.value)}
+                          placeholder="https://… or upload local"
+                          className="flex-grow min-w-0 stack-sans-text text-sm bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] rounded-xl px-4 h-[44px] focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 text-slate-800 dark:text-white font-medium transition-all duration-200 focus:shadow-[0_0_12px_-3px_rgba(16,185,129,0.15)]"
+                        />
+                        <button
+                          type="button"
+                          onClick={triggerImageUpload}
+                          disabled={isUploadingImage}
+                          className="flex items-center justify-center bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-slate-200 font-bold h-[44px] px-3.5 rounded-xl border border-slate-200/80 dark:border-white/[0.08] transition-all cursor-pointer text-xs shrink-0 disabled:opacity-50"
+                          title="Upload image from your local computer"
+                        >
+                          {isUploadingImage ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                        </button>
+                        <input
+                          type="file"
+                          id="local-cover-upload"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleLocalImageUpload}
+                        />
+                      </div>
                     </div>
 
                     {/* Diagram picker */}
@@ -632,25 +804,33 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
                       <div className="flex gap-2 items-center">
                         <select value={formIllustration}
                           onChange={e => setFormIllustration(e.target.value as Article['illustrationType'])}
-                          className="flex-1 google-sans-flex text-xs bg-slate-50 dark:bg-[#111e2c] border border-slate-200 dark:border-white/[0.08] rounded-xl px-3 py-3 focus:outline-none focus:border-accent text-slate-800 dark:text-white"
+                          className="flex-1 google-sans-flex text-xs bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] rounded-xl px-3 h-[44px] focus:outline-none focus:border-accent focus:ring-1 focus:ring-accent/30 text-slate-800 dark:text-white transition-all duration-200"
                         >
-                          {ILLUSTRATIONS_LIST.map(ill => <option key={ill} value={ill}>{ill}</option>)}
+                          {ILLUSTRATIONS_LIST.map(ill => <option key={ill} value={ill} className="bg-white dark:bg-[#111827] text-slate-900 dark:text-slate-100">{ill}</option>)}
+                          <option value="cover" className="bg-white dark:bg-[#111827] text-slate-900 dark:text-slate-100">Cover Image</option>
                         </select>
-                        <div className="w-14 h-10 rounded-lg border border-slate-200 dark:border-white/[0.08] overflow-hidden bg-slate-50 dark:bg-[#111e2c] shrink-0">
-                          <IllustrationThumb type={formIllustration} coverImage={formCoverImage} />
+                        <div className="w-14 h-[44px] rounded-xl border border-slate-200/80 dark:border-white/[0.08] overflow-hidden bg-slate-50/60 dark:bg-white/[0.02] shrink-0 shadow-sm flex items-center justify-center">
+                          <IllustrationThumb 
+                            type={formIllustration} 
+                            coverImage={formCoverImage} 
+                            onPreview={(type, url) => setPreviewItem({ type, url })}
+                          />
                         </div>
                       </div>
                     </div>
 
                     {/* Featured */}
-                    <div className="md:col-span-2">
-                      <div className="flex items-center gap-3 bg-slate-50 dark:bg-[#111e2c] border border-slate-200 dark:border-white/[0.08] px-4 py-3.5 rounded-xl">
-                        <input type="checkbox" id="featured-check" checked={formFeatured} onChange={e => setFormFeatured(e.target.checked)}
-                          className="w-4 h-4 accent-accent border-slate-300 rounded"
-                        />
-                        <label htmlFor="featured-check" className="google-sans-flex text-xs font-bold text-slate-700 dark:text-white select-none cursor-pointer flex items-center gap-1.5 truncate">
-                          <Star className="w-3.5 h-3.5 text-indigo-500 shrink-0" /> Feature on home layout
-                        </label>
+                    <div className="md:col-span-3">
+                      <div className="space-y-1.5">
+                        <span className="invisible text-[11px] uppercase tracking-wider font-bold block select-none">Placeholder</span>
+                        <div className="flex items-center gap-3 bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] px-4 rounded-xl transition-all hover:border-slate-300 dark:hover:border-white/15 h-[44px] w-full">
+                          <input type="checkbox" id="featured-check" checked={formFeatured} onChange={e => setFormFeatured(e.target.checked)}
+                            className="w-4 h-4 accent-accent border-slate-300 rounded cursor-pointer"
+                          />
+                          <label htmlFor="featured-check" className="google-sans-flex text-xs font-bold text-slate-700 dark:text-slate-200 select-none cursor-pointer flex items-center gap-1.5 truncate">
+                            <Star className="w-3.5 h-3.5 text-indigo-500 shrink-0" /> Feature on home layout
+                          </label>
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -660,19 +840,57 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
                     {/* Categories */}
                     <div className="md:col-span-6 space-y-2">
                       <label className="stack-sans-text text-[11px] uppercase tracking-wider text-slate-400 font-bold block">Categories</label>
-                      <div className="flex flex-wrap gap-1.5">
+                      <div className="flex flex-wrap gap-1.5 items-center">
                         {CATEGORIES_LIST.map(cat => {
                           const active = formCategories.includes(cat);
                           return (
                             <button key={cat} type="button" onClick={() => toggleCategory(cat)}
-                              className={`stack-sans-text text-[10px] font-semibold tracking-tight px-2.5 py-1.5 rounded-full border transition-all duration-150 cursor-pointer ${
+                              className={`stack-sans-text text-[10px] font-semibold tracking-tight px-3 py-1.5 rounded-full border transition-all duration-150 cursor-pointer hover:scale-[1.03] active:scale-[0.97] ${
                                 active
-                                  ? 'bg-accent/15 text-accent border-accent/30 font-bold'
-                                  : 'bg-slate-50 dark:bg-[#1a2535] text-slate-500 dark:text-white/50 border-slate-200 dark:border-white/[0.08] hover:border-slate-300'
+                                  ? 'bg-accent/15 text-accent border-accent/30 font-bold shadow-sm'
+                                  : 'bg-slate-50/60 dark:bg-white/[0.02] text-slate-500 dark:text-white/50 border-slate-200/80 dark:border-white/[0.08] hover:border-slate-300 dark:hover:border-white/15'
                               }`}
                             >{cat}</button>
                           );
                         })}
+                        {/* Custom categories */}
+                        {formCategories
+                          .filter(cat => !CATEGORIES_LIST.includes(cat as any))
+                          .map(cat => (
+                            <span key={cat}
+                              className="stack-sans-text text-[10px] font-semibold tracking-tight px-3 py-1.5 rounded-full border bg-emerald-500/10 text-emerald-600 dark:text-accent border-emerald-500/20 dark:border-accent/20 font-bold flex items-center gap-1.5"
+                            >
+                              {cat}
+                              <button type="button" onClick={() => toggleCategory(cat)} className="text-emerald-500/60 dark:text-accent/60 hover:text-emerald-600 dark:hover:text-accent cursor-pointer">
+                                <X className="w-3 h-3" />
+                              </button>
+                            </span>
+                          ))}
+                        
+                        {/* Custom category input */}
+                        <div className="flex gap-1 items-center ml-1">
+                          <input
+                            type="text"
+                            placeholder="Custom tag…"
+                            value={customTagInput}
+                            onChange={e => setCustomTagInput(e.target.value)}
+                            onKeyDown={e => {
+                              if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleAddCustomTag();
+                              }
+                            }}
+                            className="stack-sans-text text-[10px] bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] rounded-full px-3 py-1.5 focus:outline-none focus:border-accent text-slate-800 dark:text-white w-24 transition-all duration-150 focus:shadow-[0_0_12px_-3px_rgba(16,185,129,0.15)]"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => handleAddCustomTag()}
+                            className="flex items-center justify-center bg-accent/10 hover:bg-accent/15 text-accent font-bold h-7 w-7 rounded-full transition-colors cursor-pointer"
+                            title="Add Tag"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
                     </div>
 
@@ -689,7 +907,7 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
                           <div key={i} className="flex gap-2 items-center">
                             <input type="text" value={t} onChange={e => updateTakeaway(i, e.target.value)}
                               placeholder="Core learning point…"
-                              className="w-full google-sans-flex text-xs bg-slate-50 dark:bg-[#111e2c] border border-slate-200 dark:border-white/[0.08] rounded-lg px-3 py-2 focus:outline-none focus:border-accent text-slate-800 dark:text-white"
+                              className="w-full google-sans-flex text-xs bg-slate-50/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.08] rounded-xl px-3.5 py-2.5 focus:outline-none focus:border-accent text-slate-800 dark:text-white transition-all duration-200 focus:shadow-[0_0_12px_-3px_rgba(16,185,129,0.15)]"
                             />
                             <button type="button" onClick={() => removeTakeawayField(i)}
                               className="text-slate-400 hover:text-red-500 transition-colors shrink-0 cursor-pointer"
@@ -868,6 +1086,7 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
                       onEdit={startEditArticle}
                       onDelete={handleDelete}
                       isDeletingId={isDeletingId}
+                      onPreview={(type, url) => setPreviewItem({ type, url })}
                     />
                   ))
                 )}
@@ -884,6 +1103,61 @@ export function EditorialClient({ initialArticles, user }: EditorialClientProps)
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Pop-up Image / Diagram Preview Modal */}
+      {mounted && previewItem && createPortal(
+        <div 
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-slate-950/80 backdrop-blur-md p-4 animate-in fade-in duration-200"
+          onClick={() => setPreviewItem(null)}
+        >
+          <div 
+            className="relative max-w-4xl w-full bg-slate-900/60 border border-slate-700/30 dark:border-white/10 rounded-2xl p-6 shadow-2xl backdrop-blur-xl flex flex-col items-center justify-center gap-4 animate-in zoom-in-95 duration-200"
+            onClick={e => e.stopPropagation()}
+          >
+            {/* Close button */}
+            <button 
+              onClick={() => setPreviewItem(null)}
+              className="absolute top-4 right-4 text-slate-400 hover:text-white bg-slate-800/40 dark:bg-white/5 hover:bg-slate-700/50 dark:hover:bg-white/10 rounded-full p-2 border border-slate-700/30 dark:border-white/10 transition-all cursor-pointer"
+              title="Close Preview"
+            >
+              <X className="w-5 h-5" />
+            </button>
+
+            {/* Title / Header */}
+            <div className="text-center">
+              <h3 className="google-sans-flex text-sm font-bold text-slate-200 uppercase tracking-widest">
+                {previewItem.type === 'cover' ? 'Cover Image Preview' : `Illustration Preview (${previewItem.type})`}
+              </h3>
+            </div>
+
+            {/* Main Preview Container */}
+            <div className="w-full max-h-[70vh] flex items-center justify-center overflow-hidden rounded-xl bg-slate-950/40 border border-slate-700/20 dark:border-white/5 shadow-inner p-2">
+              {previewItem.type === 'cover' && previewItem.url ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img 
+                  src={previewItem.url} 
+                  alt="Cover Preview" 
+                  className="max-w-full max-h-[60vh] object-contain rounded-lg shadow-md"
+                />
+              ) : (
+                <div className="w-full max-w-[480px] aspect-[1.6] flex items-center justify-center p-8 bg-slate-950/20 rounded-lg">
+                  <div className="w-full h-full origin-center scale-125">
+                    {renderIllustration(previewItem.type === 'cover' ? 'diagram1' : previewItem.type, true)}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Footer Info */}
+            {previewItem.type === 'cover' && previewItem.url && (
+              <span className="text-xs font-mono text-slate-400 select-all truncate max-w-full px-3 py-1 bg-slate-950/30 dark:bg-white/5 rounded-full border border-slate-800/40 dark:border-white/5">
+                {previewItem.url}
+              </span>
+            )}
+          </div>
+        </div>,
+        document.body
+      )}
     </div>
   );
 }

@@ -84,14 +84,14 @@ export function parseInlineMarkdown(text: string): React.ReactNode[] {
           href={extra}
           target={isExternal ? '_blank' : undefined}
           rel={isExternal ? 'noopener noreferrer' : undefined}
-          className="text-emerald-500 hover:text-emerald-600 hover:underline dark:text-emerald-400 dark:hover:text-emerald-300 transition-colors"
+          className="text-emerald-600 dark:text-emerald-400 underline underline-offset-4 decoration-emerald-600/30 dark:decoration-emerald-400/30 hover:text-emerald-700 dark:hover:text-emerald-300 hover:decoration-emerald-700 dark:hover:decoration-emerald-300 transition-all font-medium"
         >
           {parseInlineMarkdown(content)}
         </a>
       );
     } else if (type === 'bold') {
       parts.push(
-        <strong key={key} className="font-extrabold text-slate-900 dark:text-white">
+        <strong key={key} className="font-bold text-slate-900 dark:text-white">
           {content}
         </strong>
       );
@@ -179,7 +179,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       const text = line.slice(4).trim();
       const id = slugify(text);
       elements.push(
-        <h3 key={`h3-${i}`} id={id} className="text-xl md:text-2xl font-headline font-extrabold text-slate-900 dark:text-white tracking-tight mt-8 mb-4 scroll-mt-32">
+        <h3 key={`h3-${i}`} id={id} className="text-xl md:text-2xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.005em] mt-8 mb-4 scroll-mt-32">
           {text}
         </h3>
       );
@@ -190,7 +190,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       const text = line.slice(3).trim();
       const id = slugify(text);
       elements.push(
-        <h2 key={`h2-${i}`} id={id} className="text-2xl md:text-3.5xl font-headline font-extrabold text-slate-900 dark:text-white tracking-tight mt-10 mb-5 scroll-mt-32">
+        <h2 key={`h2-${i}`} id={id} className="text-2xl md:text-3.5xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-10 mb-5 scroll-mt-32">
           {text}
         </h2>
       );
@@ -201,7 +201,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       const text = line.slice(2).trim();
       const id = slugify(text);
       elements.push(
-        <h1 key={`h1-${i}`} id={id} className="text-3xl md:text-4.5xl font-headline font-extrabold text-slate-900 dark:text-white tracking-tight mt-12 mb-6 leading-tight">
+        <h1 key={`h1-${i}`} id={id} className="text-3xl md:text-4.5xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-12 mb-6 leading-tight">
           {text}
         </h1>
       );
@@ -241,7 +241,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
         i++;
       }
       elements.push(
-        <ul key={`ul-${i}`} className="list-disc pl-6 space-y-2 mb-4 font-body text-slate-700 dark:text-white/80 text-base md:text-lg font-[390] dark:font-[350]">
+        <ul key={`ul-${i}`} className="list-disc pl-6 space-y-2 mb-4 font-body text-slate-700 dark:text-white/80 text-base md:text-lg font-[320] dark:font-[300] leading-relaxed tracking-[0.015em]">
           {listItems.map((item, idx) => (
             <li key={idx}>{parseInlineMarkdown(item)}</li>
           ))}
@@ -255,7 +255,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       elements.push(
         <p 
           key={`p-${i}`} 
-          className="font-body text-slate-700 dark:text-white/80 leading-relaxed text-base md:text-lg mb-4 font-[390] dark:font-[350]"
+          className="font-body text-slate-700 dark:text-white/80 leading-relaxed tracking-[0.015em] text-base md:text-lg mb-4 font-[320] dark:font-[300]"
         >
           {parseInlineMarkdown(line)}
         </p>
