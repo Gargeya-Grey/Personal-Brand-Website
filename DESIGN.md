@@ -361,6 +361,13 @@ When building asymmetrical columns (such as the `/company/contact` page's two-co
 2. **Push to Boundaries:** Group all standard upper page elements inside a nested div, and place the final card (e.g., the **Support Card** on the left and the **Founder's Note Card** on the right) at the absolute root of the column.
 3. **Symmetric Bottom Edge:** The `justify-between` utility will naturally push both cards to align pixel-perfectly at the bottom edge, maintaining a clean visual baseline across asymmetrical screens.
 
+### Unified Outline Typography & Scroll-Driven Border Shine
+When rendering oversized structural text with hollow/outlined styling, follow these implementation rules:
+1. **Unifying Intersecting Contours:** Standard CSS `-webkit-text-stroke` with transparent backgrounds causes internal path overlaps to show through (e.g. crossbars on characters like `A`, `R`, and `M`). To solve this, render the text using SVG `<text>`, fill it with a solid color identical to the background (e.g., `fill="#020617"`), and specify `paintOrder="stroke fill"` (or `paint-order: stroke fill`). This draws the stroke first and paints the fill on top, masking all overlapping intersections.
+2. **Viewport-Linked Shine Sweep:** Rather than static outline shades, animate the stroke using a linear gradient mapping coordinates (`x1`, `x2`) directly to the viewport scroll position. Bind `scrollYProgress` using Framer Motion's `useScroll` relative to the component itself, and animate gradient offsets from `-100%` to `200%` over a precise scroll range of `[0.70, 1.10]` to sweep highlights across character contours as the user scrolls to the bottom.
+3. **Responsive Scaling:** SVG text scales dynamically inside a `viewBox` using fluid `w-full h-auto` dimensions, eliminating font size wrapping and layout fractures common with viewport units (`vw`) under extreme user zoom levels.
+
+
 ---
 
 ## 6. How to Replicate Everywhere (Next.js, React, CSS, Tailwind)
