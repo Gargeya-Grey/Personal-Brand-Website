@@ -145,11 +145,11 @@ export default function BlogPage() {
     return sortedArticles.slice(0, visibleCount);
   }, [sortedArticles, visibleCount]);
 
-  // Dynamic real stats tracking (resolves M1)
+  // Dynamic real stats tracking
   const insights = [
-    { value: "Enterprise", label: "Readership Target" },
-    { value: `${articles.length}`, label: "Essays Published" },
-    { value: "100%", label: "Open Access" },
+    { value: "Deep Dives", label: "On Curious Themes" },
+    { value: "Unfiltered", label: "Personal Vantage" },
+    { value: `${articles.length} Musings`, label: "And Counting" },
   ];
 
   if (loading) {
@@ -179,25 +179,57 @@ export default function BlogPage() {
         {/* Render Blog Listings Screen */}
         <div className="px-6 md:px-12 max-w-screen-2xl mx-auto w-full pb-32">
           
-          {/* Header / Brand block (Vibrant design) */}
-          <header className="max-w-4xl mb-16 space-y-6">
-            <span className="font-label text-xs uppercase tracking-[0.25em] text-accent font-bold block">
-              The Engineering Ledger
-            </span>
-            <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-[-0.04em] text-slate-900 dark:text-white leading-[0.95]">
-              Engineering Insights <br/>&amp; <span className="text-emerald-600 dark:text-accent">Deep Essays</span><span className="text-emerald-500">.</span>
-            </h1>
-            <p className="font-body text-lg md:text-xl text-slate-600 dark:text-white/70 leading-relaxed max-w-2xl pt-2">
-              Technical explorations, structural guides, and telemetry dashboards curated by the architect building <span className="font-bold text-slate-900 dark:text-white">edudojo.ai</span>.
-            </p>
-          </header>
+          {/* Hero Layout Grid */}
+          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12 lg:gap-16 items-center mb-16">
+            
+            {/* Left Column: Brand & Copy */}
+            <div className="space-y-6">
+              <span className="font-label text-xs uppercase tracking-[0.25em] text-accent font-bold block">
+                The Engineering Ledger
+              </span>
+              <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-[-0.04em] text-slate-900 dark:text-white leading-[0.95]">
+                Engineering Insights <br/>&amp; <span className="text-emerald-600 dark:text-accent">Deep Essays</span><span className="text-emerald-500">.</span>
+              </h1>
+              <p className="font-body text-lg md:text-xl text-slate-600 dark:text-white/70 leading-relaxed max-w-xl">
+                Technical explorations, structural guides, and telemetry dashboards curated by the architect building <span className="font-bold text-slate-900 dark:text-white">edudojo.ai</span>.
+              </p>
+            </div>
 
-          {/* Live stats highlights box */}
-          <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16 border-y border-slate-200/80 dark:border-white/10 py-8">
+            {/* Right Column: Interactive Telemetry Visualizer */}
+            <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-white/[0.05] backdrop-blur-xl rounded-3xl p-6 shadow-xl relative overflow-hidden h-[240px] flex items-center justify-center">
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.1),transparent_70%)] blur-2xl" />
+              <div className="w-full h-full max-w-sm flex items-center justify-center">
+                {(() => {
+                  try {
+                    return renderIllustration("digital-ledger", true);
+                  } catch (e) {
+                    return (
+                      <div className="text-xs text-slate-400 font-mono">
+                        Illustration failed to load
+                      </div>
+                    );
+                  }
+                })()}
+              </div>
+            </div>
+
+          </div>
+
+          {/* Metrics Tiles Grid */}
+          <section className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
             {insights.map((stat, i) => (
-              <div key={i} className="flex flex-col gap-1 items-start px-4">
-                <span className="text-3xl font-headline font-extrabold text-slate-900 dark:text-white tracking-tight">{stat.value}</span>
-                <span className="text-xs font-label uppercase tracking-widest text-accent font-bold">{stat.label}</span>
+              <div key={i} className="group bg-white/50 dark:bg-white/[0.01] border border-slate-200/60 dark:border-white/[0.04] hover:border-emerald-500/30 hover:shadow-[0_8px_30px_rgb(16,185,129,0.04)] rounded-2xl p-6 flex flex-col justify-between h-32 transition-all duration-300 hover:-translate-y-1">
+                <div className="flex justify-between items-start">
+                  <span className="text-2xl md:text-3xl font-headline font-medium text-slate-900 dark:text-white tracking-tight">
+                    {stat.value}
+                  </span>
+                  {i === 2 && (
+                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
+                  )}
+                </div>
+                <span className="text-[16px] font-label uppercase tracking-widest text-slate-400 group-hover:text-accent font-bold transition-colors">
+                  {stat.label}
+                </span>
               </div>
             ))}
           </section>
@@ -487,48 +519,54 @@ export default function BlogPage() {
 
           {/* Newsletter input card */}
           <section className="mt-28 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden bg-white/72 dark:bg-white/[0.02] backdrop-blur-[28px] border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)]">
-            <div className="max-w-2xl space-y-6">
-              <span className="font-label text-xs uppercase tracking-[0.2em] text-accent font-bold flex items-center gap-2">
-                <Mail className="w-4 h-4 text-accent" /> Subscribe
-              </span>
-              
-              <h3 className="font-headline text-2xl md:text-3.5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                See what your agent is really doing
-              </h3>
-              
-              <p className="font-body text-slate-600 dark:text-white/70 text-sm md:text-base leading-relaxed">
-                Join Gargeya Sharma&apos;s weekly editorial distribution. Get raw architectural summaries, continuous system analysis, and next-generation agent telemetry updates directly.
-              </p>
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
+              {/* Left Side: Editorial Content */}
+              <div className="space-y-4 lg:w-[48%] lg:max-w-xl">
+                <span className="font-label text-xs uppercase tracking-[0.2em] text-accent font-bold flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-accent" /> Subscribe
+                </span>
+                
+                <h3 className="font-headline text-2xl md:text-3.5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                  See what your agent is really doing
+                </h3>
+                
+                <p className="font-body text-slate-600 dark:text-white/70 text-sm md:text-base leading-relaxed">
+                  Join Gargeya Sharma&apos;s weekly editorial distribution. Get raw architectural summaries, continuous system analysis, and next-generation agent telemetry updates directly.
+                </p>
+              </div>
 
-              {subscribed ? (
-                <motion.div 
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-center text-accent font-headline font-bold text-sm"
-                >
-                  Successfully Registered. Thank you for subscribing!
-                </motion.div>
-              ) : (
-                <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
-                  <input 
-                    type="email" 
-                    placeholder="john.doe@acme.com" 
-                    required
-                    value={subscribeEmail}
-                    onChange={(e) => setSubscribeEmail(e.target.value)}
-                    className="bg-slate-50 dark:bg-white/[0.02] border border-emerald-500/20 dark:border-white/10 rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-accent placeholder-slate-400 flex-grow text-slate-800 dark:text-white shadow-inner"
-                  />
-                  <button 
-                    type="submit" 
-                    className="bg-accent text-primary dark:text-primary-container hover:bg-accent/90 font-headline font-bold text-sm h-12 px-8 rounded-xl transition-all active:scale-98 flex items-center justify-center gap-2 shrink-0 shadow-md hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+              {/* Right Side: Form & Trust Caption */}
+              <div className="w-full lg:w-[45%] lg:max-w-md space-y-4">
+                {subscribed ? (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-center text-accent font-headline font-bold text-sm"
                   >
-                    Subscribe <ArrowRight className="w-4 h-4" />
-                  </button>
-                </form>
-              )}
+                    Successfully Registered. Thank you for subscribing!
+                  </motion.div>
+                ) : (
+                  <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
+                    <input 
+                      type="email" 
+                      placeholder="john.doe@acme.com" 
+                      required
+                      value={subscribeEmail}
+                      onChange={(e) => setSubscribeEmail(e.target.value)}
+                      className="bg-slate-50 dark:bg-white/[0.02] border border-emerald-500/20 dark:border-white/10 rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-accent placeholder-slate-400 flex-grow text-slate-800 dark:text-white shadow-inner"
+                    />
+                    <button 
+                      type="submit" 
+                      className="bg-accent text-primary dark:text-primary-container hover:bg-accent/90 font-headline font-bold text-sm h-12 px-8 rounded-xl transition-all active:scale-98 flex items-center justify-center gap-2 shrink-0 shadow-md hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                    >
+                      Subscribe <ArrowRight className="w-4 h-4" />
+                    </button>
+                  </form>
+                )}
 
-              <div className="pt-2">
-                <p className="text-[10px] text-slate-400 font-body">No promotion or tracking. Clear analytical distributions processed securely.</p>
+                <div className="pt-1">
+                  <p className="text-[10px] text-slate-400 font-body">No promotion or tracking. Clear analytical distributions processed securely.</p>
+                </div>
               </div>
             </div>
           </section>

@@ -1,7 +1,8 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import * as motion from 'motion/react-client';
-import { ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, Database, Network, Cpu, User } from 'lucide-react';
+import { ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, User } from 'lucide-react';
+import { FeaturedProjects } from '@/components/featured-projects';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import profileImage from '@/src/assets/images/regenerated_image_1778002356085.png';
@@ -68,17 +69,24 @@ export default function Home() {
               className="md:col-span-2 block"
             >
               <motion.div 
-                className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
+                className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out relative overflow-hidden"
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="flex justify-between items-start">
+                {/* Textured Grainy Glass Overlay */}
+                <div 
+                  className="absolute inset-0 pointer-events-none opacity-[0.07] dark:opacity-[0.11] mix-blend-overlay z-0"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+                  }}
+                />
+                <div className="flex justify-between items-start relative z-10">
                   <div className="w-14 h-14 bg-surface-container-low dark:bg-white/5 rounded-2xl flex items-center justify-center">
                     <Rocket className="w-7 h-7 text-accent" />
                   </div>
                   <ArrowUpRight className="w-6 h-6 text-outline-variant group-hover:text-accent transition-colors duration-300" />
                 </div>
-                <div className="mt-12">
+                <div className="mt-12 relative z-10">
                   <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block mb-2">Live Venture</span>
                   <h3 className="text-3xl font-headline font-extrabold text-primary mb-3">Edudojo.ai</h3>
                   <p className="text-on-surface-variant text-lg max-w-xl">AI-driven redesign for evaluation, assessment, and education. Architecting intelligence in learning paradigms from zero to one.</p>
@@ -98,7 +106,7 @@ export default function Home() {
                 </div>
                 <div className="mt-12">
                   <h3 className="text-2xl font-headline font-bold text-white mb-2">Community</h3>
-                  <p className="text-white/60 text-sm">A collective of 10,000+ engineers redefining the future.</p>
+                  <p className="text-white/60 text-sm">Building a collaborative community to upskill infinitely toward top 1% global standards.</p>
                 </div>
               </motion.div>
             </Link>
@@ -145,11 +153,18 @@ export default function Home() {
             {/* About Card - Rebalanced as Full-Width Asymmetrical Callout */}
             <Link href="/about" className="md:col-span-3 block">
               <motion.div 
-                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 min-h-[160px] group h-full hover:bg-primary-container hover:border-accent/50 dark:hover:border-white/30 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
+                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 min-h-[160px] group h-full hover:bg-primary-container hover:border-accent/50 dark:hover:border-white/30 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out relative overflow-hidden"
                 whileHover={{ y: -4 }}
                 transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
-                <div className="flex flex-col sm:flex-row items-center gap-6">
+                {/* Textured Grainy Glass Overlay */}
+                <div 
+                  className="absolute inset-0 pointer-events-none opacity-[0.10] dark:opacity-[0.16] mix-blend-overlay z-0"
+                  style={{
+                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
+                  }}
+                />
+                <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10">
                   <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center shrink-0">
                     <User className="w-7 h-7 text-accent" />
                   </div>
@@ -158,7 +173,7 @@ export default function Home() {
                     <p className="text-white/60 text-sm mt-1">Engineering the future. Lead Architect & Strategist focusing on Soft Minimalism.</p>
                   </div>
                 </div>
-                <div className="flex justify-center md:justify-end shrink-0">
+                <div className="flex justify-center md:justify-end shrink-0 relative z-10">
                   <span className="text-xs font-label text-accent uppercase tracking-widest border border-accent/20 px-5 py-2.5 rounded-full bg-accent/5 group-hover:bg-accent group-hover:text-slate-950 transition-all duration-300">
                     View Biography &rarr;
                   </span>
@@ -169,66 +184,9 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Architecture Section */}
-        <section className="py-32 bg-white/30 dark:bg-white/[0.01] backdrop-blur-xl border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] -mx-6 md:-mx-12 px-6 md:px-12 rounded-[3rem] my-12 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out" id="community">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center max-w-screen-2xl mx-auto">
-            <div className="space-y-10">
-              <div>
-                <h2 className="text-4xl md:text-5xl font-headline font-extrabold text-primary tracking-tight mb-4">Architecture of a Modern Mind</h2>
-                <p className="text-xl text-on-surface-variant leading-relaxed">
-                  Optimization through focused engineering cycles. I specialize in bridge-building: connecting the rigid complexity of machine learning with the fluid agility of venture capital.
-                </p>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-12 pt-8">
-                <div className="border-l-2 border-accent pl-6">
-                  <div className="text-5xl font-headline font-extrabold text-primary mb-2">12+</div>
-                  <div className="text-xs font-label uppercase tracking-[0.2em] text-on-surface-variant font-bold">Active Projects</div>
-                </div>
-                <div className="border-l-2 border-accent pl-6">
-                  <div className="text-5xl font-headline font-extrabold text-primary mb-2">95%</div>
-                  <div className="text-xs font-label uppercase tracking-[0.2em] text-on-surface-variant font-bold">Efficiency</div>
-                </div>
-              </div>
-            </div>
-            
-            <div className="relative h-[600px] rounded-soft overflow-hidden shadow-ambient">
-              <Image 
-                src="https://picsum.photos/seed/gargeya2/400/400"
-                alt="Workspace"
-                fill
-                className="object-cover"
-                referrerPolicy="no-referrer"
-              />
-            </div>
-          </div>
-        </section>
 
-        {/* Technical Stack */}
-        <section className="py-32" id="blog">
-          <div className="mb-16">
-            <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block mb-4">The Engine Room</span>
-            <h2 className="text-4xl font-headline font-extrabold text-primary tracking-tight">Technical Stack</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[
-              { icon: Cpu, title: "Edge Deployment", desc: "Optimizing weights for ONNX and CoreML architectures." },
-              { icon: Database, title: "Vector Storage", desc: "Advanced indexing techniques for billion-scale retrieval." },
-              { icon: Network, title: "Multi-Agent Systems", desc: "Protocol design for autonomous agent communication." }
-            ].map((item, i) => (
-              <div key={i} className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-8 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col gap-6 hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out">
-                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center">
-                  <item.icon className="w-6 h-6 text-accent" />
-                </div>
-                <div>
-                  <h4 className="font-headline font-bold text-xl text-primary mb-2">{item.title}</h4>
-                  <p className="text-on-surface-variant text-sm leading-relaxed">{item.desc}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        {/* Featured Projects */}
+        <FeaturedProjects />
 
         <section className="py-20 md:py-32" id="youtube">
           <div className="cta-card-gradient backdrop-blur-2xl border border-white/10 rounded-3xl md:rounded-[3rem] px-5 py-12 sm:p-12 md:p-24 text-center relative z-10 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)]">

@@ -95,9 +95,9 @@ export function Footer() {
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.15),transparent_70%)] blur-2xl -z-10 pointer-events-none" />
           
           {/* The Solid Elevated Card */}
-          <div className="bg-slate-900 border border-slate-800/80 rounded-2xl p-6 md:p-8 lg:p-10 shadow-2xl relative">
+          <div className="bg-slate-900 border border-slate-800/80 hover:border-emerald-500/20 rounded-2xl p-6 md:p-8 lg:p-10 shadow-2xl relative transition-colors duration-500">
             <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-10">
-              <div className="space-y-2 max-w-md">
+              <div className="space-y-2 md:w-[40%] md:max-w-md">
                 <h3 className="font-label text-xs uppercase tracking-widest font-bold text-slate-200">
                   Stay Updated
                 </h3>
@@ -106,7 +106,7 @@ export function Footer() {
                 </p>
               </div>
               
-              <div className="flex-1 max-w-md w-full">
+              <div className="w-full md:w-[55%] md:max-w-lg">
                 <AnimatePresence mode="wait">
                   {!subscribed ? (
                     <motion.form 
@@ -124,12 +124,12 @@ export function Footer() {
                         disabled={subscribing}
                         placeholder="Your developer email" 
                         required
-                        className="w-full sm:flex-1 min-w-0 sm:min-w-[50%] h-14 text-sm font-body bg-slate-950 text-white placeholder-slate-500 border-2 border-slate-800 rounded-xl px-4 focus:outline-none focus:border-emerald-500 disabled:opacity-50 transition-all duration-300 shadow-inner focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2"
+                        className="w-full sm:flex-1 min-w-0 sm:min-w-[50%] h-14 text-sm font-body bg-slate-950 text-white placeholder-slate-400 border-2 border-slate-800 rounded-xl px-4 focus:outline-none focus:border-emerald-500 disabled:opacity-50 transition-all duration-300 shadow-inner focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2"
                       />
                       <button 
                         type="submit"
                         disabled={subscribing}
-                        className="h-14 px-6 w-full sm:w-auto shrink-0 bg-white hover:bg-slate-200 text-slate-950 font-headline font-bold text-sm rounded-xl uppercase tracking-wider border-2 border-slate-900 transition-all duration-300 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:border-emerald-500 focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2"
+                        className="h-14 px-6 w-full sm:w-auto shrink-0 bg-white hover:bg-slate-50 hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] text-slate-950 font-headline font-bold text-sm rounded-xl uppercase tracking-wider border-2 border-transparent hover:border-emerald-400 transition-all duration-300 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:border-emerald-500 focus-visible:outline-2 focus-visible:outline-emerald-500 focus-visible:outline-offset-2"
                       >
                         {subscribing ? "Subscribing..." : "Subscribe"}
                       </button>

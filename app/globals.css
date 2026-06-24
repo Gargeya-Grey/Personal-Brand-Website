@@ -26,24 +26,24 @@
 }
 
 .dark {
-  --color-bg-primary: #1F2938;
-  --color-canvas: #111827;
+  --color-bg-primary: #0F172A;          /* Sleek Deep Slate (Slate-900) */
+  --color-canvas: #090F1C;              /* Darker canvas base, but lighter than footer #020617 */
   --color-text-primary: #EDEDED;
   --color-text-muted: #9CA3AF;
   --color-accent: #10B981;
   --color-accent-dark: #059669;
-  --color-glass-border: rgba(255, 255, 255, 0.1);
-  --color-elevation-shadow: rgba(0, 0, 0, 0.2);
-  --color-elevation-shadow-hover: rgba(16, 185, 129, 0.15);
+  --color-glass-border: rgba(255, 255, 255, 0.08);
+  --color-elevation-shadow: rgba(0, 0, 0, 0.35);
+  --color-elevation-shadow-hover: rgba(16, 185, 129, 0.18);
 
-  --color-surface-container-low: #1e293b;
-  --color-surface-container-lowest: #0f172a;
-  --color-surface-container-high: #334155;
-  --color-primary-container: #0f172a;
+  --color-surface-container-low: #162035;   /* Elevated card surface */
+  --color-surface-container-lowest: #090F1C;
+  --color-surface-container-high: #1E293B;  /* Highlight elements */
+  --color-primary-container: #0E1626;       /* Main container background */
   --color-secondary-container: #10b981;
   --color-on-surface-variant: #9ca3af;
-  --color-outline-variant: rgba(255, 255, 255, 0.1);
-  --color-cta-glow: #0e241d;
+  --color-outline-variant: rgba(255, 255, 255, 0.08);
+  --color-cta-glow: #081C16;
 }
 
 @theme {

@@ -168,6 +168,86 @@ export function renderIllustration(type: string, isBig: boolean = true) {
           <text x="100" y="170" fill={textCol} fontSize="8" textAnchor="middle" fontWeight="bold" letterSpacing="0.05em">DELTA EVENT STREAM</text>
         </svg>
       );
+    case "digital-ledger":
+      return (
+        <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-4")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="ledger-glow-emerald" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+            <filter id="ledger-glow-blue" x="-30%" y="-30%" width="160%" height="160%">
+              <feGaussianBlur stdDeviation="3" result="blur" />
+              <feMerge>
+                <feMergeNode in="blur" />
+                <feMergeNode in="SourceGraphic" />
+              </feMerge>
+            </filter>
+          </defs>
+          <rect width="400" height="200" rx="16" fill="transparent" />
+
+          {/* Background Dotted Blueprint Grid */}
+          <pattern id="dotGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+            <circle cx="2" cy="2" r="1" fill="#cbd5e1" opacity="0.15" />
+          </pattern>
+          <rect width="400" height="200" fill="url(#dotGrid)" rx="16" />
+
+          {/* Left Page (The Technical Graph) */}
+          <g transform="translate(60, 25)">
+            {/* Page base */}
+            <rect width="130" height="150" rx="8" fill={innerCardCol} stroke="#cbd5e1" strokeWidth="1.5" opacity="0.6" />
+            <rect x="5" y="5" width="120" height="140" rx="6" fill={bgCol} opacity="0.1" />
+            
+            {/* Tech grid inside */}
+            <path d="M20 120 H110 M20 40 V120" stroke="#cbd5e1" strokeWidth="1" opacity="0.25" />
+            {/* Line graph */}
+            <path d="M20 110 Q 50 80, 70 95 T 110 50" stroke={strokeCol} strokeWidth="2" fill="none" opacity="0.8" />
+            <circle cx="70" cy="95" r="3.5" fill={innerCardCol} stroke={strokeCol} strokeWidth="1.5" />
+            <circle cx="110" cy="50" r="4.5" fill={strokeCol} />
+            <circle cx="110" cy="50" r="8" stroke={strokeCol} strokeWidth="1" fill="none" opacity="0.4" className="animate-pulse" filter="url(#ledger-glow-emerald)" />
+            
+            {/* Small code symbols */}
+            <text x="25" y="30" fill="var(--color-text-primary)" fontSize="7" fontFamily="monospace" opacity="0.4">f(x) = dx/dt</text>
+            <text x="20" y="132" fill="var(--color-text-primary)" fontSize="6" fontFamily="monospace" opacity="0.3">0.024s // telemetry</text>
+          </g>
+
+          {/* Right Page (The Personal Reflection / Writing) */}
+          <g transform="translate(210, 25)">
+            {/* Page base */}
+            <rect width="130" height="150" rx="8" fill={innerCardCol} stroke="#cbd5e1" strokeWidth="1.5" opacity="0.6" />
+            <rect x="5" y="5" width="120" height="140" rx="6" fill={bgCol} opacity="0.1" />
+            
+            {/* Writing lines (Essays) */}
+            <line x1="20" y1="35" x2="110" y2="35" stroke="var(--color-text-primary)" strokeWidth="3" opacity="0.15" strokeLinecap="round" />
+            <line x1="20" y1="50" x2="95" y2="50" stroke="var(--color-text-primary)" strokeWidth="3" opacity="0.15" strokeLinecap="round" />
+            <line x1="20" y1="65" x2="105" y2="65" stroke="var(--color-text-primary)" strokeWidth="3" opacity="0.15" strokeLinecap="round" />
+            <line x1="20" y1="80" x2="85" y2="80" stroke="var(--color-text-primary)" strokeWidth="3" opacity="0.15" strokeLinecap="round" />
+            
+            {/* Glowing Signature / Creative Flow */}
+            <path d="M20 105 Q 40 100, 60 120 T 110 110" stroke={accentCol} strokeWidth="2.5" fill="none" strokeLinecap="round" filter="url(#ledger-glow-blue)" />
+            <path d="M85 105 L95 95 M90 125 L100 115" stroke={accentCol} strokeWidth="1" opacity="0.5" />
+            
+            {/* Floating thought star */}
+            <path d="M105 85 L108 92 L115 95 L108 98 L105 105 L102 98 L95 95 L102 92 Z" fill={strokeCol} opacity="0.8" className="animate-pulse" filter="url(#ledger-glow-emerald)" />
+          </g>
+
+          {/* Ledger Binder Rings / Spine */}
+          <line x1="200" y1="30" x2="200" y2="170" stroke="#cbd5e1" strokeWidth="2" opacity="0.4" />
+          
+          {/* Arc binder rings */}
+          <path d="M192 50 Q 200 45, 208 50" stroke="#94a3b8" strokeWidth="2.5" fill="none" />
+          <path d="M192 90 Q 200 85, 208 90" stroke="#94a3b8" strokeWidth="2.5" fill="none" />
+          <path d="M192 130 Q 200 125, 208 130" stroke="#94a3b8" strokeWidth="2.5" fill="none" />
+
+          {/* Glowing Animated Creative Flow linking the pages */}
+          <path d="M170 75 Q 200 135, 230 130" stroke={accentCol} strokeWidth="1.5" strokeDasharray="4 8" opacity="0.7">
+            <animate attributeName="stroke-dashoffset" values="24;0" dur="2s" repeatCount="indefinite" />
+          </path>
+        </svg>
+      );
     default:
       return (
         <svg className={`w-full h-full ${minHeightClass} bg-transparent ${getPaddingClass("p-8")}`} viewBox="0 0 400 200" fill="none" xmlns="http://www.w3.org/2000/svg">
