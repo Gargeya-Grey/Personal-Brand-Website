@@ -1,4 +1,4 @@
-# THE ADVERSARY REPORT · SYSTEM BLUEPRINTS & AUDIT
+# THE ADVERSARY TEMPLATE · AGENT-DRIVEN PORTFOLIO BLUEPRINT
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -8,17 +8,49 @@
 │ ██║   ██║██╔══██║██╔══██╗██║   ██║██╔══╝    ╚██╔╝  ██╔══██║ │
 │ ╚██████╔╝██║  ██║██║  ██║╚██████╔╝███████╗   ██║   ██║  ██║ │
 │  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝ │
-│                 - SYSTEM AUDIT & ARCHITECTURE -          │
+│                 - AGENT-FRIENDLY SYSTEM BLUEPRINT -      │
 └──────────────────────────────────────────────────────────┘
 ```
 
-Welcome to the **Adversary System Deconstruction & Architectural Guide** for Gargeya Sharma's personal website. This document represents a technically rigorous, fluff-free audit of the codebase, its features, backend mechanics, security models, and frontend layout structures.
+This is an **adversarial deconstruction and customizable portfolio template**. It is engineered specifically for developer-agent pair programming.
+
+Rather than wasting time deciphering custom abstractions, this README provides a direct system map for both **Human Developers** and **AI Coding Agents** (such as Gemini, Claude, or Antigravity) to fork, adapt, and build upon a fully established template.
+
+---
+
+## ⚡ The "Fork & AI-Adapt" Workflow
+
+Anyone wanting to build their own portfolio site can boot this system in 3 steps:
+
+1.  **Fork the Repository:** Create a copy of this repository on GitHub.
+2.  **Declare Your Visual Identity:** Open [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) and modify the color tokens, fonts, spacing values, cards, and aesthetic rules to match your branding.
+3.  **Deploy Your AI Agent:** Prompt your AI coding agent with the following directive:
+    > "Read [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) to understand the design system guidelines. Then, apply these design token updates and styling updates across [globals.css](file:///w:/Personal-Brand-Website/app/globals.css), any relevant layout files under `app/`, and Tailwind configurations in [next.config.ts](file:///w:/Personal-Brand-Website/next.config.ts) to match the new visual guidelines."
+
+---
+
+## 🗺 AI Agent Codebase Map & Entry Points
+
+This index guides AI agents directly to the files responsible for each part of the system:
+
+| File / Directory | Subsystem / Function | Tech / Libraries | Key Target Details |
+| :--- | :--- | :--- | :--- |
+| [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) | **System Specification** | Markdown Token Definition | Change colors, fonts, and layout guidelines here first. |
+| [app/globals.css](file:///w:/Personal-Brand-Website/app/globals.css) | **Global Styles** | Tailwind CSS v4 | Contains `@theme` variables, global utility overrides, and SVG noise filters. |
+| [components/navigation.tsx](file:///w:/Personal-Brand-Website/components/navigation.tsx) | **Site Navigation** | React + Next Link | Top sticky header navbar links and interactive brand logo. |
+| [components/footer.tsx](file:///w:/Personal-Brand-Website/components/footer.tsx) | **Global Footer** | React + SVG UI | Layout footer containing details, links, and branding references. |
+| [components/interactive-background.tsx](file:///w:/Personal-Brand-Website/components/interactive-background.tsx) | **Canvas Animation** | HTML5 Canvas 2D | Draws the dynamic glowing background orbs in a `requestAnimationFrame` loop. |
+| [app/about/about-client.tsx](file:///w:/Personal-Brand-Website/app/about/about-client.tsx) | **About Page (Client)** | Motion v12 | Controls viewport entrance animations, scroll-driven shine masks, and topographic SVGs. |
+| [components/contact-form.tsx](file:///w:/Personal-Brand-Website/components/contact-form.tsx) | **Contact Interface** | Client React State | Built as a simulated mockup with a `1200ms` delay (no database writes). |
+| [lib/blog-service.ts](file:///w:/Personal-Brand-Website/lib/blog-service.ts) | **Database Layer** | Node `fs/promises` | Reads/writes blog posts directly to a local JSON file with in-memory caching. |
+| [data/articles.json](file:///w:/Personal-Brand-Website/data/articles.json) | **Blog Posts Database** | Flat-File JSON | Contains serialized data schema for all published and draft articles. |
+| [app/api/ai/fill/route.ts](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) | **AI CMS Assistant API** | OpenRouter API | Handles markdown metadata parsing and cover photo generation via Grok. |
+| [lib/auth.ts](file:///w:/Personal-Brand-Website/lib/auth.ts) | **Auth Engine** | Web Crypto API JWT | signs/verifies user sessions. Google OAuth callbacks and allowed email checks. |
+| [app/api/auth/mock-login/route.ts](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts) | **Dev Mode Auth Bypass** | JWT Mock Signature | Disabled in production. Allows one-click CMS access during local development. |
 
 ---
 
 ## ✦ System Architecture & Data Flow
-
-Below is the verified structural topology of the application's routes, security gates, and storage modules:
 
 ```
                                  [ CLIENT BROWSER ]
@@ -51,16 +83,16 @@ Below is the verified structural topology of the application's routes, security 
 
 ---
 
-## 🔍 Technical Component Audit
+## 🔍 Technical Audit (Scope of what exists)
 
 ### 1. Database & Persistence Layer
-*   **JSON flat-file storage:** The application rejects heavy database overhead. All blog posts are serialized to a local JSON file at [data/articles.json](file:///w:/Personal-Brand-Website/data/articles.json).
-*   **Memory-cached reads:** To guarantee sub-millisecond page delivery and prevent runtime crashes in write-protected host environments, [blog-service.ts](file:///w:/Personal-Brand-Website/lib/blog-service.ts) caches reads in-memory after the initial filesystem fetch.
+*   **Zero Database Overhead:** There are no Postgres or MongoDB connections setup. All posts are serialized directly to a local JSON file in [data/articles.json](file:///w:/Personal-Brand-Website/data/articles.json).
+*   **In-Memory Caching:** To prevent file read overhead and environment write-lock crashes, [blog-service.ts](file:///w:/Personal-Brand-Website/lib/blog-service.ts) caches reads in memory after loading them once from the disk.
 
 ### 2. Security & Authentication Framework
-*   **Edge-runtime compatible JWT:** Session validation is managed using raw JSON Web Tokens signed and verified on Next.js Edge/Middleware routing layers via the native Web Crypto API (HMAC-SHA256).
-*   **Google OAuth validation:** Production access to `/editorial` relies on Google OAuth (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`) validating the user's profile and matching their email against a whitelist defined in the `ALLOWED_EMAILS` environment variable.
-*   **Local development bypass:** When running in dev mode (`process.env.NODE_ENV !== 'production'`), the system enables a Mock Login endpoint at [/api/auth/mock-login](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts). This bypass automatically signs a JWT using a fallback secret and assigns an `auth_session` cookie for local CMS testing.
+*   **JWT session cookies:** Authentication relies on JSON Web Tokens stored in the `auth_session` cookie, signed using native Web Crypto APIs to ensure edge compatibility.
+*   **Google OAuth validation:** Production access is restricted via Google OAuth (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`) validating the user's profile and matching it against a comma-separated whitelist in `ALLOWED_EMAILS`.
+*   **Dev Mode Bypass:** During local development (`NODE_ENV !== 'production'`), a mock login endpoint is enabled at [/api/auth/mock-login](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts). This route issues a dev-signed JWT, allowing immediate access to the `/editorial` dashboard without configuring OAuth.
 
 ### 3. Artificial Intelligence Engine
 *   **OpenRouter metadata generation:** The metadata generator in [/api/ai/fill](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) utilizes the OpenRouter API (configured via `OPENROUTER_API_KEY`, defaulting to `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free`) to read article drafts and programmatically return titles, URL slugs, summaries, categorizations, and SVG design blueprints.
@@ -107,7 +139,7 @@ OPENROUTER_MODEL="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
 # Session encryption secret (fallback defaults to dev secret if undefined)
 JWT_SECRET="your-secure-jwt-random-string"
 
-# Production Google OAuth (optional for local mock mode)
+# Google OAuth (optional for local mock mode)
 GOOGLE_CLIENT_ID="your-google-client-id"
 GOOGLE_CLIENT_SECRET="your-google-client-secret"
 
@@ -159,5 +191,5 @@ npm run build
 
 ## 📄 License & Access Control
 
-*   **Repository Access:** Public showcase.
+*   **Repository Access:** Public showcase template.
 *   **Copyright:** Gargeya Sharma · [edudojo.ai](https://edudojo.ai) — All rights reserved.
