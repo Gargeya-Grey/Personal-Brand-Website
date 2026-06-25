@@ -1,4 +1,4 @@
-# THE ADVERSARY TEMPLATE · AGENT-DRIVEN PORTFOLIO BLUEPRINT
+# Next.js 16 Editorial Portfolio & Blog Template
 
 ```
 ┌──────────────────────────────────────────────────────────┐
@@ -8,34 +8,32 @@
 │ ██║   ██║██╔══██║██╔══██╗██║   ██║██╔══╝    ╚██╔╝  ██╔══██║ │
 │ ╚██████╔╝██║  ██║██║  ██║╚██████╔╝███████╗   ██║   ██║  ██║ │
 │  ╚═════╝ ╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝   ╚═╝   ╚═╝  ╚═╝ │
-│                 - AGENT-FRIENDLY SYSTEM BLUEPRINT -      │
+│                 - PORTFOLIO & BLOG BLUEPRINT -           │
 └──────────────────────────────────────────────────────────┘
 ```
 
-This is an **adversarial deconstruction and customizable portfolio template**. It is engineered specifically for developer-agent pair programming.
-
-Rather than wasting time deciphering custom abstractions, this README provides a direct system map for both **Human Developers** and **AI Coding Agents** (such as Gemini, Claude, or Antigravity) to fork, adapt, and build upon a fully established template.
+This is a premium, dark-mode-first **Editorial Portfolio and Blog** template. It is engineered specifically for human developers and AI coding agents (such as Gemini, Claude, or Antigravity) to fork, adapt, and build upon.
 
 ---
 
 ## ⚡ The "Fork & AI-Adapt" Workflow
 
-Anyone wanting to build their own portfolio site can boot this system in 3 steps:
+You can customize this entire system in three steps:
 
 1.  **Fork the Repository:** Create a copy of this repository on GitHub.
-2.  **Declare Your Visual Identity:** Open [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) and modify the color tokens, fonts, spacing values, cards, and aesthetic rules to match your branding.
-3.  **Deploy Your AI Agent:** Prompt your AI coding agent with the following directive:
-    > "Read [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) to understand the design system guidelines. Then, apply these design token updates and styling updates across [globals.css](file:///w:/Personal-Brand-Website/app/globals.css), any relevant layout files under `app/`, and Tailwind configurations in [next.config.ts](file:///w:/Personal-Brand-Website/next.config.ts) to match the new visual guidelines."
+2.  **Declare Your Design Style:** Open [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) and modify the color tokens, fonts, spacing, cards, and aesthetic guidelines to match your personal brand.
+3.  **Instruct Your AI Agent:** Prompt your AI coding assistant with the following request:
+    > "Please read [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) to understand the design system guidelines. Then, apply these visual tokens and branding updates across [globals.css](file:///w:/Personal-Brand-Website/app/globals.css), layout files under `app/`, and Tailwind configurations in [next.config.ts](file:///w:/Personal-Brand-Website/next.config.ts)."
 
 ---
 
 ## 🗺 AI Agent Codebase Map & Entry Points
 
-This index guides AI agents directly to the files responsible for each part of the system:
+This index guides AI assistants directly to the files responsible for each subsystem:
 
-| File / Directory | Subsystem / Function | Tech / Libraries | Key Target Details |
+| File / Directory | Subsystem / Function | Tech / Libraries | Customization Details |
 | :--- | :--- | :--- | :--- |
-| [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) | **System Specification** | Markdown Token Definition | Change colors, fonts, and layout guidelines here first. |
+| [DESIGN.md](file:///w:/Personal-Brand-Website/DESIGN.md) | **System Specification** | Markdown Token System | Define colors, fonts, and layout guidelines here first. |
 | [app/globals.css](file:///w:/Personal-Brand-Website/app/globals.css) | **Global Styles** | Tailwind CSS v4 | Contains `@theme` variables, global utility overrides, and SVG noise filters. |
 | [components/navigation.tsx](file:///w:/Personal-Brand-Website/components/navigation.tsx) | **Site Navigation** | React + Next Link | Top sticky header navbar links and interactive brand logo. |
 | [components/footer.tsx](file:///w:/Personal-Brand-Website/components/footer.tsx) | **Global Footer** | React + SVG UI | Layout footer containing details, links, and branding references. |
@@ -51,6 +49,8 @@ This index guides AI agents directly to the files responsible for each part of t
 ---
 
 ## ✦ System Architecture & Data Flow
+
+This chart maps how the client front-end communicates with the Next.js API routes, OAuth providers, and the flat-file database:
 
 ```
                                  [ CLIENT BROWSER ]
@@ -83,16 +83,16 @@ This index guides AI agents directly to the files responsible for each part of t
 
 ---
 
-## 🔍 Technical Audit (Scope of what exists)
+## 🔍 Technical Specification
 
 ### 1. Database & Persistence Layer
-*   **Zero Database Overhead:** There are no Postgres or MongoDB connections setup. All posts are serialized directly to a local JSON file in [data/articles.json](file:///w:/Personal-Brand-Website/data/articles.json).
-*   **In-Memory Caching:** To prevent file read overhead and environment write-lock crashes, [blog-service.ts](file:///w:/Personal-Brand-Website/lib/blog-service.ts) caches reads in memory after loading them once from the disk.
+*   **JSON flat-file storage:** The blog system operates without database setup. All posts are stored as a serialized JSON array at [data/articles.json](file:///w:/Personal-Brand-Website/data/articles.json).
+*   **In-Memory caching:** To speed up page response times and prevent write-lock crashes, [blog-service.ts](file:///w:/Personal-Brand-Website/lib/blog-service.ts) caches reads in memory after loading them once from the disk.
 
 ### 2. Security & Authentication Framework
-*   **JWT session cookies:** Authentication relies on JSON Web Tokens stored in the `auth_session` cookie, signed using native Web Crypto APIs to ensure edge compatibility.
-*   **Google OAuth validation:** Production access is restricted via Google OAuth (`GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET`) validating the user's profile and matching it against a comma-separated whitelist in `ALLOWED_EMAILS`.
-*   **Dev Mode Bypass:** During local development (`NODE_ENV !== 'production'`), a mock login endpoint is enabled at [/api/auth/mock-login](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts). This route issues a dev-signed JWT, allowing immediate access to the `/editorial` dashboard without configuring OAuth.
+*   **JWT session cookies:** Access tokens are signed using the native Web Crypto API (HMAC-SHA256) and saved in the `auth_session` cookie for Edge middleware compatibility.
+*   **Google OAuth validation:** Production authorization redirects to Google OAuth, verifying user details and confirming their email matches a whitelist declared in `ALLOWED_EMAILS`.
+*   **Dev Mode login bypass:** When `NODE_ENV !== 'production'`, a developer login bypass is active at [/api/auth/mock-login](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts). Clicking it signs a mock session token, granting quick access to the CMS dashboard without needing OAuth client credentials.
 
 ### 3. Artificial Intelligence Engine
 *   **OpenRouter metadata generation:** The metadata generator in [/api/ai/fill](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) utilizes the OpenRouter API (configured via `OPENROUTER_API_KEY`, defaulting to `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free`) to read article drafts and programmatically return titles, URL slugs, summaries, categorizations, and SVG design blueprints.
