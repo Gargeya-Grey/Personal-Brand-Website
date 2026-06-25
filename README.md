@@ -192,4 +192,6 @@ npm run build
 ## 📄 License & Access Control
 
 *   **Repository Access:** Public showcase template.
-*   **Copyright:** Gargeya Sharma · [edudojo.ai](https://edudojo.ai) — All rights reserved.
+*   **License:** Distributed under the [MIT License](file:///w:/Personal-Brand-Website/LICENSE). See [LICENSE](file:///w:/Personal-Brand-Website/LICENSE) for more details.
+*   **Copyright:** Gargeya Sharma · [edudojo.ai](https://edudojo.ai)
+
