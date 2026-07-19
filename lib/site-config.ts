@@ -12,15 +12,15 @@ export const siteConfig = {
   /** Public-facing brand email (mailto + contact page) */
   email: 'contact@sgargeya.com',
   locale: 'en_US',
-  twitterHandle: '@gargeyasharma',
+  twitterHandle: '@GargeyaS',
   /** Shown on contact page — no city unless you set one */
   locationLabel: 'Remote · Global',
   links: {
     edudojo: 'https://edudojo.ai',
     cv: 'https://cv.sgargeya.com',
-    youtube: 'https://www.youtube.com/@gargeyasharma',
+    youtube: 'https://www.youtube.com/@GargeyaS',
     github: 'https://github.com/Gargeya-Grey',
-    twitter: 'https://x.com/gargeyasharma',
+    twitter: 'https://x.com/GargeyaS',
     linkedin: 'https://www.linkedin.com/in/gargeya-sharma',
     /** Replace with a permanent invite when ready */
     discord: process.env.NEXT_PUBLIC_DISCORD_INVITE || 'https://discord.gg',

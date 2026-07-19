@@ -72,7 +72,7 @@ export const metadata: Metadata = {
     title: 'Gargeya Sharma | The Engineering Editorial',
     description:
       'Architecting intelligence for evaluation & education. Founder @ Edudojo.ai.',
-    creator: '@gargeyasharma',
+    creator: '@GargeyaS',
   },
   robots: {
     index: true,
