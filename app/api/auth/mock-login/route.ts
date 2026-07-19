@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { isEmailAllowed, signJWT } from '@/lib/auth';
-import { getSessionCookieOptions } from '@/lib/session-cookie';
+import { setAuthSessionCookie } from '@/lib/session-cookie';
 
-export async function POST() {
+export async function POST(request: Request) {
   if (process.env.NODE_ENV === 'production') {
     return NextResponse.json(
       { error: 'Forbidden: Mock login is disabled in production environments.' },
@@ -34,6 +34,7 @@ export async function POST() {
 
   const sessionToken = await signJWT(mockUser);
   const response = NextResponse.json({ success: true, user: mockUser });
-  response.cookies.set('auth_session', sessionToken, getSessionCookieOptions());
+  setAuthSessionCookie(response, sessionToken, request.url);
+  response.headers.set('Cache-Control', 'private, no-store');
   return response;
 }

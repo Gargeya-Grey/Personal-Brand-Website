@@ -45,3 +45,5 @@ export default async function EditorialPage({
     </div>
   );
 }
+
+export const dynamic = 'force-dynamic';

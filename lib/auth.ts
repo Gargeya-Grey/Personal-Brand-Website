@@ -261,16 +261,25 @@ export function isEmailAllowed(email: string): boolean {
   return allowedList.includes(email.toLowerCase().trim());
 }
 
+export type SessionGateReason = 'ok' | 'no-cookie' | 'bad-jwt' | 'not-allowlisted';
+
+export async function inspectSession(
+  token: string | undefined | null
+): Promise<{ user: UserSession | null; reason: SessionGateReason }> {
+  if (!token) return { user: null, reason: 'no-cookie' };
+  const user = await verifyJWT(token);
+  if (!user?.email) return { user: null, reason: 'bad-jwt' };
+  if (!isEmailAllowed(user.email)) return { user: null, reason: 'not-allowlisted' };
+  return { user, reason: 'ok' };
+}
+
 /**
  * Verify session cookie AND re-check ALLOWED_EMAILS on every request.
  */
 export async function requireAllowedSession(
   token: string | undefined | null
 ): Promise<UserSession | null> {
-  if (!token) return null;
-  const user = await verifyJWT(token);
-  if (!user?.email) return null;
-  if (!isEmailAllowed(user.email)) return null;
+  const { user } = await inspectSession(token);
   return user;
 }
 

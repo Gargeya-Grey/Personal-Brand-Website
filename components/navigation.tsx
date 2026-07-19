@@ -154,6 +154,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                 key={link.key || link.name}
                 href={link.path}
                 scroll={false}
+                prefetch={isAtelier ? false : undefined}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
                 aria-current={isActive ? 'page' : undefined}
@@ -191,6 +192,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                     key={link.key}
                     href={link.path}
                     scroll={false}
+                    prefetch={false}
                     aria-current={isActive ? 'page' : undefined}
                     className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight transition-all duration-300 ${
                       isActive ? atelierActive : atelierIdle
@@ -258,6 +260,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                   key={link.name}
                   href={link.path}
                   scroll={false}
+                  prefetch={isAtelier ? false : undefined}
                   onClick={() => setMobileMenuOpen(false)}
                   target={link.external ? '_blank' : undefined}
                   rel={link.external ? 'noopener noreferrer' : undefined}

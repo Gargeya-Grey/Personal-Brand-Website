@@ -1,22 +1,31 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { requireAllowedSession } from '@/lib/auth';
+import { inspectSession } from '@/lib/auth';
+import { resolveCookieDomain } from '@/lib/session-cookie';
 
-export async function GET() {
+export async function GET(request: Request) {
   const cookieStore = await cookies();
   const sessionCookie = cookieStore.get('auth_session');
-  const payload = await requireAllowedSession(sessionCookie?.value);
+  const { user, reason } = await inspectSession(sessionCookie?.value);
 
-  if (!payload) {
-    return NextResponse.json({ authenticated: false }, { status: 401 });
-  }
-
-  return NextResponse.json({
-    authenticated: true,
-    user: {
-      email: payload.email,
-      name: payload.name,
-      picture: payload.picture,
+  return NextResponse.json(
+    {
+      authenticated: !!user,
+      reason,
+      hasCookie: !!sessionCookie?.value,
+      cookieChars: sessionCookie?.value?.length ?? 0,
+      cookieDomain: resolveCookieDomain(request.url) ?? null,
+      user: user
+        ? {
+            email: user.email,
+            name: user.name,
+            picture: user.picture,
+          }
+        : null,
     },
-  });
+    {
+      status: user ? 200 : 401,
+      headers: { 'Cache-Control': 'private, no-store' },
+    }
+  );
 }

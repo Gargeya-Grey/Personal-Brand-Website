@@ -2,15 +2,10 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getArticles, saveArticles, Article } from '@/lib/blog-service';
 import { requireAllowedSession } from '@/lib/auth';
+import { isTrustedOrigin } from '@/lib/csrf';
 
-/**
- * CSRF protection: verify the request Origin matches the application origin.
- */
 function checkCsrf(request: Request): boolean {
-  const origin = request.headers.get('origin');
-  if (!origin) return true; // Non-browser requests (curl, Postman) don't send Origin
-  const requestUrl = new URL(request.url);
-  return origin === requestUrl.origin;
+  return isTrustedOrigin(request);
 }
 
 /**

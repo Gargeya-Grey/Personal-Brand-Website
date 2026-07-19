@@ -7,7 +7,7 @@ import {
   signJWT,
   sanitizeRedirect,
 } from '@/lib/auth';
-import { getSessionCookieOptions } from '@/lib/session-cookie';
+import { setAuthSessionCookie } from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -58,8 +58,10 @@ export async function GET(request: Request) {
     const targetPath = sanitizeRedirect(storedCallbackUrl);
     const redirectResponse = NextResponse.redirect(new URL(targetPath, request.url));
     clearOauthTemps(redirectResponse);
+    setAuthSessionCookie(redirectResponse, sessionToken, requestUrl);
 
-    redirectResponse.cookies.set('auth_session', sessionToken, getSessionCookieOptions());
+    // Prevent caches from storing the authenticated landing response
+    redirectResponse.headers.set('Cache-Control', 'private, no-store');
 
     return redirectResponse;
   } catch (error: unknown) {

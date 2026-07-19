@@ -278,7 +278,11 @@ export function EditorialClient({
     formData.append('slug', formSlug || 'cover');
     setIsUploadingImage(true);
     try {
-      const res = await fetch('/api/blog/upload', { method: 'POST', body: formData });
+      const res = await fetch('/api/blog/upload', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData,
+      });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to upload image.');
       setFormCoverImage(data.url);
@@ -297,6 +301,7 @@ export function EditorialClient({
     try {
       const r = await fetch('/api/ai/generate-cover', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ slug: slug || formSlug || 'cover', prompt }),
       });
@@ -325,6 +330,7 @@ export function EditorialClient({
     try {
       const res = await fetch('/api/ai/fill', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ content: formContent }),
       });
@@ -522,16 +528,17 @@ export function EditorialClient({
       };
       const res = await fetch('/api/blog', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Save failed');
+        throw new Error(err.error || err.reason || 'Save failed');
       }
       localStorage.removeItem('edudojo_draft_autosave');
       setHasBackupDraft(false);
-      const refresh = await fetch('/api/blog?includeAll=true');
+      const refresh = await fetch('/api/blog?includeAll=true', { credentials: 'include' });
       if (refresh.ok) setArticles(await refresh.json());
       setEditingArticle(null);
     } catch (err: unknown) {
@@ -545,12 +552,15 @@ export function EditorialClient({
     if (!confirm('Permanently delete this article?')) return;
     setIsDeletingId(id);
     try {
-      const res = await fetch(`/api/blog?id=${id}`, { method: 'DELETE' });
+      const res = await fetch(`/api/blog?id=${id}`, {
+        method: 'DELETE',
+        credentials: 'include',
+      });
       if (!res.ok) {
         const err = await res.json();
-        throw new Error(err.error || 'Delete failed');
+        throw new Error(err.error || err.reason || 'Delete failed');
       }
-      const refresh = await fetch('/api/blog?includeAll=true');
+      const refresh = await fetch('/api/blog?includeAll=true', { credentials: 'include' });
       if (refresh.ok) setArticles(await refresh.json());
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'Delete failed');
