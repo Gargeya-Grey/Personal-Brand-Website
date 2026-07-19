@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Rethink+Sans:wght@400..800&display=swap');
+/* External @import url(...) emptied this file under Turbopack — fonts come from next/font in layout.tsx */
 @import "tailwindcss";
 @import "tw-animate-css";
 
@@ -92,7 +92,7 @@
   --font-display: var(--font-instrument), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --font-headline: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
   --font-body: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
-  --font-label: "Stack Sans Text", var(--font-inter), ui-sans-serif, sans-serif;
+  --font-label: var(--font-inter), ui-sans-serif, sans-serif;
   --font-ui: var(--font-manrope), var(--font-inter), sans-serif;
 
   --shadow-ambient: var(--color-elevation-shadow);
@@ -447,20 +447,15 @@ body {
   font-synthesis: none;
 }
 
-/* Google Sans Flex and Stack Sans Text Utility Classes */
+/* Label / UI font utilities — backed by next/font Inter + Manrope */
 .google-sans-flex {
-  font-family: "Google Sans Flex", sans-serif;
+  font-family: var(--font-manrope), ui-sans-serif, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
-  font-variation-settings:
-    "slnt" 0,
-    "wdth" 100,
-    "GRAD" 0,
-    "ROND" 0;
 }
 
 .stack-sans-text {
-  font-family: "Stack Sans Text", sans-serif;
+  font-family: var(--font-inter), ui-sans-serif, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
