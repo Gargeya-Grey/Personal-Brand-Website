@@ -10,6 +10,11 @@ function unauthorizedJson(message: string) {
 }
 
 export async function proxy(request: NextRequest) {
+  // Preflight must not require a session cookie (browsers often omit it on OPTIONS)
+  if (request.method === 'OPTIONS') {
+    return NextResponse.next();
+  }
+
   const { pathname } = request.nextUrl;
   const sessionCookie = request.cookies.get('auth_session');
 
@@ -33,8 +38,7 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // Blog includeAll / admin reads are enforced in the route handler too;
-  // AI + X Content (except machine ingest) are private.
+  // AI + X Content (except machine ingest) are private
   if (pathname.startsWith('/api/ai')) {
     const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {

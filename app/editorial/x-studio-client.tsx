@@ -405,6 +405,7 @@ function ImportPanel({
     try {
       const res = await fetch('/api/x-content', {
         method: 'POST',
+        credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ import: text, dryRun: false, preserveStatuses: true }),
       });
@@ -512,7 +513,10 @@ export function XStudioClient() {
         setError(null);
       }
       try {
-        const res = await fetch('/api/x-content', { cache: 'no-store' });
+        const res = await fetch('/api/x-content', {
+          cache: 'no-store',
+          credentials: 'include',
+        });
         if (!res.ok) throw new Error((await res.json()).error || 'Failed to load');
         applyPacks((await res.json()) as XContentPack[]);
         setError(null);
@@ -579,17 +583,23 @@ export function XStudioClient() {
   const onStatus = useCallback(
     async (draftId: string, status: XDraftStatus) => {
       if (!active) return;
-      const res = await fetch('/api/x-content', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ packId: active.id, draftId, status }),
-      });
-      if (!res.ok) {
-        alert((await res.json()).error || 'Update failed');
-        return;
+      try {
+        const res = await fetch('/api/x-content', {
+          method: 'POST',
+          credentials: 'include',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ packId: active.id, draftId, status }),
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          alert(data.error || 'Update failed');
+          return;
+        }
+        const updated = data as XContentPack;
+        setPacks((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+      } catch {
+        alert('Update failed — check your connection and try again.');
       }
-      const updated = (await res.json()) as XContentPack;
-      setPacks((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
     },
     [active]
   );

@@ -1,5 +1,3 @@
-import { cookies } from 'next/headers';
-
 export interface UserSession {
   email: string;
   name: string;
@@ -209,15 +207,15 @@ export function isEmailAllowed(email: string): boolean {
   const allowedStr = process.env.ALLOWED_EMAILS || '';
   const allowedList = allowedStr
     .split(',')
-    .map(e => e.trim().toLowerCase())
+    .map((e) => e.trim().toLowerCase().replace(/^['"]|['"]$/g, ''))
     .filter(Boolean);
-  
+
   // For safety, if allowed emails configuration is missing completely, allow nothing
   if (allowedList.length === 0) {
     return false;
   }
-  
-  return allowedList.includes(email.toLowerCase());
+
+  return allowedList.includes(email.toLowerCase().trim());
 }
 
 /**

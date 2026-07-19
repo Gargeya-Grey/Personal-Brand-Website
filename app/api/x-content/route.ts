@@ -16,7 +16,16 @@ function checkCsrf(request: Request): boolean {
   const origin = request.headers.get('origin');
   if (!origin) return true;
   const requestUrl = new URL(request.url);
-  return origin === requestUrl.origin;
+  if (origin === requestUrl.origin) return true;
+  // Allow apex ↔ www when both point at this site
+  try {
+    const o = new URL(origin);
+    const host = requestUrl.hostname.replace(/^www\./, '');
+    const originHost = o.hostname.replace(/^www\./, '');
+    return o.protocol === requestUrl.protocol && originHost === host;
+  } catch {
+    return false;
+  }
 }
 
 async function requireAuth() {
