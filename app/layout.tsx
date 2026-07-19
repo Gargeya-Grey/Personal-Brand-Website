@@ -3,6 +3,7 @@ import { Manrope, Inter } from 'next/font/google';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { InteractiveBackground } from '@/components/interactive-background';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -77,6 +78,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
           {children}
         </ThemeProvider>
+        <SpeedInsights />
       </body>
     </html>
   );
