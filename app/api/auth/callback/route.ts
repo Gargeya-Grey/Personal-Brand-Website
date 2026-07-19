@@ -59,11 +59,51 @@ export async function GET(request: Request) {
     });
 
     const targetPath = sanitizeRedirect(storedCallbackUrl);
-    const redirectResponse = NextResponse.redirect(new URL(targetPath, request.url));
-    setAuthSessionCookie(redirectResponse, sessionToken, requestUrl);
-
-    redirectResponse.headers.set('Cache-Control', 'private, no-store');
-    return redirectResponse;
+    const serializedTarget = JSON.stringify(targetPath).replace(/</g, '\\u003c');
+    const completionHtml = `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Completing sign-in…</title>
+    <style>
+      body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0c0a09;color:#f5f5f4;font:16px system-ui,sans-serif}
+      main{text-align:center;padding:2rem}p{color:#a8a29e}
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Completing sign-in…</h1>
+      <p id="status">Securing your Atelier session.</p>
+    </main>
+    <script>
+      const target = ${serializedTarget};
+      fetch('/api/auth/me', { credentials: 'same-origin', cache: 'no-store' })
+        .then(async (response) => {
+          if (response.ok) {
+            window.location.replace(target);
+            return;
+          }
+          const data = await response.json().catch(() => ({}));
+          const reason = encodeURIComponent(data.reason || 'session-cookie');
+          window.location.replace('/login?error=SessionCookie&reason=' + reason);
+        })
+        .catch(() => {
+          window.location.replace('/login?error=SessionCookie&reason=verification-failed');
+        });
+    </script>
+  </body>
+</html>`;
+    const completionResponse = new NextResponse(completionHtml, {
+      status: 200,
+      headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'private, no-store, max-age=0',
+        'Referrer-Policy': 'no-referrer',
+      },
+    });
+    setAuthSessionCookie(completionResponse, sessionToken, requestUrl);
+    return completionResponse;
   } catch (error: unknown) {
     console.error('Google OAuth Callback Error:', error);
     const loginUrl = new URL('/login', request.url);
