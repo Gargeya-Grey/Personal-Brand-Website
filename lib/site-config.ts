@@ -17,6 +17,7 @@ export const siteConfig = {
   locationLabel: 'Remote · Global',
   links: {
     edudojo: 'https://edudojo.ai',
+    cv: 'https://cv.sgargeya.com',
     youtube: 'https://www.youtube.com/@gargeyasharma',
     github: 'https://github.com/Gargeya-Grey',
     twitter: 'https://x.com/gargeyasharma',

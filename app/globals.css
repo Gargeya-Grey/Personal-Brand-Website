@@ -92,14 +92,23 @@
   --font-display: var(--font-instrument), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
   --font-headline: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
   --font-body: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
-  --font-label: var(--font-inter), ui-sans-serif, sans-serif;
-  --font-ui: var(--font-manrope), var(--font-inter), sans-serif;
+  --font-label: var(--font-manrope), ui-sans-serif, sans-serif;
+  --font-ui: var(--font-manrope), ui-sans-serif, sans-serif;
 
   --shadow-ambient: var(--color-elevation-shadow);
   --radius-soft: 1.5rem;
 }
 
+html {
+  min-width: 320px;
+  text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
 body {
+  min-width: 320px;
+  overflow-x: clip;
   background-color: var(--color-surface);
   color: var(--color-on-surface);
   font-family: var(--font-body);
@@ -110,6 +119,26 @@ body {
   transition: background-color 0.3s ease, color 0.3s ease;
 }
 
+img,
+svg,
+video,
+canvas {
+  max-width: 100%;
+}
+
+.safe-nav-inset {
+  top: max(1.25rem, env(safe-area-inset-top));
+  padding-right: max(0.75rem, env(safe-area-inset-right));
+  padding-left: max(0.75rem, env(safe-area-inset-left));
+}
+
+@media (min-width: 640px) {
+  .safe-nav-inset {
+    padding-right: max(1rem, env(safe-area-inset-right));
+    padding-left: max(1rem, env(safe-area-inset-left));
+  }
+}
+
 /* Large titles: air + contrast; never crush with extrabold + negative tracking */
 .font-display {
   font-family: var(--font-display);
@@ -118,9 +147,17 @@ body {
   text-rendering: optimizeLegibility;
 }
 
+.font-wordmark {
+  font-family: var(--font-wordmark), "MonteCarlo", cursive;
+  font-weight: 400;
+  font-synthesis: none;
+  text-rendering: geometricPrecision;
+  font-feature-settings: "calt" 1, "liga" 1;
+  font-variant-ligatures: common-ligatures contextual;
+}
+
 /*
- * Board panels — solid enough to mask the 3D floor in both modes.
- * (Near-transparent dark glass looked “broken” when cards sat over the grid.)
+ * Board panels — solid surfaces in both modes.
  */
 .board-card {
   background: #ffffff;
@@ -184,7 +221,7 @@ body {
 
 /*
  * Premium atmosphere: cool depth + vignette.
- * No floating mint blobs — accent lives in type, CTAs, and the 3D floor.
+ * Accent lives in type, CTAs, and the 3D floor.
  */
 .site-atmosphere {
   position: fixed;
@@ -244,13 +281,93 @@ body {
   mix-blend-mode: soft-light;
 }
 
-/* Crisp primary CTA — slate depth, icon glide on hover */
+/*
+ * CTAs — no bounce. Soft light wash + icon glide.
+ * Motion stays in the surface and glyph, not the whole chip jumping.
+ */
+/*
+ * Hero CTA — always sits on the dark wave photo.
+ * Theme-independent: white type on deep emerald (not black-on-mint).
+ */
+.btn-hero {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  overflow: hidden;
+  isolation: isolate;
+  background: #059669;
+  color: #ffffff;
+  border: 1px solid color-mix(in srgb, #34d399 45%, #065f46);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.22) inset,
+    0 12px 28px -14px rgba(0, 0, 0, 0.55);
+  transition:
+    box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s ease,
+    border-color 0.45s ease;
+}
+
+.btn-hero > * {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.28) 48%,
+    transparent 72%
+  );
+  transform: translateX(-130%) skewX(-12deg);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.btn-hero .btn-icon {
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-hero:hover {
+  background: #047857;
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.28) inset,
+    0 0 0 1px rgba(52, 211, 153, 0.35),
+    0 16px 36px -14px rgba(0, 0, 0, 0.6);
+}
+
+.btn-hero:hover::after {
+  transform: translateX(130%) skewX(-12deg);
+}
+
+.btn-hero:hover .btn-icon {
+  transform: translate(2px, -2px);
+}
+
+.btn-hero:active {
+  background: #065f46;
+  transition-duration: 0.12s;
+}
+
+.btn-hero:active .btn-icon {
+  transform: translate(1px, -1px);
+  transition-duration: 0.12s;
+}
+
 .btn-accent {
   position: relative;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 0.5rem;
+  overflow: hidden;
+  isolation: isolate;
   background: var(--color-accent);
   color: #020617;
   border: 1px solid color-mix(in srgb, var(--color-accent) 70%, #022c22);
@@ -258,30 +375,62 @@ body {
     0 1px 0 rgba(255, 255, 255, 0.28) inset,
     0 10px 24px -12px rgba(15, 23, 42, 0.35);
   transition:
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    background-color 0.35s ease,
-    border-color 0.35s ease;
+    box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.45s ease,
+    border-color 0.45s ease;
+}
+
+.btn-accent > * {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-accent::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    115deg,
+    transparent 25%,
+    rgba(255, 255, 255, 0.38) 48%,
+    transparent 72%
+  );
+  transform: translateX(-130%) skewX(-12deg);
+  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  pointer-events: none;
+  z-index: 0;
 }
 
 .btn-accent .btn-icon {
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-accent:hover {
-  background: color-mix(in srgb, var(--color-accent) 90%, white);
-  transform: translateY(-3px);
+  background: color-mix(in srgb, var(--color-accent) 88%, white);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.34) inset,
-    0 18px 36px -14px rgba(15, 23, 42, 0.42);
+    0 1px 0 rgba(255, 255, 255, 0.4) inset,
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent),
+    0 14px 32px -14px color-mix(in srgb, var(--color-accent) 45%, rgba(15, 23, 42, 0.4));
+}
+
+.btn-accent:hover::after {
+  transform: translateX(130%) skewX(-12deg);
 }
 
 .btn-accent:hover .btn-icon {
-  transform: translate(3px, -3px);
+  transform: translate(2px, -2px);
 }
 
 .btn-accent:active {
-  transform: translateY(-1px) scale(0.985);
+  background: color-mix(in srgb, var(--color-accent) 92%, #022c22);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.2) inset,
+    0 6px 16px -10px rgba(15, 23, 42, 0.35);
+  transition-duration: 0.12s;
+}
+
+.btn-accent:active .btn-icon {
+  transform: translate(1px, -1px);
   transition-duration: 0.12s;
 }
 
@@ -295,11 +444,12 @@ body {
 
 .dark .btn-accent:hover {
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.28) inset,
-    0 20px 40px -16px rgba(0, 0, 0, 0.7);
+    0 1px 0 rgba(255, 255, 255, 0.3) inset,
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 40%, transparent),
+    0 16px 36px -14px color-mix(in srgb, var(--color-accent) 30%, rgba(0, 0, 0, 0.65));
 }
 
-/* Ghost / secondary CTA — glass edge, arrow slides on hover */
+/* Ghost — mint wash blooms from the left; arrow drifts ahead */
 .btn-ghost {
   position: relative;
   display: inline-flex;
@@ -307,6 +457,7 @@ body {
   justify-content: center;
   gap: 0.5rem;
   overflow: hidden;
+  isolation: isolate;
   border: 1px solid rgba(15, 23, 42, 0.14);
   background: rgba(255, 255, 255, 0.72);
   color: #0f172a;
@@ -314,52 +465,58 @@ body {
     0 1px 0 rgba(255, 255, 255, 0.85) inset,
     0 8px 20px -14px rgba(15, 23, 42, 0.18);
   transition:
-    transform 0.45s cubic-bezier(0.16, 1, 0.3, 1),
-    border-color 0.35s ease,
-    background-color 0.35s ease,
-    color 0.35s ease,
-    box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.5s ease,
+    color 0.45s ease,
+    box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.btn-ghost > * {
+  position: relative;
+  z-index: 1;
 }
 
 .btn-ghost::before {
   content: "";
   position: absolute;
   inset: 0;
-  background: linear-gradient(
-    105deg,
-    transparent 35%,
-    color-mix(in srgb, var(--color-accent) 14%, transparent) 50%,
-    transparent 65%
-  );
-  transform: translateX(-120%);
-  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
+  z-index: 0;
 }
 
 .btn-ghost .btn-icon {
   color: var(--color-accent);
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-ghost:hover {
-  transform: translateY(-3px);
-  border-color: color-mix(in srgb, var(--color-accent) 45%, rgba(15, 23, 42, 0.2));
+  border-color: color-mix(in srgb, var(--color-accent) 50%, rgba(15, 23, 42, 0.18));
   background: #ffffff;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 1) inset,
-    0 16px 32px -16px rgba(15, 23, 42, 0.22);
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 18%, transparent),
+    0 12px 28px -16px rgba(15, 23, 42, 0.2);
 }
 
 .btn-ghost:hover::before {
-  transform: translateX(120%);
+  transform: scaleX(1);
 }
 
 .btn-ghost:hover .btn-icon {
-  transform: translateX(5px);
+  transform: translateX(4px);
 }
 
 .btn-ghost:active {
-  transform: translateY(-1px) scale(0.985);
+  background: color-mix(in srgb, var(--color-accent) 8%, #ffffff);
+  transition-duration: 0.12s;
+}
+
+.btn-ghost:active .btn-icon {
+  transform: translateX(2px);
   transition-duration: 0.12s;
 }
 
@@ -372,12 +529,17 @@ body {
     0 10px 24px -16px rgba(0, 0, 0, 0.45);
 }
 
+.dark .btn-ghost::before {
+  background: color-mix(in srgb, var(--color-accent) 14%, transparent);
+}
+
 .dark .btn-ghost:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 40%, rgba(255, 255, 255, 0.2));
-  background: rgba(52, 211, 153, 0.08);
+  border-color: color-mix(in srgb, var(--color-accent) 45%, rgba(255, 255, 255, 0.18));
+  background: rgba(255, 255, 255, 0.06);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.08) inset,
-    0 18px 36px -16px rgba(0, 0, 0, 0.55);
+    0 0 0 1px color-mix(in srgb, var(--color-accent) 22%, transparent),
+    0 14px 32px -16px rgba(0, 0, 0, 0.5);
 }
 
 /* Project card link chip */
@@ -389,21 +551,70 @@ body {
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-accent);
-  transition:
-    color 0.3s ease,
-    transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: color 0.4s ease, letter-spacing 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .project-link .btn-icon {
-  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .project-link:hover {
   color: var(--color-accent-dark);
+  letter-spacing: 0.01em;
 }
 
 .project-link:hover .btn-icon {
-  transform: translate(2px, -2px);
+  transform: translateX(3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-hero,
+  .btn-hero::after,
+  .btn-hero .btn-icon,
+  .btn-accent,
+  .btn-accent::after,
+  .btn-accent .btn-icon,
+  .btn-ghost,
+  .btn-ghost::before,
+  .btn-ghost .btn-icon,
+  .project-link,
+  .project-link .btn-icon {
+    transition-duration: 0.01ms !important;
+  }
+
+  .btn-hero:hover::after,
+  .btn-accent:hover::after,
+  .btn-ghost:hover::before {
+    transform: none;
+  }
+
+  .btn-hero:hover .btn-icon,
+  .btn-accent:hover .btn-icon,
+  .btn-ghost:hover .btn-icon,
+  .project-link:hover .btn-icon {
+    transform: none;
+  }
+}
+
+@media (max-width: 767px) {
+  /* Fixed turbulence + large blur layers are expensive on mobile GPUs. */
+  .site-grain {
+    display: none;
+  }
+
+  .liquid-glass,
+  .surface-panel {
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+  }
+}
+
+@media (max-width: 639px) {
+  .atelier-btn {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    white-space: normal;
+  }
 }
 
 .surface-panel {
@@ -447,7 +658,7 @@ body {
   font-synthesis: none;
 }
 
-/* Label / UI font utilities — backed by next/font Inter + Manrope */
+/* Label / UI font utilities — backed by the self-hosted next/font Manrope face */
 .google-sans-flex {
   font-family: var(--font-manrope), ui-sans-serif, sans-serif;
   font-optical-sizing: auto;
@@ -455,7 +666,7 @@ body {
 }
 
 .stack-sans-text {
-  font-family: var(--font-inter), ui-sans-serif, sans-serif;
+  font-family: var(--font-manrope), ui-sans-serif, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
@@ -483,7 +694,6 @@ body {
 }
 
 .dark .liquid-glass {
-  /* Solid enough to mask the perspective floor under forms/panels */
   background-color: #111827;
   border-color: rgba(255, 255, 255, 0.1);
   box-shadow:
@@ -556,7 +766,6 @@ body {
 .hover-card {
   position: relative;
   border: 1px solid var(--color-outline-variant);
-  will-change: transform;
   transform: translateZ(0);
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;

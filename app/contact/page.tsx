@@ -55,14 +55,14 @@ export default function ContactPage() {
     <div className="min-h-screen flex flex-col relative">
       <Navigation />
 
-      <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full">
-        <section className="py-16 md:py-28 grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-start">
+      <main id="page-main" tabIndex={-1} className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10 xl:px-12">
+        <section className="grid grid-cols-1 items-start gap-10 py-12 sm:py-16 lg:grid-cols-12 lg:gap-16 lg:py-24">
           <div className="lg:col-span-5 space-y-10">
             <div className="space-y-6">
               <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
                 Contact
               </span>
-              <h1 className="font-headline text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-[-0.04em] text-primary leading-[0.95]">
+              <h1 className="font-headline text-[clamp(2.5rem,8vw,3.75rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-primary">
                 Let&apos;s build something{' '}
                 <span className="text-accent">meaningful</span>
                 <span className="text-accent">.</span>

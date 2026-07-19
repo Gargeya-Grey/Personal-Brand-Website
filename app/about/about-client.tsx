@@ -23,10 +23,10 @@ export default function AboutClient() {
     <div className="min-h-screen flex flex-col relative overflow-x-hidden">
       <Navigation />
       
-      <main className="flex-grow w-full max-w-screen-2xl mx-auto px-6 md:px-12 pt-32 pb-24">
+      <main id="page-main" tabIndex={-1} className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32 lg:px-10 xl:px-12">
         
         {/* Section 1: Hero (Editorial Focus) */}
-        <section className="min-h-[80vh] flex flex-col justify-center items-start py-12 md:py-20 relative">
+        <section className="relative flex flex-col items-start justify-center py-12 sm:min-h-[72svh] md:py-20 lg:min-h-[80vh]">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -36,7 +36,7 @@ export default function AboutClient() {
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
               Founder & Mentor
             </span>
-            <h1 className="font-headline text-5xl sm:text-7xl md:text-[5.5rem] font-extrabold tracking-[-0.04em] text-primary leading-[1.02]">
+            <h1 className="font-headline text-[clamp(2.75rem,10vw,5.5rem)] font-extrabold tracking-[-0.04em] text-primary leading-[1.02]">
               Architecting the <br /> <span className="text-accent">next</span> generation.
             </h1>
             
@@ -150,7 +150,7 @@ export default function AboutClient() {
             className="relative z-10 mr-auto w-full max-w-5xl lg:col-span-10"
           >
             <motion.div
-              className="board-card group relative overflow-hidden rounded-soft border-l-4 border-l-accent px-8 py-16 md:px-14 md:py-24"
+              className="board-card group relative overflow-hidden rounded-soft border-l-4 border-l-accent px-5 py-12 sm:px-8 sm:py-16 md:px-14 md:py-24"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
@@ -191,84 +191,91 @@ export default function AboutClient() {
 
         </div>{/* end relative wrapper */}
 
-        {/* Section 4: The Invitation */}
+        {/* Section 4: Closing invitation — centered finale, mint flare kept */}
         <section
           ref={invitationRef}
-          className="relative flex flex-col items-center justify-center py-24 text-center md:py-36"
+          className="relative py-28 md:py-36"
         >
-          <div className="mx-auto w-full max-w-6xl space-y-10 px-4 sm:px-6 md:space-y-12">
-            {/* Outlined type — sized in SVG units so it never clips the frame */}
-            <div className="relative z-10 w-full select-none pointer-events-none" aria-hidden="true">
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-12%' }}
+            transition={{ duration: 0.85, ease: [0.16, 1, 0.3, 1] }}
+            className="relative z-10 mx-auto flex w-full max-w-2xl flex-col items-center px-4 text-center sm:px-6"
+          >
+            <div className="mb-10 flex items-center gap-4">
+              <span className="h-px w-8 bg-accent/50 sm:w-12" />
+              <p className="font-label text-[11px] font-bold uppercase tracking-[0.28em] text-accent">
+                Open invitation
+              </p>
+              <span className="h-px w-8 bg-accent/50 sm:w-12" />
+            </div>
+
+            <h2 className="sr-only">Let&apos;s build together</h2>
+
+            <div className="w-full select-none text-primary" aria-hidden="true">
               <svg
-                className="mx-auto h-auto w-full max-w-5xl text-primary"
-                viewBox="0 0 1000 200"
+                className="mx-auto h-auto w-full"
+                viewBox="0 0 720 200"
                 preserveAspectRatio="xMidYMid meet"
-                role="img"
               >
-                <title>Let&apos;s build together</title>
                 <defs>
                   <motion.linearGradient id="invitation-shine" x1={x1} y1="0%" x2={x2} y2="0%">
-                    <stop offset="0%" stopColor="currentColor" stopOpacity="0.42" />
-                    <stop offset="40%" stopColor="currentColor" stopOpacity="0.42" />
-                    <stop offset="50%" stopColor="var(--color-accent)" stopOpacity="1" />
-                    <stop offset="60%" stopColor="currentColor" stopOpacity="0.42" />
-                    <stop offset="100%" stopColor="currentColor" stopOpacity="0.42" />
+                    <stop offset="0%" stopColor="currentColor" />
+                    <stop offset="40%" stopColor="currentColor" />
+                    <stop offset="47%" stopColor="var(--color-accent)" />
+                    <stop offset="50%" stopColor="var(--color-accent)" />
+                    <stop offset="53%" stopColor="var(--color-accent)" />
+                    <stop offset="60%" stopColor="currentColor" />
+                    <stop offset="100%" stopColor="currentColor" />
                   </motion.linearGradient>
                 </defs>
-                {/* Two lines = clean fit at every breakpoint */}
                 <text
-                  x="500"
+                  x="360"
                   y="78"
                   textAnchor="middle"
-                  fill="var(--color-surface)"
-                  stroke="url(#invitation-shine)"
-                  strokeWidth="2.25"
-                  strokeLinejoin="round"
-                  paintOrder="stroke fill"
+                  fill="url(#invitation-shine)"
                   style={{
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    fontSize: 72,
-                    letterSpacing: 6,
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 400,
+                    fontSize: 78,
+                    letterSpacing: '-0.03em',
                   }}
                 >
-                  LET&apos;S BUILD
+                  Let&apos;s build
                 </text>
                 <text
-                  x="500"
-                  y="158"
+                  x="360"
+                  y="168"
                   textAnchor="middle"
-                  fill="var(--color-surface)"
-                  stroke="url(#invitation-shine)"
-                  strokeWidth="2.25"
-                  strokeLinejoin="round"
-                  paintOrder="stroke fill"
+                  fill="url(#invitation-shine)"
                   style={{
-                    fontFamily: 'var(--font-headline)',
-                    fontWeight: 700,
-                    fontSize: 72,
-                    letterSpacing: 8,
+                    fontFamily: 'var(--font-display)',
+                    fontWeight: 400,
+                    fontSize: 78,
+                    letterSpacing: '-0.03em',
                   }}
                 >
-                  TOGETHER
+                  together.
                 </text>
               </svg>
             </div>
 
-            <motion.div
-              initial={{ y: 16 }}
-              whileInView={{ y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.15, duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+            <p className="mt-8 max-w-sm font-body text-[15px] leading-relaxed text-on-surface-variant sm:text-base">
+              Mentorship. AI advising. A serious build.
+              <span className="mt-1 block text-primary/80 dark:text-primary/70">
+                If the work matters — let&apos;s talk.
+              </span>
+            </p>
+
+            <Link
+              href="/contact"
+              className="btn-accent mt-10 inline-flex items-center justify-center gap-3 rounded-full px-9 py-4 font-headline text-sm font-bold tracking-tight shadow-[0_12px_40px_-12px_rgba(16,185,129,0.55)]"
             >
-              <Link
-                href="/contact"
-                className="btn-accent inline-flex items-center justify-center gap-3 rounded-full px-10 py-5 font-headline text-sm font-bold uppercase tracking-widest"
-              >
-                Start a conversation <ArrowRight className="h-5 w-5" />
-              </Link>
-            </motion.div>
-          </div>
+              Start a conversation
+              <ArrowRight className="btn-icon h-4 w-4" />
+            </Link>
+          </motion.div>
         </section>
 
       </main>

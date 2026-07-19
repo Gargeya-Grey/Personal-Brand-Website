@@ -6,7 +6,7 @@ export default function NotFound() {
   return (
     <div className="min-h-screen flex flex-col relative">
       <Navigation />
-      <main className="flex-grow flex items-center justify-center px-6 pt-32 pb-24">
+      <main id="page-main" tabIndex={-1} className="flex-grow flex items-center justify-center px-6 pt-32 pb-24">
         <div className="max-w-lg text-center space-y-8 liquid-glass rounded-[2rem] p-10 md:p-14">
           <p className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs">
             404

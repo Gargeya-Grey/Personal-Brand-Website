@@ -70,10 +70,12 @@ export function ContactForm() {
   if (formStatus === 'success' || formStatus === 'mailto') {
     return (
       <motion.div
+        role="status"
+        aria-live="polite"
         initial={{ opacity: 0, scale: 0.98 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        className="liquid-glass p-10 md:p-12 rounded-[2rem] text-center space-y-8 flex flex-col items-center justify-center min-h-[480px]"
+        className="liquid-glass flex min-h-[420px] flex-col items-center justify-center space-y-8 rounded-[2rem] p-6 text-center sm:p-10 md:min-h-[480px] md:p-12"
       >
         <div className="w-20 h-20 bg-accent/10 rounded-full flex items-center justify-center text-accent shadow-inner">
           <CheckCircle2 className="w-10 h-10" />
@@ -134,9 +136,9 @@ export function ContactForm() {
       initial={{ opacity: 0, y: 24 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.7, delay: 0.05, ease: [0.16, 1, 0.3, 1] }}
-      className="board-card rounded-[2rem] p-8 sm:p-10"
+      className="board-card rounded-[2rem] p-5 sm:p-8 lg:p-10"
     >
-      <form onSubmit={handleSubmit} className="space-y-8" noValidate>
+      <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8" noValidate>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label
@@ -187,21 +189,25 @@ export function ContactForm() {
             {projectTypes.map((type) => {
               const selected = formData.projectType === type.id;
               return (
-                <button
+                <label
                   key={type.id}
-                  type="button"
-                  role="radio"
-                  aria-checked={selected}
-                  onClick={() => setFormData({ ...formData, projectType: type.id })}
-                  className={`flex items-center justify-between px-4 py-3 rounded-xl border font-headline text-sm font-semibold transition-all h-12 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
+                  className={`flex min-h-12 cursor-pointer items-center justify-between rounded-xl border px-4 py-3 font-headline text-sm font-semibold transition-all focus-within:ring-2 focus-within:ring-accent ${
                     selected
                       ? 'bg-accent/10 text-primary dark:text-accent border-accent/40 dark:border-accent/60 shadow-sm'
                       : 'border-slate-200 bg-slate-50 text-on-surface-variant hover:bg-slate-100 hover:text-primary dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.06]'
                   }`}
                 >
+                  <input
+                    type="radio"
+                    name="projectType"
+                    value={type.id}
+                    checked={selected}
+                    onChange={() => setFormData({ ...formData, projectType: type.id })}
+                    className="sr-only"
+                  />
                   <span>{type.label}</span>
                   {selected && <span className="w-2.5 h-2.5 rounded-full bg-accent" aria-hidden />}
-                </button>
+                </label>
               );
             })}
           </div>

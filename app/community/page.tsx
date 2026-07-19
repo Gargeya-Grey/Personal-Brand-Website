@@ -15,10 +15,10 @@ export default function CommunityPage() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       
-      <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full">
+      <main id="page-main" tabIndex={-1} className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10 xl:px-12">
         
         {/* Header */}
-        <section className="py-20 md:py-32 max-w-4xl">
+        <section className="max-w-4xl py-12 sm:py-20 md:py-28">
           <motion.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -31,21 +31,21 @@ export default function CommunityPage() {
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
               Global Network
             </span>
-            <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-[-0.04em] text-primary leading-[0.95]">
+            <h1 className="font-headline text-[clamp(2.5rem,8vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-primary">
               An elite collective of <br /> <span className="text-accent">top 1%</span> engineers.
             </h1>
-            <p className="font-body text-xl md:text-2xl text-on-surface-variant leading-relaxed max-w-2xl pt-4">
+            <p className="max-w-2xl pt-2 font-body text-lg leading-relaxed text-on-surface-variant sm:text-xl md:pt-4 md:text-2xl">
               Building a high-signal network of systems architects, machine learning researchers, and builders pushing the absolute limits of software craft.
             </p>
           </motion.div>
         </section>
 
         {/* Community Stats */}
-        <section className="py-24 border-t border-outline-variant/20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <section className="border-t border-outline-variant/20 py-16 sm:py-20 lg:py-24">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-3 md:gap-8">
             
             <motion.div
-              className="board-card flex flex-col justify-between rounded-soft p-10"
+              className="board-card flex flex-col justify-between rounded-soft p-6 sm:p-8 lg:p-10"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
@@ -65,7 +65,7 @@ export default function CommunityPage() {
             </motion.div>
 
             <motion.div
-              className="board-card flex flex-col justify-between rounded-soft p-10"
+              className="board-card flex flex-col justify-between rounded-soft p-6 sm:p-8 lg:p-10"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
@@ -73,7 +73,7 @@ export default function CommunityPage() {
                 <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-surface-container-low dark:bg-white/5">
                   <Award className="h-6 w-6 text-accent" />
                 </div>
-                <div className="mb-2 font-headline text-5xl font-extrabold text-primary">Top 1%</div>
+                <div className="mb-2 font-headline text-4xl font-extrabold text-primary lg:text-5xl">Top 1%</div>
                 <div className="mb-4 font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
                   Target Caliber
                 </div>
@@ -88,7 +88,7 @@ export default function CommunityPage() {
               href={siteConfig.links.discord}
               target="_blank"
               rel="noopener noreferrer"
-              className="discord-card-gradient group relative block cursor-pointer overflow-hidden rounded-soft border border-white/10 p-10 transition-[border-color,box-shadow] duration-300 ease-out hover:border-accent/40"
+              className="discord-card-gradient group relative block cursor-pointer overflow-hidden rounded-soft border border-white/10 p-6 transition-[border-color,box-shadow] duration-300 ease-out hover:border-accent/40 sm:p-8 lg:p-10"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >

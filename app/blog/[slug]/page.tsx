@@ -114,7 +114,7 @@ export default async function BlogPostPage({ params }: PageProps) {
       <Navigation />
 
       {/* Main Container */}
-      <main className="relative z-10 pt-52 pb-32 flex-grow">
+      <main id="page-main" tabIndex={-1} className="relative z-10 flex-grow pb-20 pt-28 sm:pb-24 sm:pt-36 lg:pb-32 lg:pt-44">
         <ArticleClient article={article} />
       </main>
 

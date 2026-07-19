@@ -19,6 +19,10 @@ export async function proxy(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
+  if (pathname === '/api/blog' && request.method === 'GET') {
+    return NextResponse.next();
+  }
+
   const sessionCookie = request.cookies.get('auth_session');
   const { user, reason } = await inspectSession(sessionCookie?.value);
 

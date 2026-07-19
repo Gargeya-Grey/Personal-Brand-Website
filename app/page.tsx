@@ -5,16 +5,18 @@ import { ArrowRight, ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, User, Sc
 import { FeaturedProjects } from '@/components/featured-projects';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
-import profileImage from '@/src/assets/images/regenerated_image_1778002356085.png';
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex flex-col relative">
+    <div className="relative flex min-h-screen flex-col">
       <Navigation />
-      
-      <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full">
-        
-        {/* Hero — copy + portrait over the global 3D floor (no flat grid overlay) */}
+
+      <main
+        id="page-main"
+        tabIndex={-1}
+        className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10 xl:px-12"
+      >
+        {/* Hero — copy + waves media card over the global 3D floor */}
         <section className="relative grid min-h-[min(88svh,860px)] grid-cols-1 items-center gap-12 overflow-x-clip py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
           <div className="pointer-events-none absolute -right-40 top-8 hidden h-[42rem] w-[42rem] rounded-full border border-accent/15 lg:block" aria-hidden="true" />
           <div className="pointer-events-none absolute -right-24 top-28 hidden h-[30rem] w-[30rem] rounded-full border border-white/10 lg:block" aria-hidden="true" />
@@ -35,10 +37,10 @@ export default function Home() {
             <h1 className="flex min-w-0 max-w-full flex-col gap-3 font-display text-[clamp(2.75rem,6.8vw,4.85rem)] font-normal leading-[1.08] tracking-[-0.02em] text-primary sm:gap-4">
               <span className="block">
                 Architecting{' '}
-                <span className="text-accent italic">Intelligence.</span>
+                <span className="italic text-accent">Intelligence.</span>
               </span>
               <span className="block">
-                Curating <span className="text-accent italic">ART.</span>
+                Curating <span className="italic text-accent">ART.</span>
               </span>
             </h1>
 
@@ -87,14 +89,13 @@ export default function Home() {
           >
             <div className="relative ml-auto h-[400px] w-full max-w-[520px] md:h-[500px]">
               <div className="absolute -right-3 top-8 hidden h-28 w-3 rounded-full border border-accent/30 bg-accent/10 lg:block" aria-hidden="true" />
-              <div className="absolute -bottom-3 left-10 hidden h-3 w-28 rounded-full border border-white/15 bg-white/5 lg:block" aria-hidden="true" />
               <div className="relative h-full overflow-hidden rounded-[1.4rem] border border-white/15 bg-slate-950 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.75)]">
                 <Image
-                  src={profileImage}
+                  src="/gargeya%20profile.jpeg"
                   alt="Gargeya Sharma"
                   fill
-                  className="object-cover grayscale transition-all duration-700 hover:grayscale-0"
-                  referrerPolicy="no-referrer"
+                  sizes="(max-width: 1024px) 100vw, 520px"
+                  className="object-cover"
                   priority
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-transparent to-transparent dark:from-[#0B1220]/90" />
@@ -106,14 +107,17 @@ export default function Home() {
                 </div>
                 <div className="absolute bottom-8 left-8 right-8">
                   <p className="font-headline text-xl font-bold text-white">Gargeya Sharma</p>
-                  <p className="mt-1 font-label text-sm uppercase tracking-widest text-white/80">Lead Architect</p>
+                  <p className="mt-1 font-label text-sm tracking-wide text-white/80">
+                    Founder &amp; Lead Architect
+                  </p>
                 </div>
               </div>
             </div>
           </motion.div>
         </section>
+
         {/* Bento Grid Section */}
-        <section className="relative py-24" id="startup">
+        <section className="relative py-16 sm:py-20 lg:py-24" id="startup">
           <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">The work branches out</span>
@@ -132,7 +136,7 @@ export default function Home() {
               className="block md:col-span-2"
             >
               <motion.div
-                className="board-card group relative flex h-full min-h-[300px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                className="board-card group relative flex h-full min-h-[260px] flex-col justify-between overflow-hidden rounded-soft p-6 sm:p-8 md:min-h-[300px] md:p-10"
                 whileHover={{ y: -5 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
@@ -160,7 +164,7 @@ export default function Home() {
             {/* Community Card */}
             <Link href="/community" className="block">
               <motion.div
-                className="board-card-ink group flex h-full min-h-[300px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                className="board-card-ink group flex h-full min-h-[260px] flex-col justify-between overflow-hidden rounded-soft p-6 sm:p-8 md:min-h-[300px] md:p-10"
                 whileHover={{ y: -5 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
@@ -182,7 +186,7 @@ export default function Home() {
             {/* Blog Card */}
             <Link href="/blog" className="block">
               <motion.div
-                className="board-card group flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                className="board-card group flex h-full min-h-[240px] flex-col justify-between overflow-hidden rounded-soft p-6 sm:p-8 md:min-h-[280px] md:p-10"
                 whileHover={{ y: -5 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
@@ -203,7 +207,7 @@ export default function Home() {
             {/* YouTube Card */}
             <Link href="/youtube" className="block md:col-span-2">
               <motion.div
-                className="board-card group flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                className="board-card group flex h-full min-h-[240px] flex-col justify-between overflow-hidden rounded-soft p-6 sm:p-8 md:min-h-[280px] md:p-10"
                 whileHover={{ y: -5 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
@@ -227,7 +231,7 @@ export default function Home() {
             {/* About Card */}
             <Link href="/about" className="block md:col-span-3">
               <motion.div
-                className="board-card-ink group relative flex h-full min-h-[140px] flex-col justify-between gap-8 overflow-hidden rounded-soft p-8 md:flex-row md:items-center md:gap-12 md:p-10"
+                className="board-card-ink group relative flex h-full min-h-[140px] flex-col justify-between gap-8 overflow-hidden rounded-soft p-6 sm:p-8 md:flex-row md:items-center md:gap-12 md:p-10"
                 whileHover={{ y: -5 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
@@ -288,9 +292,8 @@ export default function Home() {
             </div>
           </div>
         </section>
-
       </main>
-      
+
       <Footer />
     </div>
   );

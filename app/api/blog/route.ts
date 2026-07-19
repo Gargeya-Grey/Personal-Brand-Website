@@ -26,12 +26,24 @@ export async function GET(request: Request) {
       if (!user) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
-      return NextResponse.json(list);
+      return NextResponse.json(list, {
+        headers: { 'Cache-Control': 'private, no-store' },
+      });
     }
 
-    // Filter only published articles for public readers
-    const published = list.filter(a => a.status === 'published' || !a.status);
-    return NextResponse.json(published);
+    // Listing cards do not need full markdown bodies or takeaway arrays.
+    const published = list
+      .filter(a => a.status === 'published' || !a.status)
+      .map(article => ({
+        ...article,
+        content: undefined,
+        takeaways: undefined,
+      }));
+    return NextResponse.json(published, {
+      headers: {
+        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+      },
+    });
   } catch (error: any) {
     return NextResponse.json(
       { error: 'Failed to retrieve blog list: ' + error.message },

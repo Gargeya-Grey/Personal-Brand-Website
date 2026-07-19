@@ -16,25 +16,13 @@ interface VideoItem {
 }
 
 function VideoThumbnail({ id, title }: { id: string; title: string }) {
-  const [hasError, setHasError] = useState(false);
-  const [prevId, setPrevId] = useState(id);
-  if (id !== prevId) {
-    setPrevId(id);
-    setHasError(false);
-  }
-
-  const src = hasError
-    ? `https://img.youtube.com/vi/${id}/hqdefault.jpg`
-    : `https://img.youtube.com/vi/${id}/maxresdefault.jpg`;
-
   return (
     <Image
-      src={src}
+      src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`}
       alt={title}
       fill
       className="object-cover group-hover/video:scale-105 transition-transform duration-500"
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-      onError={() => setHasError(true)}
     />
   );
 }

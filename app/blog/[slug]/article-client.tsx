@@ -13,6 +13,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import * as motion from 'motion/react-client';
 import { renderMarkdown, slugify } from '@/lib/markdown';
 import { renderIllustration } from '@/components/render-illustration';
@@ -61,65 +62,66 @@ export function ArticleClient({ article }: ArticleClientProps) {
   const [shareUrl, setShareUrl] = useState('');
 
   useEffect(() => {
-    setShareUrl(window.location.href);
-    try {
-      const key = `liked:${article.slug}`;
-      setLiked(localStorage.getItem(key) === '1');
-    } catch {
-      /* ignore storage errors */
-    }
+    const frameId = window.requestAnimationFrame(() => {
+      setShareUrl(window.location.href);
+      try {
+        const key = `liked:${article.slug}`;
+        setLiked(localStorage.getItem(key) === '1');
+      } catch {
+        /* ignore storage errors */
+      }
+    });
+    return () => window.cancelAnimationFrame(frameId);
   }, [article.slug]);
 
   // Parse headings for Table of Contents
   const headings = useMemo(() => extractHeadings(article.content), [article.content]);
 
-  // Handle actual scroll progress calculation
   useEffect(() => {
-    const handleScroll = () => {
+    let frameId = 0;
+
+    const updateScrollState = () => {
+      frameId = 0;
       const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalHeight > 0) {
-        const progress = (window.scrollY / totalHeight) * 100;
-        setScrollProgress(progress);
-      }
-    };
+      setScrollProgress(totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0);
 
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+      if (headings.length > 0) {
+        const scrollPosition = window.scrollY + 160;
+        let currentActiveId = headings[0].id;
 
-  // TOC scroll spy: track which heading is currently in viewport
-  useEffect(() => {
-    if (headings.length === 0) return;
-
-    const handleScrollSpy = () => {
-      const scrollPosition = window.scrollY + 160; // Offset for sticky headers
-      
-      // If we are at the bottom of the page, activate the last heading
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
-        setActiveHeadingId(headings[headings.length - 1].id);
-        return;
-      }
-
-      let currentActiveId = headings[0].id;
-      for (let i = 0; i < headings.length; i++) {
-        const element = document.getElementById(headings[i].id);
-        if (element) {
-          const top = element.offsetTop;
-          if (scrollPosition >= top) {
-            currentActiveId = headings[i].id;
-          } else {
-            break; // Stop checking when headers go below active view line
+        if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
+          currentActiveId = headings[headings.length - 1].id;
+        } else {
+          for (const heading of headings) {
+            const element = document.getElementById(heading.id);
+            if (element && scrollPosition >= element.offsetTop) {
+              currentActiveId = heading.id;
+            } else if (element) {
+              break;
+            }
           }
         }
+        setActiveHeadingId(currentActiveId);
       }
-      setActiveHeadingId(currentActiveId);
     };
 
-    window.addEventListener('scroll', handleScrollSpy);
-    // Initial check
-    handleScrollSpy();
+    const scheduleUpdate = () => {
+      if (!frameId) {
+        frameId = window.requestAnimationFrame(updateScrollState);
+      }
+    };
 
-    return () => window.removeEventListener('scroll', handleScrollSpy);
+    window.addEventListener('scroll', scheduleUpdate, { passive: true });
+    window.addEventListener('resize', scheduleUpdate, { passive: true });
+    scheduleUpdate();
+
+    return () => {
+      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('resize', scheduleUpdate);
+      if (frameId) {
+        window.cancelAnimationFrame(frameId);
+      }
+    };
   }, [headings]);
 
   const handleCopyLink = () => {
@@ -145,7 +147,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
   };
 
   return (
-    <div className="px-6 md:px-12 max-w-screen-2xl mx-auto w-full relative pb-32">
+    <div className="relative mx-auto w-full max-w-screen-2xl px-4 pb-20 sm:px-6 sm:pb-24 lg:px-10 lg:pb-32 xl:px-12">
       {/* Actual Scroll-Based Reading Progress Indicator */}
       <div className="fixed top-0 left-0 w-full h-[3px] bg-slate-200/30 dark:bg-white/5 z-50">
         <div 
@@ -165,7 +167,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
 
         {/* Top Centered Header Block */}
         <header className="text-center max-w-4xl mx-auto space-y-8 pt-8 pb-4 relative z-10">
-          <div className="flex justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-2 sm:gap-3">
             {article.categories.map((c) => (
               <span key={c} className="font-label text-xs uppercase tracking-wider font-[520] dark:font-[480] text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-500/10 px-4 py-1.5 rounded-full border border-emerald-200/50 dark:border-emerald-400/20 shadow-[0_2px_10px_-3px_rgba(16,185,129,0.1)]">
                 {c}
@@ -173,14 +175,14 @@ export function ArticleClient({ article }: ArticleClientProps) {
             ))}
           </div>
           
-          <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-[3.5rem] font-[700] dark:font-[700] bg-clip-text text-transparent bg-gradient-to-br from-slate-900 via-slate-800 to-slate-500 dark:from-white dark:via-slate-100 dark:to-slate-400 leading-[1.1] tracking-[-0.02em]">
+          <h1 className="font-headline text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.5rem] dark:text-white">
             {article.title}
           </h1>
 
           <div className="flex flex-wrap items-center justify-center gap-6 mt-8">
             <div className="flex items-center gap-3">
               <div className="w-9 h-9 rounded-full overflow-hidden border border-slate-200 dark:border-white/10 shadow-sm relative bg-slate-100 dark:bg-slate-800">
-                <img src={article.authorAvatar} alt={article.author} className="object-cover w-full h-full" />
+                <Image src={article.authorAvatar} alt={article.author} width={36} height={36} className="h-full w-full object-cover" />
               </div>
               <span className="font-label font-[500] text-sm text-slate-800 dark:text-slate-200">{article.author}</span>
             </div>
@@ -207,7 +209,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
           
           {/* Left Sticky Sidebar (TOC & Controls) */}
-          <aside className="lg:col-span-3 lg:sticky lg:top-32 space-y-8 order-1 pt-4">
+          <aside className="order-2 space-y-8 pt-4 lg:order-1 lg:col-span-3 lg:sticky lg:top-32">
             
             <Link
               href="/blog"
@@ -219,7 +221,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
 
             {headings.length > 0 && (
               <div className="space-y-4 pl-1">
-                <nav className="flex flex-col border-l border-slate-200 dark:border-slate-800">
+                <nav aria-label="On this page" className="flex flex-col border-l border-slate-200 dark:border-slate-800">
                   {headings.map((heading) => (
                     <a
                       key={heading.id}
@@ -229,7 +231,10 @@ export function ArticleClient({ article }: ArticleClientProps) {
                         e.preventDefault();
                         const element = document.getElementById(heading.id);
                         if (element) {
-                          element.scrollIntoView({ behavior: 'smooth' });
+                          const reduceMotion = window.matchMedia(
+                            '(prefers-reduced-motion: reduce)'
+                          ).matches;
+                          element.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
                         }
                       }}
                       className={`relative flex items-start gap-3 text-xs transition-colors py-1.5 pl-4 leading-normal focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-r-md ${
@@ -250,7 +255,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
             )}
 
             {/* Share Control Box */}
-            <div className="board-card flex max-w-max items-center justify-start gap-3 rounded-full px-4 py-2 font-label text-xs text-slate-500">
+            <div className="board-card flex max-w-max items-center justify-start gap-1 rounded-full px-2 py-1 font-label text-xs text-slate-500">
               <span className="font-semibold text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest">Share</span>
               <span className="w-[1px] h-3 bg-slate-200 dark:bg-slate-700/50" />
               
@@ -260,7 +265,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
                 aria-label={liked ? 'Remove bookmark' : 'Save for later'}
                 aria-pressed={liked}
                 title={liked ? 'Saved on this device' : 'Save on this device'}
-                className="text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-emerald-500 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-90 dark:hover:text-emerald-400"
               >
                 <Heart className={`w-4 h-4 ${liked ? "fill-emerald-500 text-emerald-500" : ""}`} />
               </button>
@@ -270,7 +275,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
                 onClick={handleCopyLink}
                 aria-label="Copy URL"
                 title="Copy URL"
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-90 dark:hover:text-white"
               >
                 {copiedLink ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
               </button>
@@ -281,7 +286,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
                 rel="noopener noreferrer"
                 aria-label="Share on X (Twitter)"
                 title="Share on X"
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-90 dark:hover:text-white"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
@@ -294,7 +299,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
                 rel="noopener noreferrer"
                 aria-label="Share on LinkedIn"
                 title="Share on LinkedIn"
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
+                className="flex h-11 w-11 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:scale-90 dark:hover:text-white"
               >
                 <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
                   <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
@@ -305,7 +310,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
           </aside>
 
           {/* Right Main Content Area */}
-          <div className="lg:col-span-9 space-y-10 order-2">
+          <div className="order-1 space-y-10 lg:order-2 lg:col-span-9">
             {/* Cover image or illustration */}
             {article.illustrationType === 'cover' && article.coverImage ? (
               <div className="rounded-3xl overflow-hidden border border-emerald-500/20 dark:border-white/10 shadow-sm relative aspect-video w-full bg-slate-100 dark:bg-slate-900">

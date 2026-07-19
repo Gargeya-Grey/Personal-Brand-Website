@@ -58,7 +58,7 @@ export function useTheme() {
   return context;
 }
 
-export function ThemeToggle() {
+export function ThemeToggle({ inverted = false }: { inverted?: boolean }) {
   const { theme, toggleTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
@@ -66,23 +66,36 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
+  const shell = inverted
+    ? 'border-white/35 bg-white/10 text-white hover:border-white/55 hover:bg-white/16'
+    : 'border-white/60 bg-white/40 text-primary shadow-sm hover:text-accent dark:border-white/10 dark:bg-white/5 dark:text-white/85 dark:shadow-none dark:hover:text-white';
+
+  const iconTone = inverted
+    ? 'text-white'
+    : 'text-on-surface-variant dark:text-white/80';
+
   if (!mounted) {
     return (
-      <div className="h-10 w-10 rounded-full border border-white/60 bg-white/40 shadow-sm dark:border-white/10 dark:bg-white/5" />
+      <div
+        aria-hidden="true"
+        className={`h-10 w-10 rounded-full border backdrop-blur-xl ${shell}`}
+      />
     );
   }
 
   return (
     <button
       onClick={toggleTheme}
-      className="pointer-events-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/60 bg-white/40 text-primary shadow-sm backdrop-blur-xl transition-all duration-300 hover:scale-105 active:scale-95 dark:border-white/10 dark:bg-white/5 dark:text-white"
+      className={`pointer-events-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border backdrop-blur-xl transition-all duration-300 motion-safe:hover:scale-105 motion-safe:active:scale-95 focus-visible:ring-2 ${
+        inverted ? 'focus-visible:ring-white/50' : 'focus-visible:ring-accent'
+      } ${shell}`}
       aria-label="Toggle theme"
       type="button"
     >
       {theme === 'dark' ? (
-        <Sun className="h-5 w-5 text-accent" strokeWidth={2.5} />
+        <Sun className={`h-5 w-5 ${iconTone}`} strokeWidth={2.25} />
       ) : (
-        <Moon className="h-5 w-5 text-accent" strokeWidth={2.5} />
+        <Moon className={`h-5 w-5 ${iconTone}`} strokeWidth={2.25} />
       )}
     </button>
   );

@@ -186,8 +186,7 @@ export function EditorialClient({
   user,
   initialWorkspace = 'blog',
 }: EditorialClientProps) {
-  // Follow URL/nav — soft navigations update initialWorkspace; keep state in sync
-  const [workspace, setWorkspace] = useState<'blog' | 'x'>(initialWorkspace);
+  const workspace = initialWorkspace;
   const [articles, setArticles] = useState<Article[]>(initialArticles);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
@@ -248,10 +247,6 @@ export function EditorialClient({
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, []);
-
-  useEffect(() => {
-    setWorkspace(initialWorkspace);
-  }, [initialWorkspace]);
 
   // Remember preference only — do NOT touch history/router on mount (causes App Router errors)
   useEffect(() => {
@@ -1079,11 +1074,11 @@ export function EditorialClient({
               <div className="relative">
                 <div
                   className={`grid gap-5 min-h-[520px] ${
-                    editorLayoutMode === 'split' ? 'md:grid-cols-2' : 'grid-cols-1'
+                    editorLayoutMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'
                   }`}
                 >
                   {(editorLayoutMode === 'split' || editorLayoutMode === 'write') && (
-                    <div className="atelier-card-lg flex flex-col p-5 sm:p-6 min-h-[480px] focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 transition-shadow">
+                    <div className="atelier-card-lg flex min-h-[360px] flex-col p-5 transition-shadow focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6">
                       <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-[var(--atelier-line)]">
                         <div className="flex items-center gap-3 min-w-0">
                           <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
@@ -1108,13 +1103,13 @@ export function EditorialClient({
                         value={formContent}
                         onChange={(e) => setFormContent(e.target.value)}
                         placeholder="# Begin the piece…"
-                        className="w-full flex-grow min-h-[360px] bg-transparent border-0 resize-none focus:outline-none text-[var(--atelier-ink)] font-mono text-sm leading-relaxed placeholder:text-[var(--atelier-faint)]"
+                        className="min-h-[260px] w-full flex-grow resize-none border-0 bg-transparent font-mono text-sm leading-relaxed text-[var(--atelier-ink)] placeholder:text-[var(--atelier-faint)] focus:outline-none sm:min-h-[360px]"
                       />
                     </div>
                   )}
 
                   {(editorLayoutMode === 'split' || editorLayoutMode === 'preview') && (
-                    <div className="atelier-card-lg flex flex-col p-5 sm:p-6 min-h-[480px] bg-[color-mix(in_srgb,var(--atelier-paper)_55%,var(--atelier-card))]">
+                    <div className="atelier-card-lg flex min-h-[360px] flex-col bg-[color-mix(in_srgb,var(--atelier-paper)_55%,var(--atelier-card))] p-5 sm:min-h-[480px] sm:p-6">
                       <div className="flex items-center gap-2 pb-4 mb-4 border-b border-[var(--atelier-line)]">
                         <Eye className="w-4 h-4 text-[var(--atelier-gold)]" />
                         <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">

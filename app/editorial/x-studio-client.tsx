@@ -487,8 +487,6 @@ export function XStudioClient() {
   const [pulse, setPulse] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const knownUpdated = useRef<string | null>(null);
-  const focusDraftRef = useRef<XDraftItem | null>(null);
-  const onStatusRef = useRef<(id: string, s: XDraftStatus) => Promise<void>>(async () => {});
 
   const applyPacks = useCallback((data: XContentPack[]) => {
     const sorted = [...data].sort((a, b) => b.date.localeCompare(a.date));
@@ -530,7 +528,8 @@ export function XStudioClient() {
   );
 
   useEffect(() => {
-    void load();
+    const frameId = window.requestAnimationFrame(() => void load());
+    return () => window.cancelAnimationFrame(frameId);
   }, [load]);
 
   useEffect(() => {
@@ -578,7 +577,6 @@ export function XStudioClient() {
   const progress = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
   const etaSeconds = sumEstimatedSeconds(remaining);
   const current = remaining[0] ?? null;
-  focusDraftRef.current = current;
 
   const onStatus = useCallback(
     async (draftId: string, status: XDraftStatus) => {
@@ -603,14 +601,12 @@ export function XStudioClient() {
     },
     [active]
   );
-  onStatusRef.current = onStatus;
-
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
       if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) return;
       if (view === 'library') return;
-      const d = focusDraftRef.current;
+      const d = current;
       if (!d) return;
       const k = e.key.toLowerCase();
       if (k === 'c') {
@@ -620,15 +616,15 @@ export function XStudioClient() {
         else window.open('https://x.com/compose/post', '_blank', 'noopener,noreferrer');
       } else if (k === 'd') {
         e.preventDefault();
-        void onStatusRef.current(d.id, 'posted');
+        void onStatus(d.id, 'posted');
       } else if (k === 's') {
         e.preventDefault();
-        void onStatusRef.current(d.id, 'skipped');
+        void onStatus(d.id, 'skipped');
       }
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [view]);
+  }, [view, current, onStatus]);
 
   const onImported = (saved: XContentPack) => {
     setPacks((prev) => {

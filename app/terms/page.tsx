@@ -12,8 +12,8 @@ export default function TermsPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Navigation />
-      <main className="flex-grow pt-32 px-6 md:px-12 max-w-3xl mx-auto w-full pb-24">
-        <h1 className="font-headline text-4xl font-extrabold text-primary mb-8 tracking-tight">
+      <main id="page-main" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-grow px-4 pb-20 pt-32 sm:px-6 sm:pb-24 md:px-10">
+        <h1 className="mb-8 font-headline text-3xl font-extrabold tracking-tight text-primary sm:text-4xl">
           Terms of Service
         </h1>
         <div className="space-y-6 text-on-surface-variant font-body leading-relaxed">

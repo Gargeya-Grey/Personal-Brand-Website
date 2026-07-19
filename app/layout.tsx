@@ -1,5 +1,5 @@
-import type { Metadata } from 'next';
-import { Instrument_Serif, Manrope, Inter } from 'next/font/google';
+import type { Metadata, Viewport } from 'next';
+import { Instrument_Serif, Manrope, MonteCarlo } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
@@ -19,6 +19,7 @@ try {
 /** Editorial display — large titles only (pairs with sans UI) */
 const instrumentSerif = Instrument_Serif({
   weight: ['400'],
+  style: ['normal', 'italic'],
   subsets: ['latin'],
   variable: '--font-instrument',
   display: 'swap',
@@ -30,9 +31,11 @@ const manrope = Manrope({
   display: 'swap',
 });
 
-const inter = Inter({
+/** Footer wordmark — formal script with stroked outline + shoulder shine */
+const monteCarlo = MonteCarlo({
   subsets: ['latin'],
-  variable: '--font-inter',
+  weight: '400',
+  variable: '--font-wordmark',
   display: 'swap',
 });
 
@@ -84,26 +87,31 @@ export const metadata: Metadata = {
   },
 };
 
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  viewportFit: 'cover',
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#f7faf9' },
+    { media: '(prefers-color-scheme: dark)', color: '#0b1220' },
+  ],
+};
+
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${manrope.variable} ${inter.variable}`}
+      className={`${instrumentSerif.variable} ${manrope.variable} ${monteCarlo.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Google+Sans+Flex:opsz,wght@6..144,1..1000&family=Stack+Sans+Text:wght@200..700&display=swap" rel="stylesheet" />
-      </head>
       <body className="antialiased selection:bg-accent/30 relative min-h-screen" suppressHydrationWarning>
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
         <ThemeProvider>
           <a
-            href="#main-content"
-            className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-[100] focus:px-4 focus:py-2 focus:rounded-full focus:bg-accent focus:text-slate-950 focus:font-headline focus:font-bold focus:text-sm"
+            href="#page-main"
+            className="sr-only focus:not-sr-only focus:fixed focus:top-[max(1rem,env(safe-area-inset-top))] focus:left-[max(1rem,env(safe-area-inset-left))] focus:z-[100] focus:px-4 focus:py-2 focus:rounded-full focus:bg-accent focus:text-slate-950 focus:font-headline focus:font-bold focus:text-sm"
           >
             Skip to content
           </a>
@@ -111,7 +119,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           <div className="site-atmosphere" aria-hidden="true" />
           <InteractiveBackground />
           <div className="site-grain" aria-hidden="true" />
-          <div id="main-content" className="relative z-0">{children}</div>
+          <div className="relative z-0">{children}</div>
         </ThemeProvider>
         <SpeedInsights />
       </body>

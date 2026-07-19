@@ -4,7 +4,6 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import * as motion from 'motion/react-client';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
-import { useTheme } from '@/components/theme-provider';
 import { 
   BookOpen, 
   ArrowRight, 
@@ -17,12 +16,12 @@ import {
   Loader2
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { renderIllustration } from '@/components/render-illustration';
 import { Article } from '@/lib/blog-service';
 import { CATEGORIES } from '@/lib/categories';
 
 export default function BlogPage() {
-  const { theme } = useTheme();
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -33,24 +32,9 @@ export default function BlogPage() {
   const [subscribed, setSubscribed] = useState<boolean>(false);
   const [subscribeError, setSubscribeError] = useState('');
   const [visibleCount, setVisibleCount] = useState<number>(9);
-  const [isExpanding, setIsExpanding] = useState<boolean>(false);
-
-  // Reset pagination on category or search filter change
-  const [prevCategories, setPrevCategories] = useState(selectedCategories);
-  const [prevQuery, setPrevQuery] = useState(searchQuery);
-
-  if (selectedCategories !== prevCategories || searchQuery !== prevQuery) {
-    setPrevCategories(selectedCategories);
-    setPrevQuery(searchQuery);
-    setVisibleCount(9);
-  }
 
   const handleLoadMore = () => {
-    setIsExpanding(true);
-    setTimeout(() => {
-      setVisibleCount(prev => prev + 15);
-      setIsExpanding(false);
-    }, 450); // Premium interactive pacing delay
+    setVisibleCount(prev => prev + 15);
   };
 
   // Handle outside click to close category dropdown
@@ -60,11 +44,19 @@ export default function BlogPage() {
         setIsDropdownOpen(false);
       }
     };
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape' && isDropdownOpen) {
+        setIsDropdownOpen(false);
+        dropdownRef.current?.querySelector<HTMLButtonElement>('button')?.focus();
+      }
+    };
     document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
     return () => {
       document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
     };
-  }, []);
+  }, [isDropdownOpen]);
 
   // Fetch articles on mount
   useEffect(() => {
@@ -98,6 +90,7 @@ export default function BlogPage() {
   }, [articles]);
 
   const handleCategoryToggle = (category: string) => {
+    setVisibleCount(9);
     if (category === "All") {
       setSelectedCategories([]);
     } else {
@@ -187,12 +180,12 @@ export default function BlogPage() {
     return (
       <div className="min-h-screen bg-surface text-primary antialiased relative flex flex-col justify-between selection:bg-accent/30 selection:text-current">
         <Navigation />
-        <div className="flex-grow flex flex-col items-center justify-center pt-52">
+        <main id="page-main" tabIndex={-1} className="flex flex-grow flex-col items-center justify-center pt-32">
           <div className="flex flex-col items-center gap-3 relative z-10">
             <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
             <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Loading ledger logs...</p>
           </div>
-        </div>
+        </main>
         <Footer />
       </div>
     );
@@ -205,20 +198,20 @@ export default function BlogPage() {
       <Navigation />
 
       {/* Main Container */}
-      <div className="relative z-10 pt-52">
+      <main id="page-main" tabIndex={-1} className="relative z-10 pt-28 sm:pt-36 lg:pt-44">
         
         {/* Render Blog Listings Screen */}
-        <div className="px-6 md:px-12 max-w-screen-2xl mx-auto w-full pb-32">
+        <div className="mx-auto w-full max-w-screen-2xl px-4 pb-20 sm:px-6 sm:pb-24 lg:px-10 lg:pb-32 xl:px-12">
           
           {/* Hero Layout Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-[1.3fr_1fr] gap-12 lg:gap-16 items-center mb-16">
+          <div className="mb-12 grid grid-cols-1 items-center gap-10 sm:mb-16 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
             
             {/* Left Column: Brand & Copy */}
             <div className="space-y-6">
               <span className="font-label text-xs uppercase tracking-[0.25em] text-accent font-bold block">
                 The Engineering Ledger
               </span>
-              <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-[-0.04em] text-slate-900 dark:text-white leading-[0.95]">
+              <h1 className="font-headline text-[clamp(2.5rem,8vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-slate-900 dark:text-white">
                 Engineering Insights <br/>&amp; <span className="text-emerald-600 dark:text-accent">Deep Essays</span><span className="text-emerald-500">.</span>
               </h1>
               <p className="font-body text-lg md:text-xl text-slate-600 dark:text-white/70 leading-relaxed max-w-xl">
@@ -227,7 +220,7 @@ export default function BlogPage() {
             </div>
 
             {/* Right Column: Interactive Telemetry Visualizer */}
-            <div className="bg-slate-50 dark:bg-slate-900/40 border border-slate-200 dark:border-white/[0.05] backdrop-blur-xl rounded-3xl p-6 shadow-xl relative overflow-hidden h-[240px] flex items-center justify-center">
+            <div className="relative flex h-[210px] items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-xl backdrop-blur-xl dark:border-white/[0.05] dark:bg-slate-900/40 sm:h-[240px] sm:p-6">
               <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.1),transparent_70%)] blur-2xl" />
               <div className="w-full h-full max-w-sm flex items-center justify-center">
                 {(() => {
@@ -247,7 +240,7 @@ export default function BlogPage() {
           </div>
 
           {/* Metrics Tiles Grid */}
-          <section className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
+          <section className="mb-12 grid grid-cols-1 gap-4 sm:mb-16 sm:grid-cols-3 sm:gap-6">
             {insights.map((stat, i) => (
               <div key={i} className="board-card group flex h-32 flex-col justify-between rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1">
                 <div className="flex justify-between items-start">
@@ -266,7 +259,7 @@ export default function BlogPage() {
           </section>
 
           {/* Filter & Search Bar Area */}
-          <section className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4 mb-16 relative z-30">
+          <section className="relative z-30 mb-12 flex flex-col items-stretch justify-between gap-4 sm:mb-16 md:flex-row md:items-center">
             {/* Search Input Widget */}
             <div className="relative flex-grow max-w-lg">
               <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
@@ -275,14 +268,20 @@ export default function BlogPage() {
                 placeholder="Search headlines, keywords, or topics..." 
                 aria-label="Search articles"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  setSearchQuery(e.target.value);
+                  setVisibleCount(9);
+                }}
                 className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-10 text-sm text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
               />
               {searchQuery && (
                 <button 
-                  onClick={() => setSearchQuery("")}
+                  onClick={() => {
+                    setSearchQuery("");
+                    setVisibleCount(9);
+                  }}
                   aria-label="Clear search"
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors"
+                  className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -369,6 +368,7 @@ export default function BlogPage() {
                 onClick={() => {
                   setSelectedCategories([]);
                   setSearchQuery("");
+                  setVisibleCount(9);
                 }}
                 className="bg-accent text-primary dark:text-primary-container hover:bg-accent/90 font-headline font-bold text-xs h-10 px-6 rounded-xl transition-all active:scale-95 cursor-pointer shadow-md hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]"
               >
@@ -391,7 +391,6 @@ export default function BlogPage() {
 
                   <Link 
                     href={`/blog/${featuredPost.slug}`}
-                    role="button"
                     aria-label={`Featured story: ${featuredPost.title}`}
                     className="board-card group grid grid-cols-1 items-center gap-8 rounded-[2.5rem] p-6 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-8 lg:grid-cols-12"
                   >
@@ -413,10 +412,10 @@ export default function BlogPage() {
                         {featuredPost.excerpt}
                       </p>
 
-                      <div className="flex items-center justify-between pt-6 border-t border-emerald-500/10 dark:border-white/5">
+                      <div className="flex flex-col items-start gap-3 border-t border-emerald-500/10 pt-6 dark:border-white/5 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-2.5">
                           <div className="w-8 h-8 rounded-full overflow-hidden border border-emerald-500/20 dark:border-white/10 relative">
-                            <img src={featuredPost.authorAvatar} alt={featuredPost.author} className="object-cover w-full h-full" />
+                            <Image src={featuredPost.authorAvatar} alt={featuredPost.author} width={32} height={32} className="h-full w-full object-cover" />
                           </div>
                           <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">{featuredPost.author}</span>
                         </div>
@@ -465,7 +464,6 @@ export default function BlogPage() {
                     >
                       <Link 
                         href={`/blog/${post.slug}`}
-                        role="button"
                         aria-label={`Read essay: ${post.title}`}
                         className="board-card group flex h-full flex-col justify-between rounded-[2rem] p-5 transition-transform duration-300 ease-out hover:-translate-y-1"
                       >
@@ -498,10 +496,10 @@ export default function BlogPage() {
                         </div>
 
                         {/* Footer metadata */}
-                        <div className="flex items-center justify-between border-t border-emerald-500/10 dark:border-white/5 pt-4 mt-6">
+                        <div className="mt-6 flex flex-col items-start gap-3 border-t border-emerald-500/10 pt-4 dark:border-white/5 sm:flex-row sm:items-center sm:justify-between">
                           <div className="flex items-center gap-2">
                             <div className="w-6 h-6 rounded-full overflow-hidden border border-emerald-500/20 dark:border-white/10 relative">
-                              <img src={post.authorAvatar} alt={post.author} className="object-cover w-full h-full" />
+                              <Image src={post.authorAvatar} alt={post.author} width={24} height={24} className="h-full w-full object-cover" />
                             </div>
                             <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">{post.author}</span>
                           </div>
@@ -526,20 +524,10 @@ export default function BlogPage() {
                   {sortedArticles.length > visibleCount && (
                     <button
                       onClick={handleLoadMore}
-                      disabled={isExpanding}
-                      className="board-card group relative flex h-12 cursor-pointer items-center justify-center gap-2.5 px-10 font-headline text-xs font-bold text-slate-800 transition-all duration-300 hover:border-accent hover:bg-accent hover:text-slate-900 active:scale-95 disabled:pointer-events-none disabled:opacity-60 dark:text-white dark:hover:text-slate-900 rounded-2xl"
+                      className="board-card group relative flex h-12 cursor-pointer items-center justify-center gap-2.5 px-10 font-headline text-xs font-bold text-slate-800 transition-all duration-300 hover:border-accent hover:bg-accent hover:text-slate-900 active:scale-95 dark:text-white dark:hover:text-slate-900 rounded-2xl"
                     >
-                      {isExpanding ? (
-                        <>
-                          <Loader2 className="w-4 h-4 animate-spin text-emerald-500 group-hover:text-slate-900" />
-                          <span>Syncing logs...</span>
-                        </>
-                      ) : (
-                        <>
-                          <span>Load More Stories</span>
-                          <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
-                        </>
-                      )}
+                      <span>Load More Stories</span>
+                      <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
                     </button>
                   )}
                 </div>
@@ -549,7 +537,7 @@ export default function BlogPage() {
           )}
 
           {/* Newsletter input card */}
-          <section className="board-card relative mt-28 overflow-hidden rounded-[2.5rem] p-8 md:p-12">
+          <section className="board-card relative mt-20 overflow-hidden rounded-[2rem] p-5 sm:mt-28 sm:rounded-[2.5rem] sm:p-8 md:p-12">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
               {/* Left Side: Editorial Content */}
               <div className="space-y-4 lg:w-[48%] lg:max-w-xl">
@@ -582,6 +570,7 @@ export default function BlogPage() {
                       <input 
                         type="email" 
                         placeholder="john.doe@acme.com" 
+                        aria-label="Email address for newsletter"
                         required
                         value={subscribeEmail}
                         onChange={(e) => setSubscribeEmail(e.target.value)}
@@ -611,7 +600,7 @@ export default function BlogPage() {
 
         </div>
 
-      </div>
+      </main>
 
       {/* Global Footer */}
       <Footer />

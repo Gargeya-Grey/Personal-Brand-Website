@@ -1,7 +1,7 @@
 'use client';
 
 import { motion, AnimatePresence, useScroll, useTransform } from 'motion/react';
-import { useRef, useState, useEffect } from 'react';
+import { useRef, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Twitter, Linkedin, Youtube, Github, ArrowUp, AlertCircle } from 'lucide-react';
@@ -56,23 +56,15 @@ function AtelierFooter() {
   );
 }
 
-export function Footer() {
-  const pathname = usePathname();
-  const isAtelier = pathname.startsWith('/editorial') || pathname.startsWith('/login');
-
+function PublicFooter() {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [subscribing, setSubscribing] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [error, setError] = useState('');
   const [statusHovered, setStatusHovered] = useState(false);
-  const [latency, setLatency] = useState(12);
 
   const containerRef = useRef<HTMLElement>(null);
-
-  if (isAtelier) {
-    return <AtelierFooter />;
-  }
 
   const { scrollYProgress } = useScroll({
     target: containerRef,
@@ -81,13 +73,6 @@ export function Footer() {
 
   const x1 = useTransform(scrollYProgress, [0.7, 1.1], ['-100%', '100%']);
   const x2 = useTransform(scrollYProgress, [0.7, 1.1], ['0%', '200%']);
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setLatency(Math.floor(Math.random() * 6) + 9);
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -143,97 +128,99 @@ export function Footer() {
   return (
     <footer
       ref={containerRef}
-      className="w-full bg-slate-950 text-slate-300 pt-24 pb-12 relative z-0 overflow-x-hidden mt-32 border-t border-slate-900"
+      className="relative z-0 mt-20 w-full overflow-x-hidden border-t border-slate-900 bg-slate-950 pb-8 pt-16 text-slate-300 sm:mt-28 sm:pb-10 sm:pt-20 lg:mt-32 lg:pb-12 lg:pt-24"
       id="footer"
     >
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(to_bottom,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_100%,#000_75%,transparent_100%)] pointer-events-none -z-10" />
-      <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_50%_30%,rgba(52,211,153,0.05),transparent_55%)]" />
+      <div
+        className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(52,211,153,0.06),transparent_60%)]"
+        aria-hidden="true"
+      />
 
       <span className="sr-only">{siteConfig.name}</span>
 
-      <div className="relative z-20 max-w-7xl mx-auto px-6 md:px-12">
-        {/* Newsletter */}
-        <div className="max-w-4xl mx-auto relative mb-20 md:mb-28">
-          <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_center,rgba(52,211,153,0.08),transparent_70%)] blur-2xl" />
-          <div className="bg-slate-900 border border-slate-800/80 hover:border-emerald-500/20 rounded-2xl p-6 md:p-8 lg:p-10 shadow-2xl relative transition-colors duration-500">
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6 md:gap-10">
-              <div className="space-y-2 md:w-[40%] md:max-w-md">
-                <h3 className="font-label text-xs uppercase tracking-widest font-bold text-slate-200">
-                  Stay Updated
-                </h3>
-                <p className="font-body text-[14px] text-slate-400 leading-relaxed">
-                  High-signal notes on AI evaluation, systems craft, and building Edudojo — no spam.
-                </p>
-              </div>
+      <div className="relative z-20 mx-auto max-w-7xl px-4 sm:px-6 md:px-10 lg:px-12">
+        {/* Newsletter — same width as columns (was max-w-4xl, looked inset) */}
+        <div className="mb-16 border-b border-white/[0.06] pb-14 md:mb-20 md:pb-16">
+          <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
+            <div className="max-w-md space-y-3">
+              <h3 className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                Stay updated
+              </h3>
+              <p className="font-display text-2xl font-normal tracking-[-0.02em] text-white sm:text-3xl">
+                Notes worth opening.
+              </p>
+              <p className="font-body text-sm leading-relaxed text-slate-400 sm:text-[15px]">
+                High-signal writing on AI evaluation, craft, and building Edudojo — no spam.
+              </p>
+            </div>
 
-              <div className="w-full md:w-[55%] md:max-w-lg">
-                <AnimatePresence mode="wait">
-                  {!subscribed ? (
-                    <motion.form
-                      key="subscribe-form"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      onSubmit={handleSubscribe}
-                      className="w-full space-y-3"
-                    >
-                      <div className="flex flex-col sm:flex-row gap-4">
-                        <label htmlFor="footer-email" className="sr-only">
-                          Email for newsletter
-                        </label>
-                        <input
-                          id="footer-email"
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          disabled={subscribing}
-                          placeholder="Your email"
-                          required
-                          autoComplete="email"
-                          className="w-full sm:flex-1 min-w-0 h-14 text-sm font-body bg-slate-950 text-white placeholder-slate-400 border-2 border-slate-800 rounded-xl px-4 focus:outline-none focus:border-emerald-500 disabled:opacity-50 transition-all duration-300 shadow-inner focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900"
-                        />
-                        <button
-                          type="submit"
-                          disabled={subscribing}
-                          className="h-14 px-6 w-full sm:w-auto shrink-0 bg-white hover:bg-slate-50 hover:shadow-[0_0_20px_rgba(16,185,129,0.25)] text-slate-950 font-headline font-bold text-sm rounded-xl uppercase tracking-wider border-2 border-transparent hover:border-emerald-400 transition-all duration-300 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
-                        >
-                          {subscribing ? 'Subscribing…' : 'Subscribe'}
-                        </button>
-                      </div>
-                      {error && (
-                        <p role="alert" className="text-red-400 text-xs flex items-center gap-2">
-                          <AlertCircle className="w-3.5 h-3.5 shrink-0" />
-                          {error}
-                        </p>
-                      )}
-                    </motion.form>
-                  ) : (
-                    <motion.div
-                      key="subscribe-success"
-                      initial={{ opacity: 0, height: 0 }}
-                      animate={{ opacity: 1, height: 'auto' }}
-                      className="w-full bg-slate-950 border-2 border-slate-800 rounded-xl p-3.5 font-mono text-xs text-emerald-400 space-y-1.5 shadow-inner"
-                    >
-                      <div className="flex justify-between items-center text-slate-500 border-b border-slate-900/40 pb-1 mb-2">
-                        <span>TERMINAL STATUS</span>
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                      </div>
-                      {logs.map((log, index) => (
-                        <div key={index}>{log}</div>
-                      ))}
-                      <div className="text-white font-bold pt-1">✓ You&apos;re on the list.</div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </div>
+            <div className="w-full max-w-md lg:max-w-lg">
+              <AnimatePresence mode="wait">
+                {!subscribed ? (
+                  <motion.form
+                    key="subscribe-form"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    onSubmit={handleSubscribe}
+                    className="w-full space-y-3"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row">
+                      <label htmlFor="footer-email" className="sr-only">
+                        Email for newsletter
+                      </label>
+                      <input
+                        id="footer-email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        disabled={subscribing}
+                        placeholder="Your email"
+                        required
+                        autoComplete="email"
+                        className="h-12 w-full min-w-0 rounded-full border border-white/10 bg-white/[0.03] px-5 font-body text-sm text-white placeholder-slate-500 transition-colors focus:border-accent/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 sm:flex-1"
+                      />
+                      <button
+                        type="submit"
+                        disabled={subscribing}
+                        className="h-12 w-full shrink-0 cursor-pointer rounded-full bg-white px-6 font-headline text-sm font-bold tracking-tight text-slate-950 transition-all hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto"
+                      >
+                        {subscribing ? 'Subscribing…' : 'Subscribe'}
+                      </button>
+                    </div>
+                    {error && (
+                      <p role="alert" className="flex items-center gap-2 text-xs text-red-400">
+                        <AlertCircle className="h-3.5 w-3.5 shrink-0" />
+                        {error}
+                      </p>
+                    )}
+                  </motion.form>
+                ) : (
+                  <motion.div
+                    key="subscribe-success"
+                    initial={{ opacity: 0, height: 0 }}
+                    animate={{ opacity: 1, height: 'auto' }}
+                    className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 font-mono text-xs text-emerald-400"
+                  >
+                    <div className="mb-2 flex items-center justify-between border-b border-white/5 pb-2 text-slate-500">
+                      <span>STATUS</span>
+                      <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-500" />
+                    </div>
+                    {logs.map((log, index) => (
+                      <div key={index}>{log}</div>
+                    ))}
+                    <div className="pt-2 font-bold text-white">✓ You&apos;re on the list.</div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </div>
           </div>
         </div>
 
         {/* Link columns */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 pb-16 text-left">
-          <div className="space-y-5">
-            <h3 className="font-label text-xs uppercase tracking-widest font-bold text-slate-200">
+        <div className="grid grid-cols-1 gap-10 pb-14 text-left sm:grid-cols-2 md:grid-cols-4 md:gap-8 md:pb-16">
+          <div className="space-y-4">
+            <h3 className="font-label text-[11px] font-bold uppercase tracking-[0.18em] text-white/45">
               Projects
             </h3>
             <ul className="space-y-3 font-ui text-[15px] font-normal tracking-wide text-slate-400">
@@ -265,8 +252,8 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-5">
-            <h3 className="font-label text-xs uppercase tracking-widest font-bold text-slate-200">
+          <div className="space-y-4">
+            <h3 className="font-label text-[11px] font-bold uppercase tracking-[0.18em] text-white/45">
               Content
             </h3>
             <ul className="space-y-3 font-ui text-[15px] font-normal tracking-wide text-slate-400">
@@ -288,8 +275,8 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-5">
-            <h3 className="font-label text-xs uppercase tracking-widest font-bold text-slate-200">
+          <div className="space-y-4">
+            <h3 className="font-label text-[11px] font-bold uppercase tracking-[0.18em] text-white/45">
               Connect
             </h3>
             <ul className="space-y-3 font-ui text-[15px] font-normal tracking-wide text-slate-400">
@@ -316,8 +303,8 @@ export function Footer() {
             </ul>
           </div>
 
-          <div className="space-y-5">
-            <h3 className="font-label text-xs uppercase tracking-widest font-bold text-slate-200">
+          <div className="space-y-4">
+            <h3 className="font-label text-[11px] font-bold uppercase tracking-[0.18em] text-white/45">
               Presence
             </h3>
             <ul className="space-y-3 font-ui text-[15px] font-normal tracking-wide text-slate-400">
@@ -369,21 +356,22 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="pt-8 border-t border-slate-800/80 flex flex-col sm:flex-row flex-wrap justify-between items-center gap-6 text-sm font-mono text-slate-400">
-          <div className="flex items-center gap-2 relative">
+        {/* Bottom bar — equal columns so legal stays truly centered */}
+        <div className="grid grid-cols-1 items-center gap-6 border-t border-slate-800/80 pt-8 text-sm text-slate-400 sm:grid-cols-3">
+          <div className="relative flex items-center justify-center sm:justify-start">
             <button
               type="button"
-              className="flex items-center gap-2 cursor-pointer group w-max"
+              className="group flex w-max cursor-pointer items-center gap-2 font-mono"
               onMouseEnter={() => setStatusHovered(true)}
               onMouseLeave={() => setStatusHovered(false)}
               onFocus={() => setStatusHovered(true)}
               onBlur={() => setStatusHovered(false)}
               aria-describedby="telemetry-panel"
+              aria-expanded={statusHovered}
             >
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.9)]" />
-              <span className="text-[13px] md:text-sm text-slate-400 group-hover:text-white transition-colors duration-300">
-                All systems operational
+              <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)] animate-pulse" />
+              <span className="text-[13px] text-slate-400 transition-colors duration-300 group-hover:text-white md:text-sm">
+                Site online
               </span>
             </button>
 
@@ -396,22 +384,22 @@ export function Footer() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 8, scale: 0.96 }}
                   transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="absolute bottom-7 left-0 w-60 bg-slate-900 border border-slate-800 p-3.5 rounded-xl shadow-lg z-50 pointer-events-none"
+                  className="pointer-events-none absolute bottom-7 left-1/2 z-50 w-60 -translate-x-1/2 rounded-xl border border-slate-800 bg-slate-900 p-3.5 shadow-lg sm:left-0 sm:translate-x-0"
                 >
                   <div className="space-y-2">
                     <div className="flex items-center justify-between border-b border-white/5 pb-1">
-                      <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
+                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
                         Edge status
                       </span>
-                      <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-400 font-bold">
+                      <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
                         Active
                       </span>
                     </div>
-                    <div className="grid grid-cols-2 gap-y-1 text-xs text-slate-300 font-mono">
-                      <span className="text-slate-400">Uptime:</span>
-                      <span className="text-right text-emerald-500 font-bold">99.9%</span>
-                      <span className="text-slate-400">Latency:</span>
-                      <span className="text-right text-white font-bold">{latency}ms</span>
+                    <div className="grid grid-cols-2 gap-y-1 font-mono text-xs text-slate-300">
+                      <span className="text-slate-400">Delivery:</span>
+                      <span className="text-right font-bold text-emerald-500">Vercel Edge</span>
+                      <span className="text-slate-400">Rendering:</span>
+                      <span className="text-right font-bold text-white">Next.js</span>
                     </div>
                   </div>
                 </motion.div>
@@ -419,68 +407,110 @@ export function Footer() {
             </AnimatePresence>
           </div>
 
-          <div className="flex flex-wrap justify-center gap-6 items-center text-slate-400 font-ui text-sm">
+          <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-ui text-sm">
             <Link
               href="/privacy"
-              className="hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none rounded-sm transition-colors"
+              className="rounded-sm transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
               Privacy
             </Link>
             <Link
               href="/terms"
-              className="hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none rounded-sm transition-colors"
+              className="rounded-sm transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
               Terms
             </Link>
-            <span>
+            <span className="font-mono">
               © {new Date().getFullYear()} {siteConfig.name}
             </span>
           </div>
 
-          <motion.button
-            type="button"
-            onClick={scrollToTop}
-            whileHover={{ y: -3, scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="w-9 h-9 rounded-xl bg-slate-900 border border-slate-800 shadow-sm flex items-center justify-center text-slate-400 hover:text-white hover:border-emerald-400/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 transition-all duration-300 cursor-pointer"
-            title="Scroll to top"
-            aria-label="Scroll to top"
-          >
-            <ArrowUp className="w-4 h-4" />
-          </motion.button>
+          <div className="flex justify-center sm:justify-end">
+            <motion.button
+              type="button"
+              onClick={scrollToTop}
+              whileHover={{ y: -3, scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 shadow-sm transition-all duration-300 hover:border-emerald-400/50 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              title="Scroll to top"
+              aria-label="Scroll to top"
+            >
+              <ArrowUp className="h-4 w-4" />
+            </motion.button>
+          </div>
         </div>
-      </div>
 
-      <div className="relative z-10 w-full flex justify-center py-10 md:py-16 overflow-hidden">
-        <svg
-          className="w-full h-auto select-none max-w-7xl mx-auto px-6"
-          viewBox="0 0 1000 240"
-          aria-hidden="true"
-        >
-          <defs>
-            <motion.linearGradient id="wordmark-shine" x1={x1} y1="0%" x2={x2} y2="0%">
-              <stop offset="0%" stopColor="rgba(148, 163, 184, 0.12)" />
-              <stop offset="42%" stopColor="rgba(148, 163, 184, 0.12)" />
-              <stop offset="50%" stopColor="rgba(16, 185, 129, 0.85)" />
-              <stop offset="58%" stopColor="rgba(148, 163, 184, 0.12)" />
-              <stop offset="100%" stopColor="rgba(148, 163, 184, 0.12)" />
-            </motion.linearGradient>
-          </defs>
-          <text
-            x="50%"
-            y="55%"
-            dominantBaseline="middle"
-            textAnchor="middle"
-            fill="#020617"
-            stroke="url(#wordmark-shine)"
-            strokeWidth="2.4"
-            paintOrder="stroke fill"
-            className="font-headline font-extrabold text-[168px] tracking-[0.06em] uppercase"
+        {/* Wordmark — same content width as columns / bottom bar */}
+        <div className="relative z-10 overflow-hidden pt-10 md:pt-14">
+          <svg
+            className="mx-auto h-auto w-full select-none"
+            viewBox="0 0 1000 280"
+            aria-hidden="true"
           >
-            Gargeya
-          </text>
-        </svg>
+            <defs>
+              {/*
+                Filled script + gradient shine wash (not stroked outlines).
+                Hollow stroke on Monte Carlo splits glyph contours into
+                double-lines with visible breaks — fill keeps connectors whole.
+              */}
+              <motion.linearGradient id="wordmark-shine" x1={x1} y1="0%" x2={x2} y2="0%">
+                <stop offset="0%" stopColor="#1e293b" />
+                <stop offset="42%" stopColor="#1e293b" />
+                <stop offset="47%" stopColor="#475569" />
+                <stop offset="49.5%" stopColor="#99f6e4" />
+                <stop offset="50%" stopColor="#5eead4" />
+                <stop offset="50.5%" stopColor="#99f6e4" />
+                <stop offset="53%" stopColor="#475569" />
+                <stop offset="58%" stopColor="#1e293b" />
+                <stop offset="100%" stopColor="#1e293b" />
+              </motion.linearGradient>
+            </defs>
+            {/* Base — readable without the flare */}
+            <text
+              x="50%"
+              y="58%"
+              dominantBaseline="middle"
+              textAnchor="middle"
+              fill="#334155"
+              fontSize="210"
+              letterSpacing="-0.02em"
+              className="font-wordmark"
+              style={{
+                opacity: 0.85,
+                fontFeatureSettings: '"calt" 1, "liga" 1',
+                fontVariantLigatures: 'common-ligatures contextual',
+              }}
+            >
+              Gargeya
+            </text>
+            {/* Shine wash across solid letterforms */}
+            <text
+              x="50%"
+              y="58%"
+              dominantBaseline="middle"
+              textAnchor="middle"
+              fill="url(#wordmark-shine)"
+              fontSize="210"
+              letterSpacing="-0.02em"
+              className="font-wordmark"
+              style={{
+                opacity: 0.95,
+                fontFeatureSettings: '"calt" 1, "liga" 1',
+                fontVariantLigatures: 'common-ligatures contextual',
+              }}
+            >
+              Gargeya
+            </text>
+          </svg>
+        </div>
       </div>
     </footer>
   );
+}
+
+export function Footer() {
+  const pathname = usePathname();
+  const isAtelier = pathname.startsWith('/editorial') || pathname.startsWith('/login');
+
+  return isAtelier ? <AtelierFooter /> : <PublicFooter />;
 }

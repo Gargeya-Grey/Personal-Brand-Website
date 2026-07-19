@@ -14,11 +14,11 @@ export const metadata: Metadata = {
 
 export default function YouTubePage() {
   return (
-    <div className="min-h-screen flex flex-col relative overflow-hidden">
+    <div className="relative flex min-h-screen flex-col overflow-x-clip">
       <Navigation />
 
-      <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full relative z-10">
-        <section className="py-20 md:py-32 max-w-4xl">
+      <main id="page-main" tabIndex={-1} className="relative z-10 mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10 xl:px-12">
+        <section className="max-w-4xl py-12 sm:py-20 md:py-28">
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
@@ -31,11 +31,11 @@ export default function YouTubePage() {
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
               Video journal
             </span>
-            <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-[-0.04em] text-primary leading-[0.95]">
+            <h1 className="font-headline text-[clamp(2.5rem,8vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-primary">
               Field notes from the <span className="text-accent">road</span>
               <span className="text-on-surface-variant/50">.</span>
             </h1>
-            <p className="font-body text-xl md:text-2xl text-on-surface-variant leading-relaxed max-w-2xl pt-4">
+            <p className="max-w-2xl pt-2 font-body text-lg leading-relaxed text-on-surface-variant sm:text-xl md:pt-4 md:text-2xl">
               Long-form travel and process vlogs — the texture behind the systems work. Subscribe on{' '}
               <a
                 href={siteConfig.links.youtube}
@@ -50,7 +50,7 @@ export default function YouTubePage() {
           </motion.div>
         </section>
 
-        <section className="py-24 border-t border-outline-variant/10">
+        <section className="border-t border-outline-variant/10 py-16 sm:py-20 lg:py-24">
           <YoutubeGrid />
         </section>
       </main>
