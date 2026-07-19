@@ -16,7 +16,7 @@ export default function Home() {
         tabIndex={-1}
         className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10 xl:px-12"
       >
-        {/* Hero — copy + waves media card over the global 3D floor */}
+        {/* Hero — copy + media card */}
         <section className="relative grid min-h-[min(88svh,860px)] grid-cols-1 items-center gap-12 overflow-x-clip py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
           <div className="pointer-events-none absolute -right-40 top-8 hidden h-[42rem] w-[42rem] rounded-full border border-accent/15 lg:block" aria-hidden="true" />
           <div className="pointer-events-none absolute -right-24 top-28 hidden h-[30rem] w-[30rem] rounded-full border border-white/10 lg:block" aria-hidden="true" />
@@ -82,21 +82,25 @@ export default function Home() {
           </motion.div>
 
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            initial={{ y: 16 }}
+            animate={{ y: 0 }}
+            transition={{ duration: 0.85, delay: 0.12, ease: [0.16, 1, 0.3, 1] }}
             className="relative z-10 lg:col-span-5"
           >
             <div className="relative ml-auto h-[400px] w-full max-w-[520px] md:h-[500px]">
               <div className="absolute -right-3 top-8 hidden h-28 w-3 rounded-full border border-accent/30 bg-accent/10 lg:block" aria-hidden="true" />
               <div className="relative h-full overflow-hidden rounded-[1.4rem] border border-white/15 bg-slate-950 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.75)]">
                 <Image
-                  src="/gargeya%20profile.jpeg"
+                  src="/profile.webp"
                   alt="Gargeya Sharma"
                   fill
-                  sizes="(max-width: 1024px) 100vw, 520px"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 520px"
                   className="object-cover"
                   priority
+                  fetchPriority="high"
+                  quality={100}
+                  placeholder="blur"
+                  blurDataURL="data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAgCdASoQABAAA4BaJQBOj+AC3/pHL/0kAAD9IZEXT+erWYGdY0DVhO4CgwBJIzKs48DW2vVvXqUgqIC1a+1wAAA="
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-transparent to-transparent dark:from-[#0B1220]/90" />
                 <div className="absolute left-5 right-5 top-5 flex items-center justify-between font-label text-[9px] font-bold uppercase tracking-[0.22em] text-white/60">
