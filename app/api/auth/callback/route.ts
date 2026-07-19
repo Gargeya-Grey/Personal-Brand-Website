@@ -9,10 +9,7 @@ import {
 } from '@/lib/auth';
 import {
   clearOauthCookies,
-  getSessionCookieOptions,
-  readCookieValue,
   setAuthSessionCookie,
-  SESSION_MAX_AGE_SEC,
 } from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
@@ -21,9 +18,9 @@ export async function GET(request: Request) {
   const state = requestUrl.searchParams.get('state');
 
   const cookieStore = await cookies();
-  const stateCookie = readCookieValue(cookieStore.get('oauth_state')?.value);
-  const storedCallbackUrl = readCookieValue(cookieStore.get('oauth_callback_url')?.value);
-  const storedRedirectUri = readCookieValue(cookieStore.get('oauth_redirect_uri')?.value);
+  const stateCookie = cookieStore.get('oauth_state')?.value;
+  const storedCallbackUrl = cookieStore.get('oauth_callback_url')?.value;
+  const storedRedirectUri = cookieStore.get('oauth_redirect_uri')?.value;
 
   if (!state || !stateCookie || state !== stateCookie) {
     const res = NextResponse.redirect(
@@ -63,15 +60,7 @@ export async function GET(request: Request) {
 
     const targetPath = sanitizeRedirect(storedCallbackUrl);
     const redirectResponse = NextResponse.redirect(new URL(targetPath, request.url));
-    clearOauthCookies(redirectResponse, requestUrl);
     setAuthSessionCookie(redirectResponse, sessionToken, requestUrl);
-
-    // Also set via cookies() API (App Router) so the jar definitely receives it
-    try {
-      cookieStore.set('auth_session', sessionToken, getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl));
-    } catch (err) {
-      console.error('cookies().set auth_session failed:', err);
-    }
 
     redirectResponse.headers.set('Cache-Control', 'private, no-store');
     return redirectResponse;

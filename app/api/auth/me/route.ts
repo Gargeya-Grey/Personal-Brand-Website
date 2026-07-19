@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { inspectSession } from '@/lib/auth';
-import { readCookieValue, resolveCookieDomain } from '@/lib/session-cookie';
+import { resolveCookieDomain } from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
   const cookieStore = await cookies();
   const all = cookieStore.getAll();
-  const token = readCookieValue(cookieStore.get('auth_session')?.value);
+  const token = cookieStore.get('auth_session')?.value;
   const { user, reason } = await inspectSession(token);
 
   return NextResponse.json(

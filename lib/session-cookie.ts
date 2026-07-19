@@ -72,56 +72,15 @@ export function getOauthCookieOptions(requestUrl?: URL | string | null): Session
   return getSessionCookieOptions(600, requestUrl);
 }
 
-/** Serialize Set-Cookie manually — avoids Next cookie-jar quirks with Domain on redirects. */
-export function serializeSetCookie(
-  name: string,
-  value: string,
-  options: SessionCookieOptions
-): string {
-  const parts = [
-    `${name}=${value}`,
-    `Path=${options.path}`,
-    `Max-Age=${Math.max(0, options.maxAge)}`,
-    'SameSite=Lax',
-  ];
-  if (options.httpOnly) parts.push('HttpOnly');
-  if (options.secure) parts.push('Secure');
-  if (options.domain) parts.push(`Domain=${options.domain}`);
-  return parts.join('; ');
-}
-
-function appendCookie(
-  response: NextResponse,
-  name: string,
-  value: string,
-  options: SessionCookieOptions
-): void {
-  // Encode so values with = ? : / never truncate Set-Cookie parsing
-  const safe = encodeURIComponent(value);
-  response.headers.append('Set-Cookie', serializeSetCookie(name, safe, options));
-}
-
-export function readCookieValue(raw: string | undefined): string | undefined {
-  if (!raw) return undefined;
-  try {
-    return decodeURIComponent(raw);
-  } catch {
-    return raw;
-  }
-}
-
 function clearNamedCookie(
   response: NextResponse,
   name: string,
   requestUrl?: URL | string | null
 ): void {
   const base = getSessionCookieOptions(0, requestUrl);
-  // Host-only clear
-  appendCookie(response, name, '', { ...base, domain: undefined, maxAge: 0 });
-  // Domain clear (both naked + dotted forms browsers may have stored)
+  response.cookies.set(name, '', { ...base, domain: undefined, maxAge: 0 });
   if (base.domain) {
-    appendCookie(response, name, '', { ...base, maxAge: 0 });
-    appendCookie(response, name, '', { ...base, domain: `.${base.domain}`, maxAge: 0 });
+    response.cookies.set(name, '', { ...base, maxAge: 0 });
   }
 }
 
@@ -146,9 +105,11 @@ export function setAuthSessionCookie(
   token: string,
   requestUrl?: URL | string | null
 ): void {
-  const options = getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl);
-  // One authoritative Set-Cookie — no same-response delete/set race
-  appendCookie(response, 'auth_session', token, options);
+  response.cookies.set(
+    'auth_session',
+    token,
+    getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl)
+  );
 }
 
 export function setOauthCookie(
@@ -157,5 +118,5 @@ export function setOauthCookie(
   value: string,
   requestUrl?: URL | string | null
 ): void {
-  appendCookie(response, name, value, getOauthCookieOptions(requestUrl));
+  response.cookies.set(name, value, getOauthCookieOptions(requestUrl));
 }

@@ -2,7 +2,6 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import {
   getSessionCookieOptions,
-  serializeSetCookie,
   SESSION_MAX_AGE_SEC,
 } from '@/lib/session-cookie';
 
@@ -35,7 +34,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   const opts = getSessionCookieOptions(120, request.url); // 2 minutes
   const res = NextResponse.redirect(new URL('/api/auth/probe', request.url));
-  res.headers.append('Set-Cookie', serializeSetCookie('auth_probe', '1', opts));
+  res.cookies.set('auth_probe', '1', opts);
   res.headers.set('Cache-Control', 'private, no-store');
   return res;
 }
