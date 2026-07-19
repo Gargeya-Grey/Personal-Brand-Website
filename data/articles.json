@@ -1,220 +1,65 @@
 [
   {
     "id": 1,
-    "slug": "how-rippling-went-ai-native",
-    "featured": false,
-    "categories": [
-      "Case Studies",
-      "Deep Agents",
-      "LangSmith"
-    ],
-    "title": "How Rippling Went AI-Native Across Every Product in 6 Months with Deep Agents and LangSmith",
-    "excerpt": "Analyzing the end-to-end integration of LLM-orchestrated permission handlers, multi-agent compliance pipelines, and automated shadow evaluation processes in active production.",
-    "author": "Sofia Sulikowski",
-    "authorRole": "Technical Storyteller @ LangChain",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=sofia",
-    "date": "June 1, 2026",
-    "readTime": "6 min read",
+    "slug": "architecting-intelligence-in-education",
+    "featured": true,
+    "categories": ["Education", "AI Architecture", "Product"],
+    "title": "Architecting Intelligence in Education",
+    "excerpt": "Why evaluation and assessment are the real leverage points for AI in learning — and how founders should design systems that measure capability, not just chat.",
+    "author": "Gargeya Sharma",
+    "authorRole": "Founder & Lead Architect @ Edudojo.ai",
+    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=gargeya",
+    "date": "June 15, 2026",
+    "readTime": "8 min read",
     "illustrationType": "diagram1",
+    "status": "published",
     "takeaways": [
-      "Rippling integrated deep agents across all payroll, compliance, and user onboarding modules within a single quarter, reducing ticket processing load by 48%.",
-      "By enforcing strict typing constraints and structural agent graphs, engineers prevented cascading failures in multi-party approval sequences.",
-      "Developing real-time shadow evaluation metrics on LangSmith allowed Rippling to parallel-test update prompts on representative production datasets before making revisions live."
+      "AI in education fails when it optimizes for answers instead of capability signals.",
+      "Evaluation loops — not chat UIs — are the durable product surface for learning systems.",
+      "Mechanical sympathy for models and for human curricula must co-exist in the architecture."
     ],
-    "content": "> Today, enterprise scale requires teams to move from monolithic prompts to structured, streamable agentic graphs.\n\nRippling specializes in processing hyper-complex administrative workflows: payroll routing, regulatory compliance checks, security policies, and employee onboarding. When their product organization decided to embed generative intelligence, they bypassed standard chatbot sandboxes and constructed a cohesive, system-wide multi-agent mesh.\n\n### 1. The Multi-Agent Compliance Mesh\n\nAutonomous loops need clear authorization boundaries. In Rippling's new design, instead of routing raw user inputs to a single all-knowing LLM, inquiries trigger specialized agents operating on restricted DAGs (Directed Acyclic Graphs).\n\n```javascript\n// Initialize strict LangGraph multi-agent compliance handler\nconst complianceGraph = new StateGraph(StateSchema)\n  .addNode(\"payrollAgent\", payrollHandler)\n  .addNode(\"complianceGuard\", regulatoryChecker)\n  .addEdge(\"payrollAgent\", \"complianceGuard\")\n  .compile();\n```\n\nThis compartmentalization ensures that tax queries are processed by a system with strict access to local tax code rules, without exposing core personnel files.\n\n### 2. Closing the Debug Loop with LangSmith\n\nWhen a stateful connection breaks inside a multi-agent transaction, debugging is extraordinarily challenging without robust lineage tracking. Using LangSmith, Rippling maps the recursive steps taken by every node in the graph, instantly pinning down exactly where an alignment shift occurred.\n\nThrough custom trace parameters, they track user intent shifts across turns, observing how the model updates memory registers dynamically."
+    "content": "> The next generation of learning products will not win by shipping another chatbot. They will win by making capability legible.\n\nEducation has always been a measurement problem dressed up as a content problem. We publish curricula, we deliver lectures, we grade artifacts — and yet most digital learning systems still treat intelligence as *token generation* rather than *evidence of skill*.\n\n### 1. The wrong interface\n\nChat is a wonderful demoware surface. It is a terrible primary interface for assessment. When a student (or an employee) \"talks to the model,\" you mostly observe fluency under soft constraints. You do not observe transfer, calibration, or the ability to recover from a wrong first attempt.\n\nAt Edudojo, the architectural bet is different: **instrument the learning loop**. Capture attempts, rubrics, partial credit, and recovery paths. Treat the LLM as a component inside an evaluation graph — not as the product itself.\n\n### 2. Mechanical sympathy for models *and* humans\n\nMechanical sympathy usually means understanding how silicon behaves. In education, it also means understanding how people learn under load: spaced practice, feedback latency, trust in the scorer, and the politics of grades.\n\nA production system therefore needs:\n\n- Strict schemas for rubrics and outcomes\n- Shadow evaluation before any prompt or model change goes live\n- Human override paths that leave an audit trail\n- Latency budgets that respect classroom and hiring timelines\n\n### 3. From zero to one as a founder\n\nBuilding this is not a research paper. It is product architecture: identity, content versioning, evaluation workers, and a calm editorial UI for operators. Soft minimalism in the interface is not aesthetics for its own sake — it is cognitive load management for high-stakes decisions.\n\nIf you are redesigning evaluation for a school, a company, or a marketplace of skills, start with the signal you want to trust six months later. Design backward from that signal. Everything else is decoration."
   },
   {
     "id": 2,
-    "slug": "introducing-langsmith-engine",
+    "slug": "soft-minimalism-for-founder-systems",
     "featured": false,
-    "categories": [
-      "LangSmith",
-      "Observability & Evals"
-    ],
-    "title": "Introducing LangSmith Engine",
-    "excerpt": "Replacing the manual cycle of trace analysis. Clustered error reports trace execution chains directly back to your codebase with suggested developer pull requests.",
-    "author": "Ben Tannyhill",
-    "authorRole": "Principal Engineer @ LangSmith",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=ben",
-    "date": "May 13, 2026",
-    "readTime": "1 min read",
+    "categories": ["Engineering", "Design", "Founder Notes"],
+    "title": "Soft Minimalism for Founder Systems",
+    "excerpt": "How quiet UI, glass surfaces, and ruthless information hierarchy help a personal brand and a product company feel like one franchise.",
+    "author": "Gargeya Sharma",
+    "authorRole": "Founder & Lead Architect",
+    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=gargeya",
+    "date": "June 8, 2026",
+    "readTime": "5 min read",
     "illustrationType": "diagram2",
-    "takeaways": [
-      "LangSmith Engine continuously scans trace telemetry to cluster recurrent failures automatically.",
-      "The system drafts target codebase patches based on diagnosed error causes, matching user prompt templates.",
-      "Every resolved issue automatically generates custom online evaluators and updates offline evaluation datasets."
-    ],
-    "content": "> Continuous diagnostic feedback mesh. Our new Engine analyzes trace groupings to suggest programmatic resolutions.\n\nSince launching LangSmith, our mission has been to give developers visibility into the complex chain of steps their autonomous systems take. Trace viewers let you see what happened; today, we're launching the next evolution: **LangSmith Engine**, designed to automatically understand *why* it failed and help you deploy fixes.\n\n### Automated Error Isolation\n\nHistorically, identifying a drift in performance involved parsing hundreds of raw system traces. LangSmith Engine groups these failed transactions continuously. Using advanced embeddings and clustering models, the Engine correlates traces suffering from similar underlying causes—such as context-retrieval latency, semantic hallucination, or routing syntax crashes.\n\n```json\n// Sample metadata payload returned by LangSmith Engine diagnostics\n{\n  \"cluster_id\": \"err_hallucination_v4\",\n  \"confidence_metric\": 0.94,\n  \"context_retrieval_fail\": true,\n  \"suggested_remediation\": \"Update chunking overlap size in vector pipeline\"\n}\n```\n\nThis diagnostics mesh acts as a sentinel guarding production systems, guaranteeing swift alerts and insights when models deviate.",
     "status": "published",
-    "coverImage": "",
-    "updatedAt": "2026-06-03T10:29:44.200Z"
+    "takeaways": [
+      "Authority is projected through restraint: space, type, and one accent color.",
+      "Shared design tokens between company and personal site compound brand memory.",
+      "Every mock interaction that claims success without delivering erodes trust."
+    ],
+    "content": "> Premium is not more chrome. Premium is fewer lies in the interface.\n\nFounder sites often fail in two opposite ways: they look like generic SaaS marketing, or they look like unfinished developer portfolios. The path between them is **editorial glassmorphism with honest systems** — surfaces that feel expensive, copy that sounds like a person, and forms that actually work.\n\n### The Digital Sensei stance\n\nQuiet academic presence beats loud gradients. Algorithmic mint as a single accent. Asymmetry that feels like a journal layout rather than a bootstrap grid. When Edudojo and this site share tokens, visitors experience one mind across company and craft.\n\n### Production over pretension\n\nA beautiful contact form that does not deliver your message is not premium — it is theater. Same for newsletter CTAs and Discord links that go nowhere. Ship the plumbing first; then polish the glass.\n\n### What I optimize for\n\n1. Low latency perception (stable layout, paused canvas when hidden)\n2. Mobile-first navigation that does not trap focus\n3. Content that is actually mine\n4. CTAs that map to real outcomes: Edudojo, conversation, community\n\nThat is the bar for this engineering editorial."
   },
   {
     "id": 3,
-    "slug": "we-built-smithdb",
+    "slug": "building-in-public-as-an-ai-founder",
     "featured": false,
-    "categories": [
-      "LangSmith",
-      "Engineering"
-    ],
-    "title": "We built SmithDB, the data layer for agent observability",
-    "excerpt": "Why standard relational databases face performance bottlenecks when executing recursive analytics across billions of deep, multi-turn agent trace graphs.",
-    "author": "Ankush Gola",
-    "authorRole": "VP of Engineering @ LangChain",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=ankush",
-    "date": "May 13, 2026",
-    "readTime": "11 min read",
-    "illustrationType": "diagram3",
-    "takeaways": [
-      "Traditional columnar engines choke when reconstructing stateful, tree-like agent trace spans in real time.",
-      "SmithDB introduces custom columnar graph encoding, minimizing JOIN overhead across multi-span turns.",
-      "Specialized delta-compression strategies reduce memory footprint by 70%, with sub-100ms recursive trace lookups."
-    ],
-    "content": "> Re-architecting database layers from scratch to support deep, stateful, open-schema telemetry loops.\n\nTracing recursive prompts creates unique data access patterns. Traditional databases are either highly optimized for analytical aggregation (columnar) or relational transaction speeds (row-based). However, LLMs and agent chains communicate in open-ended tree hierarchy spans.\n\n### The Trace Span Problem\n\nEvery turn in an agent session contains nested child steps: tool calls, vector retrieves, sub-agent evaluations, and response formats. If you try to compile these trees across millions of concurrent users inside standard relational databases, query performance plunges due to complex network-hop JOIN calculations.\n\nBy encoding trace layers as pre-indexed, continuous delta-compressed structures, SmithDB aggregates analytical metrics instantly. It allows developers to query nested sessions with instantaneous performance, empowering lightning-fast iterations."
-  },
-  {
-    "id": 4,
-    "slug": "building-workflows-for-agents",
-    "featured": false,
-    "categories": [
-      "Deep Agents",
-      "Open Source",
-      "LangChain"
-    ],
-    "title": "Building workflows for agents with Skills and Interpreters",
-    "excerpt": "Isolating execution models from raw environments. Implementing sandboxed python nodes in active agent architectures to validate outputs safely.",
-    "author": "Hunter Lovell",
-    "authorRole": "Developer Advocate @ LangChain",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=hunter",
-    "date": "May 29, 2026",
-    "readTime": "13 min read",
-    "illustrationType": "diagram4",
-    "takeaways": [
-      "Dynamic tool execution requires dividing planning components from code-sandbox execution containers.",
-      "Isolating executing agents prevents prompt injections and server breaches through sandboxed Linux runtime protocols.",
-      "Robust execution monitoring pipes stdout/onerror logs directly back to the planning transformer to trigger self-corrected prompts."
-    ],
-    "content": "> Executing code inside secure sandboxes guarantees safe agent calculations.\n\nGiving LLMs access to code compilation is incredibly powerful. It changes machines from passive readers to active systems capable of analyzing math models, plotting arrays, and executing scripts. However, it exposes systems to extreme risks unless execution modules are completely sandboxed.\n\n### Executing Code Safely: Isolation first\n\nIn our secure architecture, runtime tasks are dispatched from the primary Orchestrator to isolated gRPC containers running stateless, read-only interpreters. High-risk actions are mapped onto secure virtual zones. If the executing script fails, stderr messages are routed directly to the transformer, empowering the agent to refactor and retry."
-  },
-  {
-    "id": 5,
-    "slug": "may-2026-newsletter",
-    "featured": false,
-    "categories": [
-      "Newsletter",
-      "LangChain"
-    ],
-    "title": "May 2026: LangChain Newsletter",
-    "excerpt": "Catch up on stateful routing, human-in-the-loop triggers, dynamic checkpointer revisions, and native multi-agent system layouts inside LangGraph server.",
-    "author": "The LangChain Team",
-    "authorRole": "Community & Editorial",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=newsletter",
-    "date": "May 27, 2026",
-    "readTime": "3 min read",
-    "illustrationType": "diagram5",
-    "takeaways": [
-      "LangGraph Server now directly manages stateful human approval triggers without background state-loss.",
-      "Integrated dynamic memory partitions allow teams to fork sessions seamlessly during complex debugging.",
-      "Sub-graph execution threads can now be allocated to independent server nodes for efficient parallel scale."
-    ],
-    "content": "Welcome to the May 2026 edition of the LangChain newsletter! This month, we focus heavily on **Human-In-The-Loop** patterns and **LangGraph Server** scale-revisions.\n\nAs autonomous agent ecosystems mature, the need for humans to validate critical decisions becomes non-negotiable. Our team has delivered a fully dynamic state-interrupter mesh, making it seamless to halt calculations, query humans in custom UIs, and resume processes from precise state locations.\n\nSub-graph execution threads can now be allocated to independent server nodes for efficient parallel scale."
-  },
-  {
-    "id": 6,
-    "slug": "how-lyft-built-an-agent-platform",
-    "featured": false,
-    "categories": [
-      "Case Studies",
-      "LangGraph",
-      "LangSmith"
-    ],
-    "title": "How Lyft Built an Agent Platform for Customer Support with LangGraph and LangSmith",
-    "excerpt": "How Lyft orchestrates stateful, multi-agent frameworks to coordinate multi-turn support queries with human-level accuracy and minimal latency.",
-    "author": "Akshay Sharma",
-    "authorRole": "Staff Software Engineer @ Lyft",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=akshay",
-    "date": "May 27, 2026",
-    "readTime": "10 min read",
-    "illustrationType": "diagram6",
-    "takeaways": [
-      "Lyft scaled support agent routing using stateful LangGraph node patterns over multiple internal databases.",
-      "Average user transaction times decreased by 35% with specialized semantic routing layers.",
-      "Automated LangSmith evaluations validate safety guidelines on every model update."
-    ],
-    "content": "> Customer support at scale requires complex state retention over long periods of conversation.\n\nCoordinating support queries for millions of active riders and drivers demands high-accuracy responses on the fly. Lyft utilized the stateful graph features of LangGraph to build specialized support sub-agents: refund processing, scheduling adjustments, and safety escalations.\n\nUsing real-time telemetry from LangSmith, Lyft engineers evaluate models constantly, shielding users from unpredictable transitions or loop errors."
-  },
-  {
-    "id": 7,
-    "slug": "mission-control-self-hosted",
-    "featured": false,
-    "categories": [
-      "LangSmith",
-      "Deployment"
-    ],
-    "title": "Mission Control: Operating Self-Hosted LangSmith on Kubernetes",
-    "excerpt": "An architectural template for enterprises requiring isolated tracing environments, custom ingress rules, and private keys behind corporate firewalls.",
-    "author": "Gethin Dibben",
-    "authorRole": "Technical Infrastructure Lead",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=gethin",
-    "date": "May 26, 2026",
-    "readTime": "6 min read",
-    "illustrationType": "diagram7",
-    "takeaways": [
-      "Scale-isolated Kubernetes setups allow running LangSmith behind strict data-privacy firewalls.",
-      "Custom ingress parameters shield tracing keys with end-to-end cloud encryption.",
-      "Direct connection templates unify ClickHouse metrics with local monitoring services."
-    ],
-    "content": "For many enterprise organizations, raw request logs and trace payload data constitute highly sensitive information. In this guide, we lay out the complete production roadmap to deploy and scale self-hosted **LangSmith Engine environments on managed Kubernetes clusters**.\n\nThrough isolated data architectures, enterprise security groups guarantee that critical communication parameters remain within their designated clouds."
-  },
-  {
-    "id": 8,
-    "slug": "from-token-streams-to-agent-streams",
-    "featured": false,
-    "categories": [
-      "LangChain",
-      "Open Source",
-      "LangGraph"
-    ],
-    "title": "From Token Streams to Agent Streams: Designing better UX",
-    "excerpt": "Analyzing user-interface paradigms for multi-agent chains. Why raw token characters degrade browser layouts and how dynamic delta event streams preserve structure.",
-    "author": "Christian Bromann",
-    "authorRole": "Frontend Lead Engineer",
-    "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=christian",
-    "date": "May 21, 2026",
-    "readTime": "9 min read",
-    "illustrationType": "diagram8",
-    "takeaways": [
-      "Streaming raw token streams into web layouts degrades reading stability and interaction designs.",
-      "Custom structured delta events align and update nested interface blocks progressively.",
-      "Specifying client projections prevents visual flickers and layout shifts as agents execute subtasks."
-    ],
-    "content": "> Streaming raw token streams into web layouts degrades reading stability and interaction designs.\n\nWhen chatbots first arrived, simple output text streaming inside inline message components was completely sufficient. But when multiple agent nodes coordinate in complex recursive loops—planning, updating schemas, calling databases—streaming raw character characters results in severe interface flickering.\n\nTo provide satisfying, stable visual interactions, frontends should transition from raw token streams to **Agent State Stream structures**, updating complex layouts through modular state projections dynamically."
-  },
-  {
-    "id": 9,
-    "slug": "june-2026-ai-frontier",
-    "title": "The June 2026 AI Frontier: A Historic Month of Regulatory Shocks & Model Releases",
-    "excerpt": "June 2026 saw US export bans on Anthropic's models, Apple's on-device AFM 3, and rapid OpenAI GPT-5.6 updates.",
-    "categories": [
-      "Deployment",
-      "Engineering"
-    ],
+    "categories": ["Founder Notes", "Community", "Product"],
+    "title": "Building in Public as an AI Founder",
+    "excerpt": "Presence is not posting more. It is a coherent loop between product, writing, video, and a high-signal network of builders.",
     "author": "Gargeya Sharma",
-    "authorRole": "Founder & Architect",
+    "authorRole": "Founder @ Edudojo.ai",
     "authorAvatar": "https://api.dicebear.com/7.x/adventurer/svg?seed=gargeya",
-    "date": "June 15, 2026",
-    "readTime": "3 min read",
-    "takeaways": [
-      "US export bans can instantly halt global AI model access.",
-      "Apple's AFM 3 uses sparse architecture to run billions of parameters on-device.",
-      "OpenAI's rapid GPT-5.x releases show a move toward continuous delivery.",
-      "Geopolitical restrictions may force cloud providers to localize AI services."
-    ],
-    "content": "## The June 2026 AI Frontier: A Historic Month of Regulatory Shocks & Model Releases\nThe artificial intelligence sector in June 2026 is marked by unprecedented friction between technological acceleration and aggressive government interventions. While companies like [Apple](https://memeburn.com/apples-foundation-models-now-run-a-20b-ai-model-on-iphone-in-2026/) and Microsoft have pushed powerful models onto localized consumer hardware, a historic geopolitical directive has shaken up the cloud-hosted frontier landscape. [1, 2] \n------------------------------\n## The Unprecedented Export Recall: Anthropic's Fable 5 & Mythos 5\nThe biggest story of the month is the sudden, historic shutdown of Anthropic’s most advanced systems. [2, 3] \n\n* The Government Mandate: On Friday, June 13, 2026, the U.S. Commerce Department issued an emergency export-control directive. Citing national security concerns, the administration ordered Anthropic to completely bar foreign nationals from accessing its newly released flagship systems: Claude Fable 5 and Mythos 5. [2, 3, 4] \n* The Global Disconnect: Because Anthropic could not reliably filter out foreign nationals or its own international staff in real time, the lab chose to [take the models entirely offline globally](https://www.instagram.com/p/DZkpZ8Ng_co/) rather than risk violating the order. [2] \n* The Benchmark Context: Prior to the shutdown, [Claude Fable 5](https://thenextweb.com/news/anthropic-fable-5-vs-openai-gpt-5-5-benchmark-comparison) was dominating industrial leaderboards, edging out OpenAI's recently deployed GPT-5.5 variant across prominent UX/UI coding and agentic benchmarks. [5, 6] \n\n------------------------------\n## Heavyweights Push Local: Apple AFM 3 & Microsoft MAI\nThe ongoing architectural trend for mid-2026 has officially shifted from massive, centralized server farms toward dense, hyper-efficient local deployment. [7] \n\n* Apple Foundation Models (AFM 3): Announced at WWDC 2026, Apple officially detailed AFM 3 Core Advanced on June 14, 2026. It brings a massive 20-billion-parameter on-device AI model natively to the iPhone. To protect battery life, the system uses a sparse architecture that dynamically boots only 1 to 4 billion parameters depending on the complexity of the request. [1] \n* Microsoft MAI: On June 8, 2026, [Microsoft AI](https://microsoft.ai/news/building-a-hillclimbing-machine-launching-seven-new-mai-models/) announced a family of seven new in-house models. Alongside this, they formed a specialized superintelligence lab in collaboration with the Mayo Clinic to pioneer a frontier clinical reasoning model tailored for complex healthcare datasets. [8] \n\n------------------------------\n## OpenAI’s Rapid-Fire Iteration: GPT-5.6\nOpenAI is moving away from monumental single-day launches and transitioning into a highly condensed, continuous compute-driven shipping cycle. [9] \n\n* Continuous Updates: Following the release of GPT-5.4 on March 5 and GPT-5.5 on April 23, internal developer logs from mid-June 2026 confirmed that OpenAI is actively readying GPT-5.6. [9, 10] \n* Retirements: Proving the sheer speed of the sub-60-day replacement cycle, older legacy foundational architectures—such as GPT-5.2 Thinking—were officially retired on June 5, 2026. [9, 10] \n\n------------------------------\nIf you want to focus heavily on a specific technical subset of this month's updates, please choose an option:\n\n* I can break down the sparse architecture mechanics of the Apple AFM 3 model.\n* I can map out the international tech fallout surrounding [Anthropic's forced model recall](https://techcrunch.com/2026/06/13/as-anthropic-suspends-access-to-new-models-india-debates-its-ai-future/).\n* We can look at the enterprise API pricing structures for [OpenAI's latest GPT-5 line](https://neuraplus-ai.github.io/blog/gpt-5-release-date-and-features.html). [1, 11, 12] \n\n\n[1] [https://memeburn.com](https://memeburn.com/apples-foundation-models-now-run-a-20b-ai-model-on-iphone-in-2026/)\n[2] [https://www.trendingtopics.eu](https://www.trendingtopics.eu/the-anthropic-ban-just-made-europes-ai-dependency-impossible-to-ignore/)\n[3] [https://www.aljazeera.com](https://www.aljazeera.com/news/2026/6/14/us-asks-anthropic-to-block-global-access-to-top-ai-models-why-it-matters)\n[4] [https://www.instagram.com](https://www.instagram.com/p/DZkpZ8Ng_co/)\n[5] [https://www.youtube.com](https://www.youtube.com/watch?v=iH5vjVacPG8&t=565)\n[6] [https://thenextweb.com](https://thenextweb.com/news/anthropic-fable-5-vs-openai-gpt-5-5-benchmark-comparison)\n[7] [https://dev.to](https://dev.to/alexmercedcoder/the-direction-of-ai-in-2026-performance-cost-and-the-end-of-one-model-for-everything-1i6g)\n[8] [https://microsoft.ai](https://microsoft.ai/news/building-a-hillclimbing-machine-launching-seven-new-mai-models/)\n[9] [https://growwingassistant.com](https://growwingassistant.com/ai-news/gpt-5-6-release-imminent-openais-june-2026-model-confirmed-in-codex-logs/)\n[10] [https://openai.com](https://openai.com/index/introducing-gpt-5-4/)\n[11] [https://techcrunch.com](https://techcrunch.com/2026/06/13/as-anthropic-suspends-access-to-new-models-india-debates-its-ai-future/)\n[12] [https://neuraplus-ai.github.io](https://neuraplus-ai.github.io/blog/gpt-5-release-date-and-features.html)\n",
-    "illustrationType": "cover",
-    "featured": true,
+    "date": "May 28, 2026",
+    "readTime": "6 min read",
+    "illustrationType": "diagram3",
     "status": "published",
-    "coverImage": "/covers/june-2026-ai-frontier-1781515554387.png",
-    "updatedAt": "2026-06-15T11:53:42.863Z"
+    "takeaways": [
+      "Your site is the hub; every other channel is a spoke with a clear job.",
+      "Teach the thesis behind the company — not feature dumps.",
+      "Community without a standard is noise; aim for top-percentile craft."
+    ],
+    "content": "> The world does not need another founder who \"ships vibes.\" It needs founders who make their thinking inspectable.\n\nI use this site as the hub. Edudojo is the company door. The blog is long-form proof. YouTube is the human texture — travel, process, and the occasional systems deep dive. Community is for people who want to raise the bar together.\n\n### A simple content system\n\n- **Thesis posts**: one idea that compounds (evaluation, agents, architecture)\n- **Build logs**: what changed in the product and why\n- **Craft notes**: mentorship-grade essays for engineers leveling up\n\n### Invitation\n\nIf you are building intelligent systems in education, hiring, or internal capability, I want to hear from you. Not for vanity metrics — for collaboration that ships.\n\nStart at the contact desk. Bring a real constraint."
   }
 ]

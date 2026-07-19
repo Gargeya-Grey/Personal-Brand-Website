@@ -221,6 +221,20 @@ export function isEmailAllowed(email: string): boolean {
 }
 
 /**
+ * Verify session cookie AND re-check ALLOWED_EMAILS on every request.
+ * OAuth alone is not enough — removed emails lose access even with an old JWT.
+ */
+export async function requireAllowedSession(
+  token: string | undefined | null
+): Promise<UserSession | null> {
+  if (!token) return null;
+  const user = await verifyJWT(token);
+  if (!user?.email) return null;
+  if (!isEmailAllowed(user.email)) return null;
+  return user;
+}
+
+/**
  * Sanitizes external redirects to prevent Open Redirect vulnerabilities.
  * Only relative paths starting with / are allowed.
  */

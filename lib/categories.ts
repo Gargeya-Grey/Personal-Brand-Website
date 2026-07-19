@@ -1,19 +1,18 @@
 export const CATEGORIES = [
-  "Case Studies",
-  "Deep Agents",
-  "LangChain",
-  "LangGraph",
-  "LangSmith",
-  "Newsletter",
-  "Observability & Evals",
-  "Open Source",
-  "Tutorials & How-Tos",
-  "Engineering",
-  "Deployment"
+  'Education',
+  'AI Architecture',
+  'Product',
+  'Engineering',
+  'Design',
+  'Founder Notes',
+  'Community',
+  'Tutorials & How-Tos',
+  'Case Studies',
+  'Open Source',
 ] as const;
 
-export type Category = typeof CATEGORIES[number];
+export type Category = (typeof CATEGORIES)[number];
 
 export function isValidCategory(category: string): category is Category {
-  return CATEGORIES.includes(category as any);
+  return (CATEGORIES as readonly string[]).includes(category);
 }

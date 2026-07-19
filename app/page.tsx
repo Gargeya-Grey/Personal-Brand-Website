@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import * as motion from 'motion/react-client';
-import { ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, User } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, User, ScanLine } from 'lucide-react';
 import { FeaturedProjects } from '@/components/featured-projects';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
@@ -14,173 +14,243 @@ export default function Home() {
       
       <main className="flex-grow pt-32 px-6 md:px-12 max-w-screen-2xl mx-auto w-full">
         
-        {/* Hero Section - Asymmetrical */}
-        <section className="py-20 md:py-32 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <motion.div 
+        {/* Hero — copy + portrait over the global 3D floor (no flat grid overlay) */}
+        <section className="relative grid min-h-[min(88svh,860px)] grid-cols-1 items-center gap-12 overflow-x-clip py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
+          <div className="pointer-events-none absolute -right-40 top-8 hidden h-[42rem] w-[42rem] rounded-full border border-accent/15 lg:block" aria-hidden="true" />
+          <div className="pointer-events-none absolute -right-24 top-28 hidden h-[30rem] w-[30rem] rounded-full border border-white/10 lg:block" aria-hidden="true" />
+
+          <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-7 space-y-8"
+            className="relative z-10 space-y-8 lg:col-span-7"
           >
-            <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
-              Digital Existence
-            </span>
-            <h1 className="font-headline text-5xl sm:text-6xl md:text-[5.5rem] font-extrabold tracking-[-0.04em] text-primary leading-[0.95] flex flex-col gap-4">
-              <span>Architecting <span className="text-[#10B981]">Intelligence</span><span className="text-accent">.</span></span>
-              <span>Curating <span className="text-[#10B981]">ART</span><span className="text-accent">.</span></span>
+            <div className="flex items-center gap-3 font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
+              <span className="inline-flex h-7 w-7 items-center justify-center rounded-full border border-accent/30 bg-accent/10">
+                <ScanLine className="h-3.5 w-3.5" />
+              </span>
+              <span>Digital existence / 001</span>
+            </div>
+
+            <h1 className="flex min-w-0 max-w-full flex-col gap-3 font-display text-[clamp(2.75rem,6.8vw,4.85rem)] font-normal leading-[1.08] tracking-[-0.02em] text-primary sm:gap-4">
+              <span className="block">
+                Architecting{' '}
+                <span className="text-accent italic">Intelligence.</span>
+              </span>
+              <span className="block">
+                Curating <span className="text-accent italic">ART.</span>
+              </span>
             </h1>
-            <p className="font-body text-xl md:text-2xl text-on-surface-variant leading-relaxed max-w-2xl pt-4">
-              Founder <a href="https://edudojo.ai" target="_blank" rel="noopener noreferrer" className="font-bold text-[#10B981] hover:underline">@ Edudojo.ai</a><br />
-              AI redesign for Evaluation &amp; Education
+
+            <p className="max-w-xl pt-2 font-body text-lg leading-[1.65] text-on-surface-variant md:text-xl">
+              Founder{' '}
+              <a
+                href="https://edudojo.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-accent hover:underline"
+              >
+                @ Edudojo.ai
+              </a>
+              <br />
+              Building intelligent systems for evaluation, education, and the human side of making.
             </p>
+
+            <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
+              <Link
+                href="https://edudojo.ai"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="btn-accent h-12 shrink-0 whitespace-nowrap rounded-2xl px-5 font-headline text-sm font-extrabold tracking-tight"
+              >
+                Explore Edudojo <ArrowUpRight className="btn-icon h-4 w-4" />
+              </Link>
+              <Link
+                href="/blog"
+                className="btn-ghost h-12 shrink-0 whitespace-nowrap rounded-2xl px-5 font-headline text-sm font-bold tracking-tight"
+              >
+                Read the journal <ArrowRight className="btn-icon h-4 w-4" />
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-3 pt-2 font-label text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/60">
+              <span className="h-px w-8 bg-accent/60" />
+              <span>Systems / Stories / Experiments</span>
+            </div>
           </motion.div>
-          
-          <motion.div 
+
+          <motion.div
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-            className="lg:col-span-5 relative h-[400px] md:h-[500px] rounded-soft overflow-hidden shadow-ambient"
+            className="relative z-10 lg:col-span-5"
           >
-            <Image 
-              src={profileImage}
-              alt="Gargeya Sharma"
-              fill
-              className="object-cover grayscale hover:grayscale-0 transition-all duration-700"
-              referrerPolicy="no-referrer"
-              priority
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/80 dark:from-slate-950/80 via-transparent to-transparent"></div>
-            <div className="absolute bottom-8 left-8 right-8">
-              <p className="text-white font-headline font-bold text-xl">Gargeya Sharma</p>
-              <p className="text-white/80 font-label text-sm tracking-widest uppercase mt-1">Lead Architect</p>
+            <div className="relative ml-auto h-[400px] w-full max-w-[520px] md:h-[500px]">
+              <div className="absolute -right-3 top-8 hidden h-28 w-3 rounded-full border border-accent/30 bg-accent/10 lg:block" aria-hidden="true" />
+              <div className="absolute -bottom-3 left-10 hidden h-3 w-28 rounded-full border border-white/15 bg-white/5 lg:block" aria-hidden="true" />
+              <div className="relative h-full overflow-hidden rounded-[1.4rem] border border-white/15 bg-slate-950 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.75)]">
+                <Image
+                  src={profileImage}
+                  alt="Gargeya Sharma"
+                  fill
+                  className="object-cover grayscale transition-all duration-700 hover:grayscale-0"
+                  referrerPolicy="no-referrer"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-transparent to-transparent dark:from-[#0B1220]/90" />
+                <div className="absolute left-5 right-5 top-5 flex items-center justify-between font-label text-[9px] font-bold uppercase tracking-[0.22em] text-white/60">
+                  <span>Field note / 001</span>
+                  <span className="flex items-center gap-2">
+                    <i className="h-1.5 w-1.5 rounded-full bg-accent" /> Live
+                  </span>
+                </div>
+                <div className="absolute bottom-8 left-8 right-8">
+                  <p className="font-headline text-xl font-bold text-white">Gargeya Sharma</p>
+                  <p className="mt-1 font-label text-sm uppercase tracking-widest text-white/80">Lead Architect</p>
+                </div>
+              </div>
             </div>
           </motion.div>
         </section>
-
         {/* Bento Grid Section */}
-        <section className="py-24" id="startup">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            
+        <section className="relative py-24" id="startup">
+          <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">The work branches out</span>
+              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.02em] text-primary sm:text-4xl md:text-[2.75rem]">
+                Choose a point of entry.
+              </h2>
+            </div>
+            <p className="max-w-sm font-body text-sm leading-relaxed text-on-surface-variant sm:text-right">A venture, a community, a journal, and a visual log—one system for building in public.</p>
+          </div>
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
             {/* Startup Card */}
-            <Link 
-              href="https://edudojo.ai" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="md:col-span-2 block"
+            <Link
+              href="https://edudojo.ai"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block md:col-span-2"
             >
-              <motion.div 
-                className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out relative overflow-hidden"
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              <motion.div
+                className="board-card group relative flex h-full min-h-[300px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
-                {/* Textured Grainy Glass Overlay */}
-                <div 
-                  className="absolute inset-0 pointer-events-none opacity-[0.07] dark:opacity-[0.11] mix-blend-overlay z-0"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-                  }}
-                />
-                <div className="flex justify-between items-start relative z-10">
-                  <div className="w-14 h-14 bg-surface-container-low dark:bg-white/5 rounded-2xl flex items-center justify-center">
-                    <Rocket className="w-7 h-7 text-accent" />
+                <div className="relative z-10 flex items-start justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5">
+                    <Rocket className="h-6 w-6 text-accent" />
                   </div>
-                  <ArrowUpRight className="w-6 h-6 text-outline-variant group-hover:text-accent transition-colors duration-300" />
+                  <ArrowUpRight className="h-5 w-5 text-slate-400 transition-colors duration-300 group-hover:text-accent" />
                 </div>
-                <div className="mt-12 relative z-10">
-                  <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block mb-2">Live Venture</span>
-                  <h3 className="text-3xl font-headline font-extrabold text-primary mb-3">Edudojo.ai</h3>
-                  <p className="text-on-surface-variant text-lg max-w-xl">AI-driven redesign for evaluation, assessment, and education. Architecting intelligence in learning paradigms from zero to one.</p>
+                <div className="relative z-10 mt-10">
+                  <span className="mb-2 block font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                    Live Venture
+                  </span>
+                  <h3 className="mb-3 font-headline text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl dark:text-primary">
+                    Edudojo.ai
+                  </h3>
+                  <p className="max-w-xl font-body text-base leading-relaxed text-slate-600 md:text-lg dark:text-on-surface-variant">
+                    AI-driven redesign for evaluation, assessment, and education. Architecting
+                    intelligence in learning paradigms from zero to one.
+                  </p>
                 </div>
               </motion.div>
             </Link>
 
             {/* Community Card */}
             <Link href="/community" className="block">
-              <motion.div 
-                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-primary-container hover:border-accent/50 dark:hover:border-white/30 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              <motion.div
+                className="board-card-ink group flex h-full min-h-[300px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
-                <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center">
-                  <Users className="w-7 h-7 text-accent" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/15 bg-white/10">
+                  <Users className="h-6 w-6 text-accent" />
                 </div>
-                <div className="mt-12">
-                  <h3 className="text-2xl font-headline font-bold text-white mb-2">Community</h3>
-                  <p className="text-white/60 text-sm">Building a collaborative community to upskill infinitely toward top 1% global standards.</p>
+                <div className="mt-10">
+                  <h3 className="mb-2 font-headline text-2xl font-semibold tracking-tight text-white">
+                    Community
+                  </h3>
+                  <p className="font-body text-sm leading-relaxed text-white/65">
+                    Building a collaborative community to upskill infinitely toward top 1% global
+                    standards.
+                  </p>
                 </div>
               </motion.div>
             </Link>
 
             {/* Blog Card */}
             <Link href="/blog" className="block">
-              <motion.div 
-                className="bg-white/55 dark:bg-white/[0.01] backdrop-blur-md p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/80 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+              <motion.div
+                className="board-card group flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
-                <div className="w-14 h-14 bg-surface-container-lowest dark:bg-white/5 rounded-2xl flex items-center justify-center shadow-sm">
-                  <BookOpen className="w-7 h-7 text-accent" />
+                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5">
+                  <BookOpen className="h-6 w-6 text-accent" />
                 </div>
-                <div className="mt-12">
-                  <h3 className="text-2xl font-headline font-bold text-primary mb-2">Blog</h3>
-                  <p className="text-on-surface-variant text-sm">Insights on engineering, strategy, and mental models.</p>
+                <div className="mt-10">
+                  <h3 className="mb-2 font-headline text-2xl font-semibold tracking-tight text-slate-900 dark:text-primary">
+                    Blog
+                  </h3>
+                  <p className="font-body text-sm leading-relaxed text-slate-600 dark:text-on-surface-variant">
+                    Insights on engineering, strategy, and mental models.
+                  </p>
                 </div>
               </motion.div>
             </Link>
-
-
 
             {/* YouTube Card */}
-            <Link href="/youtube" className="md:col-span-2 block">
-              <motion.div 
-                className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col justify-between min-h-[320px] group h-full hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out"
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            <Link href="/youtube" className="block md:col-span-2">
+              <motion.div
+                className="board-card group flex h-full min-h-[280px] flex-col justify-between overflow-hidden rounded-soft p-8 md:p-10"
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
-                <div className="flex justify-between items-start">
-                  <div className="w-14 h-14 bg-surface-container-low dark:bg-white/5 rounded-2xl flex items-center justify-center">
-                    <PlayCircle className="w-7 h-7 text-accent" />
+                <div className="flex items-start justify-between">
+                  <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5">
+                    <PlayCircle className="h-6 w-6 text-accent" />
                   </div>
-                  <ArrowUpRight className="w-6 h-6 text-outline-variant group-hover:text-accent transition-colors duration-300" />
+                  <ArrowUpRight className="h-5 w-5 text-slate-400 transition-colors duration-300 group-hover:text-accent" />
                 </div>
-                <div className="mt-12">
-                  <h3 className="text-3xl font-headline font-extrabold text-primary mb-3">YouTube</h3>
-                  <p className="text-on-surface-variant text-lg max-w-md">Visualizing complex systems through video essays and technical deep dives.</p>
+                <div className="mt-10">
+                  <h3 className="mb-3 font-headline text-2xl font-semibold tracking-tight text-slate-900 md:text-3xl dark:text-primary">
+                    YouTube
+                  </h3>
+                  <p className="max-w-md font-body text-base leading-relaxed text-slate-600 md:text-lg dark:text-on-surface-variant">
+                    Visualizing complex systems through video essays and technical deep dives.
+                  </p>
                 </div>
               </motion.div>
             </Link>
 
-            {/* About Card - Rebalanced as Full-Width Asymmetrical Callout */}
-            <Link href="/about" className="md:col-span-3 block">
-              <motion.div 
-                className="bg-primary-container/80 backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] flex flex-col md:flex-row md:items-center justify-between gap-8 md:gap-12 min-h-[160px] group h-full hover:bg-primary-container hover:border-accent/50 dark:hover:border-white/30 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out relative overflow-hidden"
-                whileHover={{ y: -4 }}
-                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            {/* About Card */}
+            <Link href="/about" className="block md:col-span-3">
+              <motion.div
+                className="board-card-ink group relative flex h-full min-h-[140px] flex-col justify-between gap-8 overflow-hidden rounded-soft p-8 md:flex-row md:items-center md:gap-12 md:p-10"
+                whileHover={{ y: -5 }}
+                transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
-                {/* Textured Grainy Glass Overlay */}
-                <div 
-                  className="absolute inset-0 pointer-events-none opacity-[0.10] dark:opacity-[0.16] mix-blend-overlay z-0"
-                  style={{
-                    backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`
-                  }}
-                />
-                <div className="flex flex-col sm:flex-row items-center gap-6 relative z-10">
-                  <div className="w-14 h-14 bg-white/10 rounded-2xl flex items-center justify-center shrink-0">
-                    <User className="w-7 h-7 text-accent" />
+                <div className="relative z-10 flex flex-col items-center gap-5 sm:flex-row">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/10">
+                    <User className="h-6 w-6 text-accent" />
                   </div>
                   <div className="text-center sm:text-left">
-                    <h3 className="text-2xl font-headline font-bold text-white">About Gargeya</h3>
-                    <p className="text-white/60 text-sm mt-1">Engineering the future. Lead Architect & Strategist focusing on Soft Minimalism.</p>
+                    <h3 className="font-headline text-2xl font-semibold tracking-tight text-white">
+                      About Gargeya
+                    </h3>
+                    <p className="mt-1 font-body text-sm leading-relaxed text-white/65">
+                      Engineering the future. Lead Architect & Strategist focusing on Soft Minimalism.
+                    </p>
                   </div>
                 </div>
-                <div className="flex justify-center md:justify-end shrink-0 relative z-10">
-                  <span className="text-xs font-label text-accent uppercase tracking-widest border border-accent/20 px-5 py-2.5 rounded-full bg-accent/5 group-hover:bg-accent group-hover:text-slate-950 transition-all duration-300">
-                    View Biography &rarr;
+                <div className="relative z-10 flex justify-center md:justify-end">
+                  <span className="rounded-full border border-accent/30 bg-accent/10 px-5 py-2.5 font-label text-xs uppercase tracking-widest text-accent transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-slate-950">
+                    View Biography →
                   </span>
                 </div>
               </motion.div>
             </Link>
-
           </div>
         </section>
 
@@ -188,29 +258,31 @@ export default function Home() {
         {/* Featured Projects */}
         <FeaturedProjects />
 
-        <section className="py-20 md:py-32" id="youtube">
-          <div className="cta-card-gradient backdrop-blur-2xl border border-white/10 rounded-3xl md:rounded-[3rem] px-5 py-12 sm:p-12 md:p-24 text-center relative z-10 overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)]">
-            
-            <div className="relative z-10 max-w-3xl mx-auto space-y-8 md:space-y-10">
-              <h2 className="text-3xl sm:text-5xl md:text-6xl font-headline font-extrabold tracking-tighter text-white leading-[1.1]">
+        <section className="py-20 md:py-32" id="collaborate">
+          <div className="cta-card-gradient relative z-10 overflow-hidden rounded-3xl px-5 py-12 text-center sm:p-12 md:rounded-[2.5rem] md:p-20 lg:p-24">
+            <div className="relative z-10 mx-auto max-w-3xl space-y-7 md:space-y-9">
+              <h2 className="font-display text-3xl font-normal leading-[1.15] tracking-[-0.02em] text-white sm:text-5xl md:text-[3.25rem]">
                 Ready to build something meaningful?
               </h2>
-              <p className="text-base sm:text-lg text-white/70 leading-relaxed">
-                Whether it&apos;s an architectural audit, AI implementation strategy, or a new venture partnership—let&apos;s discuss the technical roadmap.
+              <p className="mx-auto max-w-2xl font-body text-base leading-relaxed text-white/72 sm:text-lg">
+                Whether it&apos;s an architectural audit, AI implementation strategy, or a new venture
+                partnership—let&apos;s discuss the technical roadmap.
               </p>
-              
-              <div className="flex flex-col sm:flex-row justify-center gap-4 pt-4">
-                <Link 
-                  href="/contact" 
-                  className="bg-accent text-[#0F172A] px-6 py-4 md:px-10 md:py-5 rounded-xl font-headline font-extrabold text-base md:text-lg hover:shadow-[0_0_40px_rgba(16,185,129,0.3)] hover:scale-105 active:scale-95 transition-all w-full sm:w-auto inline-block text-center"
+
+              <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row sm:gap-4">
+                <Link
+                  href="/contact"
+                  className="btn-accent inline-flex w-full items-center justify-center rounded-xl px-6 py-4 text-center font-headline text-base font-bold sm:w-auto md:px-10 md:py-5 md:text-lg"
                 >
-                  Consult on AI Projects
+                  Start a conversation
                 </Link>
-                <Link 
-                  href="/contact" 
-                  className="bg-transparent border border-white/20 hover:bg-white/5 text-white px-6 py-4 md:px-10 md:py-5 rounded-xl font-headline font-extrabold text-base md:text-lg transition-all active:scale-95 w-full sm:w-auto inline-block text-center"
+                <Link
+                  href="https://edudojo.ai"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex w-full items-center justify-center rounded-xl border border-white/25 bg-white/[0.04] px-6 py-4 text-center font-headline text-base font-semibold text-white transition-all hover:border-white/40 hover:bg-white/[0.08] active:scale-[0.98] sm:w-auto md:px-10 md:py-5 md:text-lg"
                 >
-                  Work with me
+                  Explore Edudojo.ai
                 </Link>
               </div>
             </div>

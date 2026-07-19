@@ -1,52 +1,56 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { verifyJWT } from './lib/auth';
+import { requireAllowedSession } from './lib/auth';
+
+function unauthorizedJson(message: string) {
+  return new NextResponse(JSON.stringify({ error: message }), {
+    status: 401,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
 
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  const sessionCookie = request.cookies.get('auth_session');
 
-  // Enforce session check on editorial paths
-  if (pathname.startsWith('/editorial')) {
-    const sessionCookie = request.cookies.get('auth_session');
-    
-    if (!sessionCookie) {
+  // Editorial UI — Google OAuth session + allowlisted email only
+  if (pathname === '/editorial' || pathname.startsWith('/editorial/')) {
+    const user = await requireAllowedSession(sessionCookie?.value);
+    if (!user) {
       const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('callbackUrl', pathname);
-      return NextResponse.redirect(loginUrl);
-    }
-
-    const payload = await verifyJWT(sessionCookie.value);
-    if (!payload) {
-      const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('callbackUrl', pathname);
-      
-      // Clear invalid session cookie
+      loginUrl.searchParams.set('callbackUrl', pathname + request.nextUrl.search);
       const response = NextResponse.redirect(loginUrl);
-      response.cookies.delete('auth_session');
+      if (sessionCookie) response.cookies.delete('auth_session');
       return response;
     }
   }
 
-  // Enforce write protections on Blog API routes
-  if (pathname.startsWith('/api/blog')) {
-    const method = request.method;
-    // Allow public reads
-    if (method !== 'GET') {
-      const sessionCookie = request.cookies.get('auth_session');
-      if (!sessionCookie) {
-        return new NextResponse(
-          JSON.stringify({ error: 'Unauthorized: Session missing' }),
-          { status: 401, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
-      
-      const payload = await verifyJWT(sessionCookie.value);
-      if (!payload) {
-        return new NextResponse(
-          JSON.stringify({ error: 'Unauthorized: Session invalid or expired' }),
-          { status: 401, headers: { 'Content-Type': 'application/json' } }
-        );
-      }
+  // Blog writes (GET list stays public for published posts — route filters drafts)
+  if (pathname.startsWith('/api/blog') && request.method !== 'GET') {
+    const user = await requireAllowedSession(sessionCookie?.value);
+    if (!user) {
+      return unauthorizedJson('Unauthorized: valid allowlisted session required');
+    }
+  }
+
+  // Blog includeAll / admin reads are enforced in the route handler too;
+  // AI + X Content (except machine ingest) are private.
+  if (pathname.startsWith('/api/ai')) {
+    const user = await requireAllowedSession(sessionCookie?.value);
+    if (!user) {
+      return unauthorizedJson('Unauthorized: valid allowlisted session required');
+    }
+  }
+
+  // X Content Studio API is private (cookie session).
+  // Exception: /api/x-content/ingest uses X_SCOUT_SECRET (machine push from local Grok).
+  if (
+    pathname.startsWith('/api/x-content') &&
+    !pathname.startsWith('/api/x-content/ingest')
+  ) {
+    const user = await requireAllowedSession(sessionCookie?.value);
+    if (!user) {
+      return unauthorizedJson('Unauthorized: valid allowlisted session required');
     }
   }
 
@@ -54,5 +58,14 @@ export async function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/editorial/:path*', '/api/blog/:path*'],
+  matcher: [
+    '/editorial',
+    '/editorial/:path*',
+    '/api/blog',
+    '/api/blog/:path*',
+    '/api/ai',
+    '/api/ai/:path*',
+    '/api/x-content',
+    '/api/x-content/:path*',
+  ],
 };

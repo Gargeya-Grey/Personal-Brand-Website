@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { verifyJWT } from '@/lib/auth';
+import { requireAllowedSession } from '@/lib/auth';
 import { CATEGORIES } from '@/lib/categories';
 import fs from 'fs/promises';
 import path from 'path';
@@ -59,71 +59,6 @@ async function callOpenRouter(apiKey: string, model: string, systemPrompt: strin
   return content;
 }
 
-// Helper to call OpenRouter for image generation
-async function generateCoverImage(apiKey: string, prompt: string): Promise<string | null> {
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-      'HTTP-Referer': process.env.APP_URL || 'http://localhost:3000',
-      'X-Title': 'Curator Canvas Cover Generator'
-    },
-    body: JSON.stringify({
-      model: 'x-ai/grok-imagine-image-quality',
-      messages: [
-        { role: 'user', content: prompt }
-      ],
-      modalities: ['image']
-    })
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    console.error(`Grok Imagine API returned error: ${errorText}`);
-    return null;
-  }
-
-  const data = await response.json();
-  const imageUrl = data.choices?.[0]?.message?.images?.[0]?.image_url?.url;
-  if (!imageUrl) {
-    console.error('No image URL returned in OpenRouter response:', JSON.stringify(data));
-    return null;
-  }
-
-  return imageUrl;
-}
-
-// Helper to save generated base64 image locally
-async function saveBase64Image(imageUrl: string, slug: string): Promise<string | null> {
-  if (!imageUrl.startsWith('data:image/')) {
-    return imageUrl;
-  }
-
-  try {
-    const matches = imageUrl.match(/^data:image\/([a-zA-Z+]+);base64,(.+)$/);
-    if (!matches || matches.length !== 3) {
-      return null;
-    }
-    
-    const ext = matches[1];
-    const data = matches[2];
-    const buffer = Buffer.from(data, 'base64');
-    
-    const coversDir = path.join(process.cwd(), 'public', 'covers');
-    await fs.mkdir(coversDir, { recursive: true });
-    
-    const cleanSlug = slug.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
-    const fileName = `${cleanSlug || 'cover'}-${Date.now()}.png`;
-    const filePath = path.join(coversDir, fileName);
-    
-    await fs.writeFile(filePath, buffer);
-    return `/covers/${fileName}`;
-  } catch (error) {
-    console.error('Failed to save generated image to disk:', error);
-    return null;
-  }
-}
 
 // Programmatic verification rules
 function runProgrammaticValidation(meta: Partial<Metadata>): string[] {
@@ -226,18 +161,17 @@ function applyProgrammaticCorrections(meta: Partial<Metadata>): Metadata {
 
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate Request
+    // 1. Authenticate Request (allowlisted Google session only)
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth_session');
-    if (!sessionCookie) {
-      return NextResponse.json({ error: 'Unauthorized: Session missing' }, { status: 401 });
-    }
-    const user = await verifyJWT(sessionCookie.value);
+    const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized: Session invalid' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // 2. Parse request body
+    // Image generation is never done here — only metadata + imagePrompt.
+    // Client optionally calls /api/ai/generate-cover when user enables "+ Grok image".
     const { content } = await request.json();
     if (!content) {
       return NextResponse.json({ error: 'Missing content body' }, { status: 400 });
@@ -381,7 +315,8 @@ Return the final corrected metadata as a JSON object matching the original schem
       finalMeta = meta as Metadata;
     }
 
-    // 8. Generate Custom Cover Image using Grok Imagine
+    // 8. Generate optimized image prompt (actual image generation is decoupled to /api/ai/generate-cover)
+    let imagePrompt: string | null = null;
     if (finalMeta.title) {
       try {
         let designSpec = '';
@@ -411,30 +346,24 @@ Description: "${finalMeta.excerpt}"
 Visual Brand Guidelines:
 ${designSpec}`;
 
-        let optimizedPrompt = '';
         try {
-          optimizedPrompt = await callOpenRouter(apiKey, model, promptOptimizerSystem, promptOptimizerUser, false);
-          optimizedPrompt = optimizedPrompt.trim();
+          const rawPrompt = await callOpenRouter(apiKey, model, promptOptimizerSystem, promptOptimizerUser, false);
+          imagePrompt = rawPrompt.trim();
         } catch (promptErr) {
           console.error('Failed optimizing cover image prompt, falling back to static prompt:', promptErr);
-          optimizedPrompt = `A stunning premium 3D editorial graphic for: "${finalMeta.title}". ${finalMeta.excerpt}. Editorial Glassmorphism, refractive glass, volumetric lighting, slate background, algorithmic mint green highlights.`;
-        }
-
-        const base64Url = await generateCoverImage(apiKey, optimizedPrompt);
-        if (base64Url) {
-          const savedPath = await saveBase64Image(base64Url, finalMeta.slug || 'cover');
-          if (savedPath) {
-            finalMeta.coverImage = savedPath;
-            finalMeta.illustrationType = 'cover';
-          }
+          imagePrompt = `A stunning premium 3D editorial graphic for: "${finalMeta.title}". ${finalMeta.excerpt}. Editorial Glassmorphism, refractive glass, volumetric lighting, slate background, algorithmic mint green highlights.`;
         }
       } catch (err: any) {
-        console.error('Failed generating cover image:', err);
+        console.error('Failed generating image prompt:', err);
       }
     }
 
     // 9. Return final response
-    return NextResponse.json({ success: true, metadata: finalMeta });
+    return NextResponse.json({ 
+      success: true, 
+      metadata: finalMeta,
+      imagePrompt
+    });
   } catch (err: any) {
     return NextResponse.json({ error: `Server error: ${err.message}` }, { status: 500 });
   }

@@ -1,20 +1,18 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { verifyJWT } from '@/lib/auth';
+import { requireAllowedSession } from '@/lib/auth';
+import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import fs from 'fs/promises';
 import path from 'path';
 
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate Request
+    // 1. Authenticate Request (allowlisted Google session only)
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth_session');
-    if (!sessionCookie) {
-      return NextResponse.json({ error: 'Unauthorized: Session missing' }, { status: 401 });
-    }
-    const user = await verifyJWT(sessionCookie.value);
+    const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized: Session invalid' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     // 2. Parse Multipart Form Data
@@ -42,10 +40,32 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // 6. Save File to public/covers/
+    // 6. Save File to Supabase Storage (if configured) or public/covers/ (local fallback)
     const ext = path.extname(file.name) || '.png';
     const cleanSlug = slug.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
     const fileName = `${cleanSlug}-${Date.now()}${ext}`;
+
+    if (isSupabaseConfigured()) {
+      const { error: uploadError } = await supabase.storage
+        .from('covers')
+        .upload(fileName, buffer, {
+          contentType: file.type,
+          upsert: true
+        });
+
+      if (uploadError) {
+        throw new Error('Supabase Storage upload failed: ' + uploadError.message);
+      }
+
+      // Retrieve public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('covers')
+        .getPublicUrl(fileName);
+
+      return NextResponse.json({ success: true, url: publicUrl });
+    }
+
+    // Local Fallback
     const coversDir = path.join(process.cwd(), 'public', 'covers');
     const filePath = path.join(coversDir, fileName);
 

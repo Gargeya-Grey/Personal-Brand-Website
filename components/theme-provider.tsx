@@ -11,31 +11,36 @@ const ThemeContext = createContext<{
   toggleTheme: () => void;
 } | null>(null);
 
+function applyTheme(nextTheme: Theme) {
+  const root = document.documentElement;
+  if (nextTheme === 'dark') {
+    root.classList.add('dark');
+  } else {
+    root.classList.remove('dark');
+  }
+  localStorage.setItem('theme', nextTheme);
+  window.dispatchEvent(new CustomEvent('themechange', { detail: nextTheme }));
+}
+
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
 
   useEffect(() => {
-    // Determine initial theme
+    // Prefer the class already set by the beforeInteractive script to avoid flicker/desync
     const savedTheme = localStorage.getItem('theme') as Theme | null;
-    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const initialTheme = savedTheme || systemTheme;
-    setTheme(initialTheme);
-    if (initialTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
+    const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
+    const nextTheme = savedTheme ?? systemTheme;
+    applyTheme(nextTheme);
+    setTheme(nextTheme);
   }, []);
 
   const toggleTheme = () => {
-    const nextTheme = theme === 'light' ? 'dark' : 'light';
+    // Read from DOM so toggle stays correct even if React state briefly desyncs on hydrate
+    const nextTheme = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+    applyTheme(nextTheme);
     setTheme(nextTheme);
-    localStorage.setItem('theme', nextTheme);
-    if (nextTheme === 'dark') {
-      document.documentElement.classList.add('dark');
-    } else {
-      document.documentElement.classList.remove('dark');
-    }
   };
 
   return (
@@ -62,21 +67,22 @@ export function ThemeToggle() {
   }, []);
 
   if (!mounted) {
-    // Render an empty matching placeholder to prevent layout shifts
-    return <div className="w-10 h-10 rounded-full bg-white/20 border border-white/40" />;
+    return (
+      <div className="h-10 w-10 rounded-full border border-white/60 bg-white/40 shadow-sm dark:border-white/10 dark:bg-white/5" />
+    );
   }
 
   return (
     <button
       onClick={toggleTheme}
-      className="w-10 h-10 bg-white/40 dark:bg-white/5 backdrop-blur-xl border border-white/60 dark:border-white/10 shadow-sm rounded-full flex items-center justify-center text-primary dark:text-white hover:scale-105 active:scale-95 transition-all duration-300 cursor-pointer pointer-events-auto"
+      className="pointer-events-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border border-white/60 bg-white/40 text-primary shadow-sm backdrop-blur-xl transition-all duration-300 hover:scale-105 active:scale-95 dark:border-white/10 dark:bg-white/5 dark:text-white"
       aria-label="Toggle theme"
       type="button"
     >
       {theme === 'dark' ? (
-        <Sun className="w-5 h-5 text-accent animate-pulse" strokeWidth={2.5} />
+        <Sun className="h-5 w-5 text-accent" strokeWidth={2.5} />
       ) : (
-        <Moon className="w-5 h-5 text-accent" strokeWidth={2.5} />
+        <Moon className="h-5 w-5 text-accent" strokeWidth={2.5} />
       )}
     </button>
   );

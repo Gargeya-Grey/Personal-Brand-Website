@@ -31,13 +31,19 @@ export default function BlogPage() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [subscribeEmail, setSubscribeEmail] = useState<string>("");
   const [subscribed, setSubscribed] = useState<boolean>(false);
+  const [subscribeError, setSubscribeError] = useState('');
   const [visibleCount, setVisibleCount] = useState<number>(9);
   const [isExpanding, setIsExpanding] = useState<boolean>(false);
 
   // Reset pagination on category or search filter change
-  useEffect(() => {
+  const [prevCategories, setPrevCategories] = useState(selectedCategories);
+  const [prevQuery, setPrevQuery] = useState(searchQuery);
+
+  if (selectedCategories !== prevCategories || searchQuery !== prevQuery) {
+    setPrevCategories(selectedCategories);
+    setPrevQuery(searchQuery);
     setVisibleCount(9);
-  }, [selectedCategories, searchQuery]);
+  }
 
   const handleLoadMore = () => {
     setIsExpanding(true);
@@ -105,13 +111,35 @@ export default function BlogPage() {
     }
   };
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (subscribeEmail) {
+    if (!subscribeEmail.trim()) return;
+    setSubscribeError('');
+    try {
+      const res = await fetch('/api/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: subscribeEmail.trim(), source: 'blog' }),
+      });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) {
+        setSubscribeError(data.error || 'Subscribe failed. Please try again.');
+        return;
+      }
+      if (data.delivery === 'local') {
+        setSubscribeError(
+          data.message ||
+            'Saved only locally. Set a valid RESEND_API_KEY to sync to Resend.'
+        );
+        return;
+      }
       setSubscribed(true);
       setTimeout(() => {
-        setSubscribeEmail("");
+        setSubscribeEmail('');
       }, 3000);
+    } catch (err) {
+      console.error(err);
+      setSubscribeError('Network error. Please try again.');
     }
   };
 
@@ -140,10 +168,13 @@ export default function BlogPage() {
     return sortedArticles.find(a => a.featured) || sortedArticles[0];
   }, [sortedArticles]);
 
-  // Paginated articles list for the recent stories grid (featured post is included)
+  // Paginated recent stories — exclude the featured hero so it is not duplicated
   const paginatedArticles = useMemo(() => {
-    return sortedArticles.slice(0, visibleCount);
-  }, [sortedArticles, visibleCount]);
+    const rest = featuredPost
+      ? sortedArticles.filter((a) => a.id !== featuredPost.id)
+      : sortedArticles;
+    return rest.slice(0, visibleCount);
+  }, [sortedArticles, visibleCount, featuredPost]);
 
   // Dynamic real stats tracking
   const insights = [
@@ -218,7 +249,7 @@ export default function BlogPage() {
           {/* Metrics Tiles Grid */}
           <section className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-16">
             {insights.map((stat, i) => (
-              <div key={i} className="group bg-white/50 dark:bg-white/[0.01] border border-slate-200/60 dark:border-white/[0.04] hover:border-emerald-500/30 hover:shadow-[0_8px_30px_rgb(16,185,129,0.04)] rounded-2xl p-6 flex flex-col justify-between h-32 transition-all duration-300 hover:-translate-y-1">
+              <div key={i} className="board-card group flex h-32 flex-col justify-between rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1">
                 <div className="flex justify-between items-start">
                   <span className="text-2xl md:text-3xl font-headline font-medium text-slate-900 dark:text-white tracking-tight">
                     {stat.value}
@@ -245,7 +276,7 @@ export default function BlogPage() {
                 aria-label="Search articles"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full bg-white dark:bg-white/[0.02] border border-emerald-500/20 dark:border-white/10 rounded-2xl pl-11 pr-10 py-3.5 text-sm focus:outline-none focus:border-accent placeholder-slate-400 text-slate-800 dark:text-white shadow-sm transition-all"
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-10 text-sm text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
               />
               {searchQuery && (
                 <button 
@@ -265,7 +296,7 @@ export default function BlogPage() {
                 aria-haspopup="listbox"
                 aria-expanded={isDropdownOpen}
                 aria-label="Filter by categories"
-                className="flex items-center justify-between gap-3 px-5 py-3.5 bg-white dark:bg-white/[0.02] border border-emerald-500/20 dark:border-white/10 rounded-2xl text-sm font-semibold text-slate-700 dark:text-white/85 shadow-sm hover:shadow-md transition-all w-full md:w-64"
+                className="flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:shadow-md dark:border-white/10 dark:bg-slate-900 dark:text-white/85 md:w-64"
               >
                 <span className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-slate-400" />
@@ -328,7 +359,7 @@ export default function BlogPage() {
 
           {/* Results Listings Content */}
           {sortedArticles.length === 0 ? (
-            <div className="text-center py-24 bg-white/72 dark:bg-white/[0.02] border border-emerald-500/20 dark:border-white/10 rounded-[2.5rem] p-8 backdrop-blur-[28px] max-w-xl mx-auto space-y-6">
+            <div className="board-card mx-auto max-w-xl space-y-6 rounded-[2.5rem] p-8 py-24 text-center">
               <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
               <h3 className="font-headline font-bold text-xl text-slate-800 dark:text-white">No ledger archives match your query</h3>
               <p className="font-body text-slate-500 dark:text-white/60 max-w-md mx-auto text-sm leading-relaxed">
@@ -362,7 +393,7 @@ export default function BlogPage() {
                     href={`/blog/${featuredPost.slug}`}
                     role="button"
                     aria-label={`Featured story: ${featuredPost.title}`}
-                    className="group block grid grid-cols-1 lg:grid-cols-12 gap-8 items-center rounded-[2.5rem] p-6 md:p-8 bg-white/72 dark:bg-white/[0.02] backdrop-blur-[28px] border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_10px_30px_rgba(16,185,129,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out"
+                    className="board-card group grid grid-cols-1 items-center gap-8 rounded-[2.5rem] p-6 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-8 lg:grid-cols-12"
                   >
                     {/* Left Column detail stack */}
                     <div className="lg:col-span-5 space-y-6">
@@ -374,7 +405,7 @@ export default function BlogPage() {
                         ))}
                       </div>
                       
-                      <h2 className="font-headline text-2xl sm:text-3xl md:text-4.5xl font-semibold text-slate-900 dark:text-white leading-[1.08] tracking-tight group-hover:text-accent transition-colors duration-300">
+                      <h2 className="font-headline text-2xl sm:text-3xl md:text-4xl font-semibold text-slate-900 dark:text-white leading-[1.08] tracking-tight group-hover:text-accent transition-colors duration-300">
                         {featuredPost.title}
                       </h2>
                       
@@ -399,7 +430,7 @@ export default function BlogPage() {
                     </div>
 
                     {/* Right Column illustration block */}
-                    <div className="lg:col-span-7 h-64 lg:h-full w-full rounded-2xl overflow-hidden border border-emerald-500/20 dark:border-white/10 relative shadow-inner bg-slate-50 dark:bg-white/[0.02] flex items-center justify-center">
+                    <div className="relative flex h-64 w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-inner dark:border-white/10 dark:bg-slate-900/80 lg:col-span-7 lg:h-full">
                       {featuredPost.illustrationType === 'cover' && featuredPost.coverImage ? (
                         <img src={featuredPost.coverImage} alt={featuredPost.title} className="w-full h-full object-cover" />
                       ) : (
@@ -436,12 +467,12 @@ export default function BlogPage() {
                         href={`/blog/${post.slug}`}
                         role="button"
                         aria-label={`Read essay: ${post.title}`}
-                        className="group flex flex-col justify-between p-5 h-full rounded-[2rem] bg-white/72 dark:bg-white/[0.02] backdrop-blur-[28px] border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_10px_30px_rgba(16,185,129,0.15),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:-translate-y-1 transition-all duration-300 ease-out"
+                        className="board-card group flex h-full flex-col justify-between rounded-[2rem] p-5 transition-transform duration-300 ease-out hover:-translate-y-1"
                       >
                         <div className="space-y-5">
                           
                           {/* Thumbnail schema */}
-                          <div className="w-full h-48 rounded-2xl overflow-hidden border border-emerald-500/10 dark:border-white/5 shadow-inner relative bg-slate-50 dark:bg-white/[0.02] flex items-center justify-center">
+                          <div className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-inner dark:border-white/10 dark:bg-slate-900/80">
                             {post.illustrationType === 'cover' && post.coverImage ? (
                               <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover" loading="lazy" />
                             ) : (
@@ -496,7 +527,7 @@ export default function BlogPage() {
                     <button
                       onClick={handleLoadMore}
                       disabled={isExpanding}
-                      className="group relative flex items-center justify-center gap-2.5 bg-white/40 dark:bg-white/[0.02] hover:bg-accent text-slate-800 dark:text-white hover:text-slate-900 dark:hover:text-slate-900 border border-emerald-500/20 dark:border-white/10 hover:border-accent font-headline font-bold text-xs h-12 px-10 rounded-2xl transition-all duration-300 active:scale-95 shadow-sm hover:shadow-[0_0_25px_rgba(16,185,129,0.25)] disabled:opacity-60 disabled:pointer-events-none cursor-pointer"
+                      className="board-card group relative flex h-12 cursor-pointer items-center justify-center gap-2.5 px-10 font-headline text-xs font-bold text-slate-800 transition-all duration-300 hover:border-accent hover:bg-accent hover:text-slate-900 active:scale-95 disabled:pointer-events-none disabled:opacity-60 dark:text-white dark:hover:text-slate-900 rounded-2xl"
                     >
                       {isExpanding ? (
                         <>
@@ -518,7 +549,7 @@ export default function BlogPage() {
           )}
 
           {/* Newsletter input card */}
-          <section className="mt-28 rounded-[2.5rem] p-8 md:p-12 relative overflow-hidden bg-white/72 dark:bg-white/[0.02] backdrop-blur-[28px] border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_10px_30px_-10px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)]">
+          <section className="board-card relative mt-28 overflow-hidden rounded-[2.5rem] p-8 md:p-12">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
               {/* Left Side: Editorial Content */}
               <div className="space-y-4 lg:w-[48%] lg:max-w-xl">
@@ -526,7 +557,7 @@ export default function BlogPage() {
                   <Mail className="w-4 h-4 text-accent" /> Subscribe
                 </span>
                 
-                <h3 className="font-headline text-2xl md:text-3.5xl font-extrabold text-slate-900 dark:text-white tracking-tight">
+                <h3 className="font-headline text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
                   See what your agent is really doing
                 </h3>
                 
@@ -546,26 +577,33 @@ export default function BlogPage() {
                     Successfully Registered. Thank you for subscribing!
                   </motion.div>
                 ) : (
-                  <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3">
-                    <input 
-                      type="email" 
-                      placeholder="john.doe@acme.com" 
-                      required
-                      value={subscribeEmail}
-                      onChange={(e) => setSubscribeEmail(e.target.value)}
-                      className="bg-slate-50 dark:bg-white/[0.02] border border-emerald-500/20 dark:border-white/10 rounded-xl px-5 py-3 text-sm focus:outline-none focus:border-accent placeholder-slate-400 flex-grow text-slate-800 dark:text-white shadow-inner"
-                    />
-                    <button 
-                      type="submit" 
-                      className="bg-accent text-primary dark:text-primary-container hover:bg-accent/90 font-headline font-bold text-sm h-12 px-8 rounded-xl transition-all active:scale-98 flex items-center justify-center gap-2 shrink-0 shadow-md hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-                    >
-                      Subscribe <ArrowRight className="w-4 h-4" />
-                    </button>
+                  <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
+                    <div className="flex flex-col sm:flex-row gap-3">
+                      <input 
+                        type="email" 
+                        placeholder="john.doe@acme.com" 
+                        required
+                        value={subscribeEmail}
+                        onChange={(e) => setSubscribeEmail(e.target.value)}
+                        className="flex-grow rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm text-slate-800 shadow-inner placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
+                      />
+                      <button 
+                        type="submit" 
+                        className="bg-accent text-primary dark:text-primary-container hover:bg-accent/90 font-headline font-bold text-sm h-12 px-8 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 shrink-0 shadow-md hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
+                      >
+                        Subscribe <ArrowRight className="w-4 h-4" />
+                      </button>
+                    </div>
+                    {subscribeError && (
+                      <p role="alert" className="text-xs text-red-600 dark:text-red-400 leading-relaxed">
+                        {subscribeError}
+                      </p>
+                    )}
                   </form>
                 )}
 
                 <div className="pt-1">
-                  <p className="text-[10px] text-slate-400 font-body">No promotion or tracking. Clear analytical distributions processed securely.</p>
+                  <p className="text-[10px] text-slate-400 font-body">No spam. Unsubscribe anytime via Resend broadcasts.</p>
                 </div>
               </div>
             </div>

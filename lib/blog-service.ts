@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { supabase, isSupabaseConfigured } from './supabase';
 
 export interface Article {
   id: number;
@@ -24,8 +25,39 @@ export interface Article {
 const dataDir = path.join(process.cwd(), 'data');
 const dataFilePath = path.join(dataDir, 'articles.json');
 
-// In-memory cache to guarantee fast reads and prevent crashes if filesystem is write-protected/read-only
+// Short-TTL in-memory cache (multi-instance hosts eventually converge; writes update immediately)
 let cachedArticles: Article[] | null = null;
+let cacheLoadedAt = 0;
+const CACHE_TTL_MS = 8_000;
+
+/**
+ * Circuit breaker: when Supabase is unreachable / misconfigured, stop hammering it
+ * every slug/page request and fall back to local JSON quietly.
+ */
+let supabaseCooldownUntil = 0;
+let supabaseFailureLogged = false;
+const SUPABASE_COOLDOWN_MS = 60_000;
+
+function isSupabaseUsable(): boolean {
+  return isSupabaseConfigured() && Date.now() >= supabaseCooldownUntil;
+}
+
+function markSupabaseUnavailable(reason: unknown): void {
+  supabaseCooldownUntil = Date.now() + SUPABASE_COOLDOWN_MS;
+  if (!supabaseFailureLogged) {
+    supabaseFailureLogged = true;
+    const detail =
+      reason && typeof reason === 'object'
+        ? // Supabase errors often serialize poorly as {}
+          JSON.stringify(reason, Object.getOwnPropertyNames(reason as object)) ||
+          String(reason)
+        : String(reason ?? 'unknown');
+    console.warn(
+      `[blog-service] Supabase unavailable — using local data/articles.json for ~${SUPABASE_COOLDOWN_MS / 1000}s.`,
+      detail
+    );
+  }
+}
 
 // Standard initial seed articles mapped from the original React TSX layout to clean Markdown strings
 const defaultArticles: Article[] = [
@@ -268,54 +300,232 @@ To provide satisfying, stable visual interactions, frontends should transition f
   }
 ];
 
+// Mapping helpers between database snake_case and code camelCase
+function toCamelCase(dbArticle: any): Article {
+  return {
+    id: dbArticle.id,
+    slug: dbArticle.slug,
+    featured: dbArticle.featured,
+    categories: dbArticle.categories,
+    title: dbArticle.title,
+    excerpt: dbArticle.excerpt,
+    author: dbArticle.author,
+    authorRole: dbArticle.author_role,
+    authorAvatar: dbArticle.author_avatar,
+    date: dbArticle.date,
+    readTime: dbArticle.read_time,
+    takeaways: dbArticle.takeaways,
+    content: dbArticle.content,
+    illustrationType: dbArticle.illustration_type,
+    status: dbArticle.status,
+    coverImage: dbArticle.cover_image,
+    updatedAt: dbArticle.updated_at,
+  };
+}
+
+function toSnakeCase(article: Article): any {
+  return {
+    id: article.id,
+    slug: article.slug,
+    featured: article.featured ?? false,
+    categories: article.categories || [],
+    title: article.title,
+    excerpt: article.excerpt || '',
+    author: article.author || '',
+    author_role: article.authorRole || '',
+    author_avatar: article.authorAvatar || '',
+    date: article.date || '',
+    read_time: article.readTime || '',
+    takeaways: article.takeaways || [],
+    content: article.content || '',
+    illustration_type: article.illustrationType || 'diagram1',
+    status: article.status || 'published',
+    cover_image: article.coverImage || null,
+    updated_at: article.updatedAt || new Date().toISOString(),
+  };
+}
+
 /**
  * Ensures data directory exists and returns list of articles
  */
+async function readLocalArticlesFile(): Promise<Article[] | null> {
+  try {
+    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
+    const parsed = JSON.parse(fileContent);
+    return Array.isArray(parsed) ? (parsed as Article[]) : null;
+  } catch {
+    return null;
+  }
+}
+
 export async function getArticles(): Promise<Article[]> {
-  if (cachedArticles) {
+  if (cachedArticles && Date.now() - cacheLoadedAt < CACHE_TTL_MS) {
     return cachedArticles;
   }
 
-  try {
-    // Attempt to read data file
-    const fileContent = await fs.readFile(dataFilePath, 'utf-8');
-    cachedArticles = JSON.parse(fileContent);
+  const loadLocal = async (): Promise<Article[]> => {
+    const local = await readLocalArticlesFile();
+    cachedArticles = local || defaultArticles;
+    cacheLoadedAt = Date.now();
     return cachedArticles || [];
-  } catch (error: any) {
-    // If file doesn't exist, initialize and seed it
-    if (error.code === 'ENOENT') {
-      console.log('Seeding initial blog database at data/articles.json...');
-      await saveArticles(defaultArticles);
-      return defaultArticles;
+  };
+
+  if (!isSupabaseUsable()) {
+    return loadLocal();
+  }
+
+  try {
+    const { data, error } = await supabase
+      .from('articles')
+      .select('*')
+      .order('id', { ascending: true });
+
+    if (error) {
+      markSupabaseUnavailable(error);
+      return loadLocal();
     }
-    
-    // In case of any filesystem issues, return defaultArticles and log error
-    console.error('Failed reading articles file, falling back to static seeds:', error);
-    return defaultArticles;
+    // Recovery: clear failure latch after a successful read
+    supabaseFailureLogged = false;
+    cachedArticles = (data || []).map(toCamelCase);
+    cacheLoadedAt = Date.now();
+    return cachedArticles || [];
+  } catch (error) {
+    markSupabaseUnavailable(error);
+    return loadLocal();
   }
 }
 
 /**
- * Saves articles back to data/articles.json
+ * Cleans up orphaned cover images that are no longer referenced by any article.
+ * Compares old articles list with new articles list and deletes images that were removed.
+ */
+async function cleanupOrphanedImages(oldArticles: Article[], newArticles: Article[], useSupabase: boolean): Promise<void> {
+  const oldImages = oldArticles
+    .map(a => a.coverImage)
+    .filter((img): img is string => typeof img === 'string' && img.length > 0);
+
+  const newImages = new Set(
+    newArticles
+      .map(a => a.coverImage)
+      .filter((img): img is string => typeof img === 'string' && img.length > 0)
+  );
+
+  // Find images in old list that are no longer in use
+  const orphanedImages = oldImages.filter(img => !newImages.has(img));
+  if (orphanedImages.length === 0) return;
+
+  if (useSupabase) {
+    const bucket = supabase.storage.from('covers');
+    const filenames: string[] = [];
+
+    for (const imgUrl of orphanedImages) {
+      if (imgUrl.includes('/storage/v1/object/public/covers/')) {
+        const parts = imgUrl.split('/storage/v1/object/public/covers/');
+        const rawFilename = parts[parts.length - 1];
+        // Strip query params/hashes
+        const filename = rawFilename.split('?')[0].split('#')[0];
+        if (filename) filenames.push(filename);
+      }
+    }
+
+    if (filenames.length > 0) {
+      const { error } = await bucket.remove(filenames);
+      if (error) console.error('Failed to delete files from Supabase Storage:', error);
+    }
+  } else {
+    // Local fallback disk cleanup
+    const coversDir = path.join(process.cwd(), 'public', 'covers');
+    for (const imgUrl of orphanedImages) {
+      if (imgUrl.startsWith('/covers/')) {
+        const filename = imgUrl.replace('/covers/', '').split('?')[0].split('#')[0];
+        const filePath = path.join(coversDir, filename);
+        try {
+          await fs.unlink(filePath);
+        } catch (err: any) {
+          if (err.code !== 'ENOENT') console.error('Failed to delete local image:', filePath, err);
+        }
+      }
+    }
+  }
+}
+
+/**
+ * Saves articles back to Supabase
  */
 export async function saveArticles(articles: Article[]): Promise<boolean> {
+  const oldArticles = cachedArticles || [];
   cachedArticles = articles;
+  cacheLoadedAt = Date.now();
+
+  if (!isSupabaseConfigured()) {
+    console.warn('Supabase not configured. Falling back to local file save.');
+    try {
+      await fs.mkdir(dataDir, { recursive: true });
+      await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
+      // Non-blocking local cleanup
+      cleanupOrphanedImages(oldArticles, articles, false).catch(err =>
+        console.error('Failed local storage cleanup:', err)
+      );
+      return true;
+    } catch (error) {
+      console.error('Failed saving articles data file:', error);
+      return false;
+    }
+  }
+
   try {
-    // Create folder structure if it doesn't exist
-    await fs.mkdir(dataDir, { recursive: true });
-    await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
+    const dbArticles = articles.map(toSnakeCase);
+
+    // 1. Upsert all current articles
+    const { error: upsertError } = await supabase
+      .from('articles')
+      .upsert(dbArticles, { onConflict: 'id' });
+      
+    if (upsertError) {
+      console.error('Failed to upsert articles to Supabase:', upsertError);
+      return false;
+    }
+    
+    // 2. Delete any articles that are no longer in the list
+    const idsToKeep = articles.map(a => a.id);
+    if (idsToKeep.length > 0) {
+      const { error: deleteError } = await supabase
+        .from('articles')
+        .delete()
+        .not('id', 'in', `(${idsToKeep.join(',')})`);
+        
+      if (deleteError) {
+        console.error('Failed to clean up deleted articles in Supabase:', deleteError);
+      }
+    } else {
+      const { error: deleteError } = await supabase
+        .from('articles')
+        .delete()
+        .neq('id', 0);
+        
+      if (deleteError) {
+        console.error('Failed to clean up deleted articles in Supabase:', deleteError);
+      }
+    }
+    
+    // Non-blocking Supabase storage cleanup
+    cleanupOrphanedImages(oldArticles, articles, true).catch(err =>
+      console.error('Failed Supabase storage cleanup:', err)
+    );
+
     return true;
   } catch (error) {
-    console.error('Failed saving articles data file:', error);
-    // Return true anyway because the cachedArticles variable preserves updates in memory
-    return true;
+    console.error('Failed saving to Supabase:', error);
+    return false;
   }
 }
 
 /**
- * Retrieves a single article matching a slug
+ * Retrieves a single article matching a slug.
+ * Uses the shared article list (local or Supabase) so we do not open a second
+ * failing Supabase request per slug when the host is unreachable.
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
   const list = await getArticles();
-  return list.find(a => a.slug === slug) || null;
+  return list.find((a) => a.slug === slug) || null;
 }

@@ -6,7 +6,7 @@ interface RenderIllustrationProps {
 }
 
 export function renderIllustration(type: string, isBig: boolean = true) {
-  const strokeCol = "#10B981"; // Emerald
+  const strokeCol = "var(--color-accent)"; // Mode-aware brand accent
   const accentCol = "#3b82f6"; // Blue
   const borderCol = "var(--color-outline-variant)"; // Border
   const textCol = "var(--color-text-primary)"; // Text

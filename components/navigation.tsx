@@ -1,110 +1,315 @@
 'use client';
 
-import { Terminal, Menu, X } from 'lucide-react';
+import { Terminal, Menu, X, BookOpen, AtSign } from 'lucide-react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { Suspense, useState, useEffect, useRef, type ReactNode } from 'react';
 import { ThemeToggle } from '@/components/theme-provider';
+import { siteConfig } from '@/lib/site-config';
 
-export function Navigation() {
+type NavLink = {
+  name: string;
+  path: string;
+  external?: boolean;
+  key: string;
+  icon?: ReactNode;
+  shortName?: string;
+};
+
+function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
   const pathname = usePathname();
+  const isAtelier = pathname.startsWith('/editorial') || pathname.startsWith('/login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRef = useRef<HTMLButtonElement>(null);
 
-  const linksList = [
-    { name: 'Startup', path: 'https://edudojo.ai', external: true },
-    { name: 'Community', path: '/community' },
-    { name: 'Blog', path: '/blog' },
-    { name: 'YouTube', path: '/youtube' },
-    { name: 'About', path: '/about' }
-  ];
+  const linksList: NavLink[] = isAtelier
+    ? [
+        {
+          name: 'Blog CMS',
+          shortName: 'Blog',
+          path: '/editorial',
+          key: 'blog',
+          icon: <BookOpen className="h-3.5 w-3.5" strokeWidth={2.25} />,
+        },
+        {
+          name: 'X To-Do',
+          shortName: 'X',
+          path: '/editorial?workspace=x',
+          key: 'x',
+          icon: <AtSign className="h-3.5 w-3.5" strokeWidth={2.25} />,
+        },
+        { name: 'Public site', shortName: 'Public', path: '/', key: 'public' },
+      ]
+    : [
+        { name: 'Startup', path: siteConfig.links.edudojo, external: true, key: 'startup' },
+        { name: 'Community', path: '/community', key: 'community' },
+        { name: 'Blog', path: '/blog', key: 'blog' },
+        { name: 'YouTube', path: '/youtube', key: 'youtube' },
+        { name: 'About', path: '/about', key: 'about' },
+      ];
+
+  useEffect(() => {
+    if (!mobileMenuOpen) return;
+
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setMobileMenuOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+    document.addEventListener('keydown', onKey);
+
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [mobileMenuOpen]);
+
+  // Always-translucent glass — no scroll opacity shift
+  const navShell = isAtelier
+    ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/90 shadow-[var(--atelier-shadow-sm)] backdrop-blur-xl'
+    : 'border-white/60 bg-white/65 shadow-[0_8px_32px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.02] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_2px_1px_rgba(255,255,255,0.15)]';
+
+  const logoBox = isAtelier
+    ? 'border-[var(--atelier-line)] bg-[var(--atelier-paper)]'
+    : 'border-white/80 bg-white/80 shadow-sm dark:border-white/20 dark:bg-white/10';
+
+  const logoIcon = isAtelier ? 'text-[var(--atelier-gold)]' : 'text-accent';
+  const logoText = isAtelier
+    ? 'text-[var(--atelier-ink)] group-hover:text-[var(--atelier-gold)]'
+    : 'text-primary group-hover:text-accent';
+
+  const linkRail = isAtelier
+    ? 'border-[var(--atelier-line)] bg-[var(--atelier-paper)]/70'
+    : 'border-white/50 bg-white/50 shadow-inner dark:border-white/10 dark:bg-white/[0.01]';
+
+  const mobilePanel = isAtelier
+    ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/98 shadow-[var(--atelier-shadow)]'
+    : 'border-white/60 bg-white/95 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/95';
+
+  const mobileBtn = isAtelier
+    ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)] text-[var(--atelier-ink)] hover:text-[var(--atelier-gold)]'
+    : 'border-white/60 bg-white/80 text-slate-700 shadow-sm hover:text-accent dark:border-white/10 dark:bg-white/15 dark:text-white/80';
+
+  const onX = workspaceParam === 'x' || workspaceParam === 'todo' || workspaceParam === 'x-todo';
+
+  const isLinkActive = (link: NavLink) => {
+    if (isAtelier) {
+      if (link.key === 'x') return pathname.startsWith('/editorial') && onX;
+      if (link.key === 'blog') return pathname.startsWith('/editorial') && !onX;
+      return pathname === link.path;
+    }
+    return (
+      !link.external &&
+      (pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path)))
+    );
+  };
+
+  const atelierActive =
+    'border-transparent bg-[var(--atelier-ink)] text-[var(--atelier-card)] shadow-md';
+  const atelierIdle =
+    'border-transparent text-[var(--atelier-faint)] hover:bg-[var(--atelier-paper)] hover:text-[var(--atelier-ink)]';
 
   return (
-    <div className="fixed top-6 left-0 right-0 z-50 flex flex-col items-center px-4 pointer-events-none">
-      <nav className="pointer-events-auto flex items-center justify-between bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl border border-white/60 dark:border-white/10 shadow-[0_8px_32px_rgba(0,0,0,0.04)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] rounded-full px-4 py-3 w-full max-w-5xl transition-all duration-500">
-        <Link href="/" className="flex items-center gap-3 group px-2">
-          <div className="w-8 h-8 bg-white/80 dark:bg-white/10 rounded-full flex items-center justify-center border border-white/80 dark:border-white/20 shadow-sm group-hover:scale-105 transition-all duration-300">
-            <Terminal className="w-4 h-4 text-accent" strokeWidth={2.5} />
+    <div
+      className={`pointer-events-none fixed top-5 right-0 left-0 z-50 flex flex-col items-center px-3 sm:px-4 ${
+        isAtelier ? 'atelier-chrome' : ''
+      }`}
+    >
+      <nav
+        className={`pointer-events-auto isolate flex w-full max-w-5xl items-center justify-between gap-2 rounded-full border px-3 py-2.5 sm:px-4 sm:py-3 ${navShell}`}
+        aria-label="Primary"
+      >
+        <Link
+          href={isAtelier ? '/editorial' : '/'}
+          className="group flex shrink-0 items-center gap-2 px-1 sm:gap-3 sm:px-2"
+        >
+          <div
+            className={`flex h-8 w-8 items-center justify-center rounded-full border transition-all duration-300 group-hover:scale-105 ${logoBox}`}
+          >
+            <Terminal className={`h-4 w-4 ${logoIcon}`} strokeWidth={2.5} />
           </div>
-          <span className="font-headline text-lg font-extrabold tracking-[-0.04em] text-primary group-hover:text-accent transition-colors duration-300">
-            GS.
+          <span
+            className={`font-headline text-base font-extrabold tracking-[-0.04em] transition-colors duration-300 sm:text-lg ${
+              isAtelier ? 'hidden min-[380px]:inline' : ''
+            } ${logoText}`}
+          >
+            {isAtelier ? 'Atelier' : `${siteConfig.shortName}.`}
           </span>
         </Link>
-        
-        {/* Desktop Navigation Links */}
-        <div className="hidden md:flex items-center gap-1 bg-white/50 dark:bg-white/[0.01] p-1.5 rounded-full border border-white/50 dark:border-white/10 shadow-inner">
+
+        {/* Desktop / tablet link rail */}
+        <div
+          className={`hidden min-w-0 items-center gap-0.5 rounded-full border p-1 shadow-inner sm:flex ${linkRail}`}
+        >
           {linksList.map((link) => {
-            const isActive = !link.external && (pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path)));
+            const isActive = isLinkActive(link);
+
             return (
-              <Link 
-                key={link.name} 
-                href={link.path} 
-                target={link.external ? "_blank" : undefined}
-                rel={link.external ? "noopener noreferrer" : undefined}
-                className={`px-5 py-2 rounded-full font-medium font-headline text-sm tracking-tight transition-all duration-300 border ${
-                  isActive 
-                    ? 'bg-accent/10 text-accent border-accent/20 shadow-sm backdrop-blur-md' 
-                    : 'text-on-surface-variant hover:text-primary hover:bg-white/70 dark:hover:bg-white/10 hover:backdrop-blur-md hover:shadow-sm hover:border-white/80 dark:hover:border-white/20 border-transparent'
+              <Link
+                key={link.key || link.name}
+                href={link.path}
+                scroll={false}
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
+                aria-current={isActive ? 'page' : undefined}
+                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight transition-all duration-300 md:px-5 ${
+                  isAtelier
+                    ? isActive
+                      ? atelierActive
+                      : atelierIdle
+                    : isActive
+                      ? 'border-accent/20 bg-accent/10 text-accent shadow-sm'
+                      : 'border-transparent text-on-surface-variant hover:border-white/80 hover:bg-white/70 hover:text-primary hover:shadow-sm dark:hover:border-white/20 dark:hover:bg-white/10'
                 }`}
               >
-                {link.name}
+                {link.icon}
+                <span className="md:hidden">{link.shortName ?? link.name}</span>
+                <span className="hidden md:inline">{link.name}</span>
               </Link>
             );
           })}
         </div>
 
-        <div className="flex items-center gap-3">
+        {/* Phone: compact Blog / X switcher (atelier only) */}
+        {isAtelier && (
+          <div
+            className={`flex min-w-0 flex-1 items-center justify-center gap-0.5 rounded-full border p-1 shadow-inner sm:hidden ${linkRail}`}
+            role="navigation"
+            aria-label="Workspace"
+          >
+            {linksList
+              .filter((link) => link.key === 'blog' || link.key === 'x')
+              .map((link) => {
+                const isActive = isLinkActive(link);
+                return (
+                  <Link
+                    key={link.key}
+                    href={link.path}
+                    scroll={false}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight transition-all duration-300 ${
+                      isActive ? atelierActive : atelierIdle
+                    }`}
+                  >
+                    {link.icon}
+                    {link.shortName ?? link.name}
+                  </Link>
+                );
+              })}
+          </div>
+        )}
+
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <ThemeToggle />
-          <Link 
-            href="/contact" 
-            className="hidden sm:inline-block bg-accent text-slate-950 px-6 py-2.5 rounded-full font-headline font-bold text-sm tracking-tight hover:bg-accent/90 hover:shadow-[0_4px_20px_rgba(16,185,129,0.25)] active:scale-95 transition-all shadow-md border border-accent/20 text-center"
-          >
-            Contact
-          </Link>
-          
-          {/* Mobile Menu Hamburger Button */}
+          {!isAtelier && (
+            <Link
+              href="/contact"
+              className="hidden rounded-full border border-accent/20 bg-accent px-6 py-2.5 text-center font-headline text-sm font-bold tracking-tight text-slate-950 shadow-md transition-all hover:bg-accent/90 hover:shadow-[0_4px_20px_rgba(16,185,129,0.25)] active:scale-95 sm:inline-block"
+            >
+              Contact
+            </Link>
+          )}
+          {isAtelier && (
+            <Link
+              href="/api/auth/logout"
+              className="hidden items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/80 px-4 py-2 font-headline text-sm font-semibold text-[var(--atelier-muted)] transition-colors hover:text-[var(--atelier-ink)] md:inline-flex"
+            >
+              Sign out
+            </Link>
+          )}
+
           <button
+            ref={buttonRef}
+            type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden pointer-events-auto flex items-center justify-center w-9 h-9 rounded-full border border-white/60 dark:border-white/10 bg-white/80 dark:bg-white/15 text-slate-700 dark:text-white/80 hover:text-accent focus:outline-none shadow-sm transition-all"
-            aria-label="Toggle Navigation Menu"
+            className={`pointer-events-auto flex h-9 w-9 items-center justify-center rounded-full border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atelier-gold)] ${
+              isAtelier ? 'sm:hidden' : 'md:hidden'
+            } ${mobileBtn}`}
+            aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={mobileMenuOpen}
+            aria-controls="mobile-nav-panel"
           >
-            {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+            {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
           </button>
         </div>
       </nav>
 
-      {/* Mobile Menu Dropdown Panel */}
       {mobileMenuOpen && (
-        <div className="absolute top-20 left-4 right-4 bg-white/95 dark:bg-slate-900/95 backdrop-blur-xl border border-white/60 dark:border-white/10 rounded-3xl p-4 shadow-xl z-40 animate-in fade-in slide-in-from-top-4 duration-200 pointer-events-auto md:hidden">
+        <div
+          id="mobile-nav-panel"
+          ref={menuRef}
+          className={`pointer-events-auto absolute top-20 right-3 left-3 z-40 animate-in rounded-3xl border p-4 duration-200 fade-in slide-in-from-top-4 sm:right-4 sm:left-4 ${
+            isAtelier ? 'sm:hidden' : 'md:hidden'
+          } ${mobilePanel}`}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Mobile navigation"
+        >
           <div className="flex flex-col gap-2">
             {linksList.map((link) => {
-              const isActive = !link.external && (pathname === link.path || (link.path !== '/' && pathname.startsWith(link.path)));
+              const isActive = isLinkActive(link);
               return (
-                <Link 
-                  key={link.name} 
-                  href={link.path} 
+                <Link
+                  key={link.name}
+                  href={link.path}
+                  scroll={false}
                   onClick={() => setMobileMenuOpen(false)}
-                  target={link.external ? "_blank" : undefined}
-                  rel={link.external ? "noopener noreferrer" : undefined}
-                  className={`px-4 py-3 rounded-2xl font-semibold font-headline text-sm tracking-tight transition-all border ${
-                    isActive 
-                      ? 'bg-accent/10 text-accent border-accent/20' 
-                      : 'text-slate-600 dark:text-white/70 hover:bg-slate-50 dark:hover:bg-white/5 border-transparent'
+                  target={link.external ? '_blank' : undefined}
+                  rel={link.external ? 'noopener noreferrer' : undefined}
+                  aria-current={isActive ? 'page' : undefined}
+                  className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight transition-all ${
+                    isAtelier
+                      ? isActive
+                        ? atelierActive
+                        : 'border-transparent text-[var(--atelier-ink)] hover:bg-[var(--atelier-paper)]'
+                      : isActive
+                        ? 'border-accent/20 bg-accent/10 text-accent'
+                        : 'border-transparent text-slate-600 hover:bg-slate-50 dark:text-white/70 dark:hover:bg-white/5'
                   }`}
                 >
+                  {link.icon}
                   {link.name}
                 </Link>
               );
             })}
-            <Link 
-              href="/contact" 
-              onClick={() => setMobileMenuOpen(false)}
-              className="mt-2 bg-accent text-slate-950 w-full py-3 rounded-2xl font-headline font-bold text-sm tracking-tight text-center"
-            >
-              Contact
-            </Link>
+            {isAtelier ? (
+              <Link
+                href="/api/auth/logout"
+                onClick={() => setMobileMenuOpen(false)}
+                className="mt-2 w-full rounded-2xl border border-[var(--atelier-line)] py-3 text-center font-headline text-sm font-bold text-[var(--atelier-muted)]"
+              >
+                Sign out
+              </Link>
+            ) : (
+              <Link
+                href="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="btn-accent mt-2 w-full rounded-2xl py-3 text-center font-headline text-sm font-bold tracking-tight"
+              >
+                Contact
+              </Link>
+            )}
           </div>
         </div>
       )}
     </div>
+  );
+}
+
+function NavigationWithParams() {
+  const searchParams = useSearchParams();
+  return <NavigationBar workspaceParam={searchParams.get('workspace')} />;
+}
+
+export function Navigation() {
+  return (
+    <Suspense fallback={<NavigationBar workspaceParam={null} />}>
+      <NavigationWithParams />
+    </Suspense>
   );
 }

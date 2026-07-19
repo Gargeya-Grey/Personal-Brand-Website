@@ -1,7 +1,17 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getArticles, saveArticles, Article } from '@/lib/blog-service';
-import { verifyJWT } from '@/lib/auth';
+import { requireAllowedSession } from '@/lib/auth';
+
+/**
+ * CSRF protection: verify the request Origin matches the application origin.
+ */
+function checkCsrf(request: Request): boolean {
+  const origin = request.headers.get('origin');
+  if (!origin) return true; // Non-browser requests (curl, Postman) don't send Origin
+  const requestUrl = new URL(request.url);
+  return origin === requestUrl.origin;
+}
 
 /**
  * Public Endpoint: Retrieve all blog posts
@@ -17,12 +27,9 @@ export async function GET(request: Request) {
     if (includeAll) {
       const cookieStore = await cookies();
       const sessionCookie = cookieStore.get('auth_session');
-      if (!sessionCookie) {
-        return NextResponse.json({ error: 'Unauthorized: Session missing' }, { status: 401 });
-      }
-      const user = await verifyJWT(sessionCookie.value);
+      const user = await requireAllowedSession(sessionCookie?.value);
       if (!user) {
-        return NextResponse.json({ error: 'Unauthorized: Session invalid' }, { status: 401 });
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
       return NextResponse.json(list);
     }
@@ -43,19 +50,29 @@ export async function GET(request: Request) {
  */
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate Request
+    // 0. CSRF Check
+    if (!checkCsrf(request)) {
+      return NextResponse.json({ error: 'CSRF check failed' }, { status: 403 });
+    }
+
+    // 1. Authenticate Request (allowlisted Google session only)
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth_session');
-    if (!sessionCookie) {
-      return NextResponse.json({ error: 'Unauthorized: Session missing' }, { status: 401 });
-    }
-    const user = await verifyJWT(sessionCookie.value);
+    const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized: Session invalid' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const body = await request.json();
     const article: Partial<Article> = body;
+
+    // Input validation: ensure id is a safe number if provided
+    if (article.id !== undefined && (typeof article.id !== 'number' || !Number.isFinite(article.id))) {
+      return NextResponse.json(
+        { error: 'Invalid article ID: must be a finite number.' },
+        { status: 400 }
+      );
+    }
 
     if (!article.title || !article.slug || !article.content) {
       return NextResponse.json(
@@ -90,6 +107,16 @@ export async function POST(request: Request) {
           { status: 404 }
         );
       }
+
+      // Determine the publication date:
+      // If transitioning from draft→published, stamp with current date.
+      // Otherwise preserve the original publication date.
+      const existingStatus = articles[index].status;
+      const newStatus = article.status || existingStatus || 'published';
+      const isPublishing = newStatus === 'published' && existingStatus !== 'published';
+      const publicationDate = isPublishing
+        ? new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
+        : (article.date || articles[index].date);
       
       savedArticle = {
         ...articles[index],
@@ -104,8 +131,9 @@ export async function POST(request: Request) {
         content: article.content,
         illustrationType: article.illustrationType || articles[index].illustrationType,
         featured: article.featured !== undefined ? article.featured : articles[index].featured,
-        status: article.status || articles[index].status || 'published',
+        status: newStatus,
         coverImage: article.coverImage !== undefined ? article.coverImage : articles[index].coverImage,
+        date: publicationDate,
         updatedAt: new Date().toISOString(),
       } as Article;
 
@@ -145,7 +173,13 @@ export async function POST(request: Request) {
       );
     }
 
-    await saveArticles(updatedArticles);
+    const saved = await saveArticles(updatedArticles);
+    if (!saved) {
+      return NextResponse.json(
+        { error: 'Failed to persist article changes to the database.' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true, article: savedArticle });
   } catch (error: any) {
@@ -161,15 +195,17 @@ export async function POST(request: Request) {
  */
 export async function DELETE(request: Request) {
   try {
-    // Authenticate Request
+    // 0. CSRF Check
+    if (!checkCsrf(request)) {
+      return NextResponse.json({ error: 'CSRF check failed' }, { status: 403 });
+    }
+
+    // Authenticate Request (allowlisted Google session only)
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth_session');
-    if (!sessionCookie) {
-      return NextResponse.json({ error: 'Unauthorized: Session missing' }, { status: 401 });
-    }
-    const user = await verifyJWT(sessionCookie.value);
+    const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {
-      return NextResponse.json({ error: 'Unauthorized: Session invalid' }, { status: 401 });
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     const { searchParams } = new URL(request.url);
@@ -207,7 +243,13 @@ export async function DELETE(request: Request) {
       updatedArticles[0].featured = true;
     }
 
-    await saveArticles(updatedArticles);
+    const saved = await saveArticles(updatedArticles);
+    if (!saved) {
+      return NextResponse.json(
+        { error: 'Failed to persist deletion to the database.' },
+        { status: 500 }
+      );
+    }
 
     return NextResponse.json({ success: true, message: `Article ${id} deleted successfully.` });
   } catch (error: any) {

@@ -56,14 +56,19 @@ interface ArticleClientProps {
 export function ArticleClient({ article }: ArticleClientProps) {
   const [copiedLink, setCopiedLink] = useState(false);
   const [liked, setLiked] = useState(false);
-  const [likeCount, setLikeCount] = useState(24);
   const [activeHeadingId, setActiveHeadingId] = useState<string>('');
   const [scrollProgress, setScrollProgress] = useState(0);
   const [shareUrl, setShareUrl] = useState('');
 
   useEffect(() => {
     setShareUrl(window.location.href);
-  }, []);
+    try {
+      const key = `liked:${article.slug}`;
+      setLiked(localStorage.getItem(key) === '1');
+    } catch {
+      /* ignore storage errors */
+    }
+  }, [article.slug]);
 
   // Parse headings for Table of Contents
   const headings = useMemo(() => extractHeadings(article.content), [article.content]);
@@ -128,12 +133,14 @@ export function ArticleClient({ article }: ArticleClientProps) {
   };
 
   const handleLikeToggle = () => {
-    if (liked) {
-      setLiked(false);
-      setLikeCount(prev => prev - 1);
-    } else {
-      setLiked(true);
-      setLikeCount(prev => prev + 1);
+    const next = !liked;
+    setLiked(next);
+    try {
+      const key = `liked:${article.slug}`;
+      if (next) localStorage.setItem(key, '1');
+      else localStorage.removeItem(key);
+    } catch {
+      /* ignore */
     }
   };
 
@@ -204,7 +211,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
             
             <Link
               href="/blog"
-              className="group flex items-center gap-2 font-label font-[520] dark:font-[480] text-xs uppercase tracking-wider text-slate-500 dark:text-white/60 hover:text-emerald-600 dark:hover:text-[#10B981] transition-colors"
+              className="group flex items-center gap-2 font-label font-[520] dark:font-[480] text-xs uppercase tracking-wider text-slate-500 dark:text-white/60 hover:text-accent transition-colors"
             >
               <ArrowLeft className="w-4 h-4 text-emerald-600 group-hover:-translate-x-1 transition-transform" />
               <span>Go back to blog</span>
@@ -243,50 +250,53 @@ export function ArticleClient({ article }: ArticleClientProps) {
             )}
 
             {/* Share Control Box */}
-            <div className="flex items-center justify-start gap-3 px-4 py-2 bg-white/80 dark:bg-white/[0.02] backdrop-blur-sm border border-slate-200/80 dark:border-white/10 rounded-full shadow-sm text-xs font-label text-slate-500 max-w-max transition-all">
+            <div className="board-card flex max-w-max items-center justify-start gap-3 rounded-full px-4 py-2 font-label text-xs text-slate-500">
               <span className="font-semibold text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-widest">Share</span>
               <span className="w-[1px] h-3 bg-slate-200 dark:bg-slate-700/50" />
               
               <button 
+                type="button"
                 onClick={handleLikeToggle}
-                aria-label="Like Post"
-                title="Like Post"
-                className="text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 motion-safe:active:scale-90"
+                aria-label={liked ? 'Remove bookmark' : 'Save for later'}
+                aria-pressed={liked}
+                title={liked ? 'Saved on this device' : 'Save on this device'}
+                className="text-slate-400 hover:text-emerald-500 dark:hover:text-emerald-400 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
               >
                 <Heart className={`w-4 h-4 ${liked ? "fill-emerald-500 text-emerald-500" : ""}`} />
               </button>
               
               <button 
+                type="button"
                 onClick={handleCopyLink}
                 aria-label="Copy URL"
                 title="Copy URL"
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 motion-safe:active:scale-90"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
               >
                 {copiedLink ? <Check className="w-4 h-4 text-emerald-500" /> : <Copy className="w-4 h-4" />}
               </button>
               
               <a 
-                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}`}
+                href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(shareUrl || '')}`}
                 target="_blank" 
                 rel="noopener noreferrer"
                 aria-label="Share on X (Twitter)"
                 title="Share on X"
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 motion-safe:active:scale-90"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
               >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
                 </svg>
               </a>
               
               <a 
-                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`}
+                href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl || '')}`}
                 target="_blank" 
                 rel="noopener noreferrer"
                 aria-label="Share on LinkedIn"
                 title="Share on LinkedIn"
-                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 motion-safe:active:scale-90"
+                className="text-slate-400 hover:text-slate-900 dark:hover:text-white transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full p-1 active:scale-90"
               >
-                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                <svg className="w-4 h-4 fill-current" viewBox="0 0 24 24" aria-hidden>
                   <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                 </svg>
               </a>
@@ -302,16 +312,14 @@ export function ArticleClient({ article }: ArticleClientProps) {
                 <img src={article.coverImage} alt={article.title} className="object-cover w-full h-full" />
               </div>
             ) : (
-              <div className="rounded-3xl overflow-hidden border border-emerald-500/20 dark:border-white/10 shadow-sm relative bg-slate-50 dark:bg-white/[0.01]">
+              <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-sm dark:border-white/10 dark:bg-slate-900">
                 {renderIllustration(article.illustrationType === 'cover' ? 'diagram1' : article.illustrationType, true)}
               </div>
             )}
 
             {/* Key Takeaways */}
             {article.takeaways && article.takeaways.length > 0 && (
-              <div className="relative overflow-hidden mb-8 p-6 bg-slate-50/50 dark:bg-white/[0.02] backdrop-blur-[2px] border border-slate-200/80 dark:border-white/5 border-l-4 border-l-emerald-500 dark:border-l-emerald-400/80 rounded-2xl shadow-sm transition-all duration-300 hover:border-emerald-500/20 dark:hover:border-emerald-400/20">
-                {/* Decorative top-right gradient glow */}
-                <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-500/10 to-teal-500/5 dark:from-emerald-400/[0.04] dark:to-transparent rounded-full blur-2xl pointer-events-none" />
+              <div className="board-card relative mb-8 overflow-hidden rounded-2xl border-l-4 border-l-accent p-6">
 
                 <div className="flex items-center gap-2.5 mb-5 relative z-10">
                   <div className="flex items-center justify-center w-6 h-6 rounded-lg bg-emerald-500/10 dark:bg-emerald-400/10 text-emerald-600 dark:text-emerald-400">
@@ -351,8 +359,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
             </div>
 
             {/* Footer recommendation */}
-            <div className="mt-16 flex flex-col sm:flex-row items-center justify-between gap-6 bg-white dark:bg-white/[0.02] border border-emerald-500/20 dark:border-white/10 p-8 rounded-3xl shadow-sm shadow-emerald-900/5 dark:shadow-none relative overflow-hidden group">
-              <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+            <div className="board-card group relative mt-16 flex flex-col items-center justify-between gap-6 overflow-hidden rounded-3xl p-8 sm:flex-row">
               <div className="space-y-2 text-center sm:text-left relative z-10">
                 <p className="font-headline font-[520] dark:font-[480] text-lg text-slate-900 dark:text-white">Finished reading?</p>
                 <p className="text-xs text-slate-500 dark:text-white/60 font-body">Connect with Gargeya Sharma on digital strategy and autonomous pipelines.</p>

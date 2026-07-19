@@ -2,7 +2,8 @@ import { Metadata } from 'next';
 import * as motion from 'motion/react-client';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
-import { Users, MessageSquare, Globe, ArrowUpRight, TrendingUp, Award } from 'lucide-react';
+import { Users, ArrowUpRight, TrendingUp, Award } from 'lucide-react';
+import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
   title: 'Community',
@@ -31,7 +32,7 @@ export default function CommunityPage() {
               Global Network
             </span>
             <h1 className="font-headline text-4xl sm:text-5xl md:text-7xl font-extrabold tracking-[-0.04em] text-primary leading-[0.95]">
-              An elite collective of <br /> <span className="text-[#10B981]">top 1%</span> engineers.
+              An elite collective of <br /> <span className="text-accent">top 1%</span> engineers.
             </h1>
             <p className="font-body text-xl md:text-2xl text-on-surface-variant leading-relaxed max-w-2xl pt-4">
               Building a high-signal network of systems architects, machine learning researchers, and builders pushing the absolute limits of software craft.
@@ -44,44 +45,50 @@ export default function CommunityPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             
             <motion.div
-              className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out flex flex-col justify-between"
+              className="board-card flex flex-col justify-between rounded-soft p-10"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
               <div>
-                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center mb-6">
-                  <TrendingUp className="w-6 h-6 text-accent" />
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-surface-container-low dark:bg-white/5">
+                  <TrendingUp className="h-6 w-6 text-accent" />
                 </div>
-                <div className="text-5xl font-headline font-extrabold text-primary mb-2">∞</div>
-                <div className="text-xs font-label uppercase tracking-[0.2em] text-[#10B981] font-bold mb-4">Infinite Growth</div>
-                <p className="text-on-surface-variant text-sm leading-relaxed">
-                  Level up your engineering capabilities through collaborative mentorship, codebase audits, and deep architectural reviews.
+                <div className="mb-2 font-headline text-5xl font-extrabold text-primary">∞</div>
+                <div className="mb-4 font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                  Infinite Growth
+                </div>
+                <p className="text-sm leading-relaxed text-on-surface-variant">
+                  Level up your engineering capabilities through collaborative mentorship, codebase
+                  audits, and deep architectural reviews.
                 </p>
               </div>
             </motion.div>
 
             <motion.div
-              className="bg-white/65 dark:bg-white/[0.02] backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] hover:bg-white/85 dark:hover:bg-white/10 hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out flex flex-col justify-between"
+              className="board-card flex flex-col justify-between rounded-soft p-10"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
               <div>
-                <div className="w-12 h-12 bg-surface-container-low dark:bg-white/5 rounded-xl flex items-center justify-center mb-6">
-                  <Award className="w-6 h-6 text-accent" />
+                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-surface-container-low dark:bg-white/5">
+                  <Award className="h-6 w-6 text-accent" />
                 </div>
-                <div className="text-5xl font-headline font-extrabold text-primary mb-2">Top 1%</div>
-                <div className="text-xs font-label uppercase tracking-[0.2em] text-[#10B981] font-bold mb-4">Target Caliber</div>
-                <p className="text-on-surface-variant text-sm leading-relaxed">
-                  We nurture and refine your software craft, aiming to elevate you into the elite top 1% of global engineering talent.
+                <div className="mb-2 font-headline text-5xl font-extrabold text-primary">Top 1%</div>
+                <div className="mb-4 font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                  Target Caliber
+                </div>
+                <p className="text-sm leading-relaxed text-on-surface-variant">
+                  We nurture and refine your software craft, aiming to elevate you into the elite
+                  top 1% of global engineering talent.
                 </p>
               </div>
             </motion.div>
 
-            <motion.a 
-              href="https://discord.gg" 
-              target="_blank" 
-              rel="noopener noreferrer" 
-              className="discord-card-gradient backdrop-blur-xl p-10 rounded-soft border border-accent/20 dark:border-white/10 shadow-[0_12px_24px_rgba(16,185,129,0.06)] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),_inset_0_2px_1px_rgba(255,255,255,0.15)] relative overflow-hidden hover:border-accent/50 dark:hover:border-white/20 hover:shadow-[0_16px_32px_rgba(16,185,129,0.12)] dark:hover:shadow-[0_8px_32px_rgba(0,0,0,0.1),_inset_0_2px_1px_rgba(255,255,255,0.15)] transition-[background-color,border-color,box-shadow] duration-300 ease-out block cursor-pointer group"
+            <motion.a
+              href={siteConfig.links.discord}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="discord-card-gradient group relative block cursor-pointer overflow-hidden rounded-soft border border-white/10 p-10 transition-[border-color,box-shadow] duration-300 ease-out hover:border-accent/40"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
@@ -94,7 +101,7 @@ export default function CommunityPage() {
                 </div>
                 <div>
                   <h3 className="text-3xl font-headline font-extrabold text-white mb-2">Join Discord</h3>
-                  <p className="text-white/70 text-sm">Get access to private channels, code reviews, and exclusive events.</p>
+                  <p className="text-white/70 text-sm">Private channels, architecture reviews, and high-signal builder chat.</p>
                 </div>
               </div>
             </motion.a>

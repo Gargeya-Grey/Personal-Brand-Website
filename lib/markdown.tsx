@@ -154,7 +154,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
         elements.push(
           <div 
             key={`code-block-${i}`} 
-            className="bg-[#0c1017] border border-slate-800 p-5 rounded-2xl font-mono text-[11px] md:text-xs text-[#10B981] overflow-x-auto my-6 shadow-inner"
+            className="bg-[#0c1017] border border-slate-800 p-5 rounded-2xl font-mono text-[11px] md:text-xs text-accent overflow-x-auto my-6 shadow-inner"
           >
             <pre className="text-emerald-400 select-all leading-normal">{codeContent}</pre>
           </div>
@@ -190,7 +190,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       const text = line.slice(3).trim();
       const id = slugify(text);
       elements.push(
-        <h2 key={`h2-${i}`} id={id} className="text-2xl md:text-3.5xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-10 mb-5 scroll-mt-32">
+        <h2 key={`h2-${i}`} id={id} className="text-2xl md:text-3xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-10 mb-5 scroll-mt-32">
           {text}
         </h2>
       );
@@ -201,7 +201,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       const text = line.slice(2).trim();
       const id = slugify(text);
       elements.push(
-        <h1 key={`h1-${i}`} id={id} className="text-3xl md:text-4.5xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-12 mb-6 leading-tight">
+        <h1 key={`h1-${i}`} id={id} className="text-3xl md:text-4xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-12 mb-6 leading-tight">
           {text}
         </h1>
       );
@@ -229,6 +229,38 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
             </p>
           ))}
         </blockquote>
+      );
+      continue;
+    }
+
+    // Horizontal rule
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) {
+      elements.push(
+        <hr
+          key={`hr-${i}`}
+          className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-white/15 to-transparent"
+        />
+      );
+      i++;
+      continue;
+    }
+
+    // Ordered lists
+    if (/^\d+\.\s+/.test(line.trim())) {
+      const listItems: string[] = [];
+      while (i < lines.length && /^\d+\.\s+/.test(lines[i].trim())) {
+        listItems.push(lines[i].trim().replace(/^\d+\.\s+/, ''));
+        i++;
+      }
+      elements.push(
+        <ol
+          key={`ol-${i}`}
+          className="list-decimal pl-6 space-y-2 mb-4 font-body text-slate-700 dark:text-white/80 text-base md:text-lg font-[320] dark:font-[300] leading-relaxed tracking-[0.015em]"
+        >
+          {listItems.map((item, idx) => (
+            <li key={idx}>{parseInlineMarkdown(item)}</li>
+          ))}
+        </ol>
       );
       continue;
     }
