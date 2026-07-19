@@ -7,7 +7,7 @@ import {
   signJWT,
   sanitizeRedirect,
 } from '@/lib/auth';
-import { setAuthSessionCookie } from '@/lib/session-cookie';
+import { clearOauthCookies, setAuthSessionCookie } from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -17,26 +17,28 @@ export async function GET(request: Request) {
   const cookieStore = await cookies();
   const stateCookie = cookieStore.get('oauth_state')?.value;
   const storedCallbackUrl = cookieStore.get('oauth_callback_url')?.value;
-
-  const clearOauthTemps = (response: NextResponse) => {
-    response.cookies.set('oauth_state', '', { path: '/', maxAge: 0 });
-    response.cookies.set('oauth_callback_url', '', { path: '/', maxAge: 0 });
-  };
+  const storedRedirectUri = cookieStore.get('oauth_redirect_uri')?.value;
 
   if (!state || !stateCookie || state !== stateCookie) {
-    const res = NextResponse.redirect(new URL('/login?error=AuthFailed', request.url));
-    clearOauthTemps(res);
+    const res = NextResponse.redirect(
+      new URL('/login?error=AuthFailed&reason=oauth_state', request.url)
+    );
+    clearOauthCookies(res, requestUrl);
     return res;
   }
 
   if (!code) {
-    const res = NextResponse.redirect(new URL('/login?error=AuthFailed', request.url));
-    clearOauthTemps(res);
+    const res = NextResponse.redirect(
+      new URL('/login?error=AuthFailed&reason=missing_code', request.url)
+    );
+    clearOauthCookies(res, requestUrl);
     return res;
   }
 
   try {
-    const redirectUri = `${requestUrl.origin}/api/auth/callback`;
+    // Must be the exact same redirect_uri used when starting Google OAuth
+    const redirectUri =
+      storedRedirectUri || `${requestUrl.origin}/api/auth/callback`;
     const tokens = await getGoogleTokens(code, redirectUri);
     const profile = await getGoogleUserProfile(tokens.access_token);
 
@@ -45,7 +47,7 @@ export async function GET(request: Request) {
       loginUrl.searchParams.set('error', 'AccessDenied');
       loginUrl.searchParams.set('email', profile.email || '');
       const res = NextResponse.redirect(loginUrl);
-      clearOauthTemps(res);
+      clearOauthCookies(res, requestUrl);
       return res;
     }
 
@@ -57,10 +59,8 @@ export async function GET(request: Request) {
 
     const targetPath = sanitizeRedirect(storedCallbackUrl);
     const redirectResponse = NextResponse.redirect(new URL(targetPath, request.url));
-    clearOauthTemps(redirectResponse);
+    clearOauthCookies(redirectResponse, requestUrl);
     setAuthSessionCookie(redirectResponse, sessionToken, requestUrl);
-
-    // Prevent caches from storing the authenticated landing response
     redirectResponse.headers.set('Cache-Control', 'private, no-store');
 
     return redirectResponse;
@@ -68,8 +68,9 @@ export async function GET(request: Request) {
     console.error('Google OAuth Callback Error:', error);
     const loginUrl = new URL('/login', request.url);
     loginUrl.searchParams.set('error', 'AuthFailed');
+    loginUrl.searchParams.set('reason', 'token_exchange');
     const res = NextResponse.redirect(loginUrl);
-    clearOauthTemps(res);
+    clearOauthCookies(res, requestUrl);
     return res;
   }
 }

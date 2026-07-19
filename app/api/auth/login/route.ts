@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { getGoogleOAuthUrl, sanitizeRedirect } from '@/lib/auth';
+import { getOauthCookieOptions } from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
-  const { searchParams } = new URL(request.url);
-  const callbackUrl = sanitizeRedirect(searchParams.get('callbackUrl') || '/editorial');
+  const requestUrl = new URL(request.url);
+  const callbackUrl = sanitizeRedirect(requestUrl.searchParams.get('callbackUrl') || '/editorial');
 
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
@@ -21,21 +22,17 @@ export async function GET(request: Request) {
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
 
-  const requestUrl = new URL(request.url);
+  // Use the host the browser is actually on — must match Google Console redirect URIs
+  // and the token exchange redirect_uri in /api/auth/callback.
   const redirectUri = `${requestUrl.origin}/api/auth/callback`;
   const googleAuthUrl = getGoogleOAuthUrl(redirectUri, state);
   const response = NextResponse.redirect(googleAuthUrl);
 
-  const oauthCookie = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
-    path: '/',
-    maxAge: 600,
-  };
-
+  const oauthCookie = getOauthCookieOptions(requestUrl);
   response.cookies.set('oauth_state', state, oauthCookie);
   response.cookies.set('oauth_callback_url', callbackUrl, oauthCookie);
+  response.cookies.set('oauth_redirect_uri', redirectUri, oauthCookie);
+  response.headers.set('Cache-Control', 'private, no-store');
 
   return response;
 }

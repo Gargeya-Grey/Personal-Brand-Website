@@ -22,12 +22,21 @@ function apexFromHostname(hostname: string): string | undefined {
 
 /**
  * Cookie Domain so apex + www share one session.
- * Priority: COOKIE_DOMAIN → request host → APP_URL host.
+ * Priority: COOKIE_DOMAIN → APP_URL → request host.
  */
 export function resolveCookieDomain(requestUrl?: URL | string | null): string | undefined {
   const explicit = process.env.COOKIE_DOMAIN?.trim();
   if (explicit) {
-    return explicit.startsWith('.') ? explicit : `.${explicit.replace(/^www\./, '')}`;
+    const cleaned = explicit.replace(/^\./, '').replace(/^www\./, '');
+    return cleaned ? `.${cleaned}` : undefined;
+  }
+
+  const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || '';
+  try {
+    const apex = apexFromHostname(new URL(appUrl).hostname);
+    if (apex) return `.${apex}`;
+  } catch {
+    /* fall through */
   }
 
   if (requestUrl) {
@@ -36,16 +45,8 @@ export function resolveCookieDomain(requestUrl?: URL | string | null): string | 
       const apex = apexFromHostname(url.hostname);
       if (apex) return `.${apex}`;
     } catch {
-      /* fall through */
+      /* ignore */
     }
-  }
-
-  const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || '';
-  try {
-    const apex = apexFromHostname(new URL(appUrl).hostname);
-    if (apex) return `.${apex}`;
-  } catch {
-    /* ignore */
   }
 
   return undefined;
@@ -67,9 +68,14 @@ export function getSessionCookieOptions(
   return options;
 }
 
-/** Wipe both host-only and Domain= cookies (duplicate names break auth). */
-export function clearAuthSessionCookies(
+/** Short-lived OAuth CSRF cookies — must use the same Domain as auth_session. */
+export function getOauthCookieOptions(requestUrl?: URL | string | null): SessionCookieOptions {
+  return getSessionCookieOptions(600, requestUrl);
+}
+
+function clearNamedCookie(
   response: NextResponse,
+  name: string,
   requestUrl?: URL | string | null
 ): void {
   const base = {
@@ -80,21 +86,30 @@ export function clearAuthSessionCookies(
     maxAge: 0,
   };
 
-  // Host-only
-  response.cookies.set('auth_session', '', base);
+  response.cookies.set(name, '', base);
 
   const domain = resolveCookieDomain(requestUrl);
   if (domain) {
-    response.cookies.set('auth_session', '', { ...base, domain });
-  }
-
-  // Also clear common mistaken variants
-  if (domain) {
+    response.cookies.set(name, '', { ...base, domain });
     const naked = domain.replace(/^\./, '');
-    response.cookies.set('auth_session', '', { ...base, domain: naked });
-    response.cookies.set('auth_session', '', { ...base, domain: `.www.${naked}` });
-    response.cookies.set('auth_session', '', { ...base, domain: `www.${naked}` });
+    response.cookies.set(name, '', { ...base, domain: naked });
   }
+}
+
+export function clearAuthSessionCookies(
+  response: NextResponse,
+  requestUrl?: URL | string | null
+): void {
+  clearNamedCookie(response, 'auth_session', requestUrl);
+}
+
+export function clearOauthCookies(
+  response: NextResponse,
+  requestUrl?: URL | string | null
+): void {
+  clearNamedCookie(response, 'oauth_state', requestUrl);
+  clearNamedCookie(response, 'oauth_callback_url', requestUrl);
+  clearNamedCookie(response, 'oauth_redirect_uri', requestUrl);
 }
 
 export function setAuthSessionCookie(
@@ -102,6 +117,17 @@ export function setAuthSessionCookie(
   token: string,
   requestUrl?: URL | string | null
 ): void {
-  clearAuthSessionCookies(response, requestUrl);
-  response.cookies.set('auth_session', token, getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl));
+  // Clear host-only leftovers, then set the shared Domain cookie once.
+  response.cookies.set('auth_session', '', {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    maxAge: 0,
+  });
+  response.cookies.set(
+    'auth_session',
+    token,
+    getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl)
+  );
 }
