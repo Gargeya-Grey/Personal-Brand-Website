@@ -9,7 +9,6 @@ import {
 } from '@/lib/auth';
 import {
   clearOauthCookies,
-  setAuthSessionCookie,
 } from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
@@ -52,14 +51,16 @@ export async function GET(request: Request) {
       return res;
     }
 
-    const sessionToken = await signJWT({
+    const completionTicket = await signJWT({
       email: profile.email,
       name: profile.name,
       picture: profile.picture,
+      exp: Math.floor(Date.now() / 1000) + 60,
     });
 
     const targetPath = sanitizeRedirect(storedCallbackUrl);
     const serializedTarget = JSON.stringify(targetPath).replace(/</g, '\\u003c');
+    const serializedTicket = JSON.stringify(completionTicket);
     const completionHtml = `<!doctype html>
 <html lang="en">
   <head>
@@ -78,19 +79,35 @@ export async function GET(request: Request) {
     </main>
     <script>
       const target = ${serializedTarget};
-      fetch('/api/auth/me', { credentials: 'same-origin', cache: 'no-store' })
-        .then(async (response) => {
-          if (response.ok) {
-            window.location.replace(target);
-            return;
-          }
-          const data = await response.json().catch(() => ({}));
-          const reason = encodeURIComponent(data.reason || 'session-cookie');
-          window.location.replace('/login?error=SessionCookie&reason=' + reason);
-        })
-        .catch(() => {
-          window.location.replace('/login?error=SessionCookie&reason=verification-failed');
+      const ticket = ${serializedTicket};
+      async function completeSignIn() {
+        const finalizeResponse = await fetch('/api/auth/finalize', {
+          method: 'POST',
+          credentials: 'same-origin',
+          cache: 'no-store',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ticket }),
         });
+        if (!finalizeResponse.ok) {
+          const data = await finalizeResponse.json().catch(() => ({}));
+          throw new Error(data.reason || 'finalize-failed');
+        }
+
+        const verificationResponse = await fetch('/api/auth/me', {
+          credentials: 'same-origin',
+          cache: 'no-store',
+        });
+        if (!verificationResponse.ok) {
+          const data = await verificationResponse.json().catch(() => ({}));
+          throw new Error(data.reason || 'session-cookie');
+        }
+
+        window.location.replace(target);
+      }
+      completeSignIn().catch((error) => {
+        const reason = encodeURIComponent(error.message || 'verification-failed');
+        window.location.replace('/login?error=SessionCookie&reason=' + reason);
+      });
     </script>
   </body>
 </html>`;
@@ -102,7 +119,6 @@ export async function GET(request: Request) {
         'Referrer-Policy': 'no-referrer',
       },
     });
-    setAuthSessionCookie(completionResponse, sessionToken, requestUrl);
     return completionResponse;
   } catch (error: unknown) {
     console.error('Google OAuth Callback Error:', error);
