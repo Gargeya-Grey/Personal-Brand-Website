@@ -64,12 +64,27 @@ function markSupabaseUnavailable(reason: unknown): void {
   }
 }
 
+/** Local JSON is a laptop/dev fallback — Vercel FS is read-only. */
+function preferLocalJson(): boolean {
+  return !process.env.VERCEL && !isSupabaseConfigured();
+}
+
 async function ensureFile(): Promise<void> {
   try {
     await fs.access(dataFilePath);
   } catch {
     await fs.mkdir(dataDir, { recursive: true });
     await fs.writeFile(dataFilePath, '[]', 'utf-8');
+  }
+}
+
+async function saveLocalSafe(packs: XContentPack[]): Promise<void> {
+  try {
+    await saveLocal(packs);
+  } catch (e) {
+    // On serverless (EROFS), cloud is the source of truth — never fail the request for this.
+    if (isSupabaseConfigured() || process.env.VERCEL) return;
+    throw e;
   }
 }
 
@@ -109,11 +124,15 @@ export function hydratePack(raw: XContentPack): XContentPack {
 }
 
 async function loadLocal(): Promise<XContentPack[]> {
-  await ensureFile();
-  const raw = await fs.readFile(dataFilePath, 'utf-8');
-  const list = JSON.parse(raw) as XContentPack[];
-  if (!Array.isArray(list)) return [];
-  return list.map((p) => hydratePack(p));
+  try {
+    await ensureFile();
+    const raw = await fs.readFile(dataFilePath, 'utf-8');
+    const list = JSON.parse(raw) as XContentPack[];
+    if (!Array.isArray(list)) return [];
+    return list.map((p) => hydratePack(p));
+  } catch {
+    return [];
+  }
 }
 
 async function saveLocal(packs: XContentPack[]): Promise<void> {
@@ -176,7 +195,7 @@ export async function getXContentPacks(): Promise<XContentPack[]> {
       hydratePack(rowToPack(row as Parameters<typeof rowToPack>[0]))
     );
     cacheLoadedAt = Date.now();
-    saveLocal(cachedPacks).catch(() => {});
+    void saveLocalSafe(cachedPacks);
     return cachedPacks;
   } catch (e) {
     markSupabaseUnavailable(e);
@@ -216,21 +235,26 @@ function toRow(p: XContentPack) {
 export async function saveXContentPacks(packs: XContentPack[]): Promise<void> {
   cachedPacks = packs;
   cacheLoadedAt = Date.now();
-  await saveLocal(packs);
 
-  if (!isSupabaseConfigured()) return;
-
-  try {
-    const rows = packs.map(toRow);
-    const { error: upsertError } = await supabase
-      .from('x_content_packs')
-      .upsert(rows, { onConflict: 'id' });
-    if (upsertError) {
-      console.error('[x-content] Supabase upsert failed:', upsertError);
+  if (isSupabaseConfigured()) {
+    try {
+      const rows = packs.map(toRow);
+      const { error: upsertError } = await supabase
+        .from('x_content_packs')
+        .upsert(rows, { onConflict: 'id' });
+      if (upsertError) {
+        console.error('[x-content] Supabase upsert failed:', upsertError);
+        throw upsertError;
+      }
+      await saveLocalSafe(packs);
+      return;
+    } catch (e) {
+      console.error('[x-content] Supabase save failed:', e);
+      if (process.env.VERCEL || !preferLocalJson()) throw e;
     }
-  } catch (e) {
-    console.error('[x-content] Supabase save failed:', e);
   }
+
+  await saveLocal(packs);
 }
 
 export async function upsertXContentPack(
@@ -270,10 +294,14 @@ export async function upsertXContentPack(
       supabaseFailureLogged = false;
       cachedPacks = packs;
       cacheLoadedAt = Date.now();
-      await saveLocal(packs);
+      await saveLocalSafe(packs);
       return next;
     } catch (e) {
       markSupabaseUnavailable(e);
+      // On Vercel, do not fall back to a read-only local file write
+      if (process.env.VERCEL || isSupabaseConfigured()) {
+        throw e instanceof Error ? e : new Error(String(e));
+      }
     }
   }
 

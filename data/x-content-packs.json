@@ -1,1 +1,47 @@
-[]
+[
+  {
+    "id": "pack-2026-07-19",
+    "date": "2026-07-19",
+    "title": "X pack 2026-07-19 (smoke test)",
+    "theme": "Deploy verification",
+    "briefing": "Smoke test pack pushed after Vercel deploy — replace with today's real scout pack when ready.",
+    "plannedMinutes": 15,
+    "mvpDraftIds": [
+      "draft-1"
+    ],
+    "signals": [],
+    "skipList": [],
+    "drafts": [
+      {
+        "id": "draft-1",
+        "kind": "short",
+        "label": "Smoke test post",
+        "body": "Just verified the X To-Do pipeline from laptop → Supabase → live site. Building in public, shipping the boring infrastructure that makes daily posting automatic.",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 90,
+        "why": "Confirms remote ingest + editorial X workspace end-to-end.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "draft-2",
+        "kind": "reply",
+        "label": "Smoke test reply",
+        "body": "Agree — the unsexy deploy/auth plumbing is what makes a content system actually usable day to day.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Second item so the queue UI has more than one task.",
+        "postingWindow": "anytime",
+        "targetHandle": "@example"
+      }
+    ],
+    "schedule": [],
+    "createdAt": "2026-07-19T17:00:00.000Z",
+    "updatedAt": "2026-07-19T17:23:05.165Z"
+  }
+]
