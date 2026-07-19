@@ -21,20 +21,20 @@ function apexFromHostname(hostname: string): string | undefined {
 }
 
 /**
- * Cookie Domain so apex + www share one session.
+ * Cookie Domain without a leading dot (Next/Browsers treat sgargeya.com as covering www).
  * Priority: COOKIE_DOMAIN → APP_URL → request host.
  */
 export function resolveCookieDomain(requestUrl?: URL | string | null): string | undefined {
-  const explicit = process.env.COOKIE_DOMAIN?.trim();
+  const explicit = process.env.COOKIE_DOMAIN?.trim().replace(/^['"]|['"]$/g, '');
   if (explicit) {
-    const cleaned = explicit.replace(/^\./, '').replace(/^www\./, '');
-    return cleaned ? `.${cleaned}` : undefined;
+    const cleaned = explicit.replace(/^\./, '').replace(/^www\./, '').trim();
+    return cleaned || undefined;
   }
 
   const appUrl = process.env.APP_URL || process.env.NEXT_PUBLIC_APP_URL || '';
   try {
     const apex = apexFromHostname(new URL(appUrl).hostname);
-    if (apex) return `.${apex}`;
+    if (apex) return apex;
   } catch {
     /* fall through */
   }
@@ -43,7 +43,7 @@ export function resolveCookieDomain(requestUrl?: URL | string | null): string | 
     try {
       const url = typeof requestUrl === 'string' ? new URL(requestUrl) : requestUrl;
       const apex = apexFromHostname(url.hostname);
-      if (apex) return `.${apex}`;
+      if (apex) return apex;
     } catch {
       /* ignore */
     }
@@ -68,9 +68,46 @@ export function getSessionCookieOptions(
   return options;
 }
 
-/** Short-lived OAuth CSRF cookies — must use the same Domain as auth_session. */
 export function getOauthCookieOptions(requestUrl?: URL | string | null): SessionCookieOptions {
   return getSessionCookieOptions(600, requestUrl);
+}
+
+/** Serialize Set-Cookie manually — avoids Next cookie-jar quirks with Domain on redirects. */
+export function serializeSetCookie(
+  name: string,
+  value: string,
+  options: SessionCookieOptions
+): string {
+  const parts = [
+    `${name}=${value}`,
+    `Path=${options.path}`,
+    `Max-Age=${Math.max(0, options.maxAge)}`,
+    'SameSite=Lax',
+  ];
+  if (options.httpOnly) parts.push('HttpOnly');
+  if (options.secure) parts.push('Secure');
+  if (options.domain) parts.push(`Domain=${options.domain}`);
+  return parts.join('; ');
+}
+
+function appendCookie(
+  response: NextResponse,
+  name: string,
+  value: string,
+  options: SessionCookieOptions
+): void {
+  // Encode so values with = ? : / never truncate Set-Cookie parsing
+  const safe = encodeURIComponent(value);
+  response.headers.append('Set-Cookie', serializeSetCookie(name, safe, options));
+}
+
+export function readCookieValue(raw: string | undefined): string | undefined {
+  if (!raw) return undefined;
+  try {
+    return decodeURIComponent(raw);
+  } catch {
+    return raw;
+  }
 }
 
 function clearNamedCookie(
@@ -78,21 +115,13 @@ function clearNamedCookie(
   name: string,
   requestUrl?: URL | string | null
 ): void {
-  const base = {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax' as const,
-    path: '/',
-    maxAge: 0,
-  };
-
-  response.cookies.set(name, '', base);
-
-  const domain = resolveCookieDomain(requestUrl);
-  if (domain) {
-    response.cookies.set(name, '', { ...base, domain });
-    const naked = domain.replace(/^\./, '');
-    response.cookies.set(name, '', { ...base, domain: naked });
+  const base = getSessionCookieOptions(0, requestUrl);
+  // Host-only clear
+  appendCookie(response, name, '', { ...base, domain: undefined, maxAge: 0 });
+  // Domain clear (both naked + dotted forms browsers may have stored)
+  if (base.domain) {
+    appendCookie(response, name, '', { ...base, maxAge: 0 });
+    appendCookie(response, name, '', { ...base, domain: `.${base.domain}`, maxAge: 0 });
   }
 }
 
@@ -117,17 +146,16 @@ export function setAuthSessionCookie(
   token: string,
   requestUrl?: URL | string | null
 ): void {
-  // Clear host-only leftovers, then set the shared Domain cookie once.
-  response.cookies.set('auth_session', '', {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 0,
-  });
-  response.cookies.set(
-    'auth_session',
-    token,
-    getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl)
-  );
+  const options = getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl);
+  // One authoritative Set-Cookie — no same-response delete/set race
+  appendCookie(response, 'auth_session', token, options);
+}
+
+export function setOauthCookie(
+  response: NextResponse,
+  name: string,
+  value: string,
+  requestUrl?: URL | string | null
+): void {
+  appendCookie(response, name, value, getOauthCookieOptions(requestUrl));
 }

@@ -7,7 +7,13 @@ import {
   signJWT,
   sanitizeRedirect,
 } from '@/lib/auth';
-import { clearOauthCookies, setAuthSessionCookie } from '@/lib/session-cookie';
+import {
+  clearOauthCookies,
+  getSessionCookieOptions,
+  readCookieValue,
+  setAuthSessionCookie,
+  SESSION_MAX_AGE_SEC,
+} from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -15,9 +21,9 @@ export async function GET(request: Request) {
   const state = requestUrl.searchParams.get('state');
 
   const cookieStore = await cookies();
-  const stateCookie = cookieStore.get('oauth_state')?.value;
-  const storedCallbackUrl = cookieStore.get('oauth_callback_url')?.value;
-  const storedRedirectUri = cookieStore.get('oauth_redirect_uri')?.value;
+  const stateCookie = readCookieValue(cookieStore.get('oauth_state')?.value);
+  const storedCallbackUrl = readCookieValue(cookieStore.get('oauth_callback_url')?.value);
+  const storedRedirectUri = readCookieValue(cookieStore.get('oauth_redirect_uri')?.value);
 
   if (!state || !stateCookie || state !== stateCookie) {
     const res = NextResponse.redirect(
@@ -36,9 +42,7 @@ export async function GET(request: Request) {
   }
 
   try {
-    // Must be the exact same redirect_uri used when starting Google OAuth
-    const redirectUri =
-      storedRedirectUri || `${requestUrl.origin}/api/auth/callback`;
+    const redirectUri = storedRedirectUri || `${requestUrl.origin}/api/auth/callback`;
     const tokens = await getGoogleTokens(code, redirectUri);
     const profile = await getGoogleUserProfile(tokens.access_token);
 
@@ -61,8 +65,15 @@ export async function GET(request: Request) {
     const redirectResponse = NextResponse.redirect(new URL(targetPath, request.url));
     clearOauthCookies(redirectResponse, requestUrl);
     setAuthSessionCookie(redirectResponse, sessionToken, requestUrl);
-    redirectResponse.headers.set('Cache-Control', 'private, no-store');
 
+    // Also set via cookies() API (App Router) so the jar definitely receives it
+    try {
+      cookieStore.set('auth_session', sessionToken, getSessionCookieOptions(SESSION_MAX_AGE_SEC, requestUrl));
+    } catch (err) {
+      console.error('cookies().set auth_session failed:', err);
+    }
+
+    redirectResponse.headers.set('Cache-Control', 'private, no-store');
     return redirectResponse;
   } catch (error: unknown) {
     console.error('Google OAuth Callback Error:', error);

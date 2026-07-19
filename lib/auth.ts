@@ -263,11 +263,20 @@ export function isEmailAllowed(email: string): boolean {
 
 export type SessionGateReason = 'ok' | 'no-cookie' | 'bad-jwt' | 'not-allowlisted';
 
+function decodeCookieToken(token: string): string {
+  try {
+    // Session cookies may be encodeURIComponent'd for safe Set-Cookie serialization
+    return decodeURIComponent(token);
+  } catch {
+    return token;
+  }
+}
+
 export async function inspectSession(
   token: string | undefined | null
 ): Promise<{ user: UserSession | null; reason: SessionGateReason }> {
   if (!token) return { user: null, reason: 'no-cookie' };
-  const user = await verifyJWT(token);
+  const user = await verifyJWT(decodeCookieToken(token));
   if (!user?.email) return { user: null, reason: 'bad-jwt' };
   if (!isEmailAllowed(user.email)) return { user: null, reason: 'not-allowlisted' };
   return { user, reason: 'ok' };

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { getGoogleOAuthUrl, sanitizeRedirect } from '@/lib/auth';
-import { getOauthCookieOptions } from '@/lib/session-cookie';
+import { setOauthCookie } from '@/lib/session-cookie';
 
 export async function GET(request: Request) {
   const requestUrl = new URL(request.url);
@@ -22,16 +22,13 @@ export async function GET(request: Request) {
     .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
 
-  // Use the host the browser is actually on — must match Google Console redirect URIs
-  // and the token exchange redirect_uri in /api/auth/callback.
   const redirectUri = `${requestUrl.origin}/api/auth/callback`;
   const googleAuthUrl = getGoogleOAuthUrl(redirectUri, state);
   const response = NextResponse.redirect(googleAuthUrl);
 
-  const oauthCookie = getOauthCookieOptions(requestUrl);
-  response.cookies.set('oauth_state', state, oauthCookie);
-  response.cookies.set('oauth_callback_url', callbackUrl, oauthCookie);
-  response.cookies.set('oauth_redirect_uri', redirectUri, oauthCookie);
+  setOauthCookie(response, 'oauth_state', state, requestUrl);
+  setOauthCookie(response, 'oauth_callback_url', callbackUrl, requestUrl);
+  setOauthCookie(response, 'oauth_redirect_uri', redirectUri, requestUrl);
   response.headers.set('Cache-Control', 'private, no-store');
 
   return response;
