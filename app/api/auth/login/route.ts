@@ -1,11 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getGoogleOAuthUrl } from '@/lib/auth';
+import { getGoogleOAuthUrl, sanitizeRedirect } from '@/lib/auth';
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  const callbackUrl = searchParams.get('callbackUrl') || '/editorial';
+  const callbackUrl = sanitizeRedirect(searchParams.get('callbackUrl') || '/editorial');
 
-  // 1. Verify credentials configuration
   const clientId = process.env.GOOGLE_CLIENT_ID;
   const clientSecret = process.env.GOOGLE_CLIENT_SECRET;
 
@@ -16,40 +15,27 @@ export async function GET(request: Request) {
     );
   }
 
-  // 2. Generate a secure random state for CSRF protection
   const stateBuffer = new Uint8Array(16);
   crypto.getRandomValues(stateBuffer);
   const state = Array.from(stateBuffer)
-    .map(b => b.toString(16).padStart(2, '0'))
+    .map((b) => b.toString(16).padStart(2, '0'))
     .join('');
 
-  // 3. Determine the dynamic redirect URI
   const requestUrl = new URL(request.url);
   const redirectUri = `${requestUrl.origin}/api/auth/callback`;
-
-  // 4. Build Google Authorization URL
   const googleAuthUrl = getGoogleOAuthUrl(redirectUri, state);
-
-  // 5. Construct response redirecting to Google and setting the state cookie
   const response = NextResponse.redirect(googleAuthUrl);
-  
-  // Set CSRF state cookie valid for 10 minutes
-  response.cookies.set('oauth_state', state, {
-    httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
-    path: '/',
-    maxAge: 600, // 10 minutes
-  });
 
-  // Store the target callbackUrl for redirection after callback success
-  response.cookies.set('oauth_callback_url', callbackUrl, {
+  const oauthCookie = {
     httpOnly: true,
     secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    sameSite: 'lax' as const,
     path: '/',
     maxAge: 600,
-  });
+  };
+
+  response.cookies.set('oauth_state', state, oauthCookie);
+  response.cookies.set('oauth_callback_url', callbackUrl, oauthCookie);
 
   return response;
 }

@@ -10,7 +10,7 @@ import {
   Settings2, Maximize2, Upload, Loader2,
 } from 'lucide-react';
 import { Article } from '@/lib/blog-service';
-import { UserSession } from '@/lib/auth';
+import { avatarForSession, type UserSession } from '@/lib/auth';
 import { renderMarkdown } from '@/lib/markdown';
 import Link from 'next/link';
 import { CATEGORIES as CATEGORIES_LIST } from '@/lib/categories';
@@ -632,7 +632,7 @@ export function EditorialClient({
               <div className="flex items-center gap-2.5 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] px-3 py-1.5 pr-3.5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
-                  src={user.picture}
+                  src={avatarForSession(user)}
                   alt=""
                   className="w-8 h-8 rounded-full object-cover ring-1 ring-[var(--atelier-gold)]/25"
                 />
@@ -680,7 +680,7 @@ export function EditorialClient({
                 <div className="flex items-center gap-3 rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/60 px-3.5 py-2.5 pr-4">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
                   <img
-                    src={user.picture}
+                    src={avatarForSession(user)}
                     alt=""
                     className="w-10 h-10 rounded-2xl object-cover ring-2 ring-[var(--atelier-gold)]/30"
                   />

@@ -10,7 +10,7 @@ function unauthorizedJson(message: string) {
 }
 
 export async function proxy(request: NextRequest) {
-  // Preflight must not require a session cookie (browsers often omit it on OPTIONS)
+  // Preflight must not require a session cookie
   if (request.method === 'OPTIONS') {
     return NextResponse.next();
   }
@@ -23,14 +23,14 @@ export async function proxy(request: NextRequest) {
     const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {
       const loginUrl = new URL('/login', request.url);
-      loginUrl.searchParams.set('callbackUrl', pathname + request.nextUrl.search);
-      const response = NextResponse.redirect(loginUrl);
-      if (sessionCookie) response.cookies.delete('auth_session');
-      return response;
+      const callback = pathname + (request.nextUrl.search || '');
+      loginUrl.searchParams.set('callbackUrl', callback);
+      // Do NOT delete auth_session here — a failed check must not wipe a valid cookie
+      // (www/apex mismatch, brief env glitch, etc.). Only /api/auth/logout clears it.
+      return NextResponse.redirect(loginUrl);
     }
   }
 
-  // Blog writes (GET list stays public for published posts — route filters drafts)
   if (pathname.startsWith('/api/blog') && request.method !== 'GET') {
     const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {
@@ -38,7 +38,6 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // AI + X Content (except machine ingest) are private
   if (pathname.startsWith('/api/ai')) {
     const user = await requireAllowedSession(sessionCookie?.value);
     if (!user) {
@@ -46,8 +45,6 @@ export async function proxy(request: NextRequest) {
     }
   }
 
-  // X Content Studio API is private (cookie session).
-  // Exception: /api/x-content/ingest uses X_SCOUT_SECRET (machine push from local Grok).
   if (
     pathname.startsWith('/api/x-content') &&
     !pathname.startsWith('/api/x-content/ingest')

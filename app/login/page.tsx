@@ -1,7 +1,10 @@
 import type { Metadata } from 'next';
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { LoginPageClient } from './login-client';
+import { requireAllowedSession, sanitizeRedirect } from '@/lib/auth';
 
 export const metadata: Metadata = {
   title: 'Editorial Sign-in',
@@ -20,11 +23,17 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
   const resolvedSearchParams = await searchParams;
   const error = resolvedSearchParams.error || null;
   const email = resolvedSearchParams.email || null;
-  const callbackUrl = resolvedSearchParams.callbackUrl || '/editorial';
+  const callbackUrl = sanitizeRedirect(resolvedSearchParams.callbackUrl || '/editorial');
+
+  // Already signed in → go straight to editorial / requested workspace
+  const cookieStore = await cookies();
+  const session = await requireAllowedSession(cookieStore.get('auth_session')?.value);
+  if (session && !error) {
+    redirect(callbackUrl);
+  }
 
   const googleConfigured = !!(
-    process.env.GOOGLE_CLIENT_ID &&
-    process.env.GOOGLE_CLIENT_SECRET
+    process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
   );
   const isDev = process.env.NODE_ENV !== 'production';
 
