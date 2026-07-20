@@ -36,7 +36,7 @@ export default function AboutClient() {
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
               Founder & Mentor
             </span>
-            <h1 className="font-headline text-[clamp(2.75rem,10vw,5.5rem)] font-extrabold tracking-[-0.04em] text-primary leading-[1.02]">
+            <h1 className="font-display text-[clamp(2.75rem,10vw,5.5rem)] font-medium tracking-[-0.02em] text-primary leading-[1.02]">
               Architecting the <br /> <span className="text-accent">next</span> generation.
             </h1>
             
@@ -90,7 +90,7 @@ export default function AboutClient() {
                 <Network className="h-7 w-7 text-accent transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-3 group-hover:text-[#0F172A]" />
               </div>
 
-              <h2 className="relative z-10 mb-6 font-display text-3xl font-normal tracking-[-0.02em] text-primary md:text-4xl">
+              <h2 className="relative z-10 mb-6 font-display text-3xl font-light tracking-[-0.02em] text-primary md:text-4xl">
                 Inspiring Collaboration
               </h2>
               <p className="relative z-10 font-body text-lg leading-relaxed text-on-surface-variant">
@@ -161,7 +161,7 @@ export default function AboutClient() {
                 }}
               />
 
-              <h2 className="relative z-10 mb-10 flex items-center gap-4 font-display text-3xl font-normal tracking-[-0.02em] text-primary md:text-4xl">
+              <h2 className="relative z-10 mb-10 flex items-center gap-4 font-display text-3xl font-light tracking-[-0.02em] text-primary md:text-4xl">
                 <Sparkles className="h-8 w-8 text-accent" /> The Engineering Philosophy
               </h2>
               
@@ -237,7 +237,7 @@ export default function AboutClient() {
                   fill="url(#invitation-shine)"
                   style={{
                     fontFamily: 'var(--font-display)',
-                    fontWeight: 400,
+                    fontWeight: 300,
                     fontSize: 78,
                     letterSpacing: '-0.03em',
                   }}
@@ -251,7 +251,7 @@ export default function AboutClient() {
                   fill="url(#invitation-shine)"
                   style={{
                     fontFamily: 'var(--font-display)',
-                    fontWeight: 400,
+                    fontWeight: 300,
                     fontSize: 78,
                     letterSpacing: '-0.03em',
                   }}

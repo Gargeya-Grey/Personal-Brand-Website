@@ -62,7 +62,7 @@ export default function ContactPage() {
               <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
                 Contact
               </span>
-              <h1 className="font-headline text-[clamp(2.5rem,8vw,3.75rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-primary">
+              <h1 className="font-display text-[clamp(2.5rem,8vw,3.75rem)] font-medium leading-[1.02] tracking-[-0.02em] text-primary">
                 Let&apos;s build something{' '}
                 <span className="text-accent">meaningful</span>
                 <span className="text-accent">.</span>

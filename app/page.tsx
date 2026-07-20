@@ -34,13 +34,13 @@ export default function Home() {
               <span>Digital existence / 001</span>
             </div>
 
-            <h1 className="flex min-w-0 max-w-full flex-col gap-3 font-display text-[clamp(2.75rem,6.8vw,4.85rem)] font-normal leading-[1.08] tracking-[-0.02em] text-primary sm:gap-4">
+            <h1 className="flex min-w-0 max-w-full flex-col gap-3 font-display text-[clamp(2.75rem,6.8vw,4.85rem)] font-medium leading-[1.08] tracking-[-0.02em] text-primary sm:gap-4">
               <span className="block">
                 Architecting{' '}
-                <span className="italic text-accent">Intelligence.</span>
+                <span className="text-accent">Intelligence.</span>
               </span>
               <span className="block">
-                Curating <span className="italic text-accent">ART.</span>
+                Curating <span className="text-accent">ART.</span>
               </span>
             </h1>
 
@@ -125,7 +125,7 @@ export default function Home() {
           <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">The work branches out</span>
-              <h2 className="mt-3 font-display text-3xl font-normal tracking-[-0.02em] text-primary sm:text-4xl md:text-[2.75rem]">
+              <h2 className="mt-3 font-display text-3xl font-light tracking-[-0.02em] text-primary sm:text-4xl md:text-[2.75rem]">
                 Choose a point of entry.
               </h2>
             </div>
@@ -202,7 +202,7 @@ export default function Home() {
                     Blog
                   </h3>
                   <p className="font-body text-sm leading-relaxed text-slate-600 dark:text-on-surface-variant">
-                    Insights on engineering, strategy, and mental models.
+                    Personal notes, opinions, and whatever else I find worth writing down.
                   </p>
                 </div>
               </motion.div>
@@ -269,7 +269,7 @@ export default function Home() {
         <section className="py-20 md:py-32" id="collaborate">
           <div className="cta-card-gradient relative z-10 overflow-hidden rounded-3xl px-5 py-12 text-center sm:p-12 md:rounded-[2.5rem] md:p-20 lg:p-24">
             <div className="relative z-10 mx-auto max-w-3xl space-y-7 md:space-y-9">
-              <h2 className="font-display text-3xl font-normal leading-[1.15] tracking-[-0.02em] text-white sm:text-5xl md:text-[3.25rem]">
+              <h2 className="font-display text-3xl font-light leading-[1.15] tracking-[-0.02em] text-white sm:text-5xl md:text-[3.25rem]">
                 Ready to build something meaningful?
               </h2>
               <p className="mx-auto max-w-2xl font-body text-base leading-relaxed text-white/72 sm:text-lg">

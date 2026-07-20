@@ -1,5 +1,9 @@
 import { NextResponse } from 'next/server';
-import { upsertXContentPack, xContentUsesCloud } from '@/lib/x-content-service';
+import {
+  getXContentPacks,
+  upsertXContentPack,
+  xContentUsesCloud,
+} from '@/lib/x-content-service';
 import { parsePackImport } from '@/lib/x-content-import';
 import type { XContentPack } from '@/lib/x-content-model';
 
@@ -75,10 +79,36 @@ export async function POST(request: Request) {
   }
 }
 
-export async function GET() {
-  return NextResponse.json({
+export async function GET(request: Request) {
+  const base = {
     endpoint: '/api/x-content/ingest',
     auth: 'Bearer X_SCOUT_SECRET or x-scout-secret header',
     cloud: xContentUsesCloud(),
-  });
+  };
+
+  // With secret: show what THIS server sees in Supabase (debug live UI mismatches)
+  if (authorize(request)) {
+    try {
+      const packs = await getXContentPacks();
+      return NextResponse.json({
+        ...base,
+        packCount: packs.length,
+        packs: packs.slice(0, 5).map((p) => ({
+          id: p.id,
+          date: p.date,
+          title: p.title,
+          drafts: p.drafts?.length ?? 0,
+          ready: p.drafts?.filter((d) => d.status === 'ready').length ?? 0,
+        })),
+      });
+    } catch (e: unknown) {
+      return NextResponse.json({
+        ...base,
+        packCount: 0,
+        error: e instanceof Error ? e.message : 'list failed',
+      });
+    }
+  }
+
+  return NextResponse.json(base);
 }

@@ -480,7 +480,8 @@ export function XStudioClient() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [view, setView] = useState<ViewMode>('focus');
-  const [filter, setFilter] = useState<FilterId>('mvp');
+  /** Default "all" so a pack with only non-MVP ready tasks still shows up. */
+  const [filter, setFilter] = useState<FilterId>('all');
   const [importOpen, setImportOpen] = useState(false);
   const [lastSync, setLastSync] = useState<Date | null>(null);
   const [live, setLive] = useState(true);
@@ -489,12 +490,31 @@ export function XStudioClient() {
   const knownUpdated = useRef<string | null>(null);
 
   const applyPacks = useCallback((data: XContentPack[]) => {
-    const sorted = [...data].sort((a, b) => b.date.localeCompare(a.date));
+    const sorted = [...data].sort((a, b) => {
+      const byDate = b.date.localeCompare(a.date);
+      if (byDate !== 0) return byDate;
+      return (b.updatedAt || '').localeCompare(a.updatedAt || '');
+    });
     setPacks(sorted);
-    setSelectedId((prev) => {
+
+    // Prefer pack with remaining work, else newest. Don't stick on a cleared older pack.
+    const pickDefaultId = (prev: string | null) => {
+      const withReady = sorted.find((p) =>
+        (p.drafts || []).some((d) => d.status === 'ready')
+      );
+      if (withReady) {
+        // Keep prev only if it still has ready tasks
+        if (prev) {
+          const prevPack = sorted.find((p) => p.id === prev);
+          if (prevPack?.drafts?.some((d) => d.status === 'ready')) return prev;
+        }
+        return withReady.id;
+      }
       if (prev && sorted.some((p) => p.id === prev)) return prev;
       return sorted[0]?.id ?? null;
-    });
+    };
+
+    setSelectedId((prev) => pickDefaultId(prev));
     setLastSync(new Date());
     const latest = sorted[0];
     if (latest && knownUpdated.current && knownUpdated.current !== latest.updatedAt) {
@@ -545,16 +565,22 @@ export function XStudioClient() {
     };
   }, [live, load]);
 
-  const focusPack = useMemo(() => {
-    if (!packs.length) return null;
-    const today = new Date().toISOString().slice(0, 10);
-    return packs.find((p) => p.date === today) ?? packs[0];
-  }, [packs]);
-
+  /**
+   * One active pack for Focus, List, and Library.
+   * (Old bug: Focus/List used UTC "today" only, so after a new scout pack arrived
+   * while the previous calendar day still matched UTC, Focus stayed on the cleared pack.)
+   */
   const active = useMemo(() => {
-    if (view === 'library') return packs.find((p) => p.id === selectedId) ?? focusPack;
-    return focusPack ?? packs.find((p) => p.id === selectedId) ?? null;
-  }, [view, packs, selectedId, focusPack]);
+    if (!packs.length) return null;
+    if (selectedId) {
+      const sel = packs.find((p) => p.id === selectedId);
+      if (sel) return sel;
+    }
+    const withReady = packs.find((p) =>
+      (p.drafts || []).some((d) => d.status === 'ready')
+    );
+    return withReady ?? packs[0];
+  }, [packs, selectedId]);
 
   const mvpIds = useMemo(() => new Set(active ? resolveMvpIds(active) : []), [active]);
 
@@ -698,6 +724,28 @@ export function XStudioClient() {
             <p className="font-headline text-lg sm:text-xl font-bold text-[var(--atelier-ink)] tracking-tight truncate">
               {active?.title ?? 'Waiting for pack'}
             </p>
+            {packs.length > 1 && (
+              <label className="flex flex-wrap items-center gap-2 text-xs text-[var(--atelier-muted)]">
+                <span className="font-bold uppercase tracking-wider text-[var(--atelier-faint)]">
+                  Pack
+                </span>
+                <select
+                  value={active?.id ?? ''}
+                  onChange={(e) => setSelectedId(e.target.value)}
+                  className="atelier-input !rounded-full !py-1.5 !px-3 !w-auto max-w-full text-xs sm:text-sm"
+                >
+                  {packs.map((p) => {
+                    const readyN = (p.drafts || []).filter((d) => d.status === 'ready').length;
+                    return (
+                      <option key={p.id} value={p.id}>
+                        {p.date} · {readyN} ready · {p.title.slice(0, 42)}
+                        {p.title.length > 42 ? '…' : ''}
+                      </option>
+                    );
+                  })}
+                </select>
+              </label>
+            )}
             {active && (
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--atelier-muted)]">
                 <span className="inline-flex items-center gap-1.5">
@@ -916,12 +964,18 @@ export function XStudioClient() {
         >
           <PartyPopper className="w-12 h-12 text-[var(--atelier-gold)]" />
           <p className="font-headline font-bold text-2xl sm:text-3xl text-[var(--atelier-ink)]">
-            {filter === 'all' || filter === 'mvp' ? 'Queue clear' : 'Filter clear'}
+            {filter !== 'all'
+              ? 'Filter clear'
+              : totalCount > 0
+                ? 'All tasks done for this pack'
+                : 'Queue clear'}
           </p>
           <p className="text-sm text-[var(--atelier-muted)] max-w-sm leading-relaxed">
             {filter !== 'all'
-              ? 'Nothing left here — switch filter or stop and protect your time.'
-              : 'New tasks appear after the next scout run.'}
+              ? 'Nothing left in this filter — try “All” or another session.'
+              : totalCount > 0
+                ? `Pack “${active?.title}” is loaded (${doneCount}/${totalCount} cleared). Open Library to restore items, or wait for the next scout.`
+                : 'New tasks appear after the next scout run.'}
           </p>
           {filter !== 'all' && allReady.length > 0 && (
             <button type="button" onClick={() => setFilter('all')} className="atelier-btn atelier-btn-gold mt-2">

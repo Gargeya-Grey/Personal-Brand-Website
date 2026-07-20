@@ -146,7 +146,7 @@ function PublicFooter() {
               <h3 className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
                 Stay updated
               </h3>
-              <p className="font-display text-2xl font-normal tracking-[-0.02em] text-white sm:text-3xl">
+              <p className="font-display text-2xl font-light tracking-[-0.02em] text-white sm:text-3xl">
                 Notes worth opening.
               </p>
               <p className="font-body text-sm leading-relaxed text-slate-400 sm:text-[15px]">
@@ -259,7 +259,7 @@ function PublicFooter() {
             <ul className="space-y-3 font-ui text-[15px] font-normal tracking-wide text-slate-400">
               <li>
                 <Link href="/blog" className={linkClass}>
-                  Engineering Blog
+                  Blog
                 </Link>
               </li>
               <li>

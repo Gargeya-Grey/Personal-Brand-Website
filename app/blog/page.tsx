@@ -183,7 +183,7 @@ export default function BlogPage() {
         <main id="page-main" tabIndex={-1} className="flex flex-grow flex-col items-center justify-center pt-32">
           <div className="flex flex-col items-center gap-3 relative z-10">
             <Loader2 className="w-8 h-8 text-emerald-500 animate-spin" />
-            <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Loading ledger logs...</p>
+            <p className="font-mono text-xs uppercase tracking-wider text-slate-400">Loading posts...</p>
           </div>
         </main>
         <Footer />
@@ -209,13 +209,13 @@ export default function BlogPage() {
             {/* Left Column: Brand & Copy */}
             <div className="space-y-6">
               <span className="font-label text-xs uppercase tracking-[0.25em] text-accent font-bold block">
-                The Engineering Ledger
+                Personal writing
               </span>
-              <h1 className="font-headline text-[clamp(2.5rem,8vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-slate-900 dark:text-white">
-                Engineering Insights <br/>&amp; <span className="text-emerald-600 dark:text-accent">Deep Essays</span><span className="text-emerald-500">.</span>
+              <h1 className="font-display text-[clamp(2.5rem,8vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.02em] text-slate-900 dark:text-white">
+                Notes, opinions <br/>&amp; <span className="text-emerald-600 dark:text-accent">useful finds</span><span className="text-emerald-500">.</span>
               </h1>
               <p className="font-body text-lg md:text-xl text-slate-600 dark:text-white/70 leading-relaxed max-w-xl">
-                Technical explorations, structural guides, and telemetry dashboards curated by the architect building <span className="font-bold text-slate-900 dark:text-white">edudojo.ai</span>.
+                This is my personal blog — whatever I want to write. Systems and AI when they matter, but also opinions, travel notes, craft, and anything else I find useful. Use the filters below if you&apos;re hunting a specific lane.
               </p>
             </div>
 
@@ -360,9 +360,9 @@ export default function BlogPage() {
           {sortedArticles.length === 0 ? (
             <div className="board-card mx-auto max-w-xl space-y-6 rounded-[2.5rem] p-8 py-24 text-center">
               <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
-              <h3 className="font-headline font-bold text-xl text-slate-800 dark:text-white">No ledger archives match your query</h3>
+              <h3 className="font-headline font-bold text-xl text-slate-800 dark:text-white">No posts match your filters</h3>
               <p className="font-body text-slate-500 dark:text-white/60 max-w-md mx-auto text-sm leading-relaxed">
-                Try revising your filter categories or clearing the search query to reload Gargeya&apos;s essays.
+                Try a different category mix or clear search to see everything again.
               </p>
               <button
                 onClick={() => {
@@ -518,7 +518,7 @@ export default function BlogPage() {
                 {/* Pagination Controls block */}
                 <div className="flex flex-col items-center gap-4 pt-12 border-t border-slate-200/50 dark:border-white/10">
                   <p className="font-label text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold">
-                    Showing {Math.min(visibleCount, sortedArticles.length)} of {sortedArticles.length} essays
+                    Showing {Math.min(visibleCount, sortedArticles.length)} of {sortedArticles.length} posts
                   </p>
                   
                   {sortedArticles.length > visibleCount && (
@@ -546,11 +546,11 @@ export default function BlogPage() {
                 </span>
                 
                 <h3 className="font-headline text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  See what your agent is really doing
+                  Get new posts when they go up
                 </h3>
                 
                 <p className="font-body text-slate-600 dark:text-white/70 text-sm md:text-base leading-relaxed">
-                  Join Gargeya Sharma&apos;s weekly editorial distribution. Get raw architectural summaries, continuous system analysis, and next-generation agent telemetry updates directly.
+                  Occasional notes from Gargeya — whatever made the cut that week. No product pitch, no spam.
                 </p>
               </div>
 

@@ -288,7 +288,7 @@ export function FeaturedProjects() {
           <span className="mb-3 block font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
             Selected Works
           </span>
-          <h2 className="font-display text-3xl font-normal tracking-[-0.02em] text-primary sm:text-4xl md:text-[2.75rem]">
+          <h2 className="font-display text-3xl font-light tracking-[-0.02em] text-primary sm:text-4xl md:text-[2.75rem]">
             Featured Projects
           </h2>
         </div>

@@ -20,7 +20,7 @@ export default function GlobalError({
         <p className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs">
           Error
         </p>
-        <h1 className="font-headline text-3xl font-extrabold text-primary">
+        <h1 className="font-display text-3xl font-medium text-primary">
           Something went wrong
         </h1>
         <p className="text-on-surface-variant text-sm leading-relaxed">

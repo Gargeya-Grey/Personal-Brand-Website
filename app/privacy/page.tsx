@@ -13,7 +13,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen flex flex-col">
       <Navigation />
       <main id="page-main" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-grow px-4 pb-20 pt-32 sm:px-6 sm:pb-24 md:px-10">
-        <h1 className="mb-8 font-headline text-3xl font-extrabold tracking-tight text-primary sm:text-4xl">
+        <h1 className="mb-8 font-display text-3xl font-medium tracking-[-0.02em] text-primary sm:text-4xl">
           Privacy Policy
         </h1>
         <div className="space-y-6 text-on-surface-variant font-body leading-relaxed">

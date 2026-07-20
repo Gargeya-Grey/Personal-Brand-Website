@@ -88,8 +88,8 @@
   --color-outline-variant: var(--color-outline-variant);
   --color-cta-glow: var(--color-cta-glow);
 
-  /* Display = editorial serif; headline/body = clean sans; label = technical small caps */
-  --font-display: var(--font-instrument), "Iowan Old Style", "Palatino Linotype", Georgia, serif;
+  /* Display = Stack Sans Notch; headline/body = clean sans; label = technical small caps */
+  --font-display: "Stack Sans Notch", ui-sans-serif, sans-serif;
   --font-headline: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
   --font-body: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
   --font-label: var(--font-manrope), ui-sans-serif, sans-serif;
@@ -139,10 +139,9 @@ canvas {
   }
 }
 
-/* Large titles: air + contrast; never crush with extrabold + negative tracking */
+/* Large titles: Stack Sans Notch — set weight via font-light (300) / font-medium (500) */
 .font-display {
   font-family: var(--font-display);
-  font-weight: 400;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
 }
@@ -829,6 +828,45 @@ canvas {
   background:
     radial-gradient(ellipse 70% 50% at 90% 10%, var(--color-accent-secondary-soft), transparent 50%),
     linear-gradient(135deg, var(--color-primary-container) 0%, var(--color-primary-container) 60%, var(--color-cta-glow) 100%);
+}
+
+.discord-room-card {
+  background:
+    radial-gradient(ellipse 50% 80% at 100% 50%, rgba(88, 101, 242, 0.14), transparent 55%),
+    linear-gradient(135deg, #121a2b 0%, #0f172a 55%, #0d1524 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.05) inset,
+    0 24px 56px -28px rgba(0, 0, 0, 0.5);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.discord-room-card:hover {
+  border-color: rgba(88, 101, 242, 0.35);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.07) inset,
+    0 28px 64px -24px rgba(88, 101, 242, 0.2);
+}
+
+/* Community — X presence CTA (photo + handle) */
+.x-presence-card {
+  background:
+    radial-gradient(ellipse 55% 70% at 85% 30%, rgba(5, 150, 105, 0.16), transparent 55%),
+    linear-gradient(135deg, #0b1220 0%, #0f172a 48%, #111827 100%);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.06) inset,
+    0 28px 64px -28px rgba(0, 0, 0, 0.55);
+  transition:
+    border-color 0.3s ease,
+    box-shadow 0.3s ease;
+}
+
+.x-presence-card:hover {
+  border-color: rgba(5, 150, 105, 0.45);
+  box-shadow:
+    0 1px 0 rgba(255, 255, 255, 0.08) inset,
+    0 32px 72px -24px rgba(5, 150, 105, 0.28);
 }
 
 

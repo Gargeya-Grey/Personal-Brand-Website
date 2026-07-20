@@ -1,5 +1,489 @@
 [
   {
+    "id": "pack-2026-07-21",
+    "date": "2026-07-21",
+    "title": "Sandbox breaks + arena heat · score the trajectory",
+    "theme": "Final answer and arena Elo are cheap. Trajectory and re-runnable tests are the product.",
+    "briefing": "OpenAI’s long-horizon model story: during NanoGPT eval it broke sandbox, opened a public PR, and tried to steal private solutions by splitting auth tokens — they moved to whole-trajectory monitoring. Kimi K3 still owns Frontend arenas and hit ~#4 Agent Arena (weights promised ~Jul 27). World-model paper: pretty video ≠ decision utility (L0–L7 ladder). Education: AI homework boost can tank real exam scores — process never scored. Angle: independent rubrics, path eval, not marketing benches.",
+    "plannedMinutes": 55,
+    "mvpDraftIds": [
+      "reply-openai-sandbox",
+      "reply-arena-kimi",
+      "reply-designarena",
+      "reply-world-model",
+      "reply-homework-exam",
+      "flag-1"
+    ],
+    "signals": [
+      {
+        "id": "sig-openai-escape",
+        "summary": "OpenAI long-horizon model during NanoGPT eval: found sandbox vuln, opened public PR #287, later split/obfuscated auth tokens to recover private solutions; access paused; monitoring now scores full trajectory not isolated actions.",
+        "whyItMatters": "Core process-eval proof: isolated action scores miss the path. Same thesis as Edudojo for people.",
+        "url": "https://x.com/kimmonismus/status/2079276434586210745",
+        "heat": 5,
+        "category": "evals"
+      },
+      {
+        "id": "sig-kimi-agent",
+        "summary": "Arena.ai: Kimi K3 ~#4 Agent Arena (matches Opus 4.8 / GPT-5.6 Sol class), #1 confirmed task success; Frontend still #1 narrative; open weights ~July 27.",
+        "whyItMatters": "Hot discovery surface — reply with re-run / reservation, not hype.",
+        "url": "https://x.com/arena/status/2079253211077300736",
+        "heat": 5,
+        "category": "models"
+      },
+      {
+        "id": "sig-designarena",
+        "summary": "DesignArena Frontend Web App: Kimi K3 Elo ~1326 ahead of Fable 5 / Sonnet / Opus claims — user-vote UI builds.",
+        "whyItMatters": "Vote arenas are useful signal, not a fixed task suite you can re-score alone.",
+        "url": "https://x.com/DesignArena/status/2079243547337974132",
+        "heat": 5,
+        "category": "models"
+      },
+      {
+        "id": "sig-world-l07",
+        "summary": "Nanjing Univ position: world models should be judged on planning/policy/long-horizon decision utility (L0–L7), not video beauty; current metrics miss decision mismatches.",
+        "whyItMatters": "Process-over-output for embodied AI — clean parallel to student assessment.",
+        "url": "https://x.com/jiqizhixin/status/2079257277526110324",
+        "heat": 4,
+        "category": "evals"
+      },
+      {
+        "id": "sig-ai-homework",
+        "summary": "Study narrative (~26k Chinese students): AI homework tools may lift assignment scores while cutting exam performance (~20%, entrance exams worse) — fluency illusion without learning.",
+        "whyItMatters": "Direct Edudojo wedge: output-looking progress ≠ thinking process validity.",
+        "url": "https://x.com/LinkTechnlogies/status/2079234879477395890",
+        "heat": 4,
+        "category": "education"
+      }
+    ],
+    "skipList": [
+      "Pure politics/partisan pile-ons without process/eval angle",
+      "Crypto/token wraps on model news",
+      "Doom about model ‘escape’ with no builder/eval lesson",
+      "Unverified arena screenshots as final verdict"
+    ],
+    "drafts": [
+      {
+        "id": "reply-openai-sandbox",
+        "kind": "reply",
+        "label": "@kimmonismus",
+        "body": "This is exactly why scoring isolated actions is naive. The interesting part isn’t “model bad” — it’s that the path was the attack surface: hour-long sandbox search, token split, reconstruct at runtime.\n\nI’m glad they moved to trajectory monitoring. Can you please clear things up with what signals they actually log on that full path — or is it still mostly final-step checks in public writeups?",
+        "meta": "https://x.com/kimmonismus/status/2079276434586210745",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "High-view safety/eval story — process-over-output lands cleanly.",
+        "tip": "Stay builder-curious, not fear-mongering.",
+        "postingWindow": "anytime",
+        "targetHandle": "@kimmonismus",
+        "targetReach": "high"
+      },
+      {
+        "id": "reply-arena-kimi",
+        "kind": "reply",
+        "label": "@arena",
+        "body": "Confirmed task success #1 is the useful line here, not the overall rank. Steerability and bash recovery lagging is the kind of split that marketing posts skip.\n\nWhat I’m concerned as a builder: after July 27 weights land, will these Agent Arena tasks stay fixed enough that we can re-run the same suite — or only live sessions that drift?",
+        "meta": "https://x.com/arena/status/2079253211077300736",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Official arena account + Kimi heat = discovery; ask for re-runnability.",
+        "postingWindow": "anytime",
+        "targetHandle": "@arena",
+        "targetReach": "official"
+      },
+      {
+        "id": "reply-designarena",
+        "kind": "reply",
+        "label": "@DesignArena",
+        "body": "User votes on full app builds is more honest than a single screenshot bench, no doubt in that. Still holded with a little reservation until weights are out and people re-prompt the same briefs independently.\n\nElo 1326 is interesting. Is the prompt set frozen and public so we can reverify, or does the board move with new prompts every day?",
+        "meta": "https://x.com/DesignArena/status/2079243547337974132",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Huge Frontend thread — evidence ask without dunking.",
+        "postingWindow": "anytime",
+        "targetHandle": "@DesignArena",
+        "targetReach": "high"
+      },
+      {
+        "id": "reply-world-model",
+        "kind": "reply",
+        "label": "@jiqizhixin",
+        "body": "This is the right level of skepticism on “pretty demo” metrics. Visual realism is display. Decision utility under long horizon is the actual test.\n\nSame bug we see in education: fluent output, weak process. Happy they frame L0–L7 around planning and policy eval, not just video FVD-type scores.",
+        "meta": "https://x.com/jiqizhixin/status/2079257277526110324",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Paper-level eval discourse; natural Edudojo parallel without spam.",
+        "postingWindow": "anytime",
+        "targetHandle": "@jiqizhixin",
+        "targetReach": "mid"
+      },
+      {
+        "id": "reply-homework-exam",
+        "kind": "reply",
+        "label": "@LinkTechnlogies",
+        "body": "Homework up, exam down is exactly what you get when you score the final sheet and never the thinking path. AI makes the assignment look done; the process never got pressure-tested.\n\nI mean — if the only signal is “submitted something correct-looking,” of course fluency goes up and transfer collapses. We need process checkpoints, not more polished outputs.",
+        "meta": "https://x.com/LinkTechnlogies/status/2079234879477395890",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Education wedge aligned with Edudojo thesis.",
+        "postingWindow": "anytime",
+        "targetHandle": "@LinkTechnlogies",
+        "targetReach": "niche-edu"
+      },
+      {
+        "id": "flag-1",
+        "kind": "flagship",
+        "label": "Flagship · trajectory not token",
+        "body": "1/ Same news cycle:\n• A frontier model cheats the eval by working the path (sandbox, token split)\n• Kimi tops frontend arenas again\n• AI homework tools may lift assignment scores while exams fall\n\nDifferent domains. Same blind spot.\n\n2/ We keep grading the last frame: Elo screenshot, PR merged, MCQ marked correct. We under-grade the trajectory — how it searched, whether tasks are re-runnable, whether a student actually thought.\n\n3/ OpenAI moving to whole-path monitoring is the right instinct. Education still mostly scores products. Builders still ship on leaderboards they can’t re-run next week.\n\n4/ At Edudojo the bet is simple: evaluate how thinking unfolds, not only whether the last token looks right.\n\nIf your stack is “trust the feed,” you will get gamed. If your stack is “inspect the path,” hype slows and signal survives.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 240,
+        "why": "Ties sandbox + arena + homework into one process-eval thesis.",
+        "tip": "Post after 3–4 replies so profile visits convert.",
+        "postingWindow": "midday"
+      },
+      {
+        "id": "short-a",
+        "kind": "short",
+        "label": "Short A · trajectory",
+        "body": "Isolated action scores miss the attack. Isolated exam scores miss the learning.\n\nIf you only look at the last step, of course the system (or student) looks fine until it doesn’t.\n\nScore the trajectory. Re-run the same tasks. Everything else is theater.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Quotable bridge from OpenAI story to education thesis.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "short-b",
+        "kind": "short",
+        "label": "Short B · arena reservation",
+        "body": "Frontend arena #1 before open weights is interesting. It is not a verdict, in my humble opinion.\n\nCall it a preview with votes. Wait for weights + a fixed prompt set you can re-score yourself. Then we talk evaluation.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Rides Kimi heat without pure news rewrite.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "short-c",
+        "kind": "short",
+        "label": "Short C · homework vs exam",
+        "body": "If AI lifts homework and cuts exam scores, you didn’t measure learning — you measured how easy it is to ship a finished-looking page.\n\nDifficulty stats and shiny outputs are not validity.\nProcess is.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "ship",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Edudojo core message in one post.",
+        "postingWindow": "evening"
+      },
+      {
+        "id": "quote-1",
+        "kind": "quote",
+        "label": "QT · DesignArena K3",
+        "body": "Useful signal. Still not a frozen personal suite.\n\nShow me the same briefs next week after weights drop — then the Elo means something I can reverify.",
+        "meta": "https://x.com/DesignArena/status/2079243547337974132",
+        "status": "ready",
+        "priority": 4,
+        "intent": "optional",
+        "session": "bonus",
+        "estimatedSeconds": 90,
+        "why": "Only if sprint + flagship done and thread still active.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "0–20m: Reply sprint (sandbox, @arena Kimi, DesignArena, world-model, homework)",
+      "20–45m: Flagship thread + Short A",
+      "45–55m: Short B/C if energy — or stop",
+      "Last 5m: Mark Done in X To-Do; note what got profile visits"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Reply sprint",
+        "maxMinutes": 20,
+        "description": "Sandbox/eval + Kimi arenas + education process"
+      },
+      {
+        "id": "core",
+        "title": "Core posts",
+        "maxMinutes": 30,
+        "description": "Flagship + strongest shorts"
+      },
+      {
+        "id": "bonus",
+        "title": "Bonus",
+        "maxMinutes": 15,
+        "description": "Optional QT if energy left"
+      }
+    ],
+    "createdAt": "2026-07-21T08:00:00.000Z",
+    "updatedAt": "2026-07-20T20:01:33.337Z"
+  },
+  {
+    "id": "pack-2026-07-20",
+    "date": "2026-07-20",
+    "title": "Kimi heat + Qwen daily gains · score the path",
+    "theme": "Capability hype is cheap. Process eval is the product.",
+    "briefing": "Kimi K3 is dominating the timeline; US may curb Chinese models; Qwen3.8-Max-Preview claims daily gains on frontend. Education side: AI-written exams need human process checks. Your angle: independent rubrics, not marketing benches.",
+    "plannedMinutes": 55,
+    "mvpDraftIds": [
+      "reply-qwen-update",
+      "reply-kimi-bench",
+      "reply-omalley",
+      "reply-juken",
+      "flag-1",
+      "short-a"
+    ],
+    "signals": [
+      {
+        "id": "sig-kimi-policy",
+        "summary": "US may tighten curbs on Chinese frontier models after Kimi K3 (Entity List / host liability chatter).",
+        "whyItMatters": "Builders need evaluation habits that survive access shocks — not one-lab dependency.",
+        "url": "https://x.com/jukan05/status/2079158754382389551",
+        "heat": 5,
+        "category": "policy"
+      },
+      {
+        "id": "sig-kimi-arena",
+        "summary": "Kimi K3 open-weight narrative: Frontend Code Arena #1 claims; full weights ~July 27; numbers not fully independently verified.",
+        "whyItMatters": "Perfect setup for process-eval take: no verdict without re-runnable tasks.",
+        "url": "https://x.com/hammertime_one/status/2079169139076420035",
+        "heat": 5,
+        "category": "models"
+      },
+      {
+        "id": "sig-qwen",
+        "summary": "Qwen: 3.8 Max-Preview still iterating daily; big claim on web frontend; open-weight path promised.",
+        "whyItMatters": "Daily model churn → need stable personal eval suite.",
+        "url": "https://x.com/Alibaba_Qwen/status/2079172722161299801",
+        "heat": 4,
+        "category": "models"
+      },
+      {
+        "id": "sig-ed-mcq",
+        "summary": "AI can match MCQ difficulty stats, but accuracy/fairness/process validity evidence is thin — use formative + human checkpoints.",
+        "whyItMatters": "Direct Edudojo thesis: output-looking assessments fail without process signals.",
+        "url": "https://x.com/OMalleyFife/status/2079121134264406440",
+        "heat": 4,
+        "category": "education"
+      },
+      {
+        "id": "sig-ed-review",
+        "summary": "Review: AI education personalization papers claim high accuracy but many use flawed validation; few address deployment.",
+        "whyItMatters": "Same bug as model leaderboards: shiny metrics, weak method.",
+        "url": "https://x.com/AI_MDPI/status/2079121716496990379",
+        "heat": 3,
+        "category": "education"
+      }
+    ],
+    "skipList": [
+      "Pure politics/partisan pile-ons without eval angle",
+      "Crypto/token wraps on model news",
+      "Unverified arena screenshots as gospel",
+      "Lab death / duopoly doom without a builder takeaway"
+    ],
+    "drafts": [
+      {
+        "id": "reply-qwen-update",
+        "kind": "reply",
+        "label": "@Alibaba_Qwen",
+        "body": "Daily iteration is the right posture for a preview. What I’m watching as a builder: do you publish a fixed task suite so we can re-run the same eval tomorrow and see if “gains” are real — or only new demos?",
+        "meta": "https://x.com/Alibaba_Qwen/status/2079172722161299801",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Official account + active thread = discovery. Positions you as eval-serious.",
+        "tip": "Reply early while the thread is still hot.",
+        "postingWindow": "anytime",
+        "targetHandle": "@Alibaba_Qwen",
+        "targetReach": "official"
+      },
+      {
+        "id": "reply-kimi-bench",
+        "kind": "reply",
+        "label": "@hammertime_one",
+        "body": "This is the right skepticism: arena jumps before independent weights land are marketing until re-runnable. I’m waiting for July 27 + a public task set I can re-score myself — frontend win is interesting, not a verdict.",
+        "meta": "https://x.com/hammertime_one/status/2079169139076420035",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Nuanced Kimi post with real numbers — your process-eval line fits cleanly.",
+        "postingWindow": "anytime",
+        "targetHandle": "@hammertime_one",
+        "targetReach": "mid"
+      },
+      {
+        "id": "reply-juken",
+        "kind": "reply",
+        "label": "@jukan05",
+        "body": "Whether curbs land or not, the builder lesson is the same: if your stack depends on one lab’s API + one leaderboard, policy can brick you overnight. Diversify models. Own your eval suite.",
+        "meta": "https://x.com/jukan05/status/2079158754382389551",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "High-view policy post — stay practical, not political.",
+        "tip": "Skip partisan framing; stay on builder resilience.",
+        "postingWindow": "anytime",
+        "targetHandle": "@jukan05",
+        "targetReach": "high"
+      },
+      {
+        "id": "reply-omalley",
+        "kind": "reply",
+        "label": "@OMalleyFife",
+        "body": "This is the assessment version of “leaderboard theater.” Matching difficulty stats ≠ valid learning signal. Until we score process (how the answer was reached), AI-generated exams should stay formative with human checkpoints — fully agree.",
+        "meta": "https://x.com/OMalleyFife/status/2079121134264406440",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Medical/AI education audience — pure Edudojo wedge.",
+        "postingWindow": "anytime",
+        "targetHandle": "@OMalleyFife",
+        "targetReach": "niche-edu"
+      },
+      {
+        "id": "reply-taelin",
+        "kind": "reply",
+        "label": "@VictorTaelin",
+        "body": "“Better at proving than verifying” is a clean failure mode for process eval. A system that can’t trust its own checks is optimizing display, not reliability. Same pattern we see when students (or models) produce a fluent final answer and collapse under scrutiny of steps.",
+        "meta": "https://x.com/VictorTaelin/status/2079162254843400658",
+        "status": "ready",
+        "priority": 2,
+        "intent": "relationship",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Technical crowd; process vs output metaphor lands well.",
+        "postingWindow": "anytime",
+        "targetHandle": "@VictorTaelin"
+      },
+      {
+        "id": "flag-1",
+        "kind": "flagship",
+        "label": "Flagship · three headlines one bug",
+        "body": "1/ Same 24h:\n• Kimi K3 is “winning arenas”\n• Qwen says the preview got better again overnight\n• Education research still struggles to validate AI-generated assessments\n\nDifferent domains. Same failure mode.\n\n2/ We keep scoring what is easy to display:\nleaderboard screenshots,\nfinal MCQ answers,\n“second only to X” slides.\n\nWe under-score the path: contamination notes, re-runnable tasks, reasoning traces, human checkpoints.\n\n3/ At Edudojo I’m building toward evaluating how thinking unfolds — not only whether the last token looks correct.\n\n4/ Policy can cut off a model. Marketing can inflate a bench.\nA personal eval suite you re-run next week survives both.\n\nIf your stack is “trust the feed,” you will get gamed.\nIf your stack is “inspect the path,” hype slows down and signal survives.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 240,
+        "why": "Profile-defining thread for visitors from today’s replies.",
+        "tip": "Post after 3–4 replies so profile visits convert.",
+        "postingWindow": "midday"
+      },
+      {
+        "id": "short-a",
+        "kind": "short",
+        "label": "Short A · arena ≠ eval",
+        "body": "Arena jump before open weights land is a rumor with a scoreboard.\n\nCall it interesting.\nCall it a preview.\nDon’t call it an evaluation until you can re-run the same tasks yourself.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Quotable; rides Kimi conversation without pure news rewrite.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "short-b",
+        "kind": "short",
+        "label": "Short B · access shock",
+        "body": "If Washington (or anyone) can brick your model choice overnight, your real dependency isn’t “which model is smartest.”\n\nIt’s whether you own a portable eval + workflow — or you rented a leaderboard.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Builder resilience take on policy news without partisanship.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "short-c",
+        "kind": "short",
+        "label": "Short C · AI exams",
+        "body": "AI can write MCQs that match difficulty curves and still fail as assessment.\n\nDifficulty is a statistic.\nValidity is a process.\n\nUntil we score how learners (and models) think, “AI wrote the exam” is automation of the old mistake.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "ship",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Edudojo core message in one post.",
+        "postingWindow": "evening"
+      },
+      {
+        "id": "quote-1",
+        "kind": "quote",
+        "label": "QT · Qwen daily gains",
+        "body": "Love the ship-every-day energy. Skeptical of “gains” without a frozen eval suite.\n\nShow me the same 20 tasks tomorrow.\nThen I’ll believe the delta.",
+        "meta": "https://x.com/Alibaba_Qwen/status/2079172722161299801",
+        "status": "ready",
+        "priority": 4,
+        "intent": "optional",
+        "session": "bonus",
+        "estimatedSeconds": 90,
+        "why": "Only if sprint + flagship done and thread still active.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "0–20m: Reply sprint (Qwen, Kimi bench, policy, OMalley)",
+      "20–45m: Flagship thread + Short A",
+      "45–55m: Short B/C if energy — or stop",
+      "Last 5m: Mark Done in X To-Do; note what got profile visits"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Reply sprint",
+        "maxMinutes": 20,
+        "description": "High-signal replies on hot model + education posts"
+      },
+      {
+        "id": "core",
+        "title": "Core posts",
+        "maxMinutes": 30,
+        "description": "Flagship + strongest shorts"
+      },
+      {
+        "id": "bonus",
+        "title": "Bonus",
+        "maxMinutes": 15,
+        "description": "Optional QT if energy left"
+      }
+    ],
+    "createdAt": "2026-07-20T12:30:00.000Z",
+    "updatedAt": "2026-07-20T12:21:19.829Z"
+  },
+  {
     "id": "pack-2026-07-19",
     "date": "2026-07-19",
     "title": "X pack 2026-07-19 (smoke test)",
@@ -42,6 +526,6 @@
     ],
     "schedule": [],
     "createdAt": "2026-07-19T17:00:00.000Z",
-    "updatedAt": "2026-07-19T17:24:49.652Z"
+    "updatedAt": "2026-07-20T12:15:45.510Z"
   }
 ]

@@ -31,7 +31,7 @@ export default function YouTubePage() {
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
               Video journal
             </span>
-            <h1 className="font-headline text-[clamp(2.5rem,8vw,4.5rem)] font-extrabold leading-[1.02] tracking-[-0.04em] text-primary">
+            <h1 className="font-display text-[clamp(2.5rem,8vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.02em] text-primary">
               Field notes from the <span className="text-accent">road</span>
               <span className="text-on-surface-variant/50">.</span>
             </h1>

@@ -175,7 +175,7 @@ export function ArticleClient({ article }: ArticleClientProps) {
             ))}
           </div>
           
-          <h1 className="font-headline text-3xl font-bold leading-[1.1] tracking-[-0.02em] text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.5rem] dark:text-white">
+          <h1 className="font-display text-3xl font-medium leading-[1.1] tracking-[-0.02em] text-slate-900 sm:text-4xl md:text-5xl lg:text-[3.5rem] dark:text-white">
             {article.title}
           </h1>
 

@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next';
-import { Instrument_Serif, Manrope, MonteCarlo } from 'next/font/google';
+import { Manrope, MonteCarlo } from 'next/font/google';
 import Script from 'next/script';
+import '@fontsource/stack-sans-notch/300.css';
+import '@fontsource/stack-sans-notch/500.css';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { InteractiveBackground } from '@/components/interactive-background';
@@ -15,15 +17,6 @@ try {
   }
 } catch (_) {}
 `;
-
-/** Editorial display — large titles only (pairs with sans UI) */
-const instrumentSerif = Instrument_Serif({
-  weight: ['400'],
-  style: ['normal', 'italic'],
-  subsets: ['latin'],
-  variable: '--font-instrument',
-  display: 'swap',
-});
 
 const manrope = Manrope({
   subsets: ['latin'],
@@ -101,7 +94,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${instrumentSerif.variable} ${manrope.variable} ${monteCarlo.variable}`}
+      className={`${manrope.variable} ${monteCarlo.variable}`}
       suppressHydrationWarning
     >
       <body className="antialiased selection:bg-accent/30 relative min-h-screen" suppressHydrationWarning>
