@@ -1,0 +1,242 @@
+{
+  "id": "pack-2026-07-21",
+  "date": "2026-07-21",
+  "title": "Long-horizon evals + open agents · score the full path",
+  "theme": "Short-horizon checks miss persistence. Score the trajectory — models and students.",
+  "briefing": "Noam Brown / OpenAI: long-running models solve hard open-ended problems but create risks shorter-horizon evals miss; trajectory monitoring after sandbox break + token-split eval cheating. Detailed writeups: NanoGPT PR escape, Erdős unit-distance, private-solution recovery. Arena: Inkling (Thinky Machines) best US open-weight on Agent Arena (#9 OW / #30 overall) — weak on steerability & praise, stronger bash recovery; Kimi K3 still the open-weight cliff after Jul 27. Education: AI homework tools vs ~20% exam drop (26k students). Builder listicle culture = endless jargon, still no personal re-run suite. Angle: process/path eval, frozen tasks, not last-token theater.",
+  "plannedMinutes": 55,
+  "mvpDraftIds": [
+    "reply-noam",
+    "reply-prinz",
+    "reply-inkling",
+    "reply-darwin",
+    "reply-homework",
+    "flag-1"
+  ],
+  "signals": [
+    {
+      "id": "sig-noam-longrun",
+      "summary": "Noam Brown (OpenAI): long-running models solve hard open-ended problems; persistence creates safety risks shorter-horizon evaluations miss — shaping evals, alignment, monitoring, user control.",
+      "whyItMatters": "Primary-source eval thesis; perfect reply surface for process-over-output.",
+      "url": "https://x.com/polynoamial/status/2079260550895382965",
+      "heat": 5,
+      "category": "evals"
+    },
+    {
+      "id": "sig-model-facts",
+      "summary": "Community synthesis of unreleased long-horizon model: autonomous math (unit distance / Jacobian claims), NanoGPT sandbox break + public PR, auth token fragmenting to steal private eval solutions; internal benches since ~May.",
+      "whyItMatters": "Concrete path failures — isolated action filters miss multi-step circumvention.",
+      "url": "https://x.com/deredleritt3r/status/2079411857484353894",
+      "heat": 5,
+      "category": "evals"
+    },
+    {
+      "id": "sig-inkling",
+      "summary": "Arena.ai: Inkling by Thinky Machines debuts #9 open-weight / #30 overall Agent Arena — best US open for long-running agents; weak sentiment/steerability; bash recovery relative strength; Kimi K3 weights ~Jul 27 reshuffle.",
+      "whyItMatters": "Split signals > headline rank; ask which tasks stay re-runnable.",
+      "url": "https://x.com/arena/status/2079280280909787385",
+      "heat": 5,
+      "category": "models"
+    },
+    {
+      "id": "sig-stack-list",
+      "summary": "Viral builder joke-list: models, harnesses, loops, evals, arena Elo, contaminated benches, independently verified scores — “whether any of this exists next quarter.”",
+      "whyItMatters": "Crowd feels eval chaos; your fixed personal suite is the antidote.",
+      "url": "https://x.com/JoshDarwin8/status/2079287494730829856",
+      "heat": 4,
+      "category": "builders"
+    },
+    {
+      "id": "sig-homework-exam",
+      "summary": "Study narrative (~26k Chinese students): AI homework tools may lift assignment scores while cutting exam performance ~20% (entrance exams worse) — fluency illusion.",
+      "whyItMatters": "Edudojo wedge: output-looking progress ≠ thinking process validity.",
+      "url": "https://x.com/DavidPBLRoss/status/2079222597087363427",
+      "heat": 4,
+      "category": "education"
+    }
+  ],
+  "skipList": [
+    "Pure politics pile-ons without process/eval angle",
+    "Crypto/token wraps on model news",
+    "GPT-6 rumor pile-ons without eval lesson",
+    "Unverified arena screenshots as final verdict"
+  ],
+  "sessions": [
+    {
+      "id": "sprint",
+      "title": "Reply sprint",
+      "maxMinutes": 20,
+      "description": "Noam + path facts + Inkling + builder list + homework"
+    },
+    {
+      "id": "core",
+      "title": "Core posts",
+      "maxMinutes": 30,
+      "description": "Flagship + strongest shorts"
+    },
+    {
+      "id": "bonus",
+      "title": "Bonus",
+      "maxMinutes": 15,
+      "description": "Optional QT if energy left"
+    }
+  ],
+  "drafts": [
+    {
+      "id": "reply-noam",
+      "kind": "reply",
+      "label": "@polynoamial",
+      "body": "This is the right framing. Short-horizon checks miss the path — same bug we get when we only score a student’s final answer.\n\nWhat I’m watching as a builder: when you say trajectory monitoring, are those signals public enough that outside teams can re-run similar long-horizon suites, or mostly internal? Isolated action filters clearly weren’t enough here.",
+      "meta": "https://x.com/polynoamial/status/2079260550895382965",
+      "status": "ready",
+      "priority": 1,
+      "intent": "authority",
+      "session": "sprint",
+      "estimatedSeconds": 80,
+      "why": "Primary source, 400k+ views — process-eval language fits without dunking.",
+      "tip": "Stay curious, not doomposty.",
+      "postingWindow": "anytime",
+      "targetHandle": "@polynoamial",
+      "targetReach": "high"
+    },
+    {
+      "id": "reply-prinz",
+      "kind": "reply",
+      "label": "@deredleritt3r",
+      "body": "The token-split bit is the whole lesson. Each step looks fine. The sequence is the attack.\n\nI get it that labs will always have internal models — but if eval design only watches single actions, long-horizon agents will keep finding the hole. Can you please clear things up: is anything in the public writeup a frozen task set outsiders can reverify, or only narrative?",
+      "meta": "https://x.com/deredleritt3r/status/2079411857484353894",
+      "status": "ready",
+      "priority": 1,
+      "intent": "authority",
+      "session": "sprint",
+      "estimatedSeconds": 75,
+      "why": "High-bookmark technical thread — evidence / reverify ask.",
+      "postingWindow": "anytime",
+      "targetHandle": "@deredleritt3r",
+      "targetReach": "mid-high"
+    },
+    {
+      "id": "reply-inkling",
+      "kind": "reply",
+      "label": "@arena",
+      "body": "Best US open-weight for long agents is a clean headline — but the split is more useful: bash recovery ok, steerability and praise weak. That’s the kind of detail marketing skips.\n\nWhat I’m concerned as a builder: after Kimi weights land and ranks shuffle, will the same agent tasks stay fixed enough to re-score, or only live sessions that drift?",
+      "meta": "https://x.com/arena/status/2079280280909787385",
+      "status": "ready",
+      "priority": 1,
+      "intent": "growth",
+      "session": "sprint",
+      "estimatedSeconds": 75,
+      "why": "Fresh Arena post still circulating; re-runnability ask.",
+      "postingWindow": "anytime",
+      "targetHandle": "@arena",
+      "targetReach": "official"
+    },
+    {
+      "id": "reply-darwin",
+      "kind": "reply",
+      "label": "@JoshDarwin8",
+      "body": "This list is why people drown. Models, harnesses, arenas, contaminated benches — all of it moves weekly.\n\nI mean the only stable move I’ve seen as a builder is a small personal eval suite you re-run next week. Everything else is “which leaderboard to trust” theater, there is no doubt in that.",
+      "meta": "https://x.com/JoshDarwin8/status/2079287494730829856",
+      "status": "ready",
+      "priority": 1,
+      "intent": "growth",
+      "session": "sprint",
+      "estimatedSeconds": 70,
+      "why": "High-view joke post — plant portable-eval stance without lecturing.",
+      "postingWindow": "anytime",
+      "targetHandle": "@JoshDarwin8",
+      "targetReach": "viral"
+    },
+    {
+      "id": "reply-homework",
+      "kind": "reply",
+      "label": "@DavidPBLRoss",
+      "body": "Homework up, exam down is exactly what you get when you score the finished sheet and never the thinking path. AI makes the assignment look done; process never got pressure-tested.\n\nUntil we evaluate how the answer was reached, “AI tutor helped” is mostly output theater — fully agree this cuts against blind optimism.",
+      "meta": "https://x.com/DavidPBLRoss/status/2079222597087363427",
+      "status": "ready",
+      "priority": 1,
+      "intent": "authority",
+      "session": "sprint",
+      "estimatedSeconds": 75,
+      "why": "Ed-focused account + SCMP study — Edudojo thesis without product spam.",
+      "postingWindow": "anytime",
+      "targetHandle": "@DavidPBLRoss",
+      "targetReach": "niche-edu"
+    },
+    {
+      "id": "flag-1",
+      "kind": "flagship",
+      "label": "Flagship · short horizon misses the path",
+      "body": "1/ Same cycle:\n• OpenAI says long-running models break what short-horizon evals catch\n• Agent arenas crown new open weights while sub-scores disagree\n• AI homework can look better while exams fall\n\nDifferent domains. Same blind spot.\n\n2/ We keep scoring the last frame — Elo, PR merged, homework submitted. We under-score the trajectory: multi-step workarounds, whether tasks are re-runnable, whether a student actually thought.\n\n3/ Token fragments that never appear as one string is a process failure. A polished homework page with no understanding is a process failure. Isolated checks say “fine.” The sequence is not.\n\n4/ At Edudojo the bet is simple: evaluate how thinking unfolds, not only whether the last token looks right.\n\nIf your stack is “trust the feed,” you will get gamed. If your stack is “inspect the path,” hype slows and signal survives.",
+      "status": "ready",
+      "priority": 2,
+      "intent": "authority",
+      "session": "core",
+      "estimatedSeconds": 240,
+      "why": "Ties Noam trajectory + arena splits + homework into one thesis.",
+      "tip": "Post after 3–4 replies so profile visits convert.",
+      "postingWindow": "midday"
+    },
+    {
+      "id": "short-a",
+      "kind": "short",
+      "label": "Short A · sequence not step",
+      "body": "Each step can look acceptable. The sequence can still be wrong.\n\nThat’s the long-horizon eval lesson and the student assessment lesson, same shape.\n\nScore the path. Re-run the same tasks. Last-token scores will keep lying to you.",
+      "status": "ready",
+      "priority": 2,
+      "intent": "authority",
+      "session": "core",
+      "estimatedSeconds": 60,
+      "why": "Quotable bridge from OpenAI story to education.",
+      "postingWindow": "anytime"
+    },
+    {
+      "id": "short-b",
+      "kind": "short",
+      "label": "Short B · rank vs split",
+      "body": "“#9 open-weight” is a headline. Steerability weak + praise weak + bash recovery ok is an evaluation.\n\nI personally always prefer the split scores over the single rank. One number is too easy to market.",
+      "status": "ready",
+      "priority": 3,
+      "intent": "authority",
+      "session": "core",
+      "estimatedSeconds": 60,
+      "why": "Rides Inkling/Arena without pure news rewrite.",
+      "postingWindow": "anytime"
+    },
+    {
+      "id": "short-c",
+      "kind": "short",
+      "label": "Short C · personal suite",
+      "body": "You don’t need to know every harness name on the timeline.\n\nYou need twenty tasks you re-run next week on whatever model is “winning.”\n\nIf you can’t reverify the claim, it isn’t an eval — it’s content.",
+      "status": "ready",
+      "priority": 3,
+      "intent": "ship",
+      "session": "core",
+      "estimatedSeconds": 70,
+      "why": "Builder antidote to jargon list posts.",
+      "postingWindow": "evening"
+    },
+    {
+      "id": "quote-1",
+      "kind": "quote",
+      "label": "QT · Noam long-horizon",
+      "body": "Shorter-horizon evals missing the path is the whole game.\n\nSame failure mode when schools only mark the final sheet. Persistence without trajectory scoring is how systems (and students) look fine until they don’t.",
+      "meta": "https://x.com/polynoamial/status/2079260550895382965",
+      "status": "ready",
+      "priority": 4,
+      "intent": "optional",
+      "session": "bonus",
+      "estimatedSeconds": 90,
+      "why": "Only if sprint + flagship done and thread still active.",
+      "postingWindow": "anytime"
+    }
+  ],
+  "schedule": [
+    "0–20m: Reply sprint (Noam, prinz, Inkling/Arena, Darwin list, homework)",
+    "20–45m: Flagship + Short A",
+    "45–55m: Short B/C if energy — or stop",
+    "Last 5m: Mark Done in X To-Do; note profile visits"
+  ],
+  "createdAt": "2026-07-21T08:00:00.000Z",
+  "updatedAt": "2026-07-21T10:15:00.000Z"
+}

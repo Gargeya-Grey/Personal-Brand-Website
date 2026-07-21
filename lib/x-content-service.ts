@@ -140,6 +140,14 @@ async function saveLocal(packs: XContentPack[]): Promise<void> {
   await fs.writeFile(dataFilePath, JSON.stringify(packs, null, 2), 'utf-8');
 }
 
+/** Normalize any date-ish value to YYYY-MM-DD (Postgres / JSON quirks). */
+function toDateOnly(value: unknown): string {
+  if (value == null) return '';
+  const s = String(value);
+  const m = s.match(/(\d{4}-\d{2}-\d{2})/);
+  return m ? m[1] : s.slice(0, 10);
+}
+
 function rowToPack(row: {
   id: string;
   payload: XContentPack | string;
@@ -155,7 +163,7 @@ function rowToPack(row: {
   return {
     ...payload,
     id: payload.id || row.id,
-    date: payload.date || String(row.date || '').slice(0, 10),
+    date: toDateOnly(payload.date || row.date),
     title: payload.title || row.title || row.id,
     theme: payload.theme ?? row.theme ?? undefined,
     plannedMinutes: payload.plannedMinutes ?? row.planned_minutes ?? undefined,
@@ -269,14 +277,18 @@ export async function upsertXContentPack(
   if (idx >= 0) {
     const existing = packs[idx];
     if (preserve) {
-      const statusById = new Map(existing.drafts.map((d) => [d.id, d.status]));
+      // Only keep posted/skipped when body text is unchanged (same draft, not a scout refresh).
+      const prevById = new Map(existing.drafts.map((d) => [d.id, d]));
       next = {
         ...next,
         createdAt: existing.createdAt || next.createdAt,
-        drafts: next.drafts.map((d) => ({
-          ...d,
-          status: statusById.get(d.id) ?? d.status,
-        })),
+        drafts: next.drafts.map((d) => {
+          const prev = prevById.get(d.id);
+          if (prev && prev.body === d.body && prev.status) {
+            return { ...d, status: prev.status };
+          }
+          return { ...d, status: d.status || 'ready' };
+        }),
       };
     } else {
       next = { ...next, createdAt: existing.createdAt || next.createdAt };

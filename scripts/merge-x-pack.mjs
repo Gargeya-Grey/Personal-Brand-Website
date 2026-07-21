@@ -123,12 +123,18 @@ async function mergeLocal(pack) {
   const idx = packs.findIndex((p) => p.id === pack.id);
   if (idx >= 0) {
     const existing = packs[idx];
-    const statusById = new Map((existing.drafts || []).map((d) => [d.id, d.status]));
+    // Preserve posted/skipped ONLY when the same draft id still has the same body.
+    // Same-day scout refreshes often reuse flag-1 / short-a ids with NEW text —
+    // those must become ready again so the workspace shows the new run.
+    const prevById = new Map((existing.drafts || []).map((d) => [d.id, d]));
     pack.createdAt = existing.createdAt || pack.createdAt;
-    pack.drafts = pack.drafts.map((d) => ({
-      ...d,
-      status: statusById.get(d.id) || d.status,
-    }));
+    pack.drafts = pack.drafts.map((d) => {
+      const prev = prevById.get(d.id);
+      if (prev && prev.body === d.body && prev.status) {
+        return { ...d, status: prev.status };
+      }
+      return { ...d, status: d.status || 'ready' };
+    });
     packs[idx] = pack;
   } else {
     packs.unshift(pack);

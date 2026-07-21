@@ -497,19 +497,28 @@ export function XStudioClient() {
     });
     setPacks(sorted);
 
-    // Prefer pack with remaining work, else newest. Don't stick on a cleared older pack.
+    // Prefer the most recently updated pack that still has ready work.
     const pickDefaultId = (prev: string | null) => {
-      const withReady = sorted.find((p) =>
-        (p.drafts || []).some((d) => d.status === 'ready')
-      );
-      if (withReady) {
-        // Keep prev only if it still has ready tasks
-        if (prev) {
-          const prevPack = sorted.find((p) => p.id === prev);
-          if (prevPack?.drafts?.some((d) => d.status === 'ready')) return prev;
+      const readySorted = sorted
+        .filter((p) => (p.drafts || []).some((d) => d.status === 'ready'))
+        .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
+      const newestReady = readySorted[0];
+
+      if (newestReady) {
+        if (!prev) return newestReady.id;
+        const prevPack = sorted.find((p) => p.id === prev);
+        const prevHasReady = prevPack?.drafts?.some((d) => d.status === 'ready');
+        // Same pack refreshed (new title/bodies): stay on it so setPacks updates the UI
+        if (prev === newestReady.id) return prev;
+        // Cleared pack still selected → jump to newest ready
+        if (!prevHasReady) return newestReady.id;
+        // Newer ready pack exists → prefer it
+        if ((newestReady.updatedAt || '') > (prevPack?.updatedAt || '')) {
+          return newestReady.id;
         }
-        return withReady.id;
+        return prev;
       }
+
       if (prev && sorted.some((p) => p.id === prev)) return prev;
       return sorted[0]?.id ?? null;
     };
@@ -517,11 +526,14 @@ export function XStudioClient() {
     setSelectedId((prev) => pickDefaultId(prev));
     setLastSync(new Date());
     const latest = sorted[0];
-    if (latest && knownUpdated.current && knownUpdated.current !== latest.updatedAt) {
+    const fingerprint = latest
+      ? `${latest.id}:${latest.updatedAt}:${latest.title}`
+      : null;
+    if (fingerprint && knownUpdated.current && knownUpdated.current !== fingerprint) {
       setPulse(true);
       setTimeout(() => setPulse(false), 2400);
     }
-    if (latest) knownUpdated.current = latest.updatedAt;
+    if (fingerprint) knownUpdated.current = fingerprint;
   }, []);
 
   const load = useCallback(
