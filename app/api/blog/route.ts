@@ -1,23 +1,41 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
-import { getArticles, saveArticles, Article } from '@/lib/blog-service';
+import { revalidatePath } from 'next/cache';
+import {
+  getArticles,
+  getPublishedArticlesLite,
+  upsertArticle,
+  deleteArticleById,
+  sanitizeSlug,
+  MAX_ARTICLE_CONTENT_CHARS,
+  type Article,
+} from '@/lib/blog-service';
 import { requireAllowedSession } from '@/lib/auth';
 import { isTrustedOrigin } from '@/lib/csrf';
+import { siteConfig } from '@/lib/site-config';
 
 function checkCsrf(request: Request): boolean {
   return isTrustedOrigin(request);
 }
 
+function revalidateBlog(slug?: string) {
+  try {
+    revalidatePath('/blog');
+    revalidatePath('/sitemap');
+    if (slug) revalidatePath(`/blog/${slug}`);
+  } catch {
+    /* revalidatePath can throw outside Next request context — ignore */
+  }
+}
+
 /**
- * Public Endpoint: Retrieve all blog posts
- * Supports ?includeAll=true query parameter (requires authentication)
+ * Public: published list (lite — no markdown bodies).
+ * Auth: ?includeAll=true returns full rows for CMS.
  */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const includeAll = searchParams.get('includeAll') === 'true';
-
-    const list = await getArticles();
 
     if (includeAll) {
       const cookieStore = await cookies();
@@ -26,43 +44,36 @@ export async function GET(request: Request) {
       if (!user) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
       }
+      const list = await getArticles();
       return NextResponse.json(list, {
         headers: { 'Cache-Control': 'private, no-store' },
       });
     }
 
-    // Listing cards do not need full markdown bodies or takeaway arrays.
-    const published = list
-      .filter(a => a.status === 'published' || !a.status)
-      .map(article => ({
-        ...article,
-        content: undefined,
-        takeaways: undefined,
-      }));
+    const published = await getPublishedArticlesLite();
     return NextResponse.json(published, {
       headers: {
-        'Cache-Control': 'public, s-maxage=60, stale-while-revalidate=300',
+        'Cache-Control': 'public, s-maxage=30, stale-while-revalidate=120',
       },
     });
-  } catch (error: any) {
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json(
-      { error: 'Failed to retrieve blog list: ' + error.message },
+      { error: 'Failed to retrieve blog list: ' + message },
       { status: 500 }
     );
   }
 }
 
 /**
- * Protected Endpoint: Create or Update an article
+ * Protected: create or update a single article (O(1) upsert).
  */
 export async function POST(request: Request) {
   try {
-    // 0. CSRF Check
     if (!checkCsrf(request)) {
       return NextResponse.json({ error: 'CSRF check failed' }, { status: 403 });
     }
 
-    // 1. Authenticate Request (allowlisted Google session only)
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth_session');
     const user = await requireAllowedSession(sessionCookie?.value);
@@ -73,7 +84,6 @@ export async function POST(request: Request) {
     const body = await request.json();
     const article: Partial<Article> = body;
 
-    // Input validation: ensure id is a safe number if provided
     if (article.id !== undefined && (typeof article.id !== 'number' || !Number.isFinite(article.id))) {
       return NextResponse.json(
         { error: 'Invalid article ID: must be a finite number.' },
@@ -88,26 +98,37 @@ export async function POST(request: Request) {
       );
     }
 
-    const articles = await getArticles();
-
-    // 2. Validate Slug Uniqueness
-    const slugConflict = articles.some(
-      a => a.slug === article.slug && (!article.id || a.id !== article.id)
-    );
-    if (slugConflict) {
+    if (typeof article.content === 'string' && article.content.length > MAX_ARTICLE_CONTENT_CHARS) {
       return NextResponse.json(
-        { error: `An article with slug "${article.slug}" already exists. Slugs must be unique.` },
+        { error: `Content too large (max ${MAX_ARTICLE_CONTENT_CHARS} characters).` },
         { status: 400 }
       );
     }
 
-    let updatedArticles: Article[] = [];
+    const cleanSlug = sanitizeSlug(article.slug);
+    if (!cleanSlug || cleanSlug.length < 2) {
+      return NextResponse.json(
+        { error: 'Invalid slug. Use lowercase letters, numbers, and hyphens.' },
+        { status: 400 }
+      );
+    }
+
+    const articles = await getArticles();
+
+    const slugConflict = articles.some(
+      (a) => a.slug === cleanSlug && (!article.id || a.id !== article.id)
+    );
+    if (slugConflict) {
+      return NextResponse.json(
+        { error: `An article with slug "${cleanSlug}" already exists. Slugs must be unique.` },
+        { status: 400 }
+      );
+    }
+
     let savedArticle: Article;
 
-    // Check if updating or creating
     if (article.id) {
-      // Update
-      const index = articles.findIndex(a => a.id === article.id);
+      const index = articles.findIndex((a) => a.id === article.id);
       if (index === -1) {
         return NextResponse.json(
           { error: `Article with ID ${article.id} not found.` },
@@ -115,51 +136,68 @@ export async function POST(request: Request) {
         );
       }
 
-      // Determine the publication date:
-      // If transitioning from draft→published, stamp with current date.
-      // Otherwise preserve the original publication date.
-      const existingStatus = articles[index].status;
+      const existing = articles[index];
+      const existingStatus = existing.status;
       const newStatus = article.status || existingStatus || 'published';
       const isPublishing = newStatus === 'published' && existingStatus !== 'published';
       const publicationDate = isPublishing
-        ? new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })
-        : (article.date || articles[index].date);
-      
+        ? new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })
+        : article.date || existing.date;
+
+      const existingAvatar = existing.authorAvatar;
+      const avatarLooksBroken =
+        !existingAvatar ||
+        existingAvatar.includes('dicebear.com') ||
+        existingAvatar.length < 4;
+
       savedArticle = {
-        ...articles[index],
+        ...existing,
         ...article,
-        // Keep slug, date, author defaults if not overwritten
-        slug: article.slug,
-        title: article.title,
-        excerpt: article.excerpt || articles[index].excerpt,
-        categories: article.categories || articles[index].categories,
-        readTime: article.readTime || articles[index].readTime,
-        takeaways: article.takeaways || articles[index].takeaways,
+        id: existing.id,
+        slug: cleanSlug,
+        title: article.title.trim(),
+        excerpt: (article.excerpt ?? existing.excerpt) || '',
+        categories: article.categories?.length ? article.categories : existing.categories,
+        readTime: article.readTime || existing.readTime,
+        takeaways: article.takeaways ?? existing.takeaways,
         content: article.content,
-        illustrationType: article.illustrationType || articles[index].illustrationType,
-        featured: article.featured !== undefined ? article.featured : articles[index].featured,
+        illustrationType: article.illustrationType || existing.illustrationType,
+        featured: article.featured !== undefined ? article.featured : existing.featured,
         status: newStatus,
-        coverImage: article.coverImage !== undefined ? article.coverImage : articles[index].coverImage,
+        coverImage:
+          article.coverImage !== undefined ? article.coverImage : existing.coverImage,
+        author: article.author || existing.author || siteConfig.name,
+        authorRole: article.authorRole || existing.authorRole || siteConfig.authorRole,
+        authorAvatar:
+          article.authorAvatar ||
+          (avatarLooksBroken ? siteConfig.authorAvatar : existingAvatar),
         date: publicationDate,
         updatedAt: new Date().toISOString(),
-      } as Article;
-
-      updatedArticles = [...articles];
-      updatedArticles[index] = savedArticle;
+      };
     } else {
-      // Create
-      const newId = articles.length > 0 ? Math.max(...articles.map(a => a.id)) + 1 : 1;
-      
+      const newId =
+        articles.length > 0 ? Math.max(...articles.map((a) => a.id)) + 1 : 1;
+
       savedArticle = {
         id: newId,
-        slug: article.slug,
-        title: article.title,
+        slug: cleanSlug,
+        title: article.title.trim(),
         excerpt: article.excerpt || '',
-        categories: article.categories || ['Engineering'],
-        author: article.author || 'Gargeya Sharma',
-        authorRole: article.authorRole || 'Founder & Architect',
-        authorAvatar: article.authorAvatar || 'https://api.dicebear.com/7.x/adventurer/svg?seed=gargeya',
-        date: article.date || new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }),
+        categories: article.categories?.length ? article.categories : ['Engineering'],
+        author: article.author || siteConfig.name,
+        authorRole: article.authorRole || siteConfig.authorRole,
+        authorAvatar: article.authorAvatar || siteConfig.authorAvatar,
+        date:
+          article.date ||
+          new Date().toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          }),
         readTime: article.readTime || '5 min read',
         takeaways: article.takeaways || [],
         content: article.content,
@@ -168,46 +206,41 @@ export async function POST(request: Request) {
         status: article.status || 'draft',
         coverImage: article.coverImage || '',
         updatedAt: new Date().toISOString(),
-      } as Article;
-
-      updatedArticles = [...articles, savedArticle];
+      };
     }
 
-    // Handle featured post constraint (only one post can be featured at a time)
-    if (savedArticle.featured) {
-      updatedArticles = updatedArticles.map(a => 
-        a.id === savedArticle.id ? a : { ...a, featured: false }
-      );
-    }
-
-    const saved = await saveArticles(updatedArticles);
-    if (!saved) {
+    const ok = await upsertArticle(savedArticle);
+    if (!ok) {
       return NextResponse.json(
         { error: 'Failed to persist article changes to the database.' },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, article: savedArticle });
-  } catch (error: any) {
+    revalidateBlog(savedArticle.slug);
+
     return NextResponse.json(
-      { error: 'Failed to save blog post: ' + error.message },
+      { success: true, article: savedArticle },
+      { headers: { 'Cache-Control': 'private, no-store' } }
+    );
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      { error: 'Failed to save blog post: ' + message },
       { status: 500 }
     );
   }
 }
 
 /**
- * Protected Endpoint: Delete an article
+ * Protected: delete one article by id.
  */
 export async function DELETE(request: Request) {
   try {
-    // 0. CSRF Check
     if (!checkCsrf(request)) {
       return NextResponse.json({ error: 'CSRF check failed' }, { status: 403 });
     }
 
-    // Authenticate Request (allowlisted Google session only)
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth_session');
     const user = await requireAllowedSession(sessionCookie?.value);
@@ -227,41 +260,33 @@ export async function DELETE(request: Request) {
 
     const id = parseInt(idStr, 10);
     if (isNaN(id)) {
-      return NextResponse.json(
-        { error: 'Invalid ID parameter value.' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid ID parameter value.' }, { status: 400 });
     }
 
     const articles = await getArticles();
-    const index = articles.findIndex(a => a.id === id);
-
-    if (index === -1) {
-      return NextResponse.json(
-        { error: `Article with ID ${id} not found.` },
-        { status: 404 }
-      );
+    const existing = articles.find((a) => a.id === id);
+    if (!existing) {
+      return NextResponse.json({ error: `Article with ID ${id} not found.` }, { status: 404 });
     }
 
-    const updatedArticles = articles.filter(a => a.id !== id);
-
-    // If we deleted the featured post, feature the next recent one if available
-    if (articles[index].featured && updatedArticles.length > 0) {
-      updatedArticles[0].featured = true;
-    }
-
-    const saved = await saveArticles(updatedArticles);
-    if (!saved) {
+    const ok = await deleteArticleById(id);
+    if (!ok) {
       return NextResponse.json(
         { error: 'Failed to persist deletion to the database.' },
         { status: 500 }
       );
     }
 
-    return NextResponse.json({ success: true, message: `Article ${id} deleted successfully.` });
-  } catch (error: any) {
+    revalidateBlog(existing.slug);
+
     return NextResponse.json(
-      { error: 'Failed to delete blog post: ' + error.message },
+      { success: true, message: `Article ${id} deleted successfully.` },
+      { headers: { 'Cache-Control': 'private, no-store' } }
+    );
+  } catch (error: unknown) {
+    const message = error instanceof Error ? error.message : 'Unknown error';
+    return NextResponse.json(
+      { error: 'Failed to delete blog post: ' + message },
       { status: 500 }
     );
   }

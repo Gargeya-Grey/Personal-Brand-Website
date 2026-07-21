@@ -13,11 +13,12 @@ import {
   BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
-import Image from 'next/image';
 import * as motion from 'motion/react-client';
 import { renderMarkdown, slugify } from '@/lib/markdown';
 import { renderIllustration } from '@/components/render-illustration';
+import { AuthorAvatar } from '@/components/author-avatar';
 import { Article } from '@/lib/blog-service';
+import { siteConfig } from '@/lib/site-config';
 
 interface HeadingItem {
   id: string;
@@ -180,11 +181,22 @@ export function ArticleClient({ article }: ArticleClientProps) {
           </h1>
 
           <div className="flex flex-wrap items-center justify-center gap-6 mt-8">
-            <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-full overflow-hidden border border-slate-200 dark:border-white/10 shadow-sm relative bg-slate-100 dark:bg-slate-800">
-                <Image src={article.authorAvatar} alt={article.author} width={36} height={36} className="h-full w-full object-cover" />
+            <div className="flex items-center gap-2.5">
+              <AuthorAvatar
+                src={article.authorAvatar || siteConfig.authorAvatar}
+                name={article.author || siteConfig.name}
+                size="md"
+              />
+              <div className="text-left leading-tight">
+                <span className="font-label font-[500] text-sm text-slate-800 dark:text-slate-200 block">
+                  {article.author || siteConfig.name}
+                </span>
+                {article.authorRole && (
+                  <span className="text-[0.7rem] text-slate-500 dark:text-slate-400">
+                    {article.authorRole}
+                  </span>
+                )}
               </div>
-              <span className="font-label font-[500] text-sm text-slate-800 dark:text-slate-200">{article.author}</span>
             </div>
             
             <div className="w-px h-4 bg-slate-200 dark:bg-slate-700/50" />

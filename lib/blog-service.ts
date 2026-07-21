@@ -1,6 +1,7 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { siteConfig } from './site-config';
 
 export interface Article {
   id: number;
@@ -302,6 +303,12 @@ To provide satisfying, stable visual interactions, frontends should transition f
 
 // Mapping helpers between database snake_case and code camelCase
 function toCamelCase(dbArticle: any): Article {
+  const rawAvatar = (dbArticle.author_avatar || dbArticle.authorAvatar || '') as string;
+  const avatarBroken =
+    !rawAvatar ||
+    rawAvatar.includes('dicebear.com') ||
+    rawAvatar.length < 4;
+
   return {
     id: dbArticle.id,
     slug: dbArticle.slug,
@@ -309,17 +316,18 @@ function toCamelCase(dbArticle: any): Article {
     categories: dbArticle.categories,
     title: dbArticle.title,
     excerpt: dbArticle.excerpt,
-    author: dbArticle.author,
-    authorRole: dbArticle.author_role,
-    authorAvatar: dbArticle.author_avatar,
+    author: dbArticle.author || siteConfig.name,
+    authorRole: dbArticle.author_role || dbArticle.authorRole || siteConfig.authorRole,
+    // Prefer real headshot over broken/empty/dicebear placeholders
+    authorAvatar: avatarBroken ? siteConfig.authorAvatar : rawAvatar,
     date: dbArticle.date,
-    readTime: dbArticle.read_time,
+    readTime: dbArticle.read_time || dbArticle.readTime,
     takeaways: dbArticle.takeaways,
     content: dbArticle.content,
-    illustrationType: dbArticle.illustration_type,
+    illustrationType: dbArticle.illustration_type || dbArticle.illustrationType,
     status: dbArticle.status,
-    coverImage: dbArticle.cover_image,
-    updatedAt: dbArticle.updated_at,
+    coverImage: dbArticle.cover_image || dbArticle.coverImage,
+    updatedAt: dbArticle.updated_at || dbArticle.updatedAt,
   };
 }
 
@@ -449,8 +457,161 @@ async function cleanupOrphanedImages(oldArticles: Article[], newArticles: Articl
   }
 }
 
+/** Drop short-TTL memory cache so multi-instance hosts pick up writes faster. */
+export function invalidateArticleCache(): void {
+  cachedArticles = null;
+  cacheLoadedAt = 0;
+}
+
+/** URL-safe slug: lowercase, hyphens only. */
+export function sanitizeSlug(raw: string): string {
+  return raw
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-+|-+$/g, '')
+    .slice(0, 120);
+}
+
 /**
- * Saves articles back to Supabase
+ * Lightweight public listing fields (no markdown body) — lower latency / bandwidth.
+ */
+export async function getPublishedArticlesLite(): Promise<
+  Omit<Article, 'content' | 'takeaways'>[]
+> {
+  const LIST_COLS =
+    'id, slug, featured, categories, title, excerpt, author, author_role, author_avatar, date, read_time, illustration_type, status, cover_image, updated_at';
+
+  if (isSupabaseUsable()) {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select(LIST_COLS)
+        .or('status.eq.published,status.is.null')
+        .order('id', { ascending: false });
+
+      if (error) {
+        markSupabaseUnavailable(error);
+      } else {
+        supabaseFailureLogged = false;
+        return (data || []).map((row) => {
+          const a = toCamelCase({ ...row, content: '', takeaways: [] });
+          const { content: _c, takeaways: _t, ...lite } = a;
+          return lite;
+        });
+      }
+    } catch (e) {
+      markSupabaseUnavailable(e);
+    }
+  }
+
+  const list = await getArticles();
+  return list
+    .filter((a) => isArticlePublished(a))
+    .map(({ content: _c, takeaways: _t, ...lite }) => lite)
+    .sort((a, b) => b.id - a.id);
+}
+
+/**
+ * Single-row upsert — O(1) write instead of rewriting the full table.
+ */
+export async function upsertArticle(article: Article): Promise<boolean> {
+  invalidateArticleCache();
+
+  if (!isSupabaseConfigured()) {
+    try {
+      const list = (await readLocalArticlesFile()) || defaultArticles;
+      const idx = list.findIndex((a) => a.id === article.id);
+      const next = [...list];
+      if (idx >= 0) next[idx] = article;
+      else next.push(article);
+      // Enforce single featured
+      const normalized = article.featured
+        ? next.map((a) => (a.id === article.id ? a : { ...a, featured: false }))
+        : next;
+      await fs.mkdir(dataDir, { recursive: true });
+      await fs.writeFile(dataFilePath, JSON.stringify(normalized, null, 2), 'utf-8');
+      cachedArticles = normalized;
+      cacheLoadedAt = Date.now();
+      return true;
+    } catch (e) {
+      console.error('Local upsert failed:', e);
+      return false;
+    }
+  }
+
+  try {
+    // Clear other featured flags first if needed
+    if (article.featured) {
+      await supabase
+        .from('articles')
+        .update({ featured: false })
+        .neq('id', article.id)
+        .eq('featured', true);
+    }
+
+    const { error } = await supabase
+      .from('articles')
+      .upsert(toSnakeCase(article), { onConflict: 'id' });
+
+    if (error) {
+      console.error('Supabase upsert article failed:', error);
+      return false;
+    }
+    invalidateArticleCache();
+    return true;
+  } catch (e) {
+    console.error('upsertArticle failed:', e);
+    return false;
+  }
+}
+
+export async function deleteArticleById(id: number): Promise<boolean> {
+  invalidateArticleCache();
+  const existing = await getArticles();
+  const removed = existing.find((a) => a.id === id);
+  const remaining = existing.filter((a) => a.id !== id);
+
+  if (!isSupabaseConfigured()) {
+    try {
+      if (removed?.featured && remaining[0]) remaining[0].featured = true;
+      await fs.mkdir(dataDir, { recursive: true });
+      await fs.writeFile(dataFilePath, JSON.stringify(remaining, null, 2), 'utf-8');
+      cachedArticles = remaining;
+      cacheLoadedAt = Date.now();
+      if (removed) {
+        cleanupOrphanedImages([removed], remaining, false).catch(() => {});
+      }
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  try {
+    const { error } = await supabase.from('articles').delete().eq('id', id);
+    if (error) {
+      console.error('Supabase delete failed:', error);
+      return false;
+    }
+    if (removed?.featured && remaining[0]) {
+      await supabase.from('articles').update({ featured: true }).eq('id', remaining[0].id);
+    }
+    if (removed) {
+      cleanupOrphanedImages([removed], remaining, true).catch(() => {});
+    }
+    invalidateArticleCache();
+    return true;
+  } catch (e) {
+    console.error('deleteArticleById failed:', e);
+    return false;
+  }
+}
+
+/**
+ * Full-list save (legacy). Prefer upsertArticle / deleteArticleById for CMS writes.
  */
 export async function saveArticles(articles: Article[]): Promise<boolean> {
   const oldArticles = cachedArticles || [];
@@ -458,12 +619,10 @@ export async function saveArticles(articles: Article[]): Promise<boolean> {
   cacheLoadedAt = Date.now();
 
   if (!isSupabaseConfigured()) {
-    console.warn('Supabase not configured. Falling back to local file save.');
     try {
       await fs.mkdir(dataDir, { recursive: true });
       await fs.writeFile(dataFilePath, JSON.stringify(articles, null, 2), 'utf-8');
-      // Non-blocking local cleanup
-      cleanupOrphanedImages(oldArticles, articles, false).catch(err =>
+      cleanupOrphanedImages(oldArticles, articles, false).catch((err) =>
         console.error('Failed local storage cleanup:', err)
       );
       return true;
@@ -475,44 +634,32 @@ export async function saveArticles(articles: Article[]): Promise<boolean> {
 
   try {
     const dbArticles = articles.map(toSnakeCase);
-
-    // 1. Upsert all current articles
     const { error: upsertError } = await supabase
       .from('articles')
       .upsert(dbArticles, { onConflict: 'id' });
-      
+
     if (upsertError) {
       console.error('Failed to upsert articles to Supabase:', upsertError);
       return false;
     }
-    
-    // 2. Delete any articles that are no longer in the list
-    const idsToKeep = articles.map(a => a.id);
+
+    const idsToKeep = articles.map((a) => a.id);
     if (idsToKeep.length > 0) {
+      // PostgREST: not.in.(1,2,3)
       const { error: deleteError } = await supabase
         .from('articles')
         .delete()
         .not('id', 'in', `(${idsToKeep.join(',')})`);
-        
-      if (deleteError) {
-        console.error('Failed to clean up deleted articles in Supabase:', deleteError);
-      }
-    } else {
-      const { error: deleteError } = await supabase
-        .from('articles')
-        .delete()
-        .neq('id', 0);
-        
       if (deleteError) {
         console.error('Failed to clean up deleted articles in Supabase:', deleteError);
       }
     }
-    
-    // Non-blocking Supabase storage cleanup
-    cleanupOrphanedImages(oldArticles, articles, true).catch(err =>
+
+    cleanupOrphanedImages(oldArticles, articles, true).catch((err) =>
       console.error('Failed Supabase storage cleanup:', err)
     );
 
+    invalidateArticleCache();
     return true;
   } catch (error) {
     console.error('Failed saving to Supabase:', error);
@@ -520,12 +667,57 @@ export async function saveArticles(articles: Article[]): Promise<boolean> {
   }
 }
 
+function normalizeSlug(slug: string): string {
+  try {
+    return decodeURIComponent(slug).trim().toLowerCase();
+  } catch {
+    return slug.trim().toLowerCase();
+  }
+}
+
 /**
- * Retrieves a single article matching a slug.
- * Uses the shared article list (local or Supabase) so we do not open a second
- * failing Supabase request per slug when the host is unreachable.
+ * Direct Supabase slug lookup — reliable for posts published after the last deploy.
  */
 export async function getArticleBySlug(slug: string): Promise<Article | null> {
+  const want = normalizeSlug(slug);
+  if (!want) return null;
+
+  if (isSupabaseUsable()) {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select('*')
+        .eq('slug', slug.trim())
+        .maybeSingle();
+
+      if (error) {
+        markSupabaseUnavailable(error);
+      } else if (data) {
+        return toCamelCase(data);
+      }
+
+      // ilike exact for case drift
+      const { data: fuzzy, error: fuzzyErr } = await supabase
+        .from('articles')
+        .select('*')
+        .ilike('slug', want)
+        .maybeSingle();
+
+      if (!fuzzyErr && fuzzy) return toCamelCase(fuzzy);
+    } catch (e) {
+      markSupabaseUnavailable(e);
+    }
+  }
+
   const list = await getArticles();
-  return list.find((a) => a.slug === slug) || null;
+  return list.find((a) => normalizeSlug(a.slug || '') === want) || null;
 }
+
+export function isArticlePublished(article: Article | null | undefined): boolean {
+  if (!article) return false;
+  const s = (article.status || 'published').toString().trim().toLowerCase();
+  return s === 'published' || s === '';
+}
+
+/** Max markdown body size (~500KB) — DoS guard for CMS. */
+export const MAX_ARTICLE_CONTENT_CHARS = 500_000;

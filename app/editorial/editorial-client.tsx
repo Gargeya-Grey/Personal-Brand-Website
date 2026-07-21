@@ -7,7 +7,7 @@ import { AnimatePresence } from 'motion/react';
 import {
   Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
-  Settings2, Maximize2, Upload, Loader2,
+  Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2,
 } from 'lucide-react';
 import { Article } from '@/lib/blog-service';
 import { avatarForSession, type UserSession } from '@/lib/auth';
@@ -16,6 +16,7 @@ import Link from 'next/link';
 import { CATEGORIES as CATEGORIES_LIST } from '@/lib/categories';
 import { renderIllustration } from '@/components/render-illustration';
 import { XStudioClient } from './x-studio-client';
+import { siteConfig } from '@/lib/site-config';
 
 const ILLUSTRATIONS_LIST = [
   'diagram1', 'diagram2', 'diagram3', 'diagram4',
@@ -225,8 +226,11 @@ export function EditorialClient({
   const [generatedImagePrompt, setGeneratedImagePrompt] = useState('');
   const [promptCopied, setPromptCopied] = useState(false);
 
+  const getEditor = () =>
+    document.querySelector('textarea[data-atelier-editor]') as HTMLTextAreaElement | null;
+
   const insertMarkdown = (before: string, after: string) => {
-    const textarea = document.querySelector('textarea[data-atelier-editor]') as HTMLTextAreaElement | null;
+    const textarea = getEditor();
     if (!textarea) return;
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
@@ -237,6 +241,100 @@ export function EditorialClient({
       textarea.focus();
       textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
     }, 0);
+  };
+
+  /** Insert raw text at the caret (used for images, table templates). */
+  const insertAtCursor = (snippet: string, selectPlaceholder?: string) => {
+    const textarea = getEditor();
+    if (!textarea) {
+      setFormContent((prev) => (prev ? `${prev}\n\n${snippet}` : snippet));
+      return;
+    }
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const text = textarea.value;
+    const next = text.substring(0, start) + snippet + text.substring(end);
+    setFormContent(next);
+    setTimeout(() => {
+      textarea.focus();
+      if (selectPlaceholder) {
+        const idx = snippet.indexOf(selectPlaceholder);
+        if (idx >= 0) {
+          const a = start + idx;
+          textarea.setSelectionRange(a, a + selectPlaceholder.length);
+          return;
+        }
+      }
+      const pos = start + snippet.length;
+      textarea.setSelectionRange(pos, pos);
+    }, 0);
+  };
+
+  const insertTableTemplate = () => {
+    insertAtCursor(
+      '\n| Column 1 | Column 2 | Column 3 |\n| --- | --- | --- |\n| Cell | Cell | Cell |\n| Cell | Cell | Cell |\n\n',
+      'Column 1'
+    );
+  };
+
+  const [isUploadingInlineImage, setIsUploadingInlineImage] = useState(false);
+  const [editorDragOver, setEditorDragOver] = useState(false);
+
+  const uploadInlineImageFile = async (file: File) => {
+    if (!file.type.startsWith('image/')) {
+      alert('Please drop or pick an image file (JPEG, PNG, WEBP, GIF, SVG).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Image must be under 5MB.');
+      return;
+    }
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('slug', formSlug || 'inline');
+    setIsUploadingInlineImage(true);
+    try {
+      const res = await fetch('/api/blog/upload', { method: 'POST', body: formData });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      const alt = file.name.replace(/\.[^.]+$/, '').replace(/[-_]/g, ' ') || 'image';
+      insertAtCursor(`\n![${alt}](${data.url})\n\n`, alt);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Image upload failed');
+    } finally {
+      setIsUploadingInlineImage(false);
+    }
+  };
+
+  const triggerInlineImageUpload = () => {
+    (document.getElementById('inline-content-image-upload') as HTMLInputElement | null)?.click();
+  };
+
+  const handleInlineImageInput = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = '';
+    if (file) await uploadInlineImageFile(file);
+  };
+
+  const handleEditorDrop = async (e: React.DragEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setEditorDragOver(false);
+    const file = e.dataTransfer.files?.[0];
+    if (file) await uploadInlineImageFile(file);
+  };
+
+  const handleEditorPaste = async (e: React.ClipboardEvent<HTMLTextAreaElement>) => {
+    const items = e.clipboardData?.items;
+    if (!items) return;
+    for (const item of Array.from(items)) {
+      if (item.type.startsWith('image/')) {
+        e.preventDefault();
+        const file = item.getAsFile();
+        if (file) await uploadInlineImageFile(file);
+        return;
+      }
+    }
   };
 
   useEffect(() => {
@@ -479,6 +577,8 @@ export function EditorialClient({
           .replace(/[^a-z0-9\s-]/g, '')
           .replace(/\s+/g, '-')
           .replace(/-+/g, '-')
+          .replace(/^-+|-+$/g, '')
+          .slice(0, 120)
       );
     }
   };
@@ -520,6 +620,9 @@ export function EditorialClient({
         featured: formFeatured,
         status: formStatus,
         coverImage: formCoverImage,
+        author: siteConfig.name,
+        authorRole: siteConfig.authorRole,
+        authorAvatar: siteConfig.authorAvatar,
       };
       const res = await fetch('/api/blog', {
         method: 'POST',
@@ -1078,33 +1181,89 @@ export function EditorialClient({
                   }`}
                 >
                   {(editorLayoutMode === 'split' || editorLayoutMode === 'write') && (
-                    <div className="atelier-card-lg flex min-h-[360px] flex-col p-5 transition-shadow focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6">
+                    <div
+                      className={`atelier-card-lg relative flex min-h-[360px] flex-col p-5 transition-shadow focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6 ${
+                        editorDragOver ? 'ring-2 ring-[var(--atelier-gold)]/40 bg-[var(--atelier-gold-soft)]/20' : ''
+                      }`}
+                      onDragEnter={(e) => {
+                        e.preventDefault();
+                        if (e.dataTransfer.types.includes('Files')) setEditorDragOver(true);
+                      }}
+                      onDragOver={(e) => {
+                        e.preventDefault();
+                        e.dataTransfer.dropEffect = 'copy';
+                      }}
+                      onDragLeave={(e) => {
+                        e.preventDefault();
+                        if (e.currentTarget === e.target) setEditorDragOver(false);
+                      }}
+                      onDrop={(e) => void handleEditorDrop(e)}
+                    >
+                      <input
+                        id="inline-content-image-upload"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                        className="hidden"
+                        onChange={(e) => void handleInlineImageInput(e)}
+                      />
                       <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-[var(--atelier-line)]">
                         <div className="flex items-center gap-3 min-w-0">
                           <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
                             Write
                           </span>
-                          <div className="hidden sm:flex items-center gap-0.5 pl-3 border-l border-[var(--atelier-line)]">
+                          <div className="flex flex-wrap items-center gap-0.5 pl-3 border-l border-[var(--atelier-line)]">
                             <button type="button" onClick={() => insertMarkdown('**', '**')} className="w-8 h-8 rounded-xl text-xs font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] hover:text-[var(--atelier-ink)]" title="Bold">B</button>
                             <button type="button" onClick={() => insertMarkdown('*', '*')} className="w-8 h-8 rounded-xl text-xs italic text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Italic">I</button>
                             <button type="button" onClick={() => insertMarkdown('### ', '')} className="w-8 h-8 rounded-xl text-[0.65rem] font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Heading">H</button>
                             <button type="button" onClick={() => insertMarkdown('[', '](url)')} className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center" title="Link"><ArrowUpRight className="w-3.5 h-3.5" /></button>
                             <button type="button" onClick={() => insertMarkdown('`', '`')} className="px-2 h-8 rounded-xl text-[0.65rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Code">code</button>
                             <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="px-2 h-8 rounded-xl text-[0.6rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Block">{'{}'}</button>
+                            <button
+                              type="button"
+                              onClick={insertTableTemplate}
+                              className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center"
+                              title="Insert table"
+                            >
+                              <Table2 className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              type="button"
+                              onClick={triggerInlineImageUpload}
+                              disabled={isUploadingInlineImage}
+                              className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center disabled:opacity-40"
+                              title="Insert image"
+                            >
+                              {isUploadingInlineImage ? (
+                                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                              ) : (
+                                <ImagePlus className="w-3.5 h-3.5" />
+                              )}
+                            </button>
                           </div>
                         </div>
                         <span className="text-[0.65rem] tabular-nums text-[var(--atelier-faint)] font-medium shrink-0">
                           {wordCount.toLocaleString()} w · {charCount.toLocaleString()} c · {formReadTime}
                         </span>
                       </div>
+                      {editorDragOver && (
+                        <div className="pointer-events-none absolute inset-4 z-10 flex items-center justify-center rounded-[1.5rem] border-2 border-dashed border-[var(--atelier-gold)]/50 bg-[var(--atelier-card)]/80 backdrop-blur-sm">
+                          <p className="font-headline text-sm font-bold text-[var(--atelier-gold)] flex items-center gap-2">
+                            <ImagePlus className="w-5 h-5" /> Drop image to insert
+                          </p>
+                        </div>
+                      )}
                       <textarea
                         data-atelier-editor
                         required
                         value={formContent}
                         onChange={(e) => setFormContent(e.target.value)}
-                        placeholder="# Begin the piece…"
+                        onPaste={(e) => void handleEditorPaste(e)}
+                        placeholder="# Begin the piece…&#10;&#10;Tip: drag & drop or paste an image, or use the image button in the toolbar."
                         className="min-h-[260px] w-full flex-grow resize-none border-0 bg-transparent font-mono text-sm leading-relaxed text-[var(--atelier-ink)] placeholder:text-[var(--atelier-faint)] focus:outline-none sm:min-h-[360px]"
                       />
+                      <p className="pt-3 text-[0.65rem] text-[var(--atelier-faint)]">
+                        Images: toolbar · drag & drop · paste from clipboard. Tables: toolbar inserts a GFM template.
+                      </p>
                     </div>
                   )}
 
@@ -1152,6 +1311,11 @@ export function EditorialClient({
                           { label: 'List', code: '- one\n- two' },
                           { label: 'Code', code: '```\ncode\n```' },
                           { label: 'Link', code: '[text](https://…)' },
+                          { label: 'Image', code: '![alt text](/covers/…)\nor use the image button / drag & drop' },
+                          {
+                            label: 'Table',
+                            code: '| A | B |\n| --- | --- |\n| 1 | 2 |',
+                          },
                         ].map(({ label, code }) => (
                           <div key={label}>
                             <p className="font-headline font-bold text-[var(--atelier-ink)] mb-1.5 text-sm">{label}</p>

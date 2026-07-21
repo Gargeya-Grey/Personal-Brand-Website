@@ -233,8 +233,8 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       continue;
     }
 
-    // Horizontal rule
-    if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim())) {
+    // Horizontal rule (not a table separator)
+    if (/^(-{3,}|\*{3,}|_{3,})$/.test(line.trim()) && !line.includes('|')) {
       elements.push(
         <hr
           key={`hr-${i}`}
@@ -242,6 +242,14 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
         />
       );
       i++;
+      continue;
+    }
+
+    // GFM-style tables: header | sep | rows
+    if (isMarkdownTableStart(lines, i)) {
+      const { element, nextIndex } = parseMarkdownTable(lines, i);
+      elements.push(element);
+      i = nextIndex;
       continue;
     }
 
@@ -297,4 +305,96 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
   }
 
   return <div className="space-y-2">{elements}</div>;
+}
+
+/** True if lines[i] is a table header and lines[i+1] is a separator row. */
+function isMarkdownTableStart(lines: string[], i: number): boolean {
+  const header = lines[i]?.trim() ?? '';
+  const sep = lines[i + 1]?.trim() ?? '';
+  if (!header.includes('|')) return false;
+  // Separator: | --- | :---: | ---: |
+  if (!/^\|?[\s\-:|]+\|[\s\-:|]*\|?$/.test(sep)) return false;
+  if (!sep.includes('-')) return false;
+  return true;
+}
+
+function splitTableCells(line: string): string[] {
+  let t = line.trim();
+  if (t.startsWith('|')) t = t.slice(1);
+  if (t.endsWith('|')) t = t.slice(0, -1);
+  return t.split('|').map((c) => c.trim());
+}
+
+function parseMarkdownTable(
+  lines: string[],
+  start: number
+): { element: React.ReactNode; nextIndex: number } {
+  const headerCells = splitTableCells(lines[start]);
+  const sepCells = splitTableCells(lines[start + 1]);
+  const aligns = sepCells.map((cell) => {
+    const left = cell.startsWith(':');
+    const right = cell.endsWith(':');
+    if (left && right) return 'center' as const;
+    if (right) return 'right' as const;
+    return 'left' as const;
+  });
+
+  const bodyRows: string[][] = [];
+  let i = start + 2;
+  while (i < lines.length) {
+    const row = lines[i].trim();
+    if (!row || !row.includes('|')) break;
+    // Stop if it looks like a new block (heading, list, etc.) without pipes as table
+    if (/^#{1,6}\s/.test(row) || row.startsWith('```')) break;
+    bodyRows.push(splitTableCells(lines[i]));
+    i++;
+  }
+
+  const alignClass = (idx: number) => {
+    const a = aligns[idx] || 'left';
+    if (a === 'center') return 'text-center';
+    if (a === 'right') return 'text-right';
+    return 'text-left';
+  };
+
+  const element = (
+    <div
+      key={`table-${start}`}
+      className="my-8 w-full overflow-x-auto rounded-2xl border border-slate-200/90 dark:border-white/10 shadow-sm"
+    >
+      <table className="w-full min-w-[20rem] border-collapse text-left text-sm md:text-base">
+        <thead>
+          <tr className="bg-slate-100/90 dark:bg-white/[0.06]">
+            {headerCells.map((cell, idx) => (
+              <th
+                key={idx}
+                className={`px-4 py-3 font-headline font-semibold text-slate-900 dark:text-white border-b border-slate-200 dark:border-white/10 ${alignClass(idx)}`}
+              >
+                {parseInlineMarkdown(cell)}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {bodyRows.map((row, rIdx) => (
+            <tr
+              key={rIdx}
+              className="border-b border-slate-100 dark:border-white/[0.06] last:border-0 odd:bg-white/40 dark:odd:bg-white/[0.02] even:bg-slate-50/50 dark:even:bg-white/[0.03]"
+            >
+              {headerCells.map((_, cIdx) => (
+                <td
+                  key={cIdx}
+                  className={`px-4 py-3 font-body text-slate-700 dark:text-white/80 ${alignClass(cIdx)}`}
+                >
+                  {parseInlineMarkdown(row[cIdx] ?? '')}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+
+  return { element, nextIndex: i };
 }

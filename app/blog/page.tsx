@@ -18,8 +18,10 @@ import {
 import Link from 'next/link';
 import Image from 'next/image';
 import { renderIllustration } from '@/components/render-illustration';
+import { AuthorAvatar } from '@/components/author-avatar';
 import { Article } from '@/lib/blog-service';
 import { CATEGORIES } from '@/lib/categories';
+import { siteConfig } from '@/lib/site-config';
 
 export default function BlogPage() {
   const [articles, setArticles] = useState<Article[]>([]);
@@ -414,10 +416,14 @@ export default function BlogPage() {
 
                       <div className="flex flex-col items-start gap-3 border-t border-emerald-500/10 pt-6 dark:border-white/5 sm:flex-row sm:items-center sm:justify-between">
                         <div className="flex items-center gap-2.5">
-                          <div className="w-8 h-8 rounded-full overflow-hidden border border-emerald-500/20 dark:border-white/10 relative">
-                            <Image src={featuredPost.authorAvatar} alt={featuredPost.author} width={32} height={32} className="h-full w-full object-cover" />
-                          </div>
-                          <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">{featuredPost.author}</span>
+                          <AuthorAvatar
+                            src={featuredPost.authorAvatar || siteConfig.authorAvatar}
+                            name={featuredPost.author || siteConfig.name}
+                            size="md"
+                          />
+                          <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">
+                            {featuredPost.author || siteConfig.name}
+                          </span>
                         </div>
                         
                         <div className="flex items-center gap-3 text-xs text-slate-500 font-label">
@@ -498,10 +504,14 @@ export default function BlogPage() {
                         {/* Footer metadata */}
                         <div className="mt-6 flex flex-col items-start gap-3 border-t border-emerald-500/10 pt-4 dark:border-white/5 sm:flex-row sm:items-center sm:justify-between">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full overflow-hidden border border-emerald-500/20 dark:border-white/10 relative">
-                              <Image src={post.authorAvatar} alt={post.author} width={24} height={24} className="h-full w-full object-cover" />
-                            </div>
-                            <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">{post.author}</span>
+                            <AuthorAvatar
+                              src={post.authorAvatar || siteConfig.authorAvatar}
+                              name={post.author || siteConfig.name}
+                              size="sm"
+                            />
+                            <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">
+                              {post.author || siteConfig.name}
+                            </span>
                           </div>
 
                           <div className="flex items-center gap-2 text-xs font-label text-slate-500">

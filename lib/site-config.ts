@@ -11,6 +11,9 @@ export const siteConfig = {
   url: process.env.APP_URL || 'https://sgargeya.com',
   /** Public-facing brand email (mailto + contact page) */
   email: 'contact@sgargeya.com',
+  /** Compact headshot for blog bylines (local public asset — always loads) */
+  authorAvatar: '/profile.webp',
+  authorRole: 'Founder & Architect',
   locale: 'en_US',
   twitterHandle: '@GargeyaS',
   /** Shown on contact page — no city unless you set one */
