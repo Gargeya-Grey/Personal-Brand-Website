@@ -65,7 +65,17 @@ export async function GET(request: Request) {
     }
 
     const packs = await getXContentPacks();
-    return NextResponse.json(packs);
+    // Newest first: updatedAt then date (client also sorts; server is source of truth order)
+    const sorted = [...packs].sort((a, b) => {
+      const u = (b.updatedAt || '').localeCompare(a.updatedAt || '');
+      if (u !== 0) return u;
+      return (b.date || '').localeCompare(a.date || '');
+    });
+    return NextResponse.json(sorted, {
+      headers: {
+        'Cache-Control': 'private, no-store, max-age=0, must-revalidate',
+      },
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: `Failed to load X packs: ${message}` }, { status: 500 });

@@ -160,8 +160,48 @@ export function sumEstimatedSeconds(drafts: XDraftItem[]): number {
   return drafts.reduce((n, d) => n + (d.estimatedSeconds || 0), 0);
 }
 
+/** Legacy one-pack-per-day id (prefer createRunPackId for scouts). */
 export function createPackId(date: string): string {
   return `pack-${date}`;
+}
+
+/**
+ * One pack per scout run (6h slots UTC: t00, t06, t12, t18).
+ * Up to 4 distinct queues per calendar day — never overwrites an earlier run.
+ */
+export function createRunPackId(now: Date = new Date()): string {
+  const date = now.toISOString().slice(0, 10);
+  const hour = now.getUTCHours();
+  const slot = Math.floor(hour / 6) * 6;
+  return `pack-${date}-t${String(slot).padStart(2, '0')}`;
+}
+
+/** Human label e.g. "21 Jul · 12:00 UTC run" from pack id / timestamps. */
+export function formatPackRunLabel(pack: {
+  id: string;
+  date: string;
+  title: string;
+  updatedAt?: string;
+  createdAt?: string;
+}): string {
+  const slotMatch = pack.id.match(/-t(\d{2})$/);
+  const datePart = pack.date || pack.id.slice(5, 15);
+  let when = datePart;
+  try {
+    const d = new Date(pack.updatedAt || pack.createdAt || `${datePart}T12:00:00Z`);
+    when = d.toLocaleString(undefined, {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  } catch {
+    /* keep datePart */
+  }
+  if (slotMatch) {
+    return `${when} · slot ${slotMatch[1]}:00 UTC`;
+  }
+  return when;
 }
 
 /** Derive MVP ids: explicit list, else top-priority ready items (replies + 1 original). */

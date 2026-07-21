@@ -11,6 +11,7 @@ import type {
 } from './x-content-model';
 import {
   createPackId,
+  createRunPackId,
   DEFAULT_SESSIONS,
   defaultEstimatedSeconds,
   defaultIntentForKind,
@@ -178,7 +179,9 @@ export function normalizePack(input: Record<string, unknown>): XContentPack {
       : todayIsoDate();
 
   const id =
-    typeof input.id === 'string' && input.id.trim() ? input.id.trim() : createPackId(date);
+    typeof input.id === 'string' && input.id.trim()
+      ? input.id.trim()
+      : createRunPackId();
 
   const draftsRaw = Array.isArray(input.drafts) ? input.drafts : [];
   const drafts = draftsRaw

@@ -46,6 +46,14 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
+/** pack-YYYY-MM-DD-t00|t06|t12|t18 — one queue per 6h scout run */
+function runPackId(now = new Date()) {
+  const date = now.toISOString().slice(0, 10);
+  const hour = now.getUTCHours();
+  const slot = Math.floor(hour / 6) * 6;
+  return `pack-${date}-t${String(slot).padStart(2, '0')}`;
+}
+
 function defaultSession(kind) {
   if (kind === 'reply') return 'sprint';
   if (kind === 'quote') return 'bonus';
@@ -70,13 +78,16 @@ function normalize(input) {
     typeof input.date === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(input.date)
       ? input.date
       : today();
-  const id = input.id || `pack-${date}`;
+  const id = input.id || runPackId();
   const now = new Date().toISOString();
   const drafts = Array.isArray(input.drafts) ? input.drafts : [];
   const normDrafts = drafts.map((d, i) => {
     const kind = d.kind || 'short';
+    // Prefix draft ids with pack slot so same-day runs never collide on status preserve
+    const rawId = d.id || `draft-${i + 1}`;
+    const draftId = rawId.includes(id) ? rawId : `${id}__${rawId}`;
     return {
-      id: d.id || `draft-${i + 1}`,
+      id: draftId,
       kind,
       label: d.label || d.kind || `Draft ${i + 1}`,
       body: d.body || '',

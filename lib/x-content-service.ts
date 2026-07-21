@@ -29,6 +29,8 @@ export type {
 export {
   DEFAULT_SESSIONS,
   createPackId,
+  createRunPackId,
+  formatPackRunLabel,
   defaultEstimatedSeconds,
   defaultIntentForKind,
   defaultSessionForKind,
@@ -188,7 +190,7 @@ export async function getXContentPacks(): Promise<XContentPack[]> {
     const { data, error } = await supabase
       .from('x_content_packs')
       .select('id, date, title, theme, planned_minutes, payload, created_at, updated_at')
-      .order('date', { ascending: false });
+      .order('updated_at', { ascending: false });
 
     if (error) {
       markSupabaseUnavailable(error);

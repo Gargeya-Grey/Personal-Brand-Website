@@ -37,16 +37,48 @@ import {
   type XDraftStatus,
   type XSessionId,
   formatDuration,
+  formatPackRunLabel,
   resolveMvpIds,
   sortDraftsForExecution,
   sumEstimatedSeconds,
   DEFAULT_SESSIONS,
 } from '@/lib/x-content-model';
 
-const POLL_MS = 20_000;
+const POLL_MS = 15_000;
 
 type ViewMode = 'focus' | 'list' | 'library';
 type FilterId = 'all' | 'mvp' | 'sprint' | 'core' | 'bonus' | 'replies' | 'originals' | 'p1';
+
+function readyCount(p: XContentPack): number {
+  return (p.drafts || []).filter((d) => d.status === 'ready').length;
+}
+
+function isPackCleared(p: XContentPack): boolean {
+  const drafts = p.drafts || [];
+  return drafts.length > 0 && readyCount(p) === 0;
+}
+
+function sortPacks(data: XContentPack[]): XContentPack[] {
+  return [...data].sort((a, b) => {
+    const u = (b.updatedAt || '').localeCompare(a.updatedAt || '');
+    if (u !== 0) return u;
+    return (b.date || '').localeCompare(a.date || '');
+  });
+}
+
+/** Active queue: only packs with at least one ready task. */
+function pickBestPackId(activeSorted: XContentPack[]): string | null {
+  if (!activeSorted.length) return null;
+  return activeSorted[0]?.id ?? null;
+}
+
+function packSubtitle(p: XContentPack): string {
+  const ready = readyCount(p);
+  const total = p.drafts?.length ?? 0;
+  const run = formatPackRunLabel(p);
+  if (ready === 0) return `${run} · completed`;
+  return `${run} · ${ready}/${total} ready`;
+}
 
 const KIND_META: Record<
   XDraftKind,
@@ -79,6 +111,7 @@ const KIND_META: Record<
 };
 
 const FILTERS: { id: FilterId; label: string }[] = [
+  { id: 'all', label: 'All tasks' },
   { id: 'mvp', label: 'MVP' },
   { id: 'sprint', label: 'Sprint' },
   { id: 'core', label: 'Core' },
@@ -86,7 +119,6 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: 'replies', label: 'Replies' },
   { id: 'originals', label: 'Originals' },
   { id: 'p1', label: 'P1–2' },
-  { id: 'all', label: 'All' },
 ];
 
 function charHint(text: string) {
@@ -487,57 +519,67 @@ export function XStudioClient() {
   const [live, setLive] = useState(true);
   const [pulse, setPulse] = useState(false);
   const [showMore, setShowMore] = useState(false);
+  /** Show fully completed runs in the picker (hidden by default — keeps focus clean). */
+  const [showCompletedRuns, setShowCompletedRuns] = useState(false);
   const knownUpdated = useRef<string | null>(null);
+  /** When set, user manually chose a pack; auto-switch only if that pack has no ready work. */
+  const userPickedRef = useRef<string | null>(null);
 
-  const applyPacks = useCallback((data: XContentPack[]) => {
-    const sorted = [...data].sort((a, b) => {
-      const byDate = b.date.localeCompare(a.date);
-      if (byDate !== 0) return byDate;
-      return (b.updatedAt || '').localeCompare(a.updatedAt || '');
-    });
+  const applyPacks = useCallback((data: XContentPack[], opts?: { forceLatest?: boolean }) => {
+    if (!Array.isArray(data)) {
+      console.warn('[x-studio] API did not return an array', data);
+      return;
+    }
+    const sorted = sortPacks(data);
     setPacks(sorted);
 
-    // Prefer the most recently updated pack that still has ready work.
-    const pickDefaultId = (prev: string | null) => {
-      const readySorted = sorted
-        .filter((p) => (p.drafts || []).some((d) => d.status === 'ready'))
-        .sort((a, b) => (b.updatedAt || '').localeCompare(a.updatedAt || ''));
-      const newestReady = readySorted[0];
+    const activeOnly = sorted.filter((p) => readyCount(p) > 0);
+    const bestId = pickBestPackId(activeOnly);
 
-      if (newestReady) {
-        if (!prev) return newestReady.id;
-        const prevPack = sorted.find((p) => p.id === prev);
-        const prevHasReady = prevPack?.drafts?.some((d) => d.status === 'ready');
-        // Same pack refreshed (new title/bodies): stay on it so setPacks updates the UI
-        if (prev === newestReady.id) return prev;
-        // Cleared pack still selected → jump to newest ready
-        if (!prevHasReady) return newestReady.id;
-        // Newer ready pack exists → prefer it
-        if ((newestReady.updatedAt || '') > (prevPack?.updatedAt || '')) {
-          return newestReady.id;
-        }
-        return prev;
+    setSelectedId((prev) => {
+      if (opts?.forceLatest) {
+        userPickedRef.current = null;
+        return bestId;
       }
 
-      if (prev && sorted.some((p) => p.id === prev)) return prev;
-      return sorted[0]?.id ?? null;
-    };
+      const locked = userPickedRef.current;
+      if (locked && sorted.some((p) => p.id === locked)) {
+        const lockedPack = sorted.find((p) => p.id === locked)!;
+        // Stay on locked pack only while it still has ready work
+        if (readyCount(lockedPack) > 0) return locked;
+        userPickedRef.current = null;
+        return bestId;
+      }
 
-    setSelectedId((prev) => pickDefaultId(prev));
+      // If previous selection still has ready work, keep it; else jump to newest ready run
+      if (prev) {
+        const prevPack = sorted.find((p) => p.id === prev);
+        if (prevPack && readyCount(prevPack) > 0) return prev;
+      }
+      return bestId;
+    });
+
     setLastSync(new Date());
-    const latest = sorted[0];
-    const fingerprint = latest
-      ? `${latest.id}:${latest.updatedAt}:${latest.title}`
+    const best = sorted.find((p) => p.id === bestId) ?? activeOnly[0] ?? sorted[0];
+    const fingerprint = best
+      ? `${best.id}|${best.updatedAt}|${best.title}|${readyCount(best)}`
       : null;
     if (fingerprint && knownUpdated.current && knownUpdated.current !== fingerprint) {
       setPulse(true);
-      setTimeout(() => setPulse(false), 2400);
+      window.setTimeout(() => setPulse(false), 2400);
     }
     if (fingerprint) knownUpdated.current = fingerprint;
   }, []);
 
+  const selectPack = useCallback((id: string) => {
+    userPickedRef.current = id;
+    setSelectedId(id);
+    setFilter('all');
+    setView('focus');
+  }, []);
+
   const load = useCallback(
-    async (opts?: { silent?: boolean }) => {
+    async (opts?: { silent?: boolean; forceLatest?: boolean }) => {
       if (!opts?.silent) {
         setLoading(true);
         setError(null);
@@ -546,9 +588,12 @@ export function XStudioClient() {
         const res = await fetch('/api/x-content', {
           cache: 'no-store',
           credentials: 'include',
+          headers: { Accept: 'application/json' },
         });
-        if (!res.ok) throw new Error((await res.json()).error || 'Failed to load');
-        applyPacks((await res.json()) as XContentPack[]);
+        const raw = await res.json().catch(() => ({}));
+        if (!res.ok) throw new Error(raw.error || `Failed to load (${res.status})`);
+        if (!Array.isArray(raw)) throw new Error('Unexpected API response — not a pack list');
+        applyPacks(raw as XContentPack[], { forceLatest: opts?.forceLatest });
         setError(null);
       } catch (e: unknown) {
         if (!opts?.silent) setError(e instanceof Error ? e.message : 'Load failed');
@@ -577,22 +622,37 @@ export function XStudioClient() {
     };
   }, [live, load]);
 
-  /**
-   * One active pack for Focus, List, and Library.
-   * (Old bug: Focus/List used UTC "today" only, so after a new scout pack arrived
-   * while the previous calendar day still matched UTC, Focus stayed on the cleared pack.)
-   */
+  const activeRuns = useMemo(
+    () => packs.filter((p) => readyCount(p) > 0),
+    [packs]
+  );
+  const completedRuns = useMemo(
+    () => packs.filter((p) => isPackCleared(p)),
+    [packs]
+  );
+
+  /** Packs shown in the picker: active runs only, unless user expands completed. */
+  const pickerPacks = useMemo(() => {
+    if (showCompletedRuns) return packs;
+    // Always include selected pack even if just cleared (so UI doesn't jump mid-click)
+    const base = activeRuns;
+    if (selectedId && !base.some((p) => p.id === selectedId)) {
+      const sel = packs.find((p) => p.id === selectedId);
+      if (sel) return sortPacks([sel, ...base]);
+    }
+    return base;
+  }, [packs, activeRuns, showCompletedRuns, selectedId]);
+
+  /** Single active pack for Focus, List, and Archive — driven by selectedId. */
   const active = useMemo(() => {
     if (!packs.length) return null;
-    if (selectedId) {
-      const sel = packs.find((p) => p.id === selectedId);
-      if (sel) return sel;
-    }
-    const withReady = packs.find((p) =>
-      (p.drafts || []).some((d) => d.status === 'ready')
-    );
-    return withReady ?? packs[0];
-  }, [packs, selectedId]);
+    return packs.find((p) => p.id === selectedId) ?? activeRuns[0] ?? null;
+  }, [packs, selectedId, activeRuns]);
+
+  const otherReadyPack = useMemo(() => {
+    if (!active) return activeRuns[0] ?? null;
+    return activeRuns.find((p) => p.id !== active.id) ?? null;
+  }, [activeRuns, active]);
 
   const mvpIds = useMemo(() => new Set(active ? resolveMvpIds(active) : []), [active]);
 
@@ -632,7 +692,18 @@ export function XStudioClient() {
           return;
         }
         const updated = data as XContentPack;
-        setPacks((prev) => prev.map((p) => (p.id === updated.id ? updated : p)));
+        setPacks((prev) => {
+          const next = sortPacks(prev.map((p) => (p.id === updated.id ? updated : p)));
+          // If this pack is fully cleared, jump to another with ready work
+          if (readyCount(updated) === 0) {
+            const best = pickBestPackId(next);
+            if (best && best !== updated.id) {
+              userPickedRef.current = null;
+              queueMicrotask(() => setSelectedId(best));
+            }
+          }
+          return next;
+        });
       } catch {
         alert('Update failed — check your connection and try again.');
       }
@@ -665,13 +736,11 @@ export function XStudioClient() {
   }, [view, current, onStatus]);
 
   const onImported = (saved: XContentPack) => {
-    setPacks((prev) => {
-      const rest = prev.filter((p) => p.id !== saved.id);
-      return [saved, ...rest].sort((a, b) => b.date.localeCompare(a.date));
-    });
+    setPacks((prev) => sortPacks([saved, ...prev.filter((p) => p.id !== saved.id)]));
+    userPickedRef.current = null;
     setSelectedId(saved.id);
     setView('focus');
-    setFilter('mvp');
+    setFilter('all');
   };
 
   const sessions = active?.sessions?.length ? active.sessions : DEFAULT_SESSIONS;
@@ -724,56 +793,34 @@ export function XStudioClient() {
               </span>
               {lastSync && (
                 <span className="text-[0.65rem] text-[var(--atelier-faint)] font-mono">
-                  {lastSync.toLocaleTimeString()}
+                  synced {lastSync.toLocaleTimeString()}
                 </span>
               )}
-              {active?.date && (
-                <span className="text-[0.65rem] text-[var(--atelier-faint)] font-mono">
-                  {active.date}
+              {active?.id && (
+                <span className="text-[0.65rem] text-[var(--atelier-faint)] font-mono truncate max-w-[12rem]">
+                  {active.id}
                 </span>
               )}
             </div>
-            <p className="font-headline text-lg sm:text-xl font-bold text-[var(--atelier-ink)] tracking-tight truncate">
-              {active?.title ?? 'Waiting for pack'}
+            <p className="font-headline text-lg sm:text-xl font-bold text-[var(--atelier-ink)] tracking-tight">
+              {active?.title ?? (activeRuns.length === 0 ? 'No open runs' : 'Waiting for pack')}
             </p>
-            {packs.length > 1 && (
-              <label className="flex flex-wrap items-center gap-2 text-xs text-[var(--atelier-muted)]">
-                <span className="font-bold uppercase tracking-wider text-[var(--atelier-faint)]">
-                  Pack
-                </span>
-                <select
-                  value={active?.id ?? ''}
-                  onChange={(e) => setSelectedId(e.target.value)}
-                  className="atelier-input !rounded-full !py-1.5 !px-3 !w-auto max-w-full text-xs sm:text-sm"
-                >
-                  {packs.map((p) => {
-                    const readyN = (p.drafts || []).filter((d) => d.status === 'ready').length;
-                    return (
-                      <option key={p.id} value={p.id}>
-                        {p.date} · {readyN} ready · {p.title.slice(0, 42)}
-                        {p.title.length > 42 ? '…' : ''}
-                      </option>
-                    );
-                  })}
-                </select>
-              </label>
-            )}
             {active && (
               <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--atelier-muted)]">
                 <span className="inline-flex items-center gap-1.5">
                   <ListTodo className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />
-                  {remaining.length} in view
+                  {remaining.length} in view · {allReady.length} ready
                 </span>
                 <span className="inline-flex items-center gap-1.5">
                   <Clock className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />
                   ~{formatDuration(etaSeconds)}
                 </span>
                 <span>
-                  {doneCount}/{totalCount} done
+                  {doneCount}/{totalCount} cleared
                 </span>
               </div>
             )}
-            {active && (
+            {active && totalCount > 0 && (
               <div className="h-1.5 rounded-full bg-[var(--atelier-paper)] border border-[var(--atelier-line)] overflow-hidden max-w-xs mt-1">
                 <div
                   className="h-full rounded-full bg-[var(--atelier-gold)] transition-all duration-500"
@@ -789,7 +836,7 @@ export function XStudioClient() {
                 [
                   { id: 'focus' as const, icon: Focus, label: 'Focus' },
                   { id: 'list' as const, icon: ListTodo, label: 'List' },
-                  { id: 'library' as const, icon: Newspaper, label: 'All' },
+                  { id: 'library' as const, icon: Newspaper, label: 'Archive' },
                 ] as const
               ).map(({ id, icon: I, label }) => (
                 <button
@@ -817,17 +864,113 @@ export function XStudioClient() {
             </button>
             <button
               type="button"
-              onClick={() => void load()}
+              onClick={() => void load({ forceLatest: true })}
               className="atelier-btn atelier-btn-ghost h-10 w-10 !px-0"
-              title="Refresh"
+              title="Refresh & open latest ready pack"
             >
               <RefreshCw className="w-4 h-4" />
             </button>
           </div>
         </div>
 
+        {/* Premium run picker — each 6h scout is its own card; completed runs hidden by default */}
+        {packs.length > 0 && (
+          <div className="mt-6 pt-6 border-t border-[var(--atelier-line)] space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--atelier-faint)]">
+                Scout runs
+                <span className="ml-2 normal-case tracking-normal font-medium text-[var(--atelier-muted)]">
+                  {activeRuns.length} open
+                  {completedRuns.length > 0 ? ` · ${completedRuns.length} done` : ''}
+                </span>
+              </p>
+              <div className="flex items-center gap-2">
+                {completedRuns.length > 0 && (
+                  <button
+                    type="button"
+                    onClick={() => setShowCompletedRuns((v) => !v)}
+                    className="text-[0.7rem] font-semibold text-[var(--atelier-faint)] hover:text-[var(--atelier-gold)] transition-colors"
+                  >
+                    {showCompletedRuns ? 'Hide completed' : 'Show completed'}
+                  </button>
+                )}
+                <button
+                  type="button"
+                  onClick={() => void load({ forceLatest: true })}
+                  className="text-[0.7rem] font-semibold text-[var(--atelier-gold)] hover:opacity-80"
+                >
+                  Jump to latest
+                </button>
+              </div>
+            </div>
+            <div className="grid gap-2 sm:grid-cols-2">
+              {pickerPacks.map((p) => {
+                const ready = readyCount(p);
+                const total = p.drafts?.length ?? 0;
+                const selected = p.id === active?.id;
+                const cleared = isPackCleared(p);
+                return (
+                  <button
+                    key={p.id}
+                    type="button"
+                    onClick={() => selectPack(p.id)}
+                    className={`text-left rounded-[1.25rem] border px-4 py-3.5 transition-all duration-200 ${
+                      selected
+                        ? 'border-[var(--atelier-gold)]/45 bg-[var(--atelier-gold-soft)]/35 shadow-[var(--atelier-shadow-sm)]'
+                        : cleared
+                          ? 'border-[var(--atelier-line)] bg-[var(--atelier-paper)]/30 opacity-70 hover:opacity-100'
+                          : 'border-[var(--atelier-line)] bg-[var(--atelier-card)] hover:border-[var(--atelier-gold)]/30 hover:shadow-[var(--atelier-shadow-sm)]'
+                    }`}
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <p
+                        className={`font-headline text-sm font-bold leading-snug line-clamp-2 ${
+                          selected ? 'text-[var(--atelier-ink)]' : 'text-[var(--atelier-ink)]'
+                        }`}
+                      >
+                        {p.title}
+                      </p>
+                      {selected && (
+                        <span className="shrink-0 atelier-chip !py-0.5 !px-2 !text-[0.6rem] !border-[var(--atelier-gold)]/30 !bg-[var(--atelier-gold-soft)] !text-[var(--atelier-gold)]">
+                          Active
+                        </span>
+                      )}
+                    </div>
+                    <p className="mt-1.5 text-[0.7rem] text-[var(--atelier-faint)] leading-relaxed">
+                      {packSubtitle(p)}
+                    </p>
+                    <div className="mt-2.5 flex items-center gap-2">
+                      <div className="flex-1 h-1 rounded-full bg-[var(--atelier-paper)] border border-[var(--atelier-line)] overflow-hidden">
+                        <div
+                          className={`h-full rounded-full transition-all ${
+                            cleared ? 'bg-[var(--atelier-faint)]' : 'bg-[var(--atelier-gold)]'
+                          }`}
+                          style={{
+                            width: `${total ? Math.round(((total - ready) / total) * 100) : 0}%`,
+                          }}
+                        />
+                      </div>
+                      <span className="text-[0.65rem] font-mono text-[var(--atelier-faint)] tabular-nums">
+                        {cleared ? 'done' : `${ready} left`}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+            {activeRuns.length === 0 && !showCompletedRuns && (
+              <p className="text-sm text-[var(--atelier-muted)] leading-relaxed py-2">
+                All open runs are cleared. Completed packs stay in the cloud but stay out of your way.
+                {completedRuns.length > 0
+                  ? ' Use “Show completed” only if you need to restore a draft.'
+                  : ' Wait for the next 6h scout.'}
+              </p>
+            )}
+          </div>
+        )}
+
         {/* Filters — one quiet row */}
-        {view !== 'library' && active && (
+        {view !== 'library' && active && readyCount(active) > 0 && (
           <div className="mt-6 pt-5 border-t border-[var(--atelier-line)] flex flex-wrap gap-2">
             {FILTERS.map((f) => {
               const count = filterDrafts(active.drafts, f.id, mvpIds).length;
@@ -910,29 +1053,32 @@ export function XStudioClient() {
       </div>
 
       {/* Main stage */}
-      {!active ? (
-        <div className="atelier-card-lg py-24 px-10 flex flex-col items-center gap-5 text-center">
+      {!active || (activeRuns.length === 0 && !showCompletedRuns && isPackCleared(active)) ? (
+        <div className="atelier-card-lg py-20 sm:py-24 px-8 sm:px-10 flex flex-col items-center gap-5 text-center">
           <Sparkles className="w-10 h-10 text-[var(--atelier-gold)]" />
-          <p className="font-headline font-bold text-2xl text-[var(--atelier-ink)]">No pack yet</p>
-          <p className="text-sm text-[var(--atelier-muted)] max-w-sm leading-relaxed">
-            Daily scout fills this automatically when Grok is running.
+          <p className="font-headline font-bold text-2xl text-[var(--atelier-ink)]">
+            {packs.length === 0 ? 'No scout runs yet' : 'Queue is clear'}
           </p>
+          <p className="text-sm text-[var(--atelier-muted)] max-w-md leading-relaxed">
+            {packs.length === 0
+              ? 'When Grok’s 6-hour loop runs on your laptop, new runs appear here as separate cards — pick any one to work.'
+              : 'Finished and skipped runs are hidden so you only see open work. Next scout adds a new card without overwriting older ones.'}
+          </p>
+          {completedRuns.length > 0 && (
+            <button
+              type="button"
+              onClick={() => setShowCompletedRuns(true)}
+              className="atelier-btn atelier-btn-ghost text-xs"
+            >
+              Show {completedRuns.length} completed run{completedRuns.length === 1 ? '' : 's'}
+            </button>
+          )}
         </div>
       ) : view === 'library' ? (
         <div className="space-y-5">
-          {packs.length > 1 && (
-            <select
-              value={active.id}
-              onChange={(e) => setSelectedId(e.target.value)}
-              className="atelier-input !rounded-full !py-2.5 !px-5 !w-auto text-sm"
-            >
-              {packs.map((p) => (
-                <option key={p.id} value={p.id}>
-                  {p.date} — {p.title.slice(0, 48)}
-                </option>
-              ))}
-            </select>
-          )}
+          <p className="text-sm text-[var(--atelier-muted)]">
+            Archive of every draft in this pack (including done/skipped). Switch pack above to compare days.
+          </p>
           {sortDraftsForExecution(active.drafts).map((d) => (
             <div
               key={d.id}
@@ -986,14 +1132,32 @@ export function XStudioClient() {
             {filter !== 'all'
               ? 'Nothing left in this filter — try “All” or another session.'
               : totalCount > 0
-                ? `Pack “${active?.title}” is loaded (${doneCount}/${totalCount} cleared). Open Library to restore items, or wait for the next scout.`
+                ? `Pack “${active?.title}” is loaded (${doneCount}/${totalCount} cleared).`
                 : 'New tasks appear after the next scout run.'}
           </p>
-          {filter !== 'all' && allReady.length > 0 && (
-            <button type="button" onClick={() => setFilter('all')} className="atelier-btn atelier-btn-gold mt-2">
-              Show {allReady.length} remaining
+          <div className="flex flex-wrap justify-center gap-2 pt-2">
+            {filter !== 'all' && allReady.length > 0 && (
+              <button type="button" onClick={() => setFilter('all')} className="atelier-btn atelier-btn-gold">
+                Show {allReady.length} remaining
+              </button>
+            )}
+            {otherReadyPack && (
+              <button
+                type="button"
+                onClick={() => selectPack(otherReadyPack.id)}
+                className="atelier-btn atelier-btn-gold"
+              >
+                Open pack with {readyCount(otherReadyPack)} ready
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={() => void load({ forceLatest: true })}
+              className="atelier-btn atelier-btn-ghost"
+            >
+              <RefreshCw className="w-4 h-4" /> Refresh latest
             </button>
-          )}
+          </div>
         </motion.div>
       ) : view === 'focus' ? (
         <AnimatePresence mode="wait">
