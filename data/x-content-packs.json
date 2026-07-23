@@ -1,5 +1,489 @@
 [
   {
+    "id": "pack-2026-07-23-t12",
+    "date": "2026-07-23",
+    "title": "Repo benches + trajectory eval · pass ≠ safe path",
+    "theme": "SWE/repo leaderboards and agent stacks still score last frames. Demand frozen tasks, path review, and thinking process — models and students.",
+    "briefing": "VulcanBench v3: Grok 4.5 claimed #1 (91.3%) vs GPT-5.6 Sol / Claude Fable 5 (87%) on repo-level PRs with deterministic hidden tests. Arize: eval moved from single responses to long trajectories + agent eval. Builder listicles still bury Stage 7 quality gates. Vibe-coding thread: green tests + open PR ≠ intended decision — review/receipt layer. Ed angle still live: AI homework vs exam crash / process gap. Angle: re-runnable repo tasks + inspect path; don’t ship on pass alone.",
+    "plannedMinutes": 50,
+    "mvpDraftIds": [
+      "reply-vulcan",
+      "reply-arize",
+      "reply-agentstack",
+      "reply-vibe",
+      "reply-examgap",
+      "flag-1"
+    ],
+    "signals": [
+      {
+        "id": "sig-vulcanbench",
+        "summary": "VulcanBench v3: Grok 4.5 at 91.3% (21/23) on multi-lang repo PR tasks with deterministic hidden tests in isolation; GPT-5.6 Sol & Claude Fable 5 at 87%.",
+        "whyItMatters": "Real-world coding bench with hidden tests — still ask contamination, k-runs, public reverify.",
+        "url": "https://x.com/XFreeze/status/2080300216842965040",
+        "heat": 4,
+        "category": "evals"
+      },
+      {
+        "id": "sig-arize-traj",
+        "summary": "Arize: production AI eval must cover retrieval, tools, code, memory, long trajectories — offline/online, human, LLM-as-judge, agent eval guide updated.",
+        "whyItMatters": "Industry framing matches process-over-single-output.",
+        "url": "https://x.com/arizeai/status/2079650956049088523",
+        "heat": 3,
+        "category": "evals"
+      },
+      {
+        "id": "sig-agent-stages",
+        "summary": "High-bookmark production-agent roadmap (local → tools → RAG → Stage 7 eval gates → observability → routing). Eval often last in list culture.",
+        "whyItMatters": "Builders save the card; push that Stage 7 should be earlier and personal.",
+        "url": "https://x.com/suraj_sharma14/status/2079536765472534576",
+        "heat": 5,
+        "category": "builders"
+      },
+      {
+        "id": "sig-vibe-review",
+        "summary": "Vibe-coding critique: agent can pass tests and open PR while delegating a decision you never meant; workflow = spec → plan → small diff → tests → receipt → memory.",
+        "whyItMatters": "Path/receipt language — same as process eval.",
+        "url": "https://x.com/xmyttle/status/2080295295947022766",
+        "heat": 3,
+        "category": "builders"
+      },
+      {
+        "id": "sig-homework-exam",
+        "summary": "Ongoing narrative: AI homework gains then exam scores drop (~18% up / ~20% down style reporting) — output fluency vs thinking under pressure.",
+        "whyItMatters": "Edudojo wedge without product spam.",
+        "url": "https://x.com/arnaudmercier/status/2079685464886280420",
+        "heat": 3,
+        "category": "education"
+      }
+    ],
+    "skipList": [
+      "Pure politics / university funding pile-ons",
+      "Crypto agent battle prize spam",
+      "Generic LLM ranking listicles with no method",
+      "Unverified bench screenshots as final verdict"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-23-t12__reply-vulcan",
+        "kind": "reply",
+        "label": "@XFreeze",
+        "body": "Repo-level tasks with deterministic hidden tests is the right direction — not another snippet quiz.\n\nWhat I’m concerned as a builder: is the suite frozen and re-runnable outside the chart, or k=1 marketing runs? 91% is interesting. I personally always prefer numbers the community can recheck over groundless excitement.",
+        "meta": "https://x.com/XFreeze/status/2080300216842965040",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Fresh SWE-style #1 claim — reverify ask.",
+        "tip": "Curious, not fan-war.",
+        "postingWindow": "anytime",
+        "targetHandle": "@XFreeze",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-07-23-t12__reply-arize",
+        "kind": "reply",
+        "label": "@arizeai",
+        "body": "This is the right framing. Single-response eval was never enough once tools and long trajectories showed up.\n\nWhat I’m not totally getting from most “agent eval” decks: how much of the suite is fixed tasks you re-run next week vs live dashboards that drift. Path scoring only helps if the tasks don’t move with the marketing week.",
+        "meta": "https://x.com/arizeai/status/2079650956049088523",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Eval vendor post — process/trajectory alignment.",
+        "postingWindow": "anytime",
+        "targetHandle": "@arizeai",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-07-23-t12__reply-agentstack",
+        "kind": "reply",
+        "label": "@suraj_sharma14",
+        "body": "Solid map. Stage 7 is the part people skip until production hurts.\n\nI mean I’d pull golden datasets + regression gates earlier — even at Stage 1 local. Frameworks rotate weekly. A small personal suite you re-run is the only stable thing, there is no doubt in that.",
+        "meta": "https://x.com/suraj_sharma14/status/2079536765472534576",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "High-bookmark list — plant personal-suite earlier.",
+        "postingWindow": "anytime",
+        "targetHandle": "@suraj_sharma14",
+        "targetReach": "viral-mid"
+      },
+      {
+        "id": "pack-2026-07-23-t12__reply-vibe",
+        "kind": "reply",
+        "label": "@xmyttle",
+        "body": "Passing screen ≠ safe change is the whole lesson. The agent can green the tests and still take a decision you never meant to hand over.\n\nSame shape as scoring a student’s final sheet and never the thinking path. Spec → small diff → receipt is process eval for repos, in my humble opinion.",
+        "meta": "https://x.com/xmyttle/status/2080295295947022766",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Builder path language — natural Edudojo bridge.",
+        "postingWindow": "anytime",
+        "targetHandle": "@xmyttle",
+        "targetReach": "niche"
+      },
+      {
+        "id": "pack-2026-07-23-t12__reply-examgap",
+        "kind": "reply",
+        "label": "@arnaudmercier",
+        "body": "Homework up, exam down is exactly what you get when you only mark the finished sheet.\n\nAI makes the assignment look done; the thinking path never got pressure-tested. Until we evaluate how the answer was reached, “AI helped” is mostly output theater.",
+        "meta": "https://x.com/arnaudmercier/status/2079685464886280420",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Education gap story — process thesis without product spam.",
+        "postingWindow": "anytime",
+        "targetHandle": "@arnaudmercier",
+        "targetReach": "low-mid"
+      },
+      {
+        "id": "pack-2026-07-23-t12__flag-1",
+        "kind": "flagship",
+        "label": "Flagship · green bar is not the path",
+        "body": "1/ Same week shape:\n• Repo benches crown a model on multi-file PRs\n• Eval guides finally talk trajectories, not one answer\n• Agent roadmaps put quality gates at Stage 7\n• Vibe coders learn late: tests pass, decision still wrong\n• Homework looks better while exams fall\n\nDifferent domains. Same blind spot.\n\n2/ We keep scoring the last frame — % on a chart, green CI, submitted PDF. We under-score the trajectory: what got delegated, whether the suite is frozen, whether a student actually thought.\n\n3/ Hidden tests in isolation help. They still don’t replace a personal suite you re-run when the leaderboard shuffles.\n\n4/ What I’m building toward: evaluate how thinking (or agent work) unfolds, not only whether the last token looks right.\n\nIf your stack is “trust the pass,” you will get gamed. If your stack is “inspect the path,” hype slows and signal survives.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 240,
+        "why": "Ties Vulcan + Arize + vibe + homework into one thesis.",
+        "tip": "Post after 3–4 replies.",
+        "postingWindow": "midday"
+      },
+      {
+        "id": "pack-2026-07-23-t12__short-a",
+        "kind": "short",
+        "label": "Short A · pass ≠ path",
+        "body": "Green tests are not a verdict.\n\nAn agent can open a clean PR and still take a decision you never meant to delegate. Same bug as a homework sheet that looks perfect with no thinking underneath.\n\nScore the path. Re-run the same tasks. Last-frame scores will keep lying.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Quotable bridge code ↔ education.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "pack-2026-07-23-t12__short-b",
+        "kind": "short",
+        "label": "Short B · Stage 7 too late",
+        "body": "Most agent roadmaps put evaluation near the end.\n\nI get it that demos come first. Still — if you only bolt on golden datasets after frameworks and RAG, you’re debugging product taste with production traffic.\n\nTwenty frozen tasks from week one beats another Stage card.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "ship",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Rides viral agent list energy.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "pack-2026-07-23-t12__short-c",
+        "kind": "short",
+        "label": "Short C · chart vs suite",
+        "body": "91% on a hard SWE bench is news. It is not your product quality.\n\nIf you can’t re-run a fixed task set on your own stack next week, you didn’t evaluate — you retweeted.\n\nI personally always prefer that boring suite over groundless excitement.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 55,
+        "why": "VulcanBench hype antidote.",
+        "postingWindow": "evening"
+      },
+      {
+        "id": "pack-2026-07-23-t12__quote-1",
+        "kind": "quote",
+        "label": "QT · vibe review layer",
+        "body": "This. Passing screen is not the same as a safe change.\n\nWe keep scoring the green bar and under-scoring the decision path — models, agents, students. Spec → small diff → receipt is the right posture.",
+        "meta": "https://x.com/xmyttle/status/2080295295947022766",
+        "status": "ready",
+        "priority": 4,
+        "intent": "optional",
+        "session": "bonus",
+        "estimatedSeconds": 90,
+        "why": "Only if sprint + flagship done.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "0–20m: Reply sprint (Vulcan, Arize, agent stack, vibe, exam gap)",
+      "20–40m: Flagship + Short A",
+      "40–50m: Short B/C if energy — or stop",
+      "Last 5m: Mark Done in X To-Do; note profile visits"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Reply sprint",
+        "maxMinutes": 20,
+        "description": "VulcanBench + Arize + agent stack + vibe review + homework/exam"
+      },
+      {
+        "id": "core",
+        "title": "Core posts",
+        "maxMinutes": 25,
+        "description": "Flagship + strongest shorts"
+      },
+      {
+        "id": "bonus",
+        "title": "Bonus",
+        "maxMinutes": 10,
+        "description": "Optional QT if energy left"
+      }
+    ],
+    "createdAt": "2026-07-23T15:07:00.000Z",
+    "updatedAt": "2026-07-23T15:08:00.875Z"
+  },
+  {
+    "id": "pack-2026-07-21-t12",
+    "date": "2026-07-21",
+    "title": "Agent cost benches + decision-centric evals · don’t trust the last frame",
+    "theme": "Flash agents, budget leaderboards, multi-model stacks — still need fixed tasks and path scoring, not only pretty outputs or cheap tokens.",
+    "briefing": "DeepMind: Gemini 3.6 Flash / 3.5 Flash-Lite / Flash Cyber for faster-cheaper agents. Browser Use claims 3.6 Flash 68% on BU Benchmark (vs GPT-5.6-sol 67%, Sonnet 4.6 62%; Opus 4.8 74%). AskClash: Grok 4.5 #1 under-$5 budget (75.4 @ $3.20). Nanjing world-model paper: L0–L7 ladder prioritizes planning/policy utility over video beauty. ICONIQ Raise Summit: builders default multi-model (~3.3 providers), reliability + agentic tops. Ratel: selective tool load to cut agent tokens. Angle: vendor/agent benches need frozen public tasks; multi-model without own suite is still fragile; decision path > visual demo.",
+    "plannedMinutes": 50,
+    "mvpDraftIds": [
+      "reply-deepmind",
+      "reply-browseruse",
+      "reply-askclash",
+      "reply-worldmodel",
+      "reply-iconiq",
+      "flag-1"
+    ],
+    "signals": [
+      {
+        "id": "sig-deepmind-flash",
+        "summary": "Google DeepMind rolls Gemini 3.6 Flash (fewer tokens, higher quality at same cost), 3.5 Flash-Lite, and 3.5 Flash Cyber for agents at scale.",
+        "whyItMatters": "High-reach agent pricing narrative — demand re-runnable agent tasks not launch copy.",
+        "url": "https://x.com/GoogleDeepMind/status/2079589698490572961",
+        "heat": 5,
+        "category": "models"
+      },
+      {
+        "id": "sig-bu-bench",
+        "summary": "Browser Use: Gemini 3.6 Flash hits 68% on BU Benchmark for browser agents — second to Opus 4.8 (74%) at Flash pricing.",
+        "whyItMatters": "Concrete agent bench with splits; ask if tasks are frozen/public.",
+        "url": "https://x.com/browser_use/status/2079602472516264010",
+        "heat": 4,
+        "category": "evals"
+      },
+      {
+        "id": "sig-askclash-budget",
+        "summary": "AskClash under-$5 budget bench: Grok 4.5 at 75.4 for $3.20 claimed #1 cost-effective.",
+        "whyItMatters": "Budget Elo spreads fast; community needs method transparency.",
+        "url": "https://x.com/cb_doge/status/2079606551736926502",
+        "heat": 4,
+        "category": "evals"
+      },
+      {
+        "id": "sig-world-l0l7",
+        "summary": "Nanjing U position paper: evaluate world models for embodied decision-making (L0–L7 ladder) — visual realism ≠ planning/policy utility.",
+        "whyItMatters": "Process/decision-centric eval aligns with thinking-path thesis.",
+        "url": "https://x.com/jiqizhixin/status/2079257277526110324",
+        "heat": 3,
+        "category": "evals"
+      },
+      {
+        "id": "sig-iconiq-multi",
+        "summary": "ICONIQ State of AI: ~2/3 builders on apps; multi-model default (~3.3 providers); reliability/agentic priorities; AI share of revenue rising.",
+        "whyItMatters": "Multi-model is table stakes — own eval suite still missing in most stacks.",
+        "url": "https://x.com/ICONIQCapital/status/2079592344991740239",
+        "heat": 3,
+        "category": "builders"
+      }
+    ],
+    "skipList": [
+      "Pure politics pile-ons without process/eval angle",
+      "Crypto/token wraps on agent platforms",
+      "Ratel/cost-cut spam without eval method questions",
+      "Unverified arena screenshots as final verdict"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-21-t12__reply-deepmind",
+        "kind": "reply",
+        "label": "@GoogleDeepMind",
+        "body": "Faster/smarter/cheaper agents is the right pressure. What I’m not totally getting: when you say higher quality at the same cost for 3.6 Flash, is that on a fixed public agent suite we can re-run next week — or mostly internal harnesses?\n\nI get it that launch days are loud. I personally always prefer numbers the community can recheck over groundless excitement.",
+        "meta": "https://x.com/GoogleDeepMind/status/2079589698490572961",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Huge reach agent launch — evidence ask without dunking.",
+        "tip": "Curious tone; one concrete ask.",
+        "postingWindow": "anytime",
+        "targetHandle": "@GoogleDeepMind",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-21-t12__reply-browseruse",
+        "kind": "reply",
+        "label": "@browser_use",
+        "body": "68% on a browser agent bench with price context is more useful than “new Flash model” alone. The Opus gap is honest too.\n\nWhat I’m concerned as a builder: is the BU Benchmark task set frozen and re-runnable by outsiders, or live sessions that drift? Headline wins fade if the suite moves with the marketing week.",
+        "meta": "https://x.com/browser_use/status/2079602472516264010",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Concrete agent numbers — re-runnability is the Edudojo-adjacent ask.",
+        "postingWindow": "anytime",
+        "targetHandle": "@browser_use",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-07-21-t12__reply-askclash",
+        "kind": "reply",
+        "label": "@cb_doge",
+        "body": "Best under $5 is a clean story — score and cost in one frame. Still, I’m a bit sceptical when the method stays thin.\n\nCan you please clear things up with the actual task list / how many runs / who held the harness? Budget benches only help builders if we can reverify, not just retweet the chart.",
+        "meta": "https://x.com/cb_doge/status/2079606551736926502",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Viral budget chart — method transparency push.",
+        "postingWindow": "anytime",
+        "targetHandle": "@cb_doge",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-21-t12__reply-worldmodel",
+        "kind": "reply",
+        "label": "@jiqizhixin",
+        "body": "This is the right level of skepticism on world models. Beautiful video is not a verdict if planning and long-horizon decisions fall apart.\n\nSame shape as scoring a student’s final sheet and never the thinking path. Decision-centric ladders > last-frame pretty metrics, in my humble opinion.",
+        "meta": "https://x.com/jiqizhixin/status/2079257277526110324",
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Eval philosophy paper — natural bridge to process scoring.",
+        "postingWindow": "anytime",
+        "targetHandle": "@jiqizhixin",
+        "targetReach": "niche-research"
+      },
+      {
+        "id": "pack-2026-07-21-t12__reply-iconiq",
+        "kind": "reply",
+        "label": "@ICONIQCapital",
+        "body": "3.3 providers on average is healthy — policy or pricing on one lab can brick you overnight if you’re single-stack.\n\nWhat I still don’t see in these surveys: how many teams actually keep a fixed personal eval suite they re-run when they swap models. Multi-model without reverify is just multi-demo, there is no doubt in that.",
+        "meta": "https://x.com/ICONIQCapital/status/2079592344991740239",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Builder survey surface for diversify + own suite thesis.",
+        "postingWindow": "anytime",
+        "targetHandle": "@ICONIQCapital",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-07-21-t12__flag-1",
+        "kind": "flagship",
+        "label": "Flagship · cheap agents still need path eval",
+        "body": "1/ Same afternoon energy:\n• New Flash agents “faster smarter cheaper”\n• Browser agent benches crown a price/perf winner\n• Budget leaderboards put Grok on top under $5\n• Papers say world models should be scored on decisions, not pretty video\n\nDifferent posts. Same gap.\n\n2/ Cost-per-token is real. Arena % is real. Neither tells you if the agent took a sane path, gamed the harness, or would fail the same frozen task tomorrow.\n\n3/ Multi-model is becoming default — good. Still, if you switch providers and never re-run your own twenty tasks, you only bought another demo.\n\n4/ What I’m building toward with process eval: score how the work unfolds (model or student), not only whether the last frame looks right.\n\nPublish the suite. Freeze the tasks. Re-run next week. Everything else is content.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 240,
+        "why": "Ties DeepMind/BU/AskClash/world-model into one builder thesis.",
+        "tip": "Ship after 3–4 replies.",
+        "postingWindow": "midday"
+      },
+      {
+        "id": "pack-2026-07-21-t12__short-a",
+        "kind": "short",
+        "label": "Short A · price is not path",
+        "body": "Cheapest model on a chart is not the same as a trustworthy agent.\n\nI mean it: cost and Elo move weekly. A fixed task suite you re-run is the only number that stays honest.\n\nIf you can’t reverify, it isn’t an eval — it’s a launch week.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Rides budget + Flash pricing without pure news.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "pack-2026-07-21-t12__short-b",
+        "kind": "short",
+        "label": "Short B · pretty ≠ decision",
+        "body": "World models that make beautiful video can still fail planning.\n\nSame bug as homework that looks clean while the thinking path never got pressure-tested.\n\nScore decision utility. Last-frame beauty will keep lying.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 55,
+        "why": "Education + embodied eval bridge.",
+        "postingWindow": "anytime"
+      },
+      {
+        "id": "pack-2026-07-21-t12__short-c",
+        "kind": "short",
+        "label": "Short C · multi-model without suite",
+        "body": "Running 3 providers is smart. Relying on their marketing benches alone is not.\n\nDiversify the APIs. Keep your own evaluation suite.\n\nOtherwise one leaderboard week decides your product quality for you.",
+        "status": "ready",
+        "priority": 3,
+        "intent": "ship",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "ICONIQ multi-model → own suite action.",
+        "postingWindow": "evening"
+      },
+      {
+        "id": "pack-2026-07-21-t12__quote-1",
+        "kind": "quote",
+        "label": "QT · Browser Use bench",
+        "body": "Price-to-performance on browser agents is useful — still hold the single % with a little reservation until the task set is public and frozen.\n\nI personally always prefer that over groundless “best model today” energy.",
+        "meta": "https://x.com/browser_use/status/2079602472516264010",
+        "status": "ready",
+        "priority": 4,
+        "intent": "optional",
+        "session": "bonus",
+        "estimatedSeconds": 90,
+        "why": "Only if sprint + flagship done and post still active.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "0–20m: Reply sprint (DeepMind, Browser Use, AskClash, world-model, ICONIQ)",
+      "20–40m: Flagship + Short A",
+      "40–50m: Short B/C if energy — or stop",
+      "Last 5m: Mark Done in X To-Do; note profile visits"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Reply sprint",
+        "maxMinutes": 20,
+        "description": "DeepMind + Browser Use + AskClash + world-model + ICONIQ multi-model"
+      },
+      {
+        "id": "core",
+        "title": "Core posts",
+        "maxMinutes": 25,
+        "description": "Flagship + strongest shorts"
+      },
+      {
+        "id": "bonus",
+        "title": "Bonus",
+        "maxMinutes": 10,
+        "description": "Optional QT on BU or DeepMind if energy left"
+      }
+    ],
+    "createdAt": "2026-07-21T16:48:00.000Z",
+    "updatedAt": "2026-07-21T18:03:55.411Z"
+  },
+  {
     "id": "pack-2026-07-21",
     "date": "2026-07-21",
     "title": "Long-horizon evals + open agents · score the full path",

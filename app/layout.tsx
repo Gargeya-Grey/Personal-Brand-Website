@@ -5,7 +5,7 @@ import '@fontsource/stack-sans-notch/300.css';
 import '@fontsource/stack-sans-notch/500.css';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
-import { InteractiveBackground } from '@/components/interactive-background';
+import { InteractiveBackgroundLazy } from '@/components/interactive-background-lazy';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 
@@ -111,7 +111,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </a>
           {/* Layered atmosphere: CSS mesh + grain + interactive canvas */}
           <div className="site-atmosphere" aria-hidden="true" />
-          <InteractiveBackground />
+          <InteractiveBackgroundLazy />
           <div className="site-grain" aria-hidden="true" />
           <div className="relative z-0">{children}</div>
         </ThemeProvider>

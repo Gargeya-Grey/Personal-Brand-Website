@@ -50,6 +50,8 @@ export function InteractiveBackground() {
     let mouseActive = false;
 
     const isMobile = () => width < 768;
+    /** Cap main-thread cost: static frame on small screens / reduced motion. */
+    const shouldAnimate = () => !prefersReducedMotion && !isMobile() && isVisible;
 
     const syncTheme = () => {
       theme = readFloorTheme();
@@ -59,7 +61,7 @@ export function InteractiveBackground() {
     const resizeCanvas = () => {
       width = window.innerWidth;
       height = window.innerHeight;
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const dpr = Math.min(window.devicePixelRatio || 1, isMobile() ? 1 : 1.5);
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
@@ -261,19 +263,37 @@ export function InteractiveBackground() {
       needsPaint = false;
     };
 
-    const render = () => {
-      if (isVisible) {
-        elapsed += 0.012;
-        mouseX += (targetMouseX - mouseX) * 0.045;
-        mouseY += (targetMouseY - mouseY) * 0.045;
-        paint(true);
+    let lastFrameTs = 0;
+    const targetFps = 24;
+    const frameInterval = 1000 / targetFps;
+
+    const render = (ts: number) => {
+      if (shouldAnimate()) {
+        if (ts - lastFrameTs >= frameInterval) {
+          lastFrameTs = ts;
+          elapsed += 0.018;
+          mouseX += (targetMouseX - mouseX) * 0.045;
+          mouseY += (targetMouseY - mouseY) * 0.045;
+          paint(true);
+        }
+        animationFrameId = window.requestAnimationFrame(render);
       } else if (needsPaint) {
         paint(false);
       }
-      animationFrameId = window.requestAnimationFrame(render);
+    };
+
+    const startLoop = () => {
+      window.cancelAnimationFrame(animationFrameId);
+      if (shouldAnimate()) {
+        lastFrameTs = 0;
+        animationFrameId = window.requestAnimationFrame(render);
+      } else {
+        paint(false);
+      }
     };
 
     const handleMouseMove = (event: MouseEvent) => {
+      if (isMobile()) return;
       targetMouseX = event.clientX;
       targetMouseY = event.clientY;
       mouseActive = true;
@@ -286,16 +306,17 @@ export function InteractiveBackground() {
     const handleVisibilityChange = () => {
       isVisible = !document.hidden;
       if (isVisible) needsPaint = true;
+      startLoop();
     };
 
     const handleResize = () => {
       resizeCanvas();
-      if (prefersReducedMotion) paint(false);
+      startLoop();
     };
 
     const handleThemeChange = () => {
       syncTheme();
-      paint(!prefersReducedMotion && isVisible);
+      paint(shouldAnimate());
     };
 
     const themeObserver = new MutationObserver(handleThemeChange);
@@ -313,11 +334,7 @@ export function InteractiveBackground() {
     window.addEventListener('themechange', handleThemeChange);
     document.addEventListener('visibilitychange', handleVisibilityChange);
 
-    if (prefersReducedMotion) {
-      paint(false);
-    } else {
-      render();
-    }
+    startLoop();
 
     return () => {
       themeObserver.disconnect();

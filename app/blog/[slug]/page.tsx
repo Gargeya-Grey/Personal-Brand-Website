@@ -15,12 +15,11 @@ interface PageProps {
 }
 
 /**
- * Always resolve posts at request time so newly published articles work
- * without a redeploy. generateStaticParams still warms known slugs at build.
+ * Cache pages for a short window; CMS saves call revalidatePath so new/edited
+ * posts still show up quickly without forcing every visit to hit Supabase cold.
  */
-export const dynamic = 'force-dynamic';
 export const dynamicParams = true;
-export const revalidate = 0;
+export const revalidate = 60;
 
 export async function generateStaticParams() {
   try {

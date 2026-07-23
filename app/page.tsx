@@ -98,7 +98,7 @@ export default function Home() {
                   className="object-cover"
                   priority
                   fetchPriority="high"
-                  quality={100}
+                  quality={82}
                   placeholder="blur"
                   blurDataURL="data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAgCdASoQABAAA4BaJQBOj+AC3/pHL/0kAAD9IZEXT+erWYGdY0DVhO4CgwBJIzKs48DW2vVvXqUgqIC1a+1wAAA="
                 />

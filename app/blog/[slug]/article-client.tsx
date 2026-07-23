@@ -13,6 +13,7 @@ import {
   BookOpen
 } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 import * as motion from 'motion/react-client';
 import { renderMarkdown, slugify } from '@/lib/markdown';
 import { renderIllustration } from '@/components/render-illustration';
@@ -326,7 +327,14 @@ export function ArticleClient({ article }: ArticleClientProps) {
             {/* Cover image or illustration */}
             {article.illustrationType === 'cover' && article.coverImage ? (
               <div className="rounded-3xl overflow-hidden border border-emerald-500/20 dark:border-white/10 shadow-sm relative aspect-video w-full bg-slate-100 dark:bg-slate-900">
-                <img src={article.coverImage} alt={article.title} className="object-cover w-full h-full" />
+                <Image
+                  src={article.coverImage}
+                  alt={article.title}
+                  fill
+                  priority
+                  sizes="(max-width: 1024px) 100vw, 72vw"
+                  className="object-cover"
+                />
               </div>
             ) : (
               <div className="relative overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 shadow-sm dark:border-white/10 dark:bg-slate-900">
