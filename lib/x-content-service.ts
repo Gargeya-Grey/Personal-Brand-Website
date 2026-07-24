@@ -90,38 +90,67 @@ async function saveLocalSafe(packs: XContentPack[]): Promise<void> {
   }
 }
 
-function hydrateDraft(d: Partial<XDraftItem> & { id: string; kind: XDraftKind; label: string; body: string }, index: number): XDraftItem {
+function hydrateDraft(
+  d: Partial<XDraftItem> & { id?: string; kind?: XDraftKind; label?: string; body?: string },
+  index: number
+): XDraftItem {
+  const kind: XDraftKind =
+    d.kind === 'reply' || d.kind === 'flagship' || d.kind === 'short' || d.kind === 'quote'
+      ? d.kind
+      : 'short';
+  const label =
+    typeof d.label === 'string' && d.label.trim() ? d.label : `Untitled ${kind}`;
+  const body = typeof d.body === 'string' ? d.body : String(d.body ?? '');
+  const id =
+    typeof d.id === 'string' && d.id.trim() ? d.id.trim() : `draft-${index + 1}`;
   return {
-    id: d.id,
-    kind: d.kind,
-    label: d.label,
-    body: d.body,
+    id,
+    kind,
+    label,
+    body,
     meta: d.meta,
     status: d.status ?? 'ready',
-    priority: typeof d.priority === 'number' ? d.priority : d.kind === 'reply' ? 1 + Math.min(2, index) : d.kind === 'flagship' ? 2 : d.kind === 'quote' ? 4 : 3,
-    intent: d.intent ?? defaultIntentForKind(d.kind),
-    session: d.session ?? defaultSessionForKind(d.kind),
-    estimatedSeconds: d.estimatedSeconds ?? defaultEstimatedSeconds(d.kind),
-    why: d.why?.trim() || (d.kind === 'reply' ? `Growth reply on ${d.label}` : 'On-brand action'),
+    priority:
+      typeof d.priority === 'number'
+        ? d.priority
+        : kind === 'reply'
+          ? 1 + Math.min(2, index)
+          : kind === 'flagship'
+            ? 2
+            : kind === 'quote'
+              ? 4
+              : 3,
+    intent: d.intent ?? defaultIntentForKind(kind),
+    session: d.session ?? defaultSessionForKind(kind),
+    estimatedSeconds: d.estimatedSeconds ?? defaultEstimatedSeconds(kind),
+    why: d.why?.trim() || (kind === 'reply' ? `Growth reply on ${label}` : 'On-brand action'),
     tip: d.tip,
     postingWindow: d.postingWindow ?? 'anytime',
-    targetHandle: d.targetHandle ?? (d.label.startsWith('@') ? d.label : undefined),
+    targetHandle:
+      d.targetHandle ?? (typeof label === 'string' && label.startsWith('@') ? label : undefined),
     targetReach: d.targetReach,
   };
 }
 
 /** Fill defaults for packs written before rich fields existed. */
 export function hydratePack(raw: XContentPack): XContentPack {
-  const drafts = (raw.drafts || []).map((d, i) => hydrateDraft(d, i));
+  const drafts = (Array.isArray(raw?.drafts) ? raw.drafts : [])
+    .filter((d) => d != null && typeof d === 'object')
+    .map((d, i) => hydrateDraft(d as Partial<XDraftItem>, i));
   return {
     ...raw,
+    id: raw?.id || 'unknown-pack',
+    date: raw?.date || '',
+    title: raw?.title || raw?.id || 'Untitled pack',
     drafts,
-    signals: raw.signals || [],
-    skipList: raw.skipList || [],
-    schedule: raw.schedule || [],
-    sessions: raw.sessions?.length ? raw.sessions : DEFAULT_SESSIONS,
+    signals: Array.isArray(raw?.signals) ? raw.signals : [],
+    skipList: Array.isArray(raw?.skipList) ? raw.skipList : [],
+    schedule: Array.isArray(raw?.schedule) ? raw.schedule : [],
+    sessions: raw?.sessions?.length ? raw.sessions : DEFAULT_SESSIONS,
     plannedMinutes:
-      raw.plannedMinutes ?? Math.max(1, Math.ceil(sumEstimatedSeconds(drafts) / 60)),
+      raw?.plannedMinutes ?? Math.max(1, Math.ceil(sumEstimatedSeconds(drafts) / 60)),
+    createdAt: raw?.createdAt || new Date().toISOString(),
+    updatedAt: raw?.updatedAt || new Date().toISOString(),
   };
 }
 
@@ -152,7 +181,7 @@ function toDateOnly(value: unknown): string {
 
 function rowToPack(row: {
   id: string;
-  payload: XContentPack | string;
+  payload: XContentPack | string | null | undefined;
   date?: string;
   title?: string;
   theme?: string | null;
@@ -160,8 +189,17 @@ function rowToPack(row: {
   created_at?: string;
   updated_at?: string;
 }): XContentPack {
-  const payload =
-    typeof row.payload === 'string' ? (JSON.parse(row.payload) as XContentPack) : row.payload;
+  let payload: Partial<XContentPack> = {};
+  try {
+    if (typeof row.payload === 'string') {
+      payload = (JSON.parse(row.payload) as XContentPack) || {};
+    } else if (row.payload && typeof row.payload === 'object') {
+      payload = row.payload;
+    }
+  } catch (e) {
+    console.warn('[x-content] Invalid pack payload for', row.id, e);
+    payload = {};
+  }
   return {
     ...payload,
     id: payload.id || row.id,
@@ -169,9 +207,13 @@ function rowToPack(row: {
     title: payload.title || row.title || row.id,
     theme: payload.theme ?? row.theme ?? undefined,
     plannedMinutes: payload.plannedMinutes ?? row.planned_minutes ?? undefined,
+    drafts: Array.isArray(payload.drafts) ? payload.drafts : [],
+    signals: Array.isArray(payload.signals) ? payload.signals : [],
+    skipList: Array.isArray(payload.skipList) ? payload.skipList : [],
+    schedule: Array.isArray(payload.schedule) ? payload.schedule : [],
     createdAt: payload.createdAt || row.created_at || new Date().toISOString(),
     updatedAt: payload.updatedAt || row.updated_at || new Date().toISOString(),
-  };
+  } as XContentPack;
 }
 
 export async function getXContentPacks(): Promise<XContentPack[]> {

@@ -39,9 +39,11 @@ import {
   formatDuration,
   formatPackRunLabel,
   resolveMvpIds,
+  sanitizePack,
   sortDraftsForExecution,
   sumEstimatedSeconds,
   DEFAULT_SESSIONS,
+  isXDraftKind,
 } from '@/lib/x-content-model';
 
 const POLL_MS = 15_000;
@@ -121,15 +123,24 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: 'p1', label: 'P1–2' },
 ];
 
-function charHint(text: string) {
-  const count = text.length;
+function kindMeta(kind: XDraftKind | string | undefined) {
+  if (kind && isXDraftKind(kind) && KIND_META[kind]) return KIND_META[kind];
+  return KIND_META.short;
+}
+
+function charHint(text: string | undefined | null) {
+  const count = typeof text === 'string' ? text.length : String(text ?? '').length;
   if (count <= 280) return { count, tone: 'text-emerald-600 dark:text-emerald-400' };
   if (count <= 4000) return { count, tone: 'text-[var(--atelier-faint)]' };
   return { count, tone: 'text-amber-600 dark:text-amber-400' };
 }
 
-function filterDrafts(drafts: XDraftItem[], filter: FilterId, mvpIds: Set<string>): XDraftItem[] {
-  let list = drafts.filter((d) => d.status === 'ready');
+function filterDrafts(
+  drafts: XDraftItem[] | undefined | null,
+  filter: FilterId,
+  mvpIds: Set<string>
+): XDraftItem[] {
+  let list = (drafts || []).filter((d) => d && d.status === 'ready');
   switch (filter) {
     case 'mvp':
       list = list.filter((d) => mvpIds.has(d.id));
@@ -281,7 +292,7 @@ function FocusCard({
   etaSeconds: number;
   onStatus: (id: string, s: XDraftStatus) => Promise<void>;
 }) {
-  const meta = KIND_META[draft.kind];
+  const meta = kindMeta(draft.kind);
   const Icon = meta.icon;
   const chars = charHint(draft.body);
   const { copied, busy, copyOpen, done, skip } = useDraftActions(draft, onStatus);
@@ -373,7 +384,7 @@ function ListCard({
   total: number;
   onStatus: (id: string, s: XDraftStatus) => Promise<void>;
 }) {
-  const meta = KIND_META[draft.kind];
+  const meta = kindMeta(draft.kind);
   const Icon = meta.icon;
   const { copied, busy, copyOpen, done, skip } = useDraftActions(draft, onStatus);
 
@@ -530,7 +541,10 @@ export function XStudioClient() {
       console.warn('[x-studio] API did not return an array', data);
       return;
     }
-    const sorted = sortPacks(data);
+    const cleaned = data
+      .map((p) => sanitizePack(p))
+      .filter((p): p is XContentPack => p != null);
+    const sorted = sortPacks(cleaned);
     setPacks(sorted);
 
     const activeOnly = sorted.filter((p) => readyCount(p) > 0);
@@ -873,7 +887,7 @@ export function XStudioClient() {
           </div>
         </div>
 
-        {/* Premium run picker — each 6h scout is its own card; completed runs hidden by default */}
+        {/* Premium run picker — each 12h scout is its own card; completed runs hidden by default */}
         {packs.length > 0 && (
           <div className="mt-6 pt-6 border-t border-[var(--atelier-line)] space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -963,7 +977,7 @@ export function XStudioClient() {
                 All open runs are cleared. Completed packs stay in the cloud but stay out of your way.
                 {completedRuns.length > 0
                   ? ' Use “Show completed” only if you need to restore a draft.'
-                  : ' Wait for the next 6h scout.'}
+                  : ' Wait for the next 12h scout.'}
               </p>
             )}
           </div>
@@ -1061,7 +1075,7 @@ export function XStudioClient() {
           </p>
           <p className="text-sm text-[var(--atelier-muted)] max-w-md leading-relaxed">
             {packs.length === 0
-              ? 'When Grok’s 6-hour loop runs on your laptop, new runs appear here as separate cards — pick any one to work.'
+              ? 'When Grok’s 12-hour scout loop runs on your laptop, new runs appear here as separate cards — pick any one to work.'
               : 'Finished and skipped runs are hidden so you only see open work. Next scout adds a new card without overwriting older ones.'}
           </p>
           {completedRuns.length > 0 && (
@@ -1085,7 +1099,7 @@ export function XStudioClient() {
               className={`atelier-card px-6 py-5 space-y-3 ${d.status !== 'ready' ? 'opacity-50' : ''}`}
             >
               <div className="flex flex-wrap gap-2 items-center text-xs">
-                <span className={`atelier-chip ${KIND_META[d.kind].chip}`}>{d.kind}</span>
+                <span className={`atelier-chip ${kindMeta(d.kind).chip}`}>{d.kind}</span>
                 <span className="font-headline font-bold text-base text-[var(--atelier-ink)]">
                   {d.label}
                 </span>

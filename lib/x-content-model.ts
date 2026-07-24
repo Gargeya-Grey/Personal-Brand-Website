@@ -39,7 +39,10 @@ export interface XDraftItem {
   postingWindow: XPostingWindow;
   /** Reply/QT target context */
   targetHandle?: string;
-  /** Rough audience size of target (e.g. "50k") for prioritization */
+  /**
+   * Target heat for prioritization — prefer viral posts, not quiet niches.
+   * e.g. "viral" | "hyper" | "50k-followers" | "2k-likes" | "mid"
+   */
   targetReach?: string;
 }
 
@@ -130,6 +133,93 @@ export function defaultIntentForKind(kind: XDraftKind): XDraftIntent {
   return 'authority';
 }
 
+const VALID_KINDS = new Set<XDraftKind>(['reply', 'flagship', 'short', 'quote']);
+
+export function isXDraftKind(value: unknown): value is XDraftKind {
+  return typeof value === 'string' && VALID_KINDS.has(value as XDraftKind);
+}
+
+/** Coerce messy API / JSON rows so the studio never crashes mid-render. */
+export function sanitizeDraft(raw: Partial<XDraftItem> | null | undefined, index = 0): XDraftItem | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const kind: XDraftKind = isXDraftKind(raw.kind) ? raw.kind : 'short';
+  const id =
+    typeof raw.id === 'string' && raw.id.trim()
+      ? raw.id.trim()
+      : `draft-${index + 1}`;
+  const label =
+    typeof raw.label === 'string' && raw.label.trim()
+      ? raw.label
+      : `Untitled ${kind}`;
+  const body = typeof raw.body === 'string' ? raw.body : String(raw.body ?? '');
+  const priority =
+    typeof raw.priority === 'number' && Number.isFinite(raw.priority) ? raw.priority : 3;
+  const estimatedSeconds =
+    typeof raw.estimatedSeconds === 'number' && Number.isFinite(raw.estimatedSeconds)
+      ? raw.estimatedSeconds
+      : defaultEstimatedSeconds(kind);
+  const session: XSessionId =
+    raw.session === 'sprint' || raw.session === 'core' || raw.session === 'bonus'
+      ? raw.session
+      : defaultSessionForKind(kind);
+  const status: XDraftStatus =
+    raw.status === 'posted' || raw.status === 'skipped' || raw.status === 'ready'
+      ? raw.status
+      : 'ready';
+
+  return {
+    id,
+    kind,
+    label,
+    body,
+    meta: typeof raw.meta === 'string' ? raw.meta : undefined,
+    status,
+    priority,
+    intent: raw.intent ?? defaultIntentForKind(kind),
+    session,
+    estimatedSeconds,
+    why: typeof raw.why === 'string' ? raw.why : '',
+    tip: typeof raw.tip === 'string' ? raw.tip : undefined,
+    postingWindow: raw.postingWindow ?? 'anytime',
+    targetHandle: typeof raw.targetHandle === 'string' ? raw.targetHandle : undefined,
+    targetReach: typeof raw.targetReach === 'string' ? raw.targetReach : undefined,
+  };
+}
+
+export function sanitizePack(raw: Partial<XContentPack> | null | undefined): XContentPack | null {
+  if (!raw || typeof raw !== 'object') return null;
+  const id = typeof raw.id === 'string' && raw.id.trim() ? raw.id.trim() : '';
+  if (!id) return null;
+  const drafts = (Array.isArray(raw.drafts) ? raw.drafts : [])
+    .map((d, i) => sanitizeDraft(d, i))
+    .filter((d): d is XDraftItem => d != null);
+  return {
+    id,
+    date: typeof raw.date === 'string' ? raw.date : '',
+    title: typeof raw.title === 'string' && raw.title.trim() ? raw.title : id,
+    theme: typeof raw.theme === 'string' ? raw.theme : undefined,
+    briefing: typeof raw.briefing === 'string' ? raw.briefing : undefined,
+    plannedMinutes:
+      typeof raw.plannedMinutes === 'number' && Number.isFinite(raw.plannedMinutes)
+        ? raw.plannedMinutes
+        : undefined,
+    mvpDraftIds: Array.isArray(raw.mvpDraftIds)
+      ? raw.mvpDraftIds.filter((x): x is string => typeof x === 'string')
+      : undefined,
+    signals: Array.isArray(raw.signals) ? raw.signals : [],
+    skipList: Array.isArray(raw.skipList)
+      ? raw.skipList.filter((x): x is string => typeof x === 'string')
+      : [],
+    drafts,
+    schedule: Array.isArray(raw.schedule)
+      ? raw.schedule.filter((x): x is string => typeof x === 'string')
+      : [],
+    sessions: Array.isArray(raw.sessions) && raw.sessions.length ? raw.sessions : DEFAULT_SESSIONS,
+    createdAt: typeof raw.createdAt === 'string' ? raw.createdAt : new Date().toISOString(),
+    updatedAt: typeof raw.updatedAt === 'string' ? raw.updatedAt : new Date().toISOString(),
+  };
+}
+
 export function sortDraftsForExecution(drafts: XDraftItem[]): XDraftItem[] {
   const sessionOrder: Record<XSessionId, number> = { sprint: 0, core: 1, bonus: 2 };
   const kindOrder: Record<XDraftKind, number> = {
@@ -138,7 +228,7 @@ export function sortDraftsForExecution(drafts: XDraftItem[]): XDraftItem[] {
     short: 2,
     quote: 3,
   };
-  return [...drafts].sort((a, b) => {
+  return [...(drafts || [])].sort((a, b) => {
     if (a.priority !== b.priority) return a.priority - b.priority;
     const sa = sessionOrder[a.session] ?? 9;
     const sb = sessionOrder[b.session] ?? 9;
@@ -146,7 +236,7 @@ export function sortDraftsForExecution(drafts: XDraftItem[]): XDraftItem[] {
     const ka = kindOrder[a.kind] ?? 9;
     const kb = kindOrder[b.kind] ?? 9;
     if (ka !== kb) return ka - kb;
-    return a.label.localeCompare(b.label);
+    return String(a.label || '').localeCompare(String(b.label || ''));
   });
 }
 
@@ -166,13 +256,14 @@ export function createPackId(date: string): string {
 }
 
 /**
- * One pack per scout run (6h slots UTC: t00, t06, t12, t18).
- * Up to 4 distinct queues per calendar day — never overwrites an earlier run.
+ * One pack per scout run (12h slots UTC: t00, t12).
+ * Two distinct queues per calendar day — never overwrites an earlier run.
+ * (Legacy packs may still use t06 / t18 from the old 6h cadence.)
  */
 export function createRunPackId(now: Date = new Date()): string {
   const date = now.toISOString().slice(0, 10);
   const hour = now.getUTCHours();
-  const slot = Math.floor(hour / 6) * 6;
+  const slot = Math.floor(hour / 12) * 12;
   return `pack-${date}-t${String(slot).padStart(2, '0')}`;
 }
 

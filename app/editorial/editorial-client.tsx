@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Component, useState, useEffect, type ErrorInfo, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
 import * as motion from 'motion/react-client';
 import { AnimatePresence } from 'motion/react';
@@ -17,6 +17,45 @@ import { CATEGORIES as CATEGORIES_LIST } from '@/lib/categories';
 import { renderIllustration } from '@/components/render-illustration';
 import { XStudioClient } from './x-studio-client';
 import { siteConfig } from '@/lib/site-config';
+
+/** Keep blog CMS usable if X To-Do throws — avoid full-page error boundary. */
+class XStudioErrorBoundary extends Component<
+  { children: ReactNode },
+  { error: Error | null }
+> {
+  state: { error: Error | null } = { error: null };
+
+  static getDerivedStateFromError(error: Error) {
+    return { error };
+  }
+
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('[x-studio]', error, info.componentStack);
+  }
+
+  render() {
+    if (this.state.error) {
+      return (
+        <div className="atelier-card-lg py-16 px-8 flex flex-col items-center gap-4 text-center max-w-lg mx-auto">
+          <p className="font-headline font-bold text-xl text-[var(--atelier-ink)]">
+            X To-Do hit a glitch
+          </p>
+          <p className="text-sm text-[var(--atelier-muted)] leading-relaxed">
+            {this.state.error.message || 'Unexpected render error'}
+          </p>
+          <button
+            type="button"
+            className="atelier-btn atelier-btn-gold"
+            onClick={() => this.setState({ error: null })}
+          >
+            Try again
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
 
 const ILLUSTRATIONS_LIST = [
   'diagram1', 'diagram2', 'diagram3', 'diagram4',
@@ -819,7 +858,9 @@ export function EditorialClient({
       </header>
 
       {workspace === 'x' && !editingArticle ? (
-        <XStudioClient />
+        <XStudioErrorBoundary>
+          <XStudioClient />
+        </XStudioErrorBoundary>
       ) : (
       <AnimatePresence mode="wait">
         {editingArticle ? (

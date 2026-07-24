@@ -46,7 +46,7 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
-/** pack-YYYY-MM-DD-t00|t06|t12|t18 — one queue per 6h scout run */
+/** pack-YYYY-MM-DD-t00|t12 — one queue per 12h scout run (legacy t06/t18 still accepted) */
 function runPackId(now = new Date()) {
   const date = now.toISOString().slice(0, 10);
   const hour = now.getUTCHours();
