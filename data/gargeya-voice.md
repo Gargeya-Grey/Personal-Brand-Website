@@ -113,16 +113,17 @@ Every AI/eval draft should feel like a step toward that — not random news comm
 
 ## Drafting rules for the scout (must follow)
 
-1. **Read this file before writing any draft body.**
+1. **Read this file before writing any draft body.** Also read `data/x-scout-playbook.md` **SOURCE GROUNDING**.
 2. Write like a human founder still building in public — not a ghostwriter for a brand.
-3. **Replies:** 1–3 paragraphs; open with agreement or confusion; end with a concrete ask or stance. Prefer questions that demand tests/numbers.
-4. **Shorts:** 2–5 sentences. One clear claim. No thread numbering unless a true flagship mini-thread is needed.
-5. **Flagship:** If multi-part, keep language human (can use 1/ 2/ sparingly). Still sound like him, not a Medium essay.
-6. **Slight imperfection OK** (one small awkward phrase is better than sterile perfection). Do not invent typos randomly every line.
-7. **No engagement pods language.** No “great post!” empty replies.
-8. **Bilingual rule:** English default for AI news; Hinglish only when the conversation is India/civic/personal.
-9. **Edudojo:** Mention only when it fits naturally — process eval, assessment, thinking path — not forced product spam. Max one soft product bridge per pack unless the source is already about assessment/education.
-10. After drafting, **self-check:** “Would @GargeyaS type this between meetings?” If it sounds like ChatGPT or a US growth coach, rewrite.
+3. **SOURCE TRUTH FIRST:** For every reply/QT, fetch the linked post. Body may only engage claims present in **that** post. Never blend a second post’s claims into the same draft. Wrong model names / fake quotes = pack is invalid.
+4. **Replies:** 1–3 paragraphs; open with agreement or confusion; end with a concrete ask or stance. Prefer questions that demand tests/numbers **named in the source**.
+5. **Shorts:** 2–5 sentences. One clear claim. No thread numbering unless a true flagship mini-thread is needed.
+6. **Flagship:** If multi-part, keep language human (can use 1/ 2/ sparingly). Still sound like him, not a Medium essay. Originals may use his thesis without faking a citation to a post.
+7. **Slight imperfection OK** (one small awkward phrase is better than sterile perfection). Do not invent typos randomly every line.
+8. **No engagement pods language.** No “great post!” empty replies.
+9. **Bilingual rule:** English default for AI news; Hinglish only when the conversation is India/civic/personal.
+10. **Edudojo:** Mention only when it fits naturally — process eval, assessment, thinking path — not forced product spam. Max one soft product bridge per pack unless the source is already about assessment/education.
+11. After drafting, **self-check:** (a) Would @GargeyaS type this? (b) Can every proper name/number in a reply be found in the linked source text?
 
 ---
 
@@ -142,81 +143,80 @@ Every AI/eval draft should feel like a step toward that — not random news comm
 
 ---
 
-# Growth playbook — ~10k followers in ~3 months (strategist view)
+# Growth playbook — ~10k followers (strategist view)
 
-**Reality check:** From ~40 followers, **~10k in 90 days ≈ 110 net new followers/day**. That is aggressive. It is only realistic if almost every session is **discovery-heavy** (replies on posts already in large feeds), not quiet niche chats. Stay genuine: no pods, no engagement bait, no off-topic dunking.
+**Reality check (today):** ~40 followers. Original posts often get **tens of impressions**, not thousands. That is normal. **You do not grow from your own empty room yet** — you grow by being the smartest serious voice **under posts that already have an audience**.
+
+**Long-term target (~10k in ~3 months)** is aggressive (~110 net follows/day). It only has a chance if Phase 1 is ruthlessly reply-first.
+
+### Phase 1 — REPLY-FIRST (now)
+| | |
+|--|--|
+| **Ratio** | **~1 original : ~10 replies** (~90% discovery) |
+| **Per 12h pack** | **8–10 replies**, **0–1 original**, **0–1 QT** |
+| **MVP** | Replies only — originals after the sprint if energy left |
+| **Goal of a reply** | Profile visits from strangers who saw critical thinking |
+
+**Do not** spend the session writing long flagships + multiple shorts. That optimizes for a feed nobody sees.
+
+### Phase 2 — rebalance later
+When **his** posts regularly get real traction (e.g. hundreds–thousands of impressions, not ~50), raise originals (e.g. 3–4 replies : 1 original). **He decides** when to flip; scouts stay in Phase 1 until told otherwise.
 
 ### The math that matters
 | Lever | Why it moves the needle |
 |--------|-------------------------|
-| **Impressions on others’ posts** | Small accounts grow from *other people’s* distribution |
-| **Profile visits → follows** | Bio + pin + recent posts must convert in 3 seconds |
-| **Topic adjacency** | Same thesis every day (path vs last-frame) so new visitors “get” you |
-| **Cadence** | 2 focused sessions/day beats 8 low-quality pings |
+| **Impressions on others’ posts** | Small accounts borrow distribution |
+| **Profile visits → follows** | Bio + pin convert in 3 seconds |
+| **Topic adjacency** | Same mind every day: AI honesty, learning, ethics, path vs last-frame |
+| **Cadence** | 2 reply-heavy sessions/day beats one essay nobody sees |
 
-### Daily execution (aligns with 12h scout packs)
-1. **Reply sprint (15–25 min):** Only targets that already have heat (see filters below). 3–5 replies max. Depth over drive-by.
-2. **One core original (flagship or short):** Same thesis, different surface (agent evals, homework/exams, arena charts, green CI).
-3. **Optional QT** only if the source is still climbing and you add a real angle.
-4. **Mark Done** in X To-Do so packs stay clean.
+### What to show in replies (multi-faceted, still you)
+Rotate angles so you look like a whole person, not a one-line bot:
+- **Critical thinking in AI** — question charts, ask for re-runnable tests  
+- **Passion for building / learning** — curious, not cynical for sport  
+- **Education** — homework vs thinking, process over output scores  
+- **Ethics & values** — what we measure shapes people; transparency over hype  
+- **Systems view** — agents, evals, schools share the same “last frame” failure  
 
-### Where to show up (for scouts)
-**Primary lanes (high follow-intent):**
-- AI evals, benchmarks, arenas, “leaderboard vs real product”
-- Agents / coding agents / “tests pass but decision wrong”
-- Education + AI (homework up, exams down; process assessment)
-- Builders shipping eval harnesses, open weights, transparency
+Still: **one source post per reply**, grounded.
 
-**Secondary (only if viral + on-thesis):**
-- India education / exam culture (Hinglish OK)
-- Founder ops when it ties to measurement honesty
+### Daily execution (Phase 1)
+1. **Reply sprint (most of the block):** 8–10 heat-qualified, grounded replies. Depth over “great post!”  
+2. **Optional one short** (or skip): same thesis, no fake citations  
+3. **Optional one QT** on a still-hot thread  
+4. Mark Done in X To-Do  
 
-**Skip:** crypto spam, pure politics flamewars, generic startup hustle, celebrity drama, dead threads.
+### Where to show up
+**Primary:** AI evals/benches, coding agents, education+AI, learning, open weights/transparency, measurement ethics.  
+**Secondary (viral + fit):** India education / exam culture (Hinglish OK).  
+**Skip:** crypto spam, pure politics flamewars, celebrity, dead threads, original-heavy packs.
 
-### VIRAL / HEAT FILTERS (mandatory for scout target selection)
+### VIRAL / HEAT FILTERS
+1. Prefer **min_faves:200+** (ideal 500+); niche floor **80+** only if perfect + verified  
+2. Prefer large/verified authors  
+3. Prefer still-climbing posts (first ~12–24h)  
+4. Thesis fit without forced Edudojo  
 
-Only put a reply/QT on the pack if **at least one hard bar** is met (prefer two):
+**targetReach:** hyper | viral | high | mid | niche — ≥80% of replies hyper/viral/high.
 
-1. **Engagement already happened** on the source post (last ~48h):
-   - Broad AI/tech: prefer **min_faves:200+** (ideal 500+ / “going”)  
-   - Niche eval/edu: floor **min_faves:80+** *and* rising replies  
-   - Use search operators: `min_faves:N`, `min_retweets:N`, `filter:has_engagement`, `since:YYYY-MM-DD`
-2. **Author distribution:** prefer verified / large / known lab / popular builder accounts where the reply will be seen by non-followers.
-3. **Recency:** prefer posts still in the first 12–24h of life when possible (still climbing).
-4. **Thesis fit:** you can add a *process vs last-frame* angle without forcing Edudojo.
+### Profile conversion
+- Bio stays process-assessment focused  
+- Pin one clear thesis post (can be old)  
+- In Phase 1 it is OK if recent timeline is mostly replies — discovery first  
+- Link: sgargeya.com / Edudojo when natural  
 
-**Label `targetReach` honestly on each draft:**
-- `hyper` — mega account / charting / 1k+ likes  
-- `viral` — clearly taking off (hundreds of likes, many replies)  
-- `high` — solid mid-large (e.g. 5k–50k author or 100–300 likes)  
-- `mid` / `niche` — only if heat + perfect thesis; **max 1 per pack**
-
-**Pack composition (per 12h run):**
-- **Signals:** 3–5 items, all heat-qualified  
-- **Replies:** 4–5, **≥80% hyper/viral/high** — do not fill the pack with quiet posts  
-- **Flagship:** 1 (your thesis, quotable)  
-- **Shorts:** 2–3  
-- **Quote:** 0–1, only on still-hot threads  
-- **mvpDraftIds:** top 3 replies by heat + 1 original  
-- **plannedMinutes:** ~45–60 (human can finish without burnout)
-
-### Profile conversion (static, do monthly)
-- Bio already states process assessments — keep it.
-- Pin a short thread/post: path vs last-frame + what you’re building.
-- Recent posts should not all be pure replies; leave 1–2 originals visible.
-- Link: sgargeya.com / Edudojo when natural.
-
-### What “winning a week” looks like
-- 10–20 high-heat replies posted (not just drafted)
-- 3–5 originals that restate the thesis
-- Measurable: profile visits and follows in X analytics trending up
-- If impressions are flat: **heat bar is too low** — raise min_faves, chase bigger rooms
+### Winning a week (Phase 1)
+- **15–25 high-heat replies actually posted**  
+- **0–2 originals** max unless something is clearly taking off  
+- Profile visits / follows trending up in X analytics  
+- If flat: heat bar too low — bigger rooms, not longer essays  
 
 ### Scout self-check before merge
-- [ ] Would these replies put him in feeds of *strangers*?  
-- [ ] Would he actually type this voice?  
-- [ ] Is Edudojo mentioned only when natural?  
-- [ ] Pack id is `pack-YYYY-MM-DD-t00` or `…-t12` (12h slots)?
+- [ ] Reply:original roughly **≥8:1** (Phase 1)?  
+- [ ] MVP is replies-only?  
+- [ ] Strangers will see these under hot posts?  
+- [ ] Voice + source grounding OK?  
+- [ ] Pack id `pack-YYYY-MM-DD-t00` or `…-t12`?
 
 ---
 

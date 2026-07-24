@@ -50,7 +50,7 @@ function today() {
 function runPackId(now = new Date()) {
   const date = now.toISOString().slice(0, 10);
   const hour = now.getUTCHours();
-  const slot = Math.floor(hour / 6) * 6;
+  const slot = Math.floor(hour / 12) * 12;
   return `pack-${date}-t${String(slot).padStart(2, '0')}`;
 }
 

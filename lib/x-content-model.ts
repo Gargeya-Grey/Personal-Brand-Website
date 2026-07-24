@@ -91,20 +91,22 @@ export const DEFAULT_SESSIONS: XSessionBlock[] = [
   {
     id: 'sprint',
     title: 'Reply sprint',
-    maxMinutes: 20,
-    description: 'High-ROI replies only — open, paste, go. Max reach per minute.',
+    maxMinutes: 40,
+    description:
+      'Phase 1 growth: almost all time here. High-heat grounded replies (~8–10). Discovery from other people’s feeds.',
   },
   {
     id: 'core',
-    title: 'Core posts',
-    maxMinutes: 35,
-    description: 'Flagship + strongest shorts. Authority and ship proof.',
+    title: 'Optional original',
+    maxMinutes: 10,
+    description:
+      'Phase 1: at most one short (or skip). Do not stack flagship + multiple shorts until originals get real impressions.',
   },
   {
     id: 'bonus',
-    title: 'Bonus',
-    maxMinutes: 25,
-    description: 'Optional QT / extras if you still have energy.',
+    title: 'Bonus QT',
+    maxMinutes: 10,
+    description: 'Optional quote on a still-hot thread if energy left.',
   },
 ];
 
@@ -363,14 +365,13 @@ export function formatPackRunLabel(pack: {
   return when;
 }
 
-/** Derive MVP ids: explicit list, else top-priority ready items (replies + 1 original). */
+/**
+ * Derive MVP ids: explicit list, else top-priority ready **replies only** (Phase 1).
+ * Originals are optional after the reply sprint — small accounts grow from discovery first.
+ */
 export function resolveMvpIds(pack: XContentPack): string[] {
   if (pack.mvpDraftIds?.length) return pack.mvpDraftIds;
   const ready = sortDraftsForExecution(pack.drafts.filter((d) => d.status === 'ready'));
-  const replies = ready.filter((d) => d.kind === 'reply').slice(0, 5);
-  const original =
-    ready.find((d) => d.kind === 'flagship') || ready.find((d) => d.kind === 'short');
-  const ids = [...replies.map((d) => d.id)];
-  if (original) ids.push(original.id);
-  return ids;
+  // Prefer 6 replies for MVP; never auto-include flagship/short into MVP in Phase 1
+  return ready.filter((d) => d.kind === 'reply').slice(0, 6).map((d) => d.id);
 }

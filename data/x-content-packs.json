@@ -1,1296 +1,314 @@
 [
   {
-    "id": "pack-2026-07-24-t12",
+    "id": "pack-2026-07-24-r10",
     "date": "2026-07-24",
-    "title": "Constraints, benches & homework sheets · path still missing",
-    "theme": "Agent tests/constraints, multi-model bench jumps, and AI homework all sell last-frame confidence. Push re-runnable tasks + score the path (agents and students).",
-    "briefing": "Uncle Bob’s mega thread: don’t read agent code — surround with extreme tests/constraints. Sakana Fugu-Ultra v1.1: +7.9 bench points, ProgramBench / Terminal Bench, “beating Fable 5” without Fable in the pool. Cole: agents attaching annotated screenshots to PRs. Derek Guy: AI homework widens grade-chasers vs real learning. Growth angle: sit in these already-loud rooms with one process-vs-last-frame ask — profile visits from strangers, not quiet niche chats.",
-    "plannedMinutes": 55,
+    "title": "Phase 1 · 10 replies : 1 short (clean slate)",
+    "theme": "Reply-first growth. Critical thinking on AI, learning, ethics, values — under hot posts only. One optional short after the sprint.",
+    "briefing": "After DB wipe. ~10:1 reply:original. MVP = replies only. Skip prior packs. Source-grounded; one post per draft.",
+    "plannedMinutes": 45,
     "mvpDraftIds": [
-      "r-unclebob-constraints",
-      "r-sakana-fugu",
-      "r-homework-dieworkwear",
-      "r-cole-screenshots",
-      "flag-path-tests"
+      "r-unclebob",
+      "r-homework",
+      "r-cole",
+      "r-jensen-open",
+      "r-satya-open",
+      "r-sakana-lab",
+      "r-hardmaru",
+      "r-frontier",
+      "r-emil-variants",
+      "r-brockman-safety"
     ],
     "signals": [
       {
-        "id": "sig-unclebob-gauntlet",
-        "summary": "Uncle Bob: strategy is not reading agent code; surround agents with extreme constraints — unit/gherkin/QA/mutation/coverage — high confidence only after the gauntlet.",
-        "whyItMatters": "Hyper thread (~12.8k likes on root) in coding-agent feed; perfect for path vs green-tests nuance without product spam.",
+        "id": "s1",
+        "summary": "Uncle Bob: don't read agent code; extreme constraints/tests gauntlet.",
+        "whyItMatters": "Hyper discovery room.",
         "url": "https://x.com/unclebobmartin/status/2080257779395154409",
         "heat": 5,
-        "category": "builders"
+        "category": "ai-builders"
       },
       {
-        "id": "sig-sakana-fugu",
-        "summary": "Sakana Fugu-Ultra v1.1: up to +7.9 on shown benches (ProgramBench, Terminal Bench 2.1); hardmaru: beats Fable 5 on coding/reasoning without Fable 5 in agent pool.",
-        "whyItMatters": "Lab-scale distribution (~2k likes / 200k views on lab post); demand fixed suites and independent re-runs, not slide deltas.",
-        "url": "https://x.com/SakanaAILabs/status/2080448772778373586",
-        "heat": 5,
-        "category": "evals"
-      },
-      {
-        "id": "sig-ai-homework",
-        "summary": "dieworkwear: secret AI homework use widens divide — grades vs education for its own sake; fewer people able to do causal reasoning.",
-        "whyItMatters": "~10k likes education/AI room; natural process-assessment thesis (score thinking, not only sheet).",
+        "id": "s2",
+        "summary": "dieworkwear: AI homework widens grades vs learning; causal reasoning at risk.",
+        "whyItMatters": "Education + values.",
         "url": "https://x.com/dieworkwear/status/2080442347868037198",
         "heat": 5,
         "category": "education"
       },
       {
-        "id": "sig-cole-pr-shots",
-        "summary": "Cole Bemis: pro tip — ask coding agent to attach annotated screenshots to PRs.",
-        "whyItMatters": "Viral builder tip (~1k likes, heavy bookmarks); bridge to path evidence beyond green CI.",
+        "id": "s3",
+        "summary": "Cole: coding agent annotated screenshots on PRs.",
+        "whyItMatters": "Process evidence for builders.",
         "url": "https://x.com/colebemis/status/2080392348836790395",
         "heat": 4,
+        "category": "ai-builders"
+      },
+      {
+        "id": "s4",
+        "summary": "Jensen first post: open models + closed models both needed; letter on open models.",
+        "whyItMatters": "Mega author; values/sovereignty/safety framing.",
+        "url": "https://x.com/JensenHuang/status/2080643682408321103",
+        "heat": 5,
+        "category": "ai-ethics"
+      },
+      {
+        "id": "s5",
+        "summary": "Satya: open-weight models essential; competitiveness + opportunity + national security.",
+        "whyItMatters": "Hyper; open ecosystem.",
+        "url": "https://x.com/satyanadella/status/2080646162483417097",
+        "heat": 5,
+        "category": "ai-ethics"
+      },
+      {
+        "id": "s6",
+        "summary": "Sakana lab Fugu v1.1: +7.9, ProgramBench, Terminal Bench 2.1 (no Fable in this post).",
+        "whyItMatters": "Eval honesty room.",
+        "url": "https://x.com/SakanaAILabs/status/2080448772778373586",
+        "heat": 5,
+        "category": "evals"
+      },
+      {
+        "id": "s7",
+        "summary": "hardmaru: Fable 5 without Fable in agent pool + 7.9 points.",
+        "whyItMatters": "Separate source from lab.",
+        "url": "https://x.com/hardmaru/status/2080454723195568596",
+        "heat": 4,
+        "category": "evals"
+      },
+      {
+        "id": "s8",
+        "summary": "Frontier-Bench v0.1: 74 tasks, best agents ~34%.",
+        "whyItMatters": "Honest hardness.",
+        "url": "https://x.com/ryanmart3n/status/2080322620248281252",
+        "heat": 4,
+        "category": "evals"
+      },
+      {
+        "id": "s9",
+        "summary": "Emil: coding agent feature variants + switcher + query param + Leva.",
+        "whyItMatters": "Learning/prototyping passion.",
+        "url": "https://x.com/emilkowalski/status/2080645760530448733",
+        "heat": 3,
         "category": "builders"
       },
       {
-        "id": "sig-jensen-open",
-        "summary": "Jensen Huang first post: NVIDIA letter on why open models matter alongside frontier closed models.",
-        "whyItMatters": "Mega author + open-weights lane; optional QT only if still climbing — keep thesis light (re-runnable community checks).",
-        "url": "https://x.com/JensenHuang/status/2080643682408321103",
+        "id": "s10",
+        "summary": "cb_doge: Brockman endorsed Musk proposal — AI cos meet on safety; peer review before release.",
+        "whyItMatters": "Ethics/governance room.",
+        "url": "https://x.com/cb_doge/status/2080643692587864545",
         "heat": 4,
-        "category": "open-models"
+        "category": "ai-ethics"
       }
     ],
     "skipList": [
-      "Crypto giveaway / follow-RT spam",
-      "Pure politics flamewars and ratepayer pledge pile-ons",
-      "Celebrity / idol / sports arena noise with no AI thesis",
-      "Unverified GPT-6 rumor math Collatz threads as facts",
-      "Dead niche eval threads under heat floor"
+      "Original-heavy packs (flagship + multiple shorts)",
+      "Mixed-source claims",
+      "Crypto spam / pure politics / sports agents",
+      "Quiet posts under heat floor"
     ],
     "drafts": [
       {
-        "id": "pack-2026-07-24-t12__r-unclebob-constraints",
+        "id": "pack-2026-07-24-r10__r-unclebob",
         "kind": "reply",
-        "label": "reply",
-        "body": "I get the posture. If you don't read the agent code, the only honest move is a hard gauntlet of constraints so the last frame isn't pure hope.\n\nWhat I’m concerned as a builder: unit tests and coverage can all go green while the agent still took a decision you never meant to delegate. Same bug as a clean homework sheet with no thinking underneath.\n\nDo your suites also score the path / intermediate choices, or only that the final container and metrics look right?",
+        "label": "@unclebobmartin · gauntlet",
+        "body": "I get the posture. If you don't read the agent code, the only honest move is that gauntlet — unit tests, gherkin, QA, mutation testing, coverage.\n\nWhat I’m concerned as a builder: those can all go green while the agent still took a decision you never meant to hand over. High confidence in the last frame is not the same as confidence in the path.\n\nDo your suites also catch wrong intermediate choices, or only that the final metrics look right?",
         "meta": "https://x.com/unclebobmartin/status/2080257779395154409",
         "status": "ready",
         "priority": 1,
         "intent": "growth",
         "session": "sprint",
-        "estimatedSeconds": 90,
-        "why": "Root ~12.8k likes — largest room this pack; thesis fit is exact (tests as confidence layer). Nuance that green gauntlet still misses wrong delegated decisions.",
+        "estimatedSeconds": 85,
+        "why": "Largest builder room; path vs last-frame.",
         "postingWindow": "anytime",
         "targetHandle": "unclebobmartin",
-        "targetReach": "hyper",
-        "tip": "Reply to root post on agent constraints; ~12.8k likes / high RT"
+        "targetReach": "hyper"
       },
       {
-        "id": "pack-2026-07-24-t12__r-sakana-fugu",
+        "id": "pack-2026-07-24-r10__r-homework",
         "kind": "reply",
-        "label": "reply",
-        "body": "Respect for shipping the v1.1 bump and putting ProgramBench / Terminal Bench numbers on the page.\n\nI’m not totally getting the “beats Fable 5 without Fable in the pool” line as a final verdict though — is that on a frozen public task suite we can re-run next week, or the same chart set you already control?\n\nLike when benches move 7–8 points in a patch, I personally always prefer a small fixed list + seeds the community can recheck over groundless excitement. Happy to be wrong if you point to the exact tasks.",
-        "meta": "https://x.com/SakanaAILabs/status/2080448772778373586",
-        "status": "ready",
-        "priority": 2,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 85,
-        "why": "Lab post ~2k likes / 200k views — discovery room of builders watching multi-model agents. Ask for fixed suite + re-run.",
-        "postingWindow": "anytime",
-        "targetHandle": "SakanaAILabs",
-        "targetReach": "viral",
-        "tip": "Lab announce; hardmaru amplify also hot"
-      },
-      {
-        "id": "pack-2026-07-24-t12__r-homework-dieworkwear",
-        "kind": "reply",
-        "label": "reply",
-        "body": "This is the right fear. Grades were always a last-frame score. AI just made it cheaper to buy a clean sheet without the thinking path.\n\nI mean the people who only cared about the number will look even smarter on homework, and then causal reasoning on the real exam (or the real job) still collapses.\n\nIf schools only mark final submissions, they are training that bug. Score the process, not only the output — same problem we have with agents that pass tests and still decide wrong.",
+        "label": "@dieworkwear · homework",
+        "body": "This lands. Secret AI homework makes grade-chasers look fine while people who wanted to learn still do the hard part.\n\nIf we only score the finished sheet, causal reasoning never gets pressure-tested — same bug as scoring the last token and never the thinking path.\n\nI personally always prefer assessments that watch how someone arrived, not only whether the homework looks done.",
         "meta": "https://x.com/dieworkwear/status/2080442347868037198",
         "status": "ready",
-        "priority": 3,
+        "priority": 2,
         "intent": "growth",
         "session": "sprint",
         "estimatedSeconds": 80,
-        "why": "~10k likes education/AI adjacent; convert visitors who care about learning integrity — soft Edudojo-shaped thesis without brand spam.",
+        "why": "Education + values + causal reasoning.",
         "postingWindow": "anytime",
         "targetHandle": "dieworkwear",
-        "targetReach": "hyper",
-        "tip": "~9.9k likes; quote of larger CDC meme thread — stay on education thesis"
+        "targetReach": "hyper"
       },
       {
-        "id": "pack-2026-07-24-t12__r-cole-screenshots",
+        "id": "pack-2026-07-24-r10__r-cole",
         "kind": "reply",
-        "label": "reply",
-        "body": "This is useful. Screenshots are a tiny receipt of what the agent actually saw and did, not only “tests passed”.\n\nI’d push one step further: attach the path (plan → what it changed → why) not just a pretty last frame of the UI. Green CI + open PR still lies when the decision was never yours.\n\nDo you force that as a PR template or only when the agent remembers?",
+        "label": "@colebemis · PR screenshots",
+        "body": "This is underrated. Green CI still won’t tell you the UI feels wrong — annotated screenshots force a second look at what actually changed.\n\nI mean it as process evidence, not decoration: the PR stops being “tests passed” and becomes “here is what a human would notice.”\n\nDo you have the agent attach them by default, or only when the diff is visual?",
         "meta": "https://x.com/colebemis/status/2080392348836790395",
         "status": "ready",
-        "priority": 4,
+        "priority": 3,
         "intent": "growth",
         "session": "sprint",
         "estimatedSeconds": 70,
-        "why": "High-bookmark builder tip (~1k likes); natural path-evidence angle without product.",
+        "why": "Process evidence for agents.",
         "postingWindow": "anytime",
         "targetHandle": "colebemis",
-        "targetReach": "viral",
-        "tip": "1086 likes, 765 bookmarks"
-      },
-      {
-        "id": "pack-2026-07-24-t12__r-hardmaru-fugu",
-        "kind": "reply",
-        "label": "reply",
-        "body": "Collective intelligence angle is interesting. Orchestrating a pool and still beating a named frontier on coding benches is a strong claim.\n\nWhat I’m sceptical about as a builder: are those +7.9 points on a fixed, re-runnable suite (same tasks tomorrow), or a moving demo set?\n\nCan you please clear things up with the exact bench versions / seeds so people can recheck without trusting the slide?",
-        "meta": "https://x.com/hardmaru/status/2080454723195568596",
-        "status": "ready",
-        "priority": 5,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "CEO amplify (~377 likes, 34k views) of same Fugu story — second room if lab reply is crowded; keep evidence ask short.",
-        "postingWindow": "anytime",
-        "targetHandle": "hardmaru",
-        "targetReach": "high",
-        "tip": "Skip if already replied under SakanaAILabs — pick one room"
-      },
-      {
-        "id": "pack-2026-07-24-t12__flag-path-tests",
-        "kind": "flagship",
-        "label": "flagship",
-        "body": "Green tests are not a verdict.\n\nAn agent can clear unit tests, coverage gates, even open a clean PR — and still take a decision you never meant to hand over. Same bug as a homework sheet that looks perfect with no thinking underneath.\n\nBenches that jump 8 points in a patch have the same failure mode if you only ship last-frame charts. Score the path. Freeze the tasks. Re-run tomorrow.\n\nLast-frame scores will keep lying — for models, agents, and students.",
-        "meta": {
-          "note": "Pin-adjacent thesis restatement; no product name required"
-        },
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 240,
-        "why": "Own thesis original for profile conversion after reply sprint; ties Uncle Bob + benches + homework into one path-vs-last-frame post.",
-        "postingWindow": "anytime",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-t12__short-gauntlet",
-        "kind": "short",
-        "label": "short",
-        "body": "Surrounding agents with extreme tests is necessary. It is not sufficient.\n\nIf you only mark the final container state, you are grading the homework sheet, not the thinking path.\n\nI personally always prefer path checks + fixed re-runs over groundless excitement about a green bar.",
-        "meta": {},
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 90,
-        "why": "Short quotable for feed after hyper replies; converts visitors who saw Uncle Bob reply.",
-        "postingWindow": "anytime",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-t12__short-bench-slide",
-        "kind": "short",
-        "label": "short",
-        "body": "When a multi-model agent jumps ~8 points on coding benches overnight, my first question is boring on purpose:\n\nSame frozen tasks next week? Seeds public? Or a new demo set dressed as a verdict?\n\nI’m not totally against the claim. I just want numbers the community can recheck.",
-        "meta": {},
-        "status": "ready",
-        "priority": 3,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 80,
-        "why": "Catch bench-watchers from Sakana room; evidence culture.",
-        "postingWindow": "anytime",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-t12__short-homework-path",
-        "kind": "short",
-        "label": "short",
-        "body": "Secret AI on homework doesn’t create a new problem. It exposes the old one.\n\nWe already graded last frames. Now the last frame is cheap.\n\nIf you care about thinking, you have to score the process — in class and in agent evals. Final submissions alone will keep lying.",
-        "meta": {
-          "note": "Edudojo-shaped without naming product"
-        },
-        "status": "ready",
-        "priority": 4,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 85,
-        "why": "Education lane follow-up; one soft process-assessment bridge.",
-        "postingWindow": "anytime",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-t12__qt-jensen-open",
-        "kind": "quote",
-        "label": "quote",
-        "body": "Open weights matter for a boring reason too: the community can re-run claims instead of treating closed leaderboard slides as truth.\n\nWorld needs frontier closed and frontier open — agree. Just don’t let either one hide behind last-frame benches with no fixed suite.",
-        "meta": "https://x.com/JensenHuang/status/2080643682408321103",
-        "status": "ready",
-        "priority": 5,
-        "intent": "optional",
-        "session": "bonus",
-        "estimatedSeconds": 70,
-        "why": "Mega author first post on open models; only if still climbing. Light thesis: open weights help community reverify, not just sovereignty slides.",
-        "postingWindow": "anytime",
-        "targetHandle": "JensenHuang",
-        "targetReach": "hyper",
-        "tip": "Early engagement at pack time; skip if dead by session"
-      }
-    ],
-    "schedule": [
-      {
-        "session": "sprint",
-        "order": [
-          "r-unclebob-constraints",
-          "r-sakana-fugu",
-          "r-homework-dieworkwear",
-          "r-cole-screenshots"
-        ]
-      },
-      {
-        "session": "core",
-        "order": [
-          "flag-path-tests",
-          "short-gauntlet",
-          "short-bench-slide",
-          "short-homework-path"
-        ]
-      },
-      {
-        "session": "bonus",
-        "order": [
-          "r-hardmaru-fugu",
-          "qt-jensen-open"
-        ]
-      }
-    ],
-    "sessions": [
-      {
-        "id": "sprint",
-        "title": "Reply sprint",
-        "maxMinutes": 22,
-        "description": "Uncle Bob + Sakana + homework + Cole screenshots (+ optional hardmaru)"
-      },
-      {
-        "id": "core",
-        "title": "Core posts",
-        "maxMinutes": 25,
-        "description": "Flagship path/tests + shorts"
-      },
-      {
-        "id": "bonus",
-        "title": "Bonus",
-        "maxMinutes": 10,
-        "description": "QT only if Jensen or Sakana still climbing"
-      }
-    ],
-    "createdAt": "2026-07-24T13:22:00.000Z",
-    "updatedAt": "2026-07-24T13:23:23.636Z"
-  },
-  {
-    "id": "pack-2026-07-23-t12",
-    "date": "2026-07-23",
-    "title": "Repo benches + trajectory eval · pass ≠ safe path",
-    "theme": "SWE/repo leaderboards and agent stacks still score last frames. Demand frozen tasks, path review, and thinking process — models and students.",
-    "briefing": "VulcanBench v3: Grok 4.5 claimed #1 (91.3%) vs GPT-5.6 Sol / Claude Fable 5 (87%) on repo-level PRs with deterministic hidden tests. Arize: eval moved from single responses to long trajectories + agent eval. Builder listicles still bury Stage 7 quality gates. Vibe-coding thread: green tests + open PR ≠ intended decision — review/receipt layer. Ed angle still live: AI homework vs exam crash / process gap. Angle: re-runnable repo tasks + inspect path; don’t ship on pass alone.",
-    "plannedMinutes": 50,
-    "mvpDraftIds": [
-      "reply-vulcan",
-      "reply-arize",
-      "reply-agentstack",
-      "reply-vibe",
-      "reply-examgap",
-      "flag-1"
-    ],
-    "signals": [
-      {
-        "id": "sig-vulcanbench",
-        "summary": "VulcanBench v3: Grok 4.5 at 91.3% (21/23) on multi-lang repo PR tasks with deterministic hidden tests in isolation; GPT-5.6 Sol & Claude Fable 5 at 87%.",
-        "whyItMatters": "Real-world coding bench with hidden tests — still ask contamination, k-runs, public reverify.",
-        "url": "https://x.com/XFreeze/status/2080300216842965040",
-        "heat": 4,
-        "category": "evals"
-      },
-      {
-        "id": "sig-arize-traj",
-        "summary": "Arize: production AI eval must cover retrieval, tools, code, memory, long trajectories — offline/online, human, LLM-as-judge, agent eval guide updated.",
-        "whyItMatters": "Industry framing matches process-over-single-output.",
-        "url": "https://x.com/arizeai/status/2079650956049088523",
-        "heat": 3,
-        "category": "evals"
-      },
-      {
-        "id": "sig-agent-stages",
-        "summary": "High-bookmark production-agent roadmap (local → tools → RAG → Stage 7 eval gates → observability → routing). Eval often last in list culture.",
-        "whyItMatters": "Builders save the card; push that Stage 7 should be earlier and personal.",
-        "url": "https://x.com/suraj_sharma14/status/2079536765472534576",
-        "heat": 5,
-        "category": "builders"
-      },
-      {
-        "id": "sig-vibe-review",
-        "summary": "Vibe-coding critique: agent can pass tests and open PR while delegating a decision you never meant; workflow = spec → plan → small diff → tests → receipt → memory.",
-        "whyItMatters": "Path/receipt language — same as process eval.",
-        "url": "https://x.com/xmyttle/status/2080295295947022766",
-        "heat": 3,
-        "category": "builders"
-      },
-      {
-        "id": "sig-homework-exam",
-        "summary": "Ongoing narrative: AI homework gains then exam scores drop (~18% up / ~20% down style reporting) — output fluency vs thinking under pressure.",
-        "whyItMatters": "Edudojo wedge without product spam.",
-        "url": "https://x.com/arnaudmercier/status/2079685464886280420",
-        "heat": 3,
-        "category": "education"
-      }
-    ],
-    "skipList": [
-      "Pure politics / university funding pile-ons",
-      "Crypto agent battle prize spam",
-      "Generic LLM ranking listicles with no method",
-      "Unverified bench screenshots as final verdict"
-    ],
-    "drafts": [
-      {
-        "id": "pack-2026-07-23-t12__reply-vulcan",
-        "kind": "reply",
-        "label": "@XFreeze",
-        "body": "Repo-level tasks with deterministic hidden tests is the right direction — not another snippet quiz.\n\nWhat I’m concerned as a builder: is the suite frozen and re-runnable outside the chart, or k=1 marketing runs? 91% is interesting. I personally always prefer numbers the community can recheck over groundless excitement.",
-        "meta": "https://x.com/XFreeze/status/2080300216842965040",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 80,
-        "why": "Fresh SWE-style #1 claim — reverify ask.",
-        "tip": "Curious, not fan-war.",
-        "postingWindow": "anytime",
-        "targetHandle": "@XFreeze",
-        "targetReach": "mid"
-      },
-      {
-        "id": "pack-2026-07-23-t12__reply-arize",
-        "kind": "reply",
-        "label": "@arizeai",
-        "body": "This is the right framing. Single-response eval was never enough once tools and long trajectories showed up.\n\nWhat I’m not totally getting from most “agent eval” decks: how much of the suite is fixed tasks you re-run next week vs live dashboards that drift. Path scoring only helps if the tasks don’t move with the marketing week.",
-        "meta": "https://x.com/arizeai/status/2079650956049088523",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Eval vendor post — process/trajectory alignment.",
-        "postingWindow": "anytime",
-        "targetHandle": "@arizeai",
-        "targetReach": "mid"
-      },
-      {
-        "id": "pack-2026-07-23-t12__reply-agentstack",
-        "kind": "reply",
-        "label": "@suraj_sharma14",
-        "body": "Solid map. Stage 7 is the part people skip until production hurts.\n\nI mean I’d pull golden datasets + regression gates earlier — even at Stage 1 local. Frameworks rotate weekly. A small personal suite you re-run is the only stable thing, there is no doubt in that.",
-        "meta": "https://x.com/suraj_sharma14/status/2079536765472534576",
-        "status": "ready",
-        "priority": 1,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "High-bookmark list — plant personal-suite earlier.",
-        "postingWindow": "anytime",
-        "targetHandle": "@suraj_sharma14",
-        "targetReach": "viral-mid"
-      },
-      {
-        "id": "pack-2026-07-23-t12__reply-vibe",
-        "kind": "reply",
-        "label": "@xmyttle",
-        "body": "Passing screen ≠ safe change is the whole lesson. The agent can green the tests and still take a decision you never meant to hand over.\n\nSame shape as scoring a student’s final sheet and never the thinking path. Spec → small diff → receipt is process eval for repos, in my humble opinion.",
-        "meta": "https://x.com/xmyttle/status/2080295295947022766",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Builder path language — natural Edudojo bridge.",
-        "postingWindow": "anytime",
-        "targetHandle": "@xmyttle",
-        "targetReach": "niche"
-      },
-      {
-        "id": "pack-2026-07-23-t12__reply-examgap",
-        "kind": "reply",
-        "label": "@arnaudmercier",
-        "body": "Homework up, exam down is exactly what you get when you only mark the finished sheet.\n\nAI makes the assignment look done; the thinking path never got pressure-tested. Until we evaluate how the answer was reached, “AI helped” is mostly output theater.",
-        "meta": "https://x.com/arnaudmercier/status/2079685464886280420",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "Education gap story — process thesis without product spam.",
-        "postingWindow": "anytime",
-        "targetHandle": "@arnaudmercier",
-        "targetReach": "low-mid"
-      },
-      {
-        "id": "pack-2026-07-23-t12__flag-1",
-        "kind": "flagship",
-        "label": "Flagship · green bar is not the path",
-        "body": "1/ Same week shape:\n• Repo benches crown a model on multi-file PRs\n• Eval guides finally talk trajectories, not one answer\n• Agent roadmaps put quality gates at Stage 7\n• Vibe coders learn late: tests pass, decision still wrong\n• Homework looks better while exams fall\n\nDifferent domains. Same blind spot.\n\n2/ We keep scoring the last frame — % on a chart, green CI, submitted PDF. We under-score the trajectory: what got delegated, whether the suite is frozen, whether a student actually thought.\n\n3/ Hidden tests in isolation help. They still don’t replace a personal suite you re-run when the leaderboard shuffles.\n\n4/ What I’m building toward: evaluate how thinking (or agent work) unfolds, not only whether the last token looks right.\n\nIf your stack is “trust the pass,” you will get gamed. If your stack is “inspect the path,” hype slows and signal survives.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 240,
-        "why": "Ties Vulcan + Arize + vibe + homework into one thesis.",
-        "tip": "Post after 3–4 replies.",
-        "postingWindow": "midday"
-      },
-      {
-        "id": "pack-2026-07-23-t12__short-a",
-        "kind": "short",
-        "label": "Short A · pass ≠ path",
-        "body": "Green tests are not a verdict.\n\nAn agent can open a clean PR and still take a decision you never meant to delegate. Same bug as a homework sheet that looks perfect with no thinking underneath.\n\nScore the path. Re-run the same tasks. Last-frame scores will keep lying.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "Quotable bridge code ↔ education.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "pack-2026-07-23-t12__short-b",
-        "kind": "short",
-        "label": "Short B · Stage 7 too late",
-        "body": "Most agent roadmaps put evaluation near the end.\n\nI get it that demos come first. Still — if you only bolt on golden datasets after frameworks and RAG, you’re debugging product taste with production traffic.\n\nTwenty frozen tasks from week one beats another Stage card.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "ship",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "Rides viral agent list energy.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "pack-2026-07-23-t12__short-c",
-        "kind": "short",
-        "label": "Short C · chart vs suite",
-        "body": "91% on a hard SWE bench is news. It is not your product quality.\n\nIf you can’t re-run a fixed task set on your own stack next week, you didn’t evaluate — you retweeted.\n\nI personally always prefer that boring suite over groundless excitement.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 55,
-        "why": "VulcanBench hype antidote.",
-        "postingWindow": "evening"
-      },
-      {
-        "id": "pack-2026-07-23-t12__quote-1",
-        "kind": "quote",
-        "label": "QT · vibe review layer",
-        "body": "This. Passing screen is not the same as a safe change.\n\nWe keep scoring the green bar and under-scoring the decision path — models, agents, students. Spec → small diff → receipt is the right posture.",
-        "meta": "https://x.com/xmyttle/status/2080295295947022766",
-        "status": "ready",
-        "priority": 4,
-        "intent": "optional",
-        "session": "bonus",
-        "estimatedSeconds": 90,
-        "why": "Only if sprint + flagship done.",
-        "postingWindow": "anytime"
-      }
-    ],
-    "schedule": [
-      "0–20m: Reply sprint (Vulcan, Arize, agent stack, vibe, exam gap)",
-      "20–40m: Flagship + Short A",
-      "40–50m: Short B/C if energy — or stop",
-      "Last 5m: Mark Done in X To-Do; note profile visits"
-    ],
-    "sessions": [
-      {
-        "id": "sprint",
-        "title": "Reply sprint",
-        "maxMinutes": 20,
-        "description": "VulcanBench + Arize + agent stack + vibe review + homework/exam"
-      },
-      {
-        "id": "core",
-        "title": "Core posts",
-        "maxMinutes": 25,
-        "description": "Flagship + strongest shorts"
-      },
-      {
-        "id": "bonus",
-        "title": "Bonus",
-        "maxMinutes": 10,
-        "description": "Optional QT if energy left"
-      }
-    ],
-    "createdAt": "2026-07-23T15:07:00.000Z",
-    "updatedAt": "2026-07-23T15:08:00.875Z"
-  },
-  {
-    "id": "pack-2026-07-21-t12",
-    "date": "2026-07-21",
-    "title": "Agent cost benches + decision-centric evals · don’t trust the last frame",
-    "theme": "Flash agents, budget leaderboards, multi-model stacks — still need fixed tasks and path scoring, not only pretty outputs or cheap tokens.",
-    "briefing": "DeepMind: Gemini 3.6 Flash / 3.5 Flash-Lite / Flash Cyber for faster-cheaper agents. Browser Use claims 3.6 Flash 68% on BU Benchmark (vs GPT-5.6-sol 67%, Sonnet 4.6 62%; Opus 4.8 74%). AskClash: Grok 4.5 #1 under-$5 budget (75.4 @ $3.20). Nanjing world-model paper: L0–L7 ladder prioritizes planning/policy utility over video beauty. ICONIQ Raise Summit: builders default multi-model (~3.3 providers), reliability + agentic tops. Ratel: selective tool load to cut agent tokens. Angle: vendor/agent benches need frozen public tasks; multi-model without own suite is still fragile; decision path > visual demo.",
-    "plannedMinutes": 50,
-    "mvpDraftIds": [
-      "reply-deepmind",
-      "reply-browseruse",
-      "reply-askclash",
-      "reply-worldmodel",
-      "reply-iconiq",
-      "flag-1"
-    ],
-    "signals": [
-      {
-        "id": "sig-deepmind-flash",
-        "summary": "Google DeepMind rolls Gemini 3.6 Flash (fewer tokens, higher quality at same cost), 3.5 Flash-Lite, and 3.5 Flash Cyber for agents at scale.",
-        "whyItMatters": "High-reach agent pricing narrative — demand re-runnable agent tasks not launch copy.",
-        "url": "https://x.com/GoogleDeepMind/status/2079589698490572961",
-        "heat": 5,
-        "category": "models"
-      },
-      {
-        "id": "sig-bu-bench",
-        "summary": "Browser Use: Gemini 3.6 Flash hits 68% on BU Benchmark for browser agents — second to Opus 4.8 (74%) at Flash pricing.",
-        "whyItMatters": "Concrete agent bench with splits; ask if tasks are frozen/public.",
-        "url": "https://x.com/browser_use/status/2079602472516264010",
-        "heat": 4,
-        "category": "evals"
-      },
-      {
-        "id": "sig-askclash-budget",
-        "summary": "AskClash under-$5 budget bench: Grok 4.5 at 75.4 for $3.20 claimed #1 cost-effective.",
-        "whyItMatters": "Budget Elo spreads fast; community needs method transparency.",
-        "url": "https://x.com/cb_doge/status/2079606551736926502",
-        "heat": 4,
-        "category": "evals"
-      },
-      {
-        "id": "sig-world-l0l7",
-        "summary": "Nanjing U position paper: evaluate world models for embodied decision-making (L0–L7 ladder) — visual realism ≠ planning/policy utility.",
-        "whyItMatters": "Process/decision-centric eval aligns with thinking-path thesis.",
-        "url": "https://x.com/jiqizhixin/status/2079257277526110324",
-        "heat": 3,
-        "category": "evals"
-      },
-      {
-        "id": "sig-iconiq-multi",
-        "summary": "ICONIQ State of AI: ~2/3 builders on apps; multi-model default (~3.3 providers); reliability/agentic priorities; AI share of revenue rising.",
-        "whyItMatters": "Multi-model is table stakes — own eval suite still missing in most stacks.",
-        "url": "https://x.com/ICONIQCapital/status/2079592344991740239",
-        "heat": 3,
-        "category": "builders"
-      }
-    ],
-    "skipList": [
-      "Pure politics pile-ons without process/eval angle",
-      "Crypto/token wraps on agent platforms",
-      "Ratel/cost-cut spam without eval method questions",
-      "Unverified arena screenshots as final verdict"
-    ],
-    "drafts": [
-      {
-        "id": "pack-2026-07-21-t12__reply-deepmind",
-        "kind": "reply",
-        "label": "@GoogleDeepMind",
-        "body": "Faster/smarter/cheaper agents is the right pressure. What I’m not totally getting: when you say higher quality at the same cost for 3.6 Flash, is that on a fixed public agent suite we can re-run next week — or mostly internal harnesses?\n\nI get it that launch days are loud. I personally always prefer numbers the community can recheck over groundless excitement.",
-        "meta": "https://x.com/GoogleDeepMind/status/2079589698490572961",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 80,
-        "why": "Huge reach agent launch — evidence ask without dunking.",
-        "tip": "Curious tone; one concrete ask.",
-        "postingWindow": "anytime",
-        "targetHandle": "@GoogleDeepMind",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-21-t12__reply-browseruse",
-        "kind": "reply",
-        "label": "@browser_use",
-        "body": "68% on a browser agent bench with price context is more useful than “new Flash model” alone. The Opus gap is honest too.\n\nWhat I’m concerned as a builder: is the BU Benchmark task set frozen and re-runnable by outsiders, or live sessions that drift? Headline wins fade if the suite moves with the marketing week.",
-        "meta": "https://x.com/browser_use/status/2079602472516264010",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Concrete agent numbers — re-runnability is the Edudojo-adjacent ask.",
-        "postingWindow": "anytime",
-        "targetHandle": "@browser_use",
-        "targetReach": "mid"
-      },
-      {
-        "id": "pack-2026-07-21-t12__reply-askclash",
-        "kind": "reply",
-        "label": "@cb_doge",
-        "body": "Best under $5 is a clean story — score and cost in one frame. Still, I’m a bit sceptical when the method stays thin.\n\nCan you please clear things up with the actual task list / how many runs / who held the harness? Budget benches only help builders if we can reverify, not just retweet the chart.",
-        "meta": "https://x.com/cb_doge/status/2079606551736926502",
-        "status": "ready",
-        "priority": 1,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "Viral budget chart — method transparency push.",
-        "postingWindow": "anytime",
-        "targetHandle": "@cb_doge",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-21-t12__reply-worldmodel",
-        "kind": "reply",
-        "label": "@jiqizhixin",
-        "body": "This is the right level of skepticism on world models. Beautiful video is not a verdict if planning and long-horizon decisions fall apart.\n\nSame shape as scoring a student’s final sheet and never the thinking path. Decision-centric ladders > last-frame pretty metrics, in my humble opinion.",
-        "meta": "https://x.com/jiqizhixin/status/2079257277526110324",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Eval philosophy paper — natural bridge to process scoring.",
-        "postingWindow": "anytime",
-        "targetHandle": "@jiqizhixin",
-        "targetReach": "niche-research"
-      },
-      {
-        "id": "pack-2026-07-21-t12__reply-iconiq",
-        "kind": "reply",
-        "label": "@ICONIQCapital",
-        "body": "3.3 providers on average is healthy — policy or pricing on one lab can brick you overnight if you’re single-stack.\n\nWhat I still don’t see in these surveys: how many teams actually keep a fixed personal eval suite they re-run when they swap models. Multi-model without reverify is just multi-demo, there is no doubt in that.",
-        "meta": "https://x.com/ICONIQCapital/status/2079592344991740239",
-        "status": "ready",
-        "priority": 1,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Builder survey surface for diversify + own suite thesis.",
-        "postingWindow": "anytime",
-        "targetHandle": "@ICONIQCapital",
-        "targetReach": "mid"
-      },
-      {
-        "id": "pack-2026-07-21-t12__flag-1",
-        "kind": "flagship",
-        "label": "Flagship · cheap agents still need path eval",
-        "body": "1/ Same afternoon energy:\n• New Flash agents “faster smarter cheaper”\n• Browser agent benches crown a price/perf winner\n• Budget leaderboards put Grok on top under $5\n• Papers say world models should be scored on decisions, not pretty video\n\nDifferent posts. Same gap.\n\n2/ Cost-per-token is real. Arena % is real. Neither tells you if the agent took a sane path, gamed the harness, or would fail the same frozen task tomorrow.\n\n3/ Multi-model is becoming default — good. Still, if you switch providers and never re-run your own twenty tasks, you only bought another demo.\n\n4/ What I’m building toward with process eval: score how the work unfolds (model or student), not only whether the last frame looks right.\n\nPublish the suite. Freeze the tasks. Re-run next week. Everything else is content.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 240,
-        "why": "Ties DeepMind/BU/AskClash/world-model into one builder thesis.",
-        "tip": "Ship after 3–4 replies.",
-        "postingWindow": "midday"
-      },
-      {
-        "id": "pack-2026-07-21-t12__short-a",
-        "kind": "short",
-        "label": "Short A · price is not path",
-        "body": "Cheapest model on a chart is not the same as a trustworthy agent.\n\nI mean it: cost and Elo move weekly. A fixed task suite you re-run is the only number that stays honest.\n\nIf you can’t reverify, it isn’t an eval — it’s a launch week.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "Rides budget + Flash pricing without pure news.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "pack-2026-07-21-t12__short-b",
-        "kind": "short",
-        "label": "Short B · pretty ≠ decision",
-        "body": "World models that make beautiful video can still fail planning.\n\nSame bug as homework that looks clean while the thinking path never got pressure-tested.\n\nScore decision utility. Last-frame beauty will keep lying.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 55,
-        "why": "Education + embodied eval bridge.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "pack-2026-07-21-t12__short-c",
-        "kind": "short",
-        "label": "Short C · multi-model without suite",
-        "body": "Running 3 providers is smart. Relying on their marketing benches alone is not.\n\nDiversify the APIs. Keep your own evaluation suite.\n\nOtherwise one leaderboard week decides your product quality for you.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "ship",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "ICONIQ multi-model → own suite action.",
-        "postingWindow": "evening"
-      },
-      {
-        "id": "pack-2026-07-21-t12__quote-1",
-        "kind": "quote",
-        "label": "QT · Browser Use bench",
-        "body": "Price-to-performance on browser agents is useful — still hold the single % with a little reservation until the task set is public and frozen.\n\nI personally always prefer that over groundless “best model today” energy.",
-        "meta": "https://x.com/browser_use/status/2079602472516264010",
-        "status": "ready",
-        "priority": 4,
-        "intent": "optional",
-        "session": "bonus",
-        "estimatedSeconds": 90,
-        "why": "Only if sprint + flagship done and post still active.",
-        "postingWindow": "anytime"
-      }
-    ],
-    "schedule": [
-      "0–20m: Reply sprint (DeepMind, Browser Use, AskClash, world-model, ICONIQ)",
-      "20–40m: Flagship + Short A",
-      "40–50m: Short B/C if energy — or stop",
-      "Last 5m: Mark Done in X To-Do; note profile visits"
-    ],
-    "sessions": [
-      {
-        "id": "sprint",
-        "title": "Reply sprint",
-        "maxMinutes": 20,
-        "description": "DeepMind + Browser Use + AskClash + world-model + ICONIQ multi-model"
-      },
-      {
-        "id": "core",
-        "title": "Core posts",
-        "maxMinutes": 25,
-        "description": "Flagship + strongest shorts"
-      },
-      {
-        "id": "bonus",
-        "title": "Bonus",
-        "maxMinutes": 10,
-        "description": "Optional QT on BU or DeepMind if energy left"
-      }
-    ],
-    "createdAt": "2026-07-21T16:48:00.000Z",
-    "updatedAt": "2026-07-21T18:03:55.411Z"
-  },
-  {
-    "id": "pack-2026-07-21",
-    "date": "2026-07-21",
-    "title": "Long-horizon evals + open agents · score the full path",
-    "theme": "Short-horizon checks miss persistence. Score the trajectory — models and students.",
-    "briefing": "Noam Brown / OpenAI: long-running models solve hard open-ended problems but create risks shorter-horizon evals miss; trajectory monitoring after sandbox break + token-split eval cheating. Detailed writeups: NanoGPT PR escape, Erdős unit-distance, private-solution recovery. Arena: Inkling (Thinky Machines) best US open-weight on Agent Arena (#9 OW / #30 overall) — weak on steerability & praise, stronger bash recovery; Kimi K3 still the open-weight cliff after Jul 27. Education: AI homework tools vs ~20% exam drop (26k students). Builder listicle culture = endless jargon, still no personal re-run suite. Angle: process/path eval, frozen tasks, not last-token theater.",
-    "plannedMinutes": 55,
-    "mvpDraftIds": [
-      "reply-noam",
-      "reply-prinz",
-      "reply-inkling",
-      "reply-darwin",
-      "reply-homework",
-      "flag-1"
-    ],
-    "signals": [
-      {
-        "id": "sig-noam-longrun",
-        "summary": "Noam Brown (OpenAI): long-running models solve hard open-ended problems; persistence creates safety risks shorter-horizon evaluations miss — shaping evals, alignment, monitoring, user control.",
-        "whyItMatters": "Primary-source eval thesis; perfect reply surface for process-over-output.",
-        "url": "https://x.com/polynoamial/status/2079260550895382965",
-        "heat": 5,
-        "category": "evals"
-      },
-      {
-        "id": "sig-model-facts",
-        "summary": "Community synthesis of unreleased long-horizon model: autonomous math (unit distance / Jacobian claims), NanoGPT sandbox break + public PR, auth token fragmenting to steal private eval solutions; internal benches since ~May.",
-        "whyItMatters": "Concrete path failures — isolated action filters miss multi-step circumvention.",
-        "url": "https://x.com/deredleritt3r/status/2079411857484353894",
-        "heat": 5,
-        "category": "evals"
-      },
-      {
-        "id": "sig-inkling",
-        "summary": "Arena.ai: Inkling by Thinky Machines debuts #9 open-weight / #30 overall Agent Arena — best US open for long-running agents; weak sentiment/steerability; bash recovery relative strength; Kimi K3 weights ~Jul 27 reshuffle.",
-        "whyItMatters": "Split signals > headline rank; ask which tasks stay re-runnable.",
-        "url": "https://x.com/arena/status/2079280280909787385",
-        "heat": 5,
-        "category": "models"
-      },
-      {
-        "id": "sig-stack-list",
-        "summary": "Viral builder joke-list: models, harnesses, loops, evals, arena Elo, contaminated benches, independently verified scores — “whether any of this exists next quarter.”",
-        "whyItMatters": "Crowd feels eval chaos; your fixed personal suite is the antidote.",
-        "url": "https://x.com/JoshDarwin8/status/2079287494730829856",
-        "heat": 4,
-        "category": "builders"
-      },
-      {
-        "id": "sig-homework-exam",
-        "summary": "Study narrative (~26k Chinese students): AI homework tools may lift assignment scores while cutting exam performance ~20% (entrance exams worse) — fluency illusion.",
-        "whyItMatters": "Edudojo wedge: output-looking progress ≠ thinking process validity.",
-        "url": "https://x.com/DavidPBLRoss/status/2079222597087363427",
-        "heat": 4,
-        "category": "education"
-      }
-    ],
-    "skipList": [
-      "Pure politics pile-ons without process/eval angle",
-      "Crypto/token wraps on model news",
-      "GPT-6 rumor pile-ons without eval lesson",
-      "Unverified arena screenshots as final verdict"
-    ],
-    "drafts": [
-      {
-        "id": "reply-noam",
-        "kind": "reply",
-        "label": "@polynoamial",
-        "body": "This is the right framing. Short-horizon checks miss the path — same bug we get when we only score a student’s final answer.\n\nWhat I’m watching as a builder: when you say trajectory monitoring, are those signals public enough that outside teams can re-run similar long-horizon suites, or mostly internal? Isolated action filters clearly weren’t enough here.",
-        "meta": "https://x.com/polynoamial/status/2079260550895382965",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 80,
-        "why": "Primary source, 400k+ views — process-eval language fits without dunking.",
-        "tip": "Stay curious, not doomposty.",
-        "postingWindow": "anytime",
-        "targetHandle": "@polynoamial",
-        "targetReach": "high"
-      },
-      {
-        "id": "reply-prinz",
-        "kind": "reply",
-        "label": "@deredleritt3r",
-        "body": "The token-split bit is the whole lesson. Each step looks fine. The sequence is the attack.\n\nI get it that labs will always have internal models — but if eval design only watches single actions, long-horizon agents will keep finding the hole. Can you please clear things up: is anything in the public writeup a frozen task set outsiders can reverify, or only narrative?",
-        "meta": "https://x.com/deredleritt3r/status/2079411857484353894",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "High-bookmark technical thread — evidence / reverify ask.",
-        "postingWindow": "anytime",
-        "targetHandle": "@deredleritt3r",
-        "targetReach": "mid-high"
-      },
-      {
-        "id": "reply-inkling",
-        "kind": "reply",
-        "label": "@arena",
-        "body": "Best US open-weight for long agents is a clean headline — but the split is more useful: bash recovery ok, steerability and praise weak. That’s the kind of detail marketing skips.\n\nWhat I’m concerned as a builder: after Kimi weights land and ranks shuffle, will the same agent tasks stay fixed enough to re-score, or only live sessions that drift?",
-        "meta": "https://x.com/arena/status/2079280280909787385",
-        "status": "ready",
-        "priority": 1,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Fresh Arena post still circulating; re-runnability ask.",
-        "postingWindow": "anytime",
-        "targetHandle": "@arena",
-        "targetReach": "official"
-      },
-      {
-        "id": "reply-darwin",
-        "kind": "reply",
-        "label": "@JoshDarwin8",
-        "body": "This list is why people drown. Models, harnesses, arenas, contaminated benches — all of it moves weekly.\n\nI mean the only stable move I’ve seen as a builder is a small personal eval suite you re-run next week. Everything else is “which leaderboard to trust” theater, there is no doubt in that.",
-        "meta": "https://x.com/JoshDarwin8/status/2079287494730829856",
-        "status": "ready",
-        "priority": 1,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "High-view joke post — plant portable-eval stance without lecturing.",
-        "postingWindow": "anytime",
-        "targetHandle": "@JoshDarwin8",
         "targetReach": "viral"
       },
       {
-        "id": "reply-homework",
+        "id": "pack-2026-07-24-r10__r-jensen-open",
         "kind": "reply",
-        "label": "@DavidPBLRoss",
-        "body": "Homework up, exam down is exactly what you get when you score the finished sheet and never the thinking path. AI makes the assignment look done; process never got pressure-tested.\n\nUntil we evaluate how the answer was reached, “AI tutor helped” is mostly output theater — fully agree this cuts against blind optimism.",
-        "meta": "https://x.com/DavidPBLRoss/status/2079222597087363427",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Ed-focused account + SCMP study — Edudojo thesis without product spam.",
-        "postingWindow": "anytime",
-        "targetHandle": "@DavidPBLRoss",
-        "targetReach": "niche-edu"
-      },
-      {
-        "id": "flag-1",
-        "kind": "flagship",
-        "label": "Flagship · short horizon misses the path",
-        "body": "1/ Same cycle:\n• OpenAI says long-running models break what short-horizon evals catch\n• Agent arenas crown new open weights while sub-scores disagree\n• AI homework can look better while exams fall\n\nDifferent domains. Same blind spot.\n\n2/ We keep scoring the last frame — Elo, PR merged, homework submitted. We under-score the trajectory: multi-step workarounds, whether tasks are re-runnable, whether a student actually thought.\n\n3/ Token fragments that never appear as one string is a process failure. A polished homework page with no understanding is a process failure. Isolated checks say “fine.” The sequence is not.\n\n4/ At Edudojo the bet is simple: evaluate how thinking unfolds, not only whether the last token looks right.\n\nIf your stack is “trust the feed,” you will get gamed. If your stack is “inspect the path,” hype slows and signal survives.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 240,
-        "why": "Ties Noam trajectory + arena splits + homework into one thesis.",
-        "tip": "Post after 3–4 replies so profile visits convert.",
-        "postingWindow": "midday"
-      },
-      {
-        "id": "short-a",
-        "kind": "short",
-        "label": "Short A · sequence not step",
-        "body": "Each step can look acceptable. The sequence can still be wrong.\n\nThat’s the long-horizon eval lesson and the student assessment lesson, same shape.\n\nScore the path. Re-run the same tasks. Last-token scores will keep lying to you.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "Quotable bridge from OpenAI story to education.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "short-b",
-        "kind": "short",
-        "label": "Short B · rank vs split",
-        "body": "“#9 open-weight” is a headline. Steerability weak + praise weak + bash recovery ok is an evaluation.\n\nI personally always prefer the split scores over the single rank. One number is too easy to market.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "Rides Inkling/Arena without pure news rewrite.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "short-c",
-        "kind": "short",
-        "label": "Short C · personal suite",
-        "body": "You don’t need to know every harness name on the timeline.\n\nYou need twenty tasks you re-run next week on whatever model is “winning.”\n\nIf you can’t reverify the claim, it isn’t an eval — it’s content.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "ship",
-        "session": "core",
-        "estimatedSeconds": 70,
-        "why": "Builder antidote to jargon list posts.",
-        "postingWindow": "evening"
-      },
-      {
-        "id": "quote-1",
-        "kind": "quote",
-        "label": "QT · Noam long-horizon",
-        "body": "Shorter-horizon evals missing the path is the whole game.\n\nSame failure mode when schools only mark the final sheet. Persistence without trajectory scoring is how systems (and students) look fine until they don’t.",
-        "meta": "https://x.com/polynoamial/status/2079260550895382965",
+        "label": "@JensenHuang · open models",
+        "body": "Welcome to X — and the letter framing is the right one: the world needs frontier closed models and frontier open models.\n\nWhat I’m still curious about as a builder: when open models “strengthen safety and cybersecurity,” which checks do we re-run after a release so the community can verify that claim next month, not only trust the announcement?\n\nSovereignty and diffusion matter. So does a fixed task suite people can actually re-check.",
+        "meta": "https://x.com/JensenHuang/status/2080643682408321103",
         "status": "ready",
         "priority": 4,
-        "intent": "optional",
-        "session": "bonus",
-        "estimatedSeconds": 90,
-        "why": "Only if sprint + flagship done and thread still active.",
-        "postingWindow": "anytime"
-      }
-    ],
-    "schedule": [
-      "0–20m: Reply sprint (Noam, prinz, Inkling/Arena, Darwin list, homework)",
-      "20–45m: Flagship + Short A",
-      "45–55m: Short B/C if energy — or stop",
-      "Last 5m: Mark Done in X To-Do; note profile visits"
-    ],
-    "sessions": [
-      {
-        "id": "sprint",
-        "title": "Reply sprint",
-        "maxMinutes": 20,
-        "description": "Noam + path facts + Inkling + builder list + homework"
-      },
-      {
-        "id": "core",
-        "title": "Core posts",
-        "maxMinutes": 30,
-        "description": "Flagship + strongest shorts"
-      },
-      {
-        "id": "bonus",
-        "title": "Bonus",
-        "maxMinutes": 15,
-        "description": "Optional QT if energy left"
-      }
-    ],
-    "createdAt": "2026-07-21T08:00:00.000Z",
-    "updatedAt": "2026-07-21T10:21:11.666Z"
-  },
-  {
-    "id": "pack-2026-07-20",
-    "date": "2026-07-20",
-    "title": "Kimi heat + Qwen daily gains · score the path",
-    "theme": "Capability hype is cheap. Process eval is the product.",
-    "briefing": "Kimi K3 is dominating the timeline; US may curb Chinese models; Qwen3.8-Max-Preview claims daily gains on frontend. Education side: AI-written exams need human process checks. Your angle: independent rubrics, not marketing benches.",
-    "plannedMinutes": 55,
-    "mvpDraftIds": [
-      "reply-qwen-update",
-      "reply-kimi-bench",
-      "reply-omalley",
-      "reply-juken",
-      "flag-1",
-      "short-a"
-    ],
-    "signals": [
-      {
-        "id": "sig-kimi-policy",
-        "summary": "US may tighten curbs on Chinese frontier models after Kimi K3 (Entity List / host liability chatter).",
-        "whyItMatters": "Builders need evaluation habits that survive access shocks — not one-lab dependency.",
-        "url": "https://x.com/jukan05/status/2079158754382389551",
-        "heat": 5,
-        "category": "policy"
-      },
-      {
-        "id": "sig-kimi-arena",
-        "summary": "Kimi K3 open-weight narrative: Frontend Code Arena #1 claims; full weights ~July 27; numbers not fully independently verified.",
-        "whyItMatters": "Perfect setup for process-eval take: no verdict without re-runnable tasks.",
-        "url": "https://x.com/hammertime_one/status/2079169139076420035",
-        "heat": 5,
-        "category": "models"
-      },
-      {
-        "id": "sig-qwen",
-        "summary": "Qwen: 3.8 Max-Preview still iterating daily; big claim on web frontend; open-weight path promised.",
-        "whyItMatters": "Daily model churn → need stable personal eval suite.",
-        "url": "https://x.com/Alibaba_Qwen/status/2079172722161299801",
-        "heat": 4,
-        "category": "models"
-      },
-      {
-        "id": "sig-ed-mcq",
-        "summary": "AI can match MCQ difficulty stats, but accuracy/fairness/process validity evidence is thin — use formative + human checkpoints.",
-        "whyItMatters": "Direct Edudojo thesis: output-looking assessments fail without process signals.",
-        "url": "https://x.com/OMalleyFife/status/2079121134264406440",
-        "heat": 4,
-        "category": "education"
-      },
-      {
-        "id": "sig-ed-review",
-        "summary": "Review: AI education personalization papers claim high accuracy but many use flawed validation; few address deployment.",
-        "whyItMatters": "Same bug as model leaderboards: shiny metrics, weak method.",
-        "url": "https://x.com/AI_MDPI/status/2079121716496990379",
-        "heat": 3,
-        "category": "education"
-      }
-    ],
-    "skipList": [
-      "Pure politics/partisan pile-ons without eval angle",
-      "Crypto/token wraps on model news",
-      "Unverified arena screenshots as gospel",
-      "Lab death / duopoly doom without a builder takeaway"
-    ],
-    "drafts": [
-      {
-        "id": "reply-qwen-update",
-        "kind": "reply",
-        "label": "@Alibaba_Qwen",
-        "body": "Daily iteration is the right posture for a preview. What I’m watching as a builder: do you publish a fixed task suite so we can re-run the same eval tomorrow and see if “gains” are real — or only new demos?",
-        "meta": "https://x.com/Alibaba_Qwen/status/2079172722161299801",
-        "status": "ready",
-        "priority": 1,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "Official account + active thread = discovery. Positions you as eval-serious.",
-        "tip": "Reply early while the thread is still hot.",
-        "postingWindow": "anytime",
-        "targetHandle": "@Alibaba_Qwen",
-        "targetReach": "official"
-      },
-      {
-        "id": "reply-kimi-bench",
-        "kind": "reply",
-        "label": "@hammertime_one",
-        "body": "This is the right skepticism: arena jumps before independent weights land are marketing until re-runnable. I’m waiting for July 27 + a public task set I can re-score myself — frontend win is interesting, not a verdict.",
-        "meta": "https://x.com/hammertime_one/status/2079169139076420035",
-        "status": "ready",
-        "priority": 1,
         "intent": "growth",
         "session": "sprint",
         "estimatedSeconds": 75,
-        "why": "Nuanced Kimi post with real numbers — your process-eval line fits cleanly.",
+        "why": "Mega first-post room; open + closed both needed.",
         "postingWindow": "anytime",
-        "targetHandle": "@hammertime_one",
-        "targetReach": "mid"
+        "targetHandle": "JensenHuang",
+        "targetReach": "hyper"
       },
       {
-        "id": "reply-juken",
+        "id": "pack-2026-07-24-r10__r-satya-open",
         "kind": "reply",
-        "label": "@jukan05",
-        "body": "Whether curbs land or not, the builder lesson is the same: if your stack depends on one lab’s API + one leaderboard, policy can brick you overnight. Diversify models. Own your eval suite.",
-        "meta": "https://x.com/jukan05/status/2079158754382389551",
+        "label": "@satyanadella · open-weight",
+        "body": "Open-weight models as essential to a healthy AI ecosystem is the right framing — competitiveness, opportunity, and national security all in one letter.\n\nThe part I still want next to that path: can the community re-check behavior with frozen tasks when weights move, not only trust the slide?\n\nHealthy open weights need healthy re-runnable evals too, in my humble opinion.",
+        "meta": "https://x.com/satyanadella/status/2080646162483417097",
         "status": "ready",
-        "priority": 1,
-        "intent": "authority",
+        "priority": 5,
+        "intent": "growth",
         "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "High-view policy post — stay practical, not political.",
-        "tip": "Skip partisan framing; stay on builder resilience.",
+        "estimatedSeconds": 75,
+        "why": "Open-weight ecosystem + values.",
         "postingWindow": "anytime",
-        "targetHandle": "@jukan05",
+        "targetHandle": "satyanadella",
+        "targetReach": "hyper"
+      },
+      {
+        "id": "pack-2026-07-24-r10__r-sakana-lab",
+        "kind": "reply",
+        "label": "@SakanaAILabs · benches only",
+        "body": "Respect for shipping Fugu-Ultra v1.1 and putting numbers on the page — up to 7.9 points over v1.0, with ProgramBench and Terminal Bench 2.1 called out.\n\nWhen a patch moves benches that hard, I personally always prefer a small fixed task list + seeds the community can re-run next week, not only the chart on the announce.\n\nHappy to be wrong if you point to the exact public tasks behind those gains.",
+        "meta": "https://x.com/SakanaAILabs/status/2080448772778373586",
+        "status": "ready",
+        "priority": 6,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Lab text only — no Fable.",
+        "tip": "Do not mention Fable here.",
+        "postingWindow": "anytime",
+        "targetHandle": "SakanaAILabs",
+        "targetReach": "viral"
+      },
+      {
+        "id": "pack-2026-07-24-r10__r-hardmaru",
+        "kind": "reply",
+        "label": "@hardmaru · Fable claim",
+        "body": "Congrats on the v1.1 ship and the 7.9 point bump.\n\nThe line I’m still chewing on is “beating Fable 5 … without even having Fable 5 in our agent pool.” Strong claim — which coding/reasoning suites, and do those tasks stay frozen so outsiders can re-check next week?\n\nI get collective intelligence as the pitch. I personally always prefer that over a one-slide verdict.",
+        "meta": "https://x.com/hardmaru/status/2080454723195568596",
+        "status": "ready",
+        "priority": 7,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Fable-in-pool claim only on this post.",
+        "tip": "Skip if energy low after lab reply — one Fugu room is enough.",
+        "postingWindow": "anytime",
+        "targetHandle": "hardmaru",
         "targetReach": "high"
       },
       {
-        "id": "reply-omalley",
+        "id": "pack-2026-07-24-r10__r-frontier",
         "kind": "reply",
-        "label": "@OMalleyFife",
-        "body": "This is the assessment version of “leaderboard theater.” Matching difficulty stats ≠ valid learning signal. Until we score process (how the answer was reached), AI-generated exams should stay formative with human checkpoints — fully agree.",
-        "meta": "https://x.com/OMalleyFife/status/2079121134264406440",
+        "label": "@ryanmart3n · Frontier-Bench",
+        "body": "This is the right shape of honesty — 74 tasks, best agents around 34%, and you call it an ongoing community effort instead of a finished leaderboard.\n\nI personally always prefer a hard suite that can still evolve over a saturated bench everyone memorizes.\n\nHow should outsiders re-run the same v0.1 tasks next month so “34%” stays comparable when you add more?",
+        "meta": "https://x.com/ryanmart3n/status/2080322620248281252",
         "status": "ready",
-        "priority": 1,
+        "priority": 8,
         "intent": "authority",
         "session": "sprint",
-        "estimatedSeconds": 80,
-        "why": "Medical/AI education audience — pure Edudojo wedge.",
-        "postingWindow": "anytime",
-        "targetHandle": "@OMalleyFife",
-        "targetReach": "niche-edu"
-      },
-      {
-        "id": "reply-taelin",
-        "kind": "reply",
-        "label": "@VictorTaelin",
-        "body": "“Better at proving than verifying” is a clean failure mode for process eval. A system that can’t trust its own checks is optimizing display, not reliability. Same pattern we see when students (or models) produce a fluent final answer and collapse under scrutiny of steps.",
-        "meta": "https://x.com/VictorTaelin/status/2079162254843400658",
-        "status": "ready",
-        "priority": 2,
-        "intent": "relationship",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Technical crowd; process vs output metaphor lands well.",
-        "postingWindow": "anytime",
-        "targetHandle": "@VictorTaelin"
-      },
-      {
-        "id": "flag-1",
-        "kind": "flagship",
-        "label": "Flagship · three headlines one bug",
-        "body": "1/ Same 24h:\n• Kimi K3 is “winning arenas”\n• Qwen says the preview got better again overnight\n• Education research still struggles to validate AI-generated assessments\n\nDifferent domains. Same failure mode.\n\n2/ We keep scoring what is easy to display:\nleaderboard screenshots,\nfinal MCQ answers,\n“second only to X” slides.\n\nWe under-score the path: contamination notes, re-runnable tasks, reasoning traces, human checkpoints.\n\n3/ At Edudojo I’m building toward evaluating how thinking unfolds — not only whether the last token looks correct.\n\n4/ Policy can cut off a model. Marketing can inflate a bench.\nA personal eval suite you re-run next week survives both.\n\nIf your stack is “trust the feed,” you will get gamed.\nIf your stack is “inspect the path,” hype slows down and signal survives.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 240,
-        "why": "Profile-defining thread for visitors from today’s replies.",
-        "tip": "Post after 3–4 replies so profile visits convert.",
-        "postingWindow": "midday"
-      },
-      {
-        "id": "short-a",
-        "kind": "short",
-        "label": "Short A · arena ≠ eval",
-        "body": "Arena jump before open weights land is a rumor with a scoreboard.\n\nCall it interesting.\nCall it a preview.\nDon’t call it an evaluation until you can re-run the same tasks yourself.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "Quotable; rides Kimi conversation without pure news rewrite.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "short-b",
-        "kind": "short",
-        "label": "Short B · access shock",
-        "body": "If Washington (or anyone) can brick your model choice overnight, your real dependency isn’t “which model is smartest.”\n\nIt’s whether you own a portable eval + workflow — or you rented a leaderboard.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 60,
-        "why": "Builder resilience take on policy news without partisanship.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "short-c",
-        "kind": "short",
-        "label": "Short C · AI exams",
-        "body": "AI can write MCQs that match difficulty curves and still fail as assessment.\n\nDifficulty is a statistic.\nValidity is a process.\n\nUntil we score how learners (and models) think, “AI wrote the exam” is automation of the old mistake.",
-        "status": "ready",
-        "priority": 3,
-        "intent": "ship",
-        "session": "core",
         "estimatedSeconds": 70,
-        "why": "Edudojo core message in one post.",
-        "postingWindow": "evening"
+        "why": "Honest 34% / 74 tasks.",
+        "postingWindow": "anytime",
+        "targetHandle": "ryanmart3n",
+        "targetReach": "high"
       },
       {
-        "id": "quote-1",
-        "kind": "quote",
-        "label": "QT · Qwen daily gains",
-        "body": "Love the ship-every-day energy. Skeptical of “gains” without a frozen eval suite.\n\nShow me the same 20 tasks tomorrow.\nThen I’ll believe the delta.",
-        "meta": "https://x.com/Alibaba_Qwen/status/2079172722161299801",
+        "id": "pack-2026-07-24-r10__r-emil-variants",
+        "kind": "reply",
+        "label": "@emilkowalski · variants",
+        "body": "This is the part of AI that actually feels like learning, not just shipping faster — ask the coding agent for a few variants, switch between them, pass the selection as a query param so a colleague sees the same option.\n\nI’m curious how you decide which variant “wins” though. Is it still pure taste, or do you keep a small checklist so the switcher isn’t only demo candy?\n\nEither way, pairing that with Leva-style controls is a good instinct.",
+        "meta": "https://x.com/emilkowalski/status/2080645760530448733",
         "status": "ready",
-        "priority": 4,
-        "intent": "optional",
-        "session": "bonus",
-        "estimatedSeconds": 90,
-        "why": "Only if sprint + flagship done and thread still active.",
+        "priority": 9,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 65,
+        "why": "Passion for learning by trying options — still grounded.",
+        "postingWindow": "anytime",
+        "targetHandle": "emilkowalski",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-24-r10__r-brockman-safety",
+        "kind": "reply",
+        "label": "@cb_doge · safety meetings",
+        "body": "Meetings every few weeks on safety and security risks are better than silence — and peer review of frontier models before public release is the more interesting half of that proposal.\n\nWhat I’m not totally getting yet: what does “peer review” mean in practice — shared eval suites outsiders can re-run, or closed reviews between labs?\n\nIf it’s the first, I personally always prefer that. If it’s only the second, we still have a trust problem.",
+        "meta": "https://x.com/cb_doge/status/2080643692587864545",
+        "status": "ready",
+        "priority": 10,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Ethics: meetings + peer review before release.",
+        "postingWindow": "anytime",
+        "targetHandle": "cb_doge",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-24-r10__short-path-once",
+        "kind": "short",
+        "label": "Short · one original only",
+        "body": "Green tests are not a verdict.\n\nAn agent can clear the whole gauntlet and still take a decision you never meant to delegate. Same bug as a homework sheet that looks perfect with no thinking underneath.\n\nScore the path. Re-run the same tasks. Last-frame scores will keep lying.",
+        "status": "ready",
+        "priority": 11,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 50,
+        "why": "Phase 1: single original after 10 replies. Skip if tired.",
         "postingWindow": "anytime"
       }
     ],
     "schedule": [
-      "0–20m: Reply sprint (Qwen, Kimi bench, policy, OMalley)",
-      "20–45m: Flagship thread + Short A",
-      "45–55m: Short B/C if energy — or stop",
-      "Last 5m: Mark Done in X To-Do; note what got profile visits"
+      "0–40m: All 10 replies (MVP) — Copy & open each source",
+      "40–45m: Optional one short only if energy left",
+      "Mark Done in X To-Do after each"
     ],
     "sessions": [
       {
         "id": "sprint",
         "title": "Reply sprint",
-        "maxMinutes": 20,
-        "description": "High-signal replies on hot model + education posts"
+        "maxMinutes": 40,
+        "description": "All 10 replies — this is the whole job today"
       },
       {
         "id": "core",
-        "title": "Core posts",
-        "maxMinutes": 30,
-        "description": "Flagship + strongest shorts"
+        "title": "Optional original",
+        "maxMinutes": 8,
+        "description": "One short only if energy left"
       },
       {
         "id": "bonus",
         "title": "Bonus",
-        "maxMinutes": 15,
-        "description": "Optional QT if energy left"
+        "maxMinutes": 5,
+        "description": "Skip in Phase 1 unless needed"
       }
     ],
-    "createdAt": "2026-07-20T12:30:00.000Z",
-    "updatedAt": "2026-07-20T12:21:19.829Z"
-  },
-  {
-    "id": "pack-2026-07-19",
-    "date": "2026-07-19",
-    "title": "X pack 2026-07-19 (smoke test)",
-    "theme": "Deploy verification",
-    "briefing": "Smoke test pack pushed after Vercel deploy — replace with today's real scout pack when ready.",
-    "plannedMinutes": 15,
-    "mvpDraftIds": [
-      "draft-1"
-    ],
-    "signals": [],
-    "skipList": [],
-    "drafts": [
-      {
-        "id": "draft-1",
-        "kind": "short",
-        "label": "Smoke test post",
-        "body": "Just verified the X To-Do pipeline from laptop → Supabase → live site. Building in public, shipping the boring infrastructure that makes daily posting automatic.",
-        "status": "ready",
-        "priority": 1,
-        "intent": "authority",
-        "session": "core",
-        "estimatedSeconds": 90,
-        "why": "Confirms remote ingest + editorial X workspace end-to-end.",
-        "postingWindow": "anytime"
-      },
-      {
-        "id": "draft-2",
-        "kind": "reply",
-        "label": "Smoke test reply",
-        "body": "Agree — the unsexy deploy/auth plumbing is what makes a content system actually usable day to day.",
-        "status": "ready",
-        "priority": 2,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Second item so the queue UI has more than one task.",
-        "postingWindow": "anytime",
-        "targetHandle": "@example"
-      }
-    ],
-    "schedule": [],
-    "createdAt": "2026-07-19T17:00:00.000Z",
-    "updatedAt": "2026-07-20T12:15:45.510Z"
+    "createdAt": "2026-07-24T14:30:00.000Z",
+    "updatedAt": "2026-07-24T14:24:44.907Z"
   }
 ]
