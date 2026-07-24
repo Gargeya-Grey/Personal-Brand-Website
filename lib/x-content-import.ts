@@ -16,6 +16,7 @@ import {
   defaultEstimatedSeconds,
   defaultIntentForKind,
   defaultSessionForKind,
+  normalizeDraftMeta,
   sumEstimatedSeconds,
 } from './x-content-model';
 
@@ -83,14 +84,17 @@ function normalizeDraft(raw: Record<string, unknown>, index: number): XDraftItem
   const body = String(raw.body ?? raw.text ?? raw.content ?? '').trim();
   const id =
     typeof raw.id === 'string' && raw.id.trim() ? raw.id.trim() : slugId(kind, label, index);
-  const meta =
-    typeof raw.meta === 'string'
-      ? raw.meta
-      : typeof raw.url === 'string'
-        ? raw.url
-        : typeof raw.target === 'string'
-          ? raw.target
-          : undefined;
+  const metaRaw =
+    raw.meta ??
+    (typeof raw.url === 'string'
+      ? raw.url
+      : typeof raw.target === 'string'
+        ? raw.target
+        : undefined);
+  const { meta, tip } = normalizeDraftMeta(
+    metaRaw,
+    typeof raw.tip === 'string' ? raw.tip : undefined
+  );
 
   const targetHandle =
     typeof raw.targetHandle === 'string'
@@ -116,7 +120,7 @@ function normalizeDraft(raw: Record<string, unknown>, index: number): XDraftItem
     session: asSession(raw.session, kind),
     estimatedSeconds: est,
     why: String(raw.why ?? raw.rationale ?? '').trim() || defaultWhy(kind, label),
-    tip: typeof raw.tip === 'string' ? raw.tip : undefined,
+    tip,
     postingWindow: asWindow(raw.postingWindow),
     targetHandle,
     targetReach: typeof raw.targetReach === 'string' ? raw.targetReach : undefined,

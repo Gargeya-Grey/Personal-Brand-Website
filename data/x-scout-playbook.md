@@ -26,5 +26,11 @@ Reject quiet posts when hotter alternatives exist.
 2. `node scripts/merge-x-pack.mjs data/x-pack-today.json`  
 3. Push remote with APP_URL + X_SCOUT_SECRET when possible  
 
+## Draft `meta` (critical for Copy & open X)
+- **`meta` must be a plain URL string**, e.g. `"https://x.com/user/status/123"`.
+- Do **not** store `meta` as an object like `{ "url": "...", "note": "..." }`.
+- Put notes in **`tip`** or **`why`** instead.
+- Replies/QTs without a status URL open blank compose — that is a scout bug.
+
 ## Chat status (≤8 lines)
 pack id · draft count · heat summary · local/remote · voice applied

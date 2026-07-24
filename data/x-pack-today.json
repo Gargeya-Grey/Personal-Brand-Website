@@ -94,10 +94,8 @@
       "targetReach": "hyper",
       "why": "Root ~12.8k likes — largest room this pack; thesis fit is exact (tests as confidence layer). Nuance that green gauntlet still misses wrong delegated decisions.",
       "body": "I get the posture. If you don't read the agent code, the only honest move is a hard gauntlet of constraints so the last frame isn't pure hope.\n\nWhat I’m concerned as a builder: unit tests and coverage can all go green while the agent still took a decision you never meant to delegate. Same bug as a clean homework sheet with no thinking underneath.\n\nDo your suites also score the path / intermediate choices, or only that the final container and metrics look right?",
-      "meta": {
-        "url": "https://x.com/unclebobmartin/status/2080257779395154409",
-        "note": "Reply to root post on agent constraints; ~12.8k likes / high RT"
-      }
+      "meta": "https://x.com/unclebobmartin/status/2080257779395154409",
+      "tip": "Reply to root post on agent constraints; ~12.8k likes / high RT"
     },
     {
       "id": "r-sakana-fugu",
@@ -111,10 +109,8 @@
       "targetReach": "viral",
       "why": "Lab post ~2k likes / 200k views — discovery room of builders watching multi-model agents. Ask for fixed suite + re-run.",
       "body": "Respect for shipping the v1.1 bump and putting ProgramBench / Terminal Bench numbers on the page.\n\nI’m not totally getting the “beats Fable 5 without Fable in the pool” line as a final verdict though — is that on a frozen public task suite we can re-run next week, or the same chart set you already control?\n\nLike when benches move 7–8 points in a patch, I personally always prefer a small fixed list + seeds the community can recheck over groundless excitement. Happy to be wrong if you point to the exact tasks.",
-      "meta": {
-        "url": "https://x.com/SakanaAILabs/status/2080448772778373586",
-        "note": "Lab announce; hardmaru amplify also hot"
-      }
+      "meta": "https://x.com/SakanaAILabs/status/2080448772778373586",
+      "tip": "Lab announce; hardmaru amplify also hot"
     },
     {
       "id": "r-homework-dieworkwear",
@@ -128,10 +124,8 @@
       "targetReach": "hyper",
       "why": "~10k likes education/AI adjacent; convert visitors who care about learning integrity — soft Edudojo-shaped thesis without brand spam.",
       "body": "This is the right fear. Grades were always a last-frame score. AI just made it cheaper to buy a clean sheet without the thinking path.\n\nI mean the people who only cared about the number will look even smarter on homework, and then causal reasoning on the real exam (or the real job) still collapses.\n\nIf schools only mark final submissions, they are training that bug. Score the process, not only the output — same problem we have with agents that pass tests and still decide wrong.",
-      "meta": {
-        "url": "https://x.com/dieworkwear/status/2080442347868037198",
-        "note": "~9.9k likes; quote of larger CDC meme thread — stay on education thesis"
-      }
+      "meta": "https://x.com/dieworkwear/status/2080442347868037198",
+      "tip": "~9.9k likes; quote of larger CDC meme thread — stay on education thesis"
     },
     {
       "id": "r-cole-screenshots",
@@ -145,10 +139,8 @@
       "targetReach": "viral",
       "why": "High-bookmark builder tip (~1k likes); natural path-evidence angle without product.",
       "body": "This is useful. Screenshots are a tiny receipt of what the agent actually saw and did, not only “tests passed”.\n\nI’d push one step further: attach the path (plan → what it changed → why) not just a pretty last frame of the UI. Green CI + open PR still lies when the decision was never yours.\n\nDo you force that as a PR template or only when the agent remembers?",
-      "meta": {
-        "url": "https://x.com/colebemis/status/2080392348836790395",
-        "note": "1086 likes, 765 bookmarks"
-      }
+      "meta": "https://x.com/colebemis/status/2080392348836790395",
+      "tip": "1086 likes, 765 bookmarks"
     },
     {
       "id": "r-hardmaru-fugu",
@@ -162,10 +154,8 @@
       "targetReach": "high",
       "why": "CEO amplify (~377 likes, 34k views) of same Fugu story — second room if lab reply is crowded; keep evidence ask short.",
       "body": "Collective intelligence angle is interesting. Orchestrating a pool and still beating a named frontier on coding benches is a strong claim.\n\nWhat I’m sceptical about as a builder: are those +7.9 points on a fixed, re-runnable suite (same tasks tomorrow), or a moving demo set?\n\nCan you please clear things up with the exact bench versions / seeds so people can recheck without trusting the slide?",
-      "meta": {
-        "url": "https://x.com/hardmaru/status/2080454723195568596",
-        "note": "Skip if already replied under SakanaAILabs — pick one room"
-      }
+      "meta": "https://x.com/hardmaru/status/2080454723195568596",
+      "tip": "Skip if already replied under SakanaAILabs — pick one room"
     },
     {
       "id": "flag-path-tests",
@@ -235,10 +225,8 @@
       "targetReach": "hyper",
       "why": "Mega author first post on open models; only if still climbing. Light thesis: open weights help community reverify, not just sovereignty slides.",
       "body": "Open weights matter for a boring reason too: the community can re-run claims instead of treating closed leaderboard slides as truth.\n\nWorld needs frontier closed and frontier open — agree. Just don’t let either one hide behind last-frame benches with no fixed suite.",
-      "meta": {
-        "url": "https://x.com/JensenHuang/status/2080643682408321103",
-        "note": "Early engagement at pack time; skip if dead by session"
-      }
+      "meta": "https://x.com/JensenHuang/status/2080643682408321103",
+      "tip": "Early engagement at pack time; skip if dead by session"
     }
   ],
   "schedule": [
@@ -253,11 +241,19 @@
     },
     {
       "session": "core",
-      "order": ["flag-path-tests", "short-gauntlet", "short-bench-slide", "short-homework-path"]
+      "order": [
+        "flag-path-tests",
+        "short-gauntlet",
+        "short-bench-slide",
+        "short-homework-path"
+      ]
     },
     {
       "session": "bonus",
-      "order": ["r-hardmaru-fugu", "qt-jensen-open"]
+      "order": [
+        "r-hardmaru-fugu",
+        "qt-jensen-open"
+      ]
     }
   ],
   "createdAt": "2026-07-24T13:22:00.000Z",

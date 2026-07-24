@@ -44,6 +44,8 @@ import {
   sumEstimatedSeconds,
   DEFAULT_SESSIONS,
   isXDraftKind,
+  extractDraftSourceUrl,
+  draftOpenUrl,
 } from '@/lib/x-content-model';
 
 const POLL_MS = 15_000;
@@ -185,11 +187,7 @@ function useDraftActions(
     } catch {
       alert('Could not copy');
     }
-    if (draft.meta?.startsWith('http')) {
-      window.open(draft.meta, '_blank', 'noopener,noreferrer');
-    } else {
-      window.open('https://x.com/compose/post', '_blank', 'noopener,noreferrer');
-    }
+    window.open(draftOpenUrl(draft), '_blank', 'noopener,noreferrer');
   }, [draft]);
 
   const done = useCallback(async () => {
@@ -267,16 +265,20 @@ function ActionRow({
       >
         <SkipForward className="w-4 h-4" /> Skip
       </button>
-      {draft.meta?.startsWith('http') && (
-        <a
-          href={draft.meta}
-          target="_blank"
-          rel="noopener noreferrer"
-          className={`atelier-btn atelier-btn-ghost ${h}`}
-        >
-          Source <ExternalLink className="w-3.5 h-3.5" />
-        </a>
-      )}
+      {(() => {
+        const sourceUrl = extractDraftSourceUrl(draft.meta);
+        if (!sourceUrl) return null;
+        return (
+          <a
+            href={sourceUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className={`atelier-btn atelier-btn-ghost ${h}`}
+          >
+            Source <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+        );
+      })()}
     </div>
   );
 }
@@ -735,8 +737,7 @@ export function XStudioClient() {
       if (k === 'c') {
         e.preventDefault();
         void navigator.clipboard.writeText(d.body);
-        if (d.meta?.startsWith('http')) window.open(d.meta, '_blank', 'noopener,noreferrer');
-        else window.open('https://x.com/compose/post', '_blank', 'noopener,noreferrer');
+        window.open(draftOpenUrl(d), '_blank', 'noopener,noreferrer');
       } else if (k === 'd') {
         e.preventDefault();
         void onStatus(d.id, 'posted');

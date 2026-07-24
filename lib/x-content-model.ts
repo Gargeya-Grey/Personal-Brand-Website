@@ -21,7 +21,10 @@ export interface XDraftItem {
   kind: XDraftKind;
   label: string;
   body: string;
-  /** Source post URL or note */
+  /**
+   * Source post URL (reply/QT target) or a free-text note.
+   * Scouts sometimes send `{ url, note }` — normalize with `normalizeDraftMeta`.
+   */
   meta?: string;
   status: XDraftStatus;
 
@@ -139,6 +142,66 @@ export function isXDraftKind(value: unknown): value is XDraftKind {
   return typeof value === 'string' && VALID_KINDS.has(value as XDraftKind);
 }
 
+/**
+ * Pull a post URL from draft.meta whether scouts stored a string or `{ url, note }`.
+ * Used by Copy & open X so replies land on the original post, not a blank compose.
+ */
+export function extractDraftSourceUrl(meta: unknown): string | undefined {
+  if (meta == null) return undefined;
+  if (typeof meta === 'string') {
+    const t = meta.trim();
+    if (/^https?:\/\//i.test(t)) {
+      // First URL in a longer note string
+      const m = t.match(/https?:\/\/[^\s)"']+/i);
+      return m ? m[0] : t;
+    }
+    // JSON string of { url }
+    if (t.startsWith('{')) {
+      try {
+        return extractDraftSourceUrl(JSON.parse(t));
+      } catch {
+        return undefined;
+      }
+    }
+    return undefined;
+  }
+  if (typeof meta === 'object') {
+    const o = meta as Record<string, unknown>;
+    for (const key of ['url', 'href', 'source', 'link', 'postUrl', 'statusUrl']) {
+      const v = o[key];
+      if (typeof v === 'string' && /^https?:\/\//i.test(v.trim())) {
+        return v.trim().match(/https?:\/\/[^\s)"']+/i)?.[0] ?? v.trim();
+      }
+    }
+  }
+  return undefined;
+}
+
+/** Normalize scout meta (string | object) → URL string for storage + optional tip from note. */
+export function normalizeDraftMeta(rawMeta: unknown, existingTip?: string): {
+  meta?: string;
+  tip?: string;
+} {
+  const url = extractDraftSourceUrl(rawMeta);
+  let tip = existingTip;
+  if (rawMeta && typeof rawMeta === 'object') {
+    const note = (rawMeta as Record<string, unknown>).note;
+    if (typeof note === 'string' && note.trim() && !tip?.trim()) {
+      tip = note.trim();
+    }
+  }
+  if (url) return { meta: url, tip };
+  if (typeof rawMeta === 'string' && rawMeta.trim()) return { meta: rawMeta.trim(), tip };
+  return { meta: undefined, tip };
+}
+
+/** Open target for Copy & open: source post if we have one, else blank compose. */
+export function draftOpenUrl(draft: Pick<XDraftItem, 'meta' | 'kind'> | null | undefined): string {
+  const url = extractDraftSourceUrl(draft?.meta);
+  if (url) return url;
+  return 'https://x.com/compose/post';
+}
+
 /** Coerce messy API / JSON rows so the studio never crashes mid-render. */
 export function sanitizeDraft(raw: Partial<XDraftItem> | null | undefined, index = 0): XDraftItem | null {
   if (!raw || typeof raw !== 'object') return null;
@@ -167,19 +230,24 @@ export function sanitizeDraft(raw: Partial<XDraftItem> | null | undefined, index
       ? raw.status
       : 'ready';
 
+  const { meta, tip } = normalizeDraftMeta(
+    raw.meta,
+    typeof raw.tip === 'string' ? raw.tip : undefined
+  );
+
   return {
     id,
     kind,
     label,
     body,
-    meta: typeof raw.meta === 'string' ? raw.meta : undefined,
+    meta,
     status,
     priority,
     intent: raw.intent ?? defaultIntentForKind(kind),
     session,
     estimatedSeconds,
     why: typeof raw.why === 'string' ? raw.why : '',
-    tip: typeof raw.tip === 'string' ? raw.tip : undefined,
+    tip,
     postingWindow: raw.postingWindow ?? 'anytime',
     targetHandle: typeof raw.targetHandle === 'string' ? raw.targetHandle : undefined,
     targetReach: typeof raw.targetReach === 'string' ? raw.targetReach : undefined,

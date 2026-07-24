@@ -8,6 +8,7 @@ import {
   defaultIntentForKind,
   defaultSessionForKind,
   sumEstimatedSeconds,
+  normalizeDraftMeta,
   type XContentPack,
   type XDraftItem,
   type XDraftKind,
@@ -103,12 +104,13 @@ function hydrateDraft(
   const body = typeof d.body === 'string' ? d.body : String(d.body ?? '');
   const id =
     typeof d.id === 'string' && d.id.trim() ? d.id.trim() : `draft-${index + 1}`;
+  const { meta, tip } = normalizeDraftMeta(d.meta, d.tip);
   return {
     id,
     kind,
     label,
     body,
-    meta: d.meta,
+    meta,
     status: d.status ?? 'ready',
     priority:
       typeof d.priority === 'number'
@@ -124,7 +126,7 @@ function hydrateDraft(
     session: d.session ?? defaultSessionForKind(kind),
     estimatedSeconds: d.estimatedSeconds ?? defaultEstimatedSeconds(kind),
     why: d.why?.trim() || (kind === 'reply' ? `Growth reply on ${label}` : 'On-brand action'),
-    tip: d.tip,
+    tip,
     postingWindow: d.postingWindow ?? 'anytime',
     targetHandle:
       d.targetHandle ?? (typeof label === 'string' && label.startsWith('@') ? label : undefined),
