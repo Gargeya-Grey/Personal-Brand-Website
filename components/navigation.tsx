@@ -208,7 +208,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
               isAtelier ? 'hidden min-[380px]:inline' : ''
             } ${logoText}`}
           >
-            {isAtelier ? 'Atelier' : `${siteConfig.shortName}.`}
+            {isAtelier ? 'Atelier' : siteConfig.shortName}
           </span>
         </Link>
 

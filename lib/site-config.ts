@@ -4,7 +4,7 @@
  */
 export const siteConfig = {
   name: 'Gargeya Sharma',
-  shortName: 'GS',
+  shortName: 'Gargeya',
   title: 'Gargeya Sharma | The Engineering Editorial',
   description:
     'Architecting the next generation of intelligent systems. Founder @ Edudojo.ai — AI for evaluation, assessment, and education.',
