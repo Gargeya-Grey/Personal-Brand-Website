@@ -10,6 +10,7 @@ export const metadata: Metadata = {
   title: 'YouTube',
   description:
     'Travel essays, process, and the human side of building — plus systems thinking when the camera is on architecture.',
+  alternates: { canonical: '/youtube' },
 };
 
 export default function YouTubePage() {

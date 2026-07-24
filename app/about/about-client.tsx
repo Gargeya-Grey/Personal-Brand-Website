@@ -34,7 +34,7 @@ export default function AboutClient() {
             className="max-w-5xl space-y-8"
           >
             <span className="font-label text-accent tracking-[0.2em] font-bold uppercase text-xs block">
-              Founder & Mentor
+              Gargeya Sharma · Founder & Mentor
             </span>
             <h1 className="font-display text-[clamp(2.75rem,10vw,5.5rem)] font-medium tracking-[-0.02em] text-primary leading-[1.02]">
               Architecting the <br /> <span className="text-accent">next</span> generation.
@@ -43,7 +43,7 @@ export default function AboutClient() {
             <div className="relative pt-6 max-w-3xl">
               <div className="absolute left-0 top-6 bottom-0 w-0.5 bg-accent/30" />
               <p className="font-body text-xl md:text-2xl text-on-surface-variant leading-relaxed pl-8">
-                I empower students, clients, and engineering teams to build intelligent systems rooted in mechanical sympathy and quiet authority.
+                I&apos;m Gargeya Sharma — Founder &amp; Architect at Edudojo.ai. I empower students, clients, and engineering teams to build intelligent systems rooted in mechanical sympathy and quiet authority.
               </p>
             </div>
           </motion.div>

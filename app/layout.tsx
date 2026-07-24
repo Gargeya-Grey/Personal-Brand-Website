@@ -8,6 +8,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { InteractiveBackgroundLazy } from '@/components/interactive-background-lazy';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
+import { getSiteOrigin, siteConfig } from '@/lib/site-config';
+import { getSiteJsonLdGraph } from '@/lib/structured-data';
 
 const themeInitScript = `
 try {
@@ -33,40 +35,36 @@ const monteCarlo = MonteCarlo({
   display: 'swap',
 });
 
+const origin = getSiteOrigin();
+
 export const metadata: Metadata = {
-  metadataBase: new URL(process.env.APP_URL || 'https://gargeyasharma.com'),
+  metadataBase: new URL(origin),
   title: {
-    template: '%s | Gargeya Sharma',
-    default: 'Gargeya Sharma | The Engineering Editorial',
+    template: `%s | ${siteConfig.name}`,
+    default: siteConfig.title,
   },
-  description:
-    'Architecting intelligence for evaluation & education. Founder @ Edudojo.ai — Lead Architect, engineer, and mentor building with soft minimalism.',
-  keywords: [
-    'Gargeya Sharma',
-    'Edudojo',
-    'AI Education',
-    'Lead Architect',
-    'Systems Architecture',
-    'Soft Minimalism',
-    'Founder',
-  ],
-  authors: [{ name: 'Gargeya Sharma' }],
-  creator: 'Gargeya Sharma',
+  description: siteConfig.description,
+  keywords: [...siteConfig.keywords],
+  authors: [{ name: siteConfig.name, url: origin }],
+  creator: siteConfig.name,
+  alternates: {
+    types: {
+      'application/rss+xml': `${origin}/feed.xml`,
+    },
+  },
   openGraph: {
     type: 'website',
-    locale: 'en_US',
-    url: 'https://gargeyasharma.com',
-    title: 'Gargeya Sharma | The Engineering Editorial',
-    description:
-      'Architecting intelligence for evaluation & education. Founder @ Edudojo.ai.',
-    siteName: 'Gargeya Sharma',
+    locale: siteConfig.locale,
+    url: origin,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    siteName: siteConfig.name,
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Gargeya Sharma | The Engineering Editorial',
-    description:
-      'Architecting intelligence for evaluation & education. Founder @ Edudojo.ai.',
-    creator: '@GargeyaS',
+    title: siteConfig.title,
+    description: siteConfig.description,
+    creator: siteConfig.twitterHandle,
   },
   robots: {
     index: true,
@@ -92,6 +90,8 @@ export const viewport: Viewport = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const jsonLd = getSiteJsonLdGraph();
+
   return (
     <html
       lang="en"
@@ -102,6 +102,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         <ThemeProvider>
           <a
             href="#page-main"
@@ -121,4 +125,3 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     </html>
   );
 }
-

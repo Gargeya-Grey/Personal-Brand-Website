@@ -41,7 +41,7 @@
       "id": "verify-1",
       "kind": "short",
       "label": "Verify · short post",
-      "body": "Pipeline check: laptop → ingest → Supabase → www.sgargeya.com X To-Do. If you're reading this on the live site, the system works.",
+      "body": "Pipeline check: laptop → ingest → Supabase → sgargeya.com X To-Do. If you're reading this on the live site, the system works.",
       "status": "ready",
       "priority": 1,
       "intent": "ship",

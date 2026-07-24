@@ -9,6 +9,7 @@ export const metadata: Metadata = {
   title: 'Contact',
   description:
     'Discuss technical strategy, AI implementation, or venture partnership with Gargeya Sharma.',
+  alternates: { canonical: '/contact' },
 };
 
 const infoCards = [

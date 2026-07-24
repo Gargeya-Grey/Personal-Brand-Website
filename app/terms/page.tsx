@@ -6,6 +6,7 @@ import { siteConfig } from '@/lib/site-config';
 export const metadata: Metadata = {
   title: 'Terms of Service',
   description: 'Terms for using this personal brand website.',
+  alternates: { canonical: '/terms' },
 };
 
 export default function TermsPage() {

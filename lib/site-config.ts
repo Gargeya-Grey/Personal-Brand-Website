@@ -18,6 +18,17 @@ export const siteConfig = {
   twitterHandle: '@GargeyaS',
   /** Shown on contact page — no city unless you set one */
   locationLabel: 'Remote · Global',
+  keywords: [
+    'Gargeya Sharma',
+    'Gargeya',
+    'Edudojo',
+    'Edudojo.ai',
+    'AI Education',
+    'Founder & Architect',
+    'Systems Architecture',
+    'Soft Minimalism',
+    'Building in Public',
+  ],
   links: {
     edudojo: 'https://edudojo.ai',
     cv: 'https://cv.sgargeya.com',
@@ -31,3 +42,16 @@ export const siteConfig = {
 } as const;
 
 export type SiteConfig = typeof siteConfig;
+
+/** Apex origin with no trailing slash — always prefer sgargeya.com. */
+export function getSiteOrigin(): string {
+  return String(siteConfig.url || 'https://sgargeya.com').replace(/\/$/, '');
+}
+
+/** Absolute URL for a site path or absolute asset. */
+export function absoluteUrl(pathOrUrl: string): string {
+  if (/^https?:\/\//i.test(pathOrUrl)) return pathOrUrl;
+  const origin = getSiteOrigin();
+  const path = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`;
+  return `${origin}${path}`;
+}

@@ -9,7 +9,8 @@ import { siteConfig } from '@/lib/site-config';
 export const metadata: Metadata = {
   title: 'Community',
   description:
-    'Follow Gargeya on X for public writing, or join Discord for high-signal builder chat.',
+    'Follow Gargeya Sharma on X for public writing, or join Discord for high-signal builder chat.',
+  alternates: { canonical: '/community' },
 };
 
 function XLogo({ className }: { className?: string }) {

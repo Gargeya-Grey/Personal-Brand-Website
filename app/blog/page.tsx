@@ -8,6 +8,7 @@ export const metadata: Metadata = {
   title: 'Blog',
   description:
     'Personal writing from Gargeya Sharma — systems, AI, craft, opinions, and useful finds.',
+  alternates: { canonical: '/blog' },
 };
 
 export default async function BlogPage() {

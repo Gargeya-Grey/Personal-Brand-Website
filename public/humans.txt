@@ -1,0 +1,13 @@
+/* TEAM */
+Owner: Gargeya Sharma
+Role: Founder & Architect @ Edudojo.ai
+Site: https://sgargeya.com
+Contact: contact@sgargeya.com
+X: https://x.com/GargeyaS
+LinkedIn: https://www.linkedin.com/in/gargeya-sharma
+GitHub: https://github.com/Gargeya-Grey
+
+/* SITE */
+Standards: HTML5, Schema.org JSON-LD, Open Graph
+Software: Next.js, Vercel
+Last update: 2026

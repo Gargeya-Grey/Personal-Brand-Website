@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as motion from 'motion/react-client';
@@ -5,6 +6,13 @@ import { ArrowRight, ArrowUpRight, Rocket, Users, BookOpen, PlayCircle, User, Sc
 import { FeaturedProjects } from '@/components/featured-projects';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
+import { siteConfig } from '@/lib/site-config';
+
+export const metadata: Metadata = {
+  title: { absolute: siteConfig.title },
+  description: siteConfig.description,
+  alternates: { canonical: '/' },
+};
 
 export default function Home() {
   return (

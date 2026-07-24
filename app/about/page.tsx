@@ -1,9 +1,11 @@
 import { Metadata } from 'next';
 import AboutClient from './about-client';
+import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
   title: 'About',
-  description: 'Learn more about Gargeya Sharma, Lead Architect and Engineer specializing in scalable systems and AI.',
+  description: `About ${siteConfig.name} — ${siteConfig.authorRole} at Edudojo.ai, building AI for evaluation, assessment, and education.`,
+  alternates: { canonical: '/about' },
 };
 
 export default function AboutPage() {

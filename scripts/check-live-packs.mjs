@@ -23,7 +23,7 @@ function loadEnv(filePath) {
 loadEnv(path.join(process.cwd(), '.env.local'));
 loadEnv(path.join(process.cwd(), '.env'));
 
-const base = (process.env.APP_URL || 'https://www.sgargeya.com').replace(/\/$/, '');
+const base = (process.env.APP_URL || 'https://sgargeya.com').replace(/\/$/, '');
 const secret = process.env.X_SCOUT_SECRET || '';
 
 const url = `${base}/api/x-content/ingest`;

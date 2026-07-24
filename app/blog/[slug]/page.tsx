@@ -8,7 +8,8 @@ import {
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { ArticleClient } from './article-client';
-import { siteConfig } from '@/lib/site-config';
+import { absoluteUrl, siteConfig } from '@/lib/site-config';
+import { getBlogPostingJsonLd } from '@/lib/structured-data';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -35,13 +36,6 @@ export async function generateStaticParams() {
   }
 }
 
-function siteOrigin(): string {
-  return (process.env.APP_URL || siteConfig.url || 'https://www.sgargeya.com').replace(
-    /\/$/,
-    ''
-  );
-}
-
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const article = await getArticleBySlug(slug);
@@ -52,46 +46,44 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     };
   }
 
-  const titleText = `${article!.title} | Gargeya Sharma`;
+  const brandedTitle = `${article!.title} | ${siteConfig.name}`;
   const descriptionText = article!.excerpt;
-  const origin = siteOrigin();
+  const canonicalPath = `/blog/${article!.slug}`;
+  const cover = article!.coverImage
+    ? [
+        {
+          url: absoluteUrl(article!.coverImage),
+          width: 1200,
+          height: 630,
+          alt: article!.title,
+        },
+      ]
+    : undefined;
 
   return {
-    title: titleText,
+    // Avoid double "| Gargeya Sharma" from the root title template
+    title: { absolute: brandedTitle },
     description: descriptionText,
+    alternates: {
+      canonical: canonicalPath,
+    },
     openGraph: {
       type: 'article',
-      title: titleText,
+      title: brandedTitle,
       description: descriptionText,
-      url: `${origin}/blog/${article!.slug}`,
+      url: absoluteUrl(canonicalPath),
       publishedTime: article!.date,
       authors: [article!.author],
       tags: article!.categories,
-      images: article!.coverImage
-        ? [
-            {
-              url: article!.coverImage,
-              width: 1200,
-              height: 630,
-              alt: article!.title,
-            },
-          ]
-        : [],
+      images: cover,
     },
     twitter: {
       card: 'summary_large_image',
-      title: titleText,
+      title: brandedTitle,
       description: descriptionText,
-      images: article!.coverImage ? [article!.coverImage] : [],
+      images: cover?.map((img) => img.url),
     },
   };
-}
-
-function safeIsoDate(dateStr: string | undefined): string | undefined {
-  if (!dateStr) return undefined;
-  const d = new Date(dateStr);
-  if (Number.isNaN(d.getTime())) return undefined;
-  return d.toISOString();
 }
 
 export default async function BlogPostPage({ params }: PageProps) {
@@ -102,34 +94,16 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  const origin = siteOrigin();
-  const publishedIso = safeIsoDate(article.date);
-
-  const jsonLd = {
-    '@context': 'https://schema.org',
-    '@type': 'BlogPosting',
-    headline: article.title,
-    description: article.excerpt,
-    ...(publishedIso ? { datePublished: publishedIso } : {}),
-    author: {
-      '@type': 'Person',
-      name: article.author,
-      jobTitle: article.authorRole,
-    },
-    publisher: {
-      '@type': 'Organization',
-      name: siteConfig.name,
-      logo: {
-        '@type': 'ImageObject',
-        url: `${origin}/logo.png`,
-      },
-    },
-    mainEntityOfPage: {
-      '@type': 'WebPage',
-      '@id': `${origin}/blog/${article.slug}`,
-    },
-    image: article.coverImage || `${origin}/default-blog.png`,
-  };
+  const jsonLd = getBlogPostingJsonLd({
+    title: article.title,
+    excerpt: article.excerpt,
+    slug: article.slug,
+    date: article.date,
+    author: article.author,
+    authorRole: article.authorRole,
+    categories: article.categories,
+    coverImage: article.coverImage,
+  });
 
   return (
     <div className="min-h-screen bg-surface text-primary antialiased relative selection:bg-[#D4FF00] selection:text-black flex flex-col justify-between">

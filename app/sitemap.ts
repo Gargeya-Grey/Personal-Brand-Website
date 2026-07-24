@@ -1,9 +1,9 @@
 import type { MetadataRoute } from 'next';
 import { getArticles } from '@/lib/blog-service';
-import { siteConfig } from '@/lib/site-config';
+import { getSiteOrigin } from '@/lib/site-config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const base = siteConfig.url.replace(/\/$/, '');
+  const base = getSiteOrigin();
   const staticRoutes: MetadataRoute.Sitemap = [
     '',
     '/about',
