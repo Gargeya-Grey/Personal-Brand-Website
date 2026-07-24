@@ -18,6 +18,28 @@ export const siteConfig = {
   twitterHandle: '@GargeyaS',
   /** Shown on contact page — no city unless you set one */
   locationLabel: 'Remote · Global',
+  /** Official brand marks + social share card */
+  brand: {
+    logo: {
+      /** Dark tile — use on light chrome */
+      dark: '/brand/sgargeya-logo-dark.svg',
+      /** Light tile — use on dark chrome */
+      light: '/brand/sgargeya-logo-light.svg',
+      /** Raster fallbacks (schema, emails, download) */
+      darkPng: '/brand/sgargeya-logo-dark.png',
+      lightPng: '/brand/sgargeya-logo-light.png',
+    },
+    /**
+     * Default share card for every platform (OG + Twitter/X).
+     * Stable public path: /og.jpg — also mirrored as app/opengraph-image.jpg
+     * and app/twitter-image.jpg for the App Router file convention.
+     */
+    ogImage: '/og.jpg',
+    ogWidth: 1200,
+    ogHeight: 630,
+    ogType: 'image/jpeg',
+    ogAlt: 'Gargeya Sharma — The Engineering Editorial',
+  },
   keywords: [
     'Gargeya Sharma',
     'Gargeya',
@@ -54,4 +76,20 @@ export function absoluteUrl(pathOrUrl: string): string {
   const origin = getSiteOrigin();
   const path = pathOrUrl.startsWith('/') ? pathOrUrl : `/${pathOrUrl}`;
   return `${origin}${path}`;
+}
+
+/**
+ * Default social share image — absolute URLs for Facebook, LinkedIn,
+ * Slack, Discord, iMessage, and X/Twitter crawlers.
+ */
+export function getDefaultShareImage(alt?: string) {
+  const url = absoluteUrl(siteConfig.brand.ogImage);
+  return {
+    url,
+    secureUrl: url,
+    width: siteConfig.brand.ogWidth,
+    height: siteConfig.brand.ogHeight,
+    type: siteConfig.brand.ogType,
+    alt: alt || siteConfig.brand.ogAlt,
+  };
 }

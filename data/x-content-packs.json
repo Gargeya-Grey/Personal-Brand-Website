@@ -1,5 +1,298 @@
 [
   {
+    "id": "pack-2026-07-24-t12",
+    "date": "2026-07-24",
+    "title": "Constraints, benches & homework sheets · path still missing",
+    "theme": "Agent tests/constraints, multi-model bench jumps, and AI homework all sell last-frame confidence. Push re-runnable tasks + score the path (agents and students).",
+    "briefing": "Uncle Bob’s mega thread: don’t read agent code — surround with extreme tests/constraints. Sakana Fugu-Ultra v1.1: +7.9 bench points, ProgramBench / Terminal Bench, “beating Fable 5” without Fable in the pool. Cole: agents attaching annotated screenshots to PRs. Derek Guy: AI homework widens grade-chasers vs real learning. Growth angle: sit in these already-loud rooms with one process-vs-last-frame ask — profile visits from strangers, not quiet niche chats.",
+    "plannedMinutes": 55,
+    "mvpDraftIds": [
+      "r-unclebob-constraints",
+      "r-sakana-fugu",
+      "r-homework-dieworkwear",
+      "r-cole-screenshots",
+      "flag-path-tests"
+    ],
+    "signals": [
+      {
+        "id": "sig-unclebob-gauntlet",
+        "summary": "Uncle Bob: strategy is not reading agent code; surround agents with extreme constraints — unit/gherkin/QA/mutation/coverage — high confidence only after the gauntlet.",
+        "whyItMatters": "Hyper thread (~12.8k likes on root) in coding-agent feed; perfect for path vs green-tests nuance without product spam.",
+        "url": "https://x.com/unclebobmartin/status/2080257779395154409",
+        "heat": 5,
+        "category": "builders"
+      },
+      {
+        "id": "sig-sakana-fugu",
+        "summary": "Sakana Fugu-Ultra v1.1: up to +7.9 on shown benches (ProgramBench, Terminal Bench 2.1); hardmaru: beats Fable 5 on coding/reasoning without Fable 5 in agent pool.",
+        "whyItMatters": "Lab-scale distribution (~2k likes / 200k views on lab post); demand fixed suites and independent re-runs, not slide deltas.",
+        "url": "https://x.com/SakanaAILabs/status/2080448772778373586",
+        "heat": 5,
+        "category": "evals"
+      },
+      {
+        "id": "sig-ai-homework",
+        "summary": "dieworkwear: secret AI homework use widens divide — grades vs education for its own sake; fewer people able to do causal reasoning.",
+        "whyItMatters": "~10k likes education/AI room; natural process-assessment thesis (score thinking, not only sheet).",
+        "url": "https://x.com/dieworkwear/status/2080442347868037198",
+        "heat": 5,
+        "category": "education"
+      },
+      {
+        "id": "sig-cole-pr-shots",
+        "summary": "Cole Bemis: pro tip — ask coding agent to attach annotated screenshots to PRs.",
+        "whyItMatters": "Viral builder tip (~1k likes, heavy bookmarks); bridge to path evidence beyond green CI.",
+        "url": "https://x.com/colebemis/status/2080392348836790395",
+        "heat": 4,
+        "category": "builders"
+      },
+      {
+        "id": "sig-jensen-open",
+        "summary": "Jensen Huang first post: NVIDIA letter on why open models matter alongside frontier closed models.",
+        "whyItMatters": "Mega author + open-weights lane; optional QT only if still climbing — keep thesis light (re-runnable community checks).",
+        "url": "https://x.com/JensenHuang/status/2080643682408321103",
+        "heat": 4,
+        "category": "open-models"
+      }
+    ],
+    "skipList": [
+      "Crypto giveaway / follow-RT spam",
+      "Pure politics flamewars and ratepayer pledge pile-ons",
+      "Celebrity / idol / sports arena noise with no AI thesis",
+      "Unverified GPT-6 rumor math Collatz threads as facts",
+      "Dead niche eval threads under heat floor"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-24-t12__r-unclebob-constraints",
+        "kind": "reply",
+        "label": "reply",
+        "body": "I get the posture. If you don't read the agent code, the only honest move is a hard gauntlet of constraints so the last frame isn't pure hope.\n\nWhat I’m concerned as a builder: unit tests and coverage can all go green while the agent still took a decision you never meant to delegate. Same bug as a clean homework sheet with no thinking underneath.\n\nDo your suites also score the path / intermediate choices, or only that the final container and metrics look right?",
+        "meta": {
+          "url": "https://x.com/unclebobmartin/status/2080257779395154409",
+          "note": "Reply to root post on agent constraints; ~12.8k likes / high RT"
+        },
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Root ~12.8k likes — largest room this pack; thesis fit is exact (tests as confidence layer). Nuance that green gauntlet still misses wrong delegated decisions.",
+        "postingWindow": "anytime",
+        "targetHandle": "unclebobmartin",
+        "targetReach": "hyper"
+      },
+      {
+        "id": "pack-2026-07-24-t12__r-sakana-fugu",
+        "kind": "reply",
+        "label": "reply",
+        "body": "Respect for shipping the v1.1 bump and putting ProgramBench / Terminal Bench numbers on the page.\n\nI’m not totally getting the “beats Fable 5 without Fable in the pool” line as a final verdict though — is that on a frozen public task suite we can re-run next week, or the same chart set you already control?\n\nLike when benches move 7–8 points in a patch, I personally always prefer a small fixed list + seeds the community can recheck over groundless excitement. Happy to be wrong if you point to the exact tasks.",
+        "meta": {
+          "url": "https://x.com/SakanaAILabs/status/2080448772778373586",
+          "note": "Lab announce; hardmaru amplify also hot"
+        },
+        "status": "ready",
+        "priority": 2,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 85,
+        "why": "Lab post ~2k likes / 200k views — discovery room of builders watching multi-model agents. Ask for fixed suite + re-run.",
+        "postingWindow": "anytime",
+        "targetHandle": "SakanaAILabs",
+        "targetReach": "viral"
+      },
+      {
+        "id": "pack-2026-07-24-t12__r-homework-dieworkwear",
+        "kind": "reply",
+        "label": "reply",
+        "body": "This is the right fear. Grades were always a last-frame score. AI just made it cheaper to buy a clean sheet without the thinking path.\n\nI mean the people who only cared about the number will look even smarter on homework, and then causal reasoning on the real exam (or the real job) still collapses.\n\nIf schools only mark final submissions, they are training that bug. Score the process, not only the output — same problem we have with agents that pass tests and still decide wrong.",
+        "meta": {
+          "url": "https://x.com/dieworkwear/status/2080442347868037198",
+          "note": "~9.9k likes; quote of larger CDC meme thread — stay on education thesis"
+        },
+        "status": "ready",
+        "priority": 3,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "~10k likes education/AI adjacent; convert visitors who care about learning integrity — soft Edudojo-shaped thesis without brand spam.",
+        "postingWindow": "anytime",
+        "targetHandle": "dieworkwear",
+        "targetReach": "hyper"
+      },
+      {
+        "id": "pack-2026-07-24-t12__r-cole-screenshots",
+        "kind": "reply",
+        "label": "reply",
+        "body": "This is useful. Screenshots are a tiny receipt of what the agent actually saw and did, not only “tests passed”.\n\nI’d push one step further: attach the path (plan → what it changed → why) not just a pretty last frame of the UI. Green CI + open PR still lies when the decision was never yours.\n\nDo you force that as a PR template or only when the agent remembers?",
+        "meta": {
+          "url": "https://x.com/colebemis/status/2080392348836790395",
+          "note": "1086 likes, 765 bookmarks"
+        },
+        "status": "ready",
+        "priority": 4,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "High-bookmark builder tip (~1k likes); natural path-evidence angle without product.",
+        "postingWindow": "anytime",
+        "targetHandle": "colebemis",
+        "targetReach": "viral"
+      },
+      {
+        "id": "pack-2026-07-24-t12__r-hardmaru-fugu",
+        "kind": "reply",
+        "label": "reply",
+        "body": "Collective intelligence angle is interesting. Orchestrating a pool and still beating a named frontier on coding benches is a strong claim.\n\nWhat I’m sceptical about as a builder: are those +7.9 points on a fixed, re-runnable suite (same tasks tomorrow), or a moving demo set?\n\nCan you please clear things up with the exact bench versions / seeds so people can recheck without trusting the slide?",
+        "meta": {
+          "url": "https://x.com/hardmaru/status/2080454723195568596",
+          "note": "Skip if already replied under SakanaAILabs — pick one room"
+        },
+        "status": "ready",
+        "priority": 5,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "CEO amplify (~377 likes, 34k views) of same Fugu story — second room if lab reply is crowded; keep evidence ask short.",
+        "postingWindow": "anytime",
+        "targetHandle": "hardmaru",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-24-t12__flag-path-tests",
+        "kind": "flagship",
+        "label": "flagship",
+        "body": "Green tests are not a verdict.\n\nAn agent can clear unit tests, coverage gates, even open a clean PR — and still take a decision you never meant to hand over. Same bug as a homework sheet that looks perfect with no thinking underneath.\n\nBenches that jump 8 points in a patch have the same failure mode if you only ship last-frame charts. Score the path. Freeze the tasks. Re-run tomorrow.\n\nLast-frame scores will keep lying — for models, agents, and students.",
+        "meta": {
+          "note": "Pin-adjacent thesis restatement; no product name required"
+        },
+        "status": "ready",
+        "priority": 1,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 240,
+        "why": "Own thesis original for profile conversion after reply sprint; ties Uncle Bob + benches + homework into one path-vs-last-frame post.",
+        "postingWindow": "anytime",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-24-t12__short-gauntlet",
+        "kind": "short",
+        "label": "short",
+        "body": "Surrounding agents with extreme tests is necessary. It is not sufficient.\n\nIf you only mark the final container state, you are grading the homework sheet, not the thinking path.\n\nI personally always prefer path checks + fixed re-runs over groundless excitement about a green bar.",
+        "meta": {},
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 90,
+        "why": "Short quotable for feed after hyper replies; converts visitors who saw Uncle Bob reply.",
+        "postingWindow": "anytime",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-24-t12__short-bench-slide",
+        "kind": "short",
+        "label": "short",
+        "body": "When a multi-model agent jumps ~8 points on coding benches overnight, my first question is boring on purpose:\n\nSame frozen tasks next week? Seeds public? Or a new demo set dressed as a verdict?\n\nI’m not totally against the claim. I just want numbers the community can recheck.",
+        "meta": {},
+        "status": "ready",
+        "priority": 3,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 80,
+        "why": "Catch bench-watchers from Sakana room; evidence culture.",
+        "postingWindow": "anytime",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-24-t12__short-homework-path",
+        "kind": "short",
+        "label": "short",
+        "body": "Secret AI on homework doesn’t create a new problem. It exposes the old one.\n\nWe already graded last frames. Now the last frame is cheap.\n\nIf you care about thinking, you have to score the process — in class and in agent evals. Final submissions alone will keep lying.",
+        "meta": {
+          "note": "Edudojo-shaped without naming product"
+        },
+        "status": "ready",
+        "priority": 4,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 85,
+        "why": "Education lane follow-up; one soft process-assessment bridge.",
+        "postingWindow": "anytime",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-24-t12__qt-jensen-open",
+        "kind": "quote",
+        "label": "quote",
+        "body": "Open weights matter for a boring reason too: the community can re-run claims instead of treating closed leaderboard slides as truth.\n\nWorld needs frontier closed and frontier open — agree. Just don’t let either one hide behind last-frame benches with no fixed suite.",
+        "meta": {
+          "url": "https://x.com/JensenHuang/status/2080643682408321103",
+          "note": "Early engagement at pack time; skip if dead by session"
+        },
+        "status": "ready",
+        "priority": 5,
+        "intent": "optional",
+        "session": "bonus",
+        "estimatedSeconds": 70,
+        "why": "Mega author first post on open models; only if still climbing. Light thesis: open weights help community reverify, not just sovereignty slides.",
+        "postingWindow": "anytime",
+        "targetHandle": "JensenHuang",
+        "targetReach": "hyper"
+      }
+    ],
+    "schedule": [
+      {
+        "session": "sprint",
+        "order": [
+          "r-unclebob-constraints",
+          "r-sakana-fugu",
+          "r-homework-dieworkwear",
+          "r-cole-screenshots"
+        ]
+      },
+      {
+        "session": "core",
+        "order": [
+          "flag-path-tests",
+          "short-gauntlet",
+          "short-bench-slide",
+          "short-homework-path"
+        ]
+      },
+      {
+        "session": "bonus",
+        "order": [
+          "r-hardmaru-fugu",
+          "qt-jensen-open"
+        ]
+      }
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Reply sprint",
+        "maxMinutes": 22,
+        "description": "Uncle Bob + Sakana + homework + Cole screenshots (+ optional hardmaru)"
+      },
+      {
+        "id": "core",
+        "title": "Core posts",
+        "maxMinutes": 25,
+        "description": "Flagship path/tests + shorts"
+      },
+      {
+        "id": "bonus",
+        "title": "Bonus",
+        "maxMinutes": 10,
+        "description": "QT only if Jensen or Sakana still climbing"
+      }
+    ],
+    "createdAt": "2026-07-24T13:22:00.000Z",
+    "updatedAt": "2026-07-24T13:23:23.636Z"
+  },
+  {
     "id": "pack-2026-07-23-t12",
     "date": "2026-07-23",
     "title": "Repo benches + trajectory eval · pass ≠ safe path",

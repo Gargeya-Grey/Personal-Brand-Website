@@ -8,7 +8,7 @@ import {
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { ArticleClient } from './article-client';
-import { absoluteUrl, siteConfig } from '@/lib/site-config';
+import { absoluteUrl, getDefaultShareImage, siteConfig } from '@/lib/site-config';
 import { getBlogPostingJsonLd } from '@/lib/structured-data';
 
 interface PageProps {
@@ -49,16 +49,18 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const brandedTitle = `${article!.title} | ${siteConfig.name}`;
   const descriptionText = article!.excerpt;
   const canonicalPath = `/blog/${article!.slug}`;
+  const defaultShare = getDefaultShareImage(brandedTitle);
   const cover = article!.coverImage
     ? [
         {
           url: absoluteUrl(article!.coverImage),
+          secureUrl: absoluteUrl(article!.coverImage),
           width: 1200,
           height: 630,
           alt: article!.title,
         },
       ]
-    : undefined;
+    : [defaultShare];
 
   return {
     // Avoid double "| Gargeya Sharma" from the root title template
@@ -81,7 +83,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       card: 'summary_large_image',
       title: brandedTitle,
       description: descriptionText,
-      images: cover?.map((img) => img.url),
+      site: siteConfig.twitterHandle,
+      creator: siteConfig.twitterHandle,
+      images: cover.map((img) => ({
+        url: img.url,
+        alt: img.alt,
+        width: img.width,
+        height: img.height,
+      })),
     },
   };
 }

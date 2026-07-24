@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Twitter, Linkedin, Youtube, Github, ArrowUp, AlertCircle } from 'lucide-react';
 import { siteConfig } from '@/lib/site-config';
+import { BrandMark } from '@/components/brand-mark';
 
 const linkClass =
   'hover:text-emerald-400 focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:outline-none rounded-sm transition-colors duration-300 block w-max';
@@ -408,6 +409,13 @@ function PublicFooter() {
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-ui text-sm">
+            <Link
+              href="/"
+              className="flex items-center gap-2 rounded-sm transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+            >
+              <BrandMark size={28} onDarkChrome className="h-7 w-7 overflow-hidden rounded-md" />
+              <span className="sr-only">{siteConfig.name}</span>
+            </Link>
             <Link
               href="/privacy"
               className="rounded-sm transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"

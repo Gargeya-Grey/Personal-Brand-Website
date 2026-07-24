@@ -199,7 +199,9 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           <BrandMark
             size={32}
             priority
-            className="h-8 w-8 shrink-0 rounded-[0.55rem] transition-transform duration-300 group-hover:scale-105"
+            variant={isAtelier ? 'dark' : 'auto'}
+            onDarkChrome={forceDarkNav}
+            className="h-8 w-8 shrink-0 overflow-hidden rounded-[0.55rem] transition-transform duration-300 group-hover:scale-105"
           />
           <span
             className={`font-headline text-base font-extrabold tracking-[-0.04em] transition-colors duration-300 sm:text-lg ${

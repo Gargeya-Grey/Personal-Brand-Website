@@ -30,7 +30,10 @@ export function getPersonJsonLd() {
     '@id': `${origin}/#person`,
     name: siteConfig.name,
     url: origin,
-    image: absoluteUrl(siteConfig.authorAvatar),
+    image: [
+      absoluteUrl(siteConfig.authorAvatar),
+      absoluteUrl(siteConfig.brand.logo.darkPng),
+    ],
     email: siteConfig.email,
     jobTitle: siteConfig.authorRole,
     description: siteConfig.description,
@@ -93,13 +96,13 @@ export function getBlogPostingJsonLd(article: BlogPostingInput) {
       '@id': `${origin}/#person`,
       name: siteConfig.name,
       url: origin,
-      image: absoluteUrl(siteConfig.authorAvatar),
+      image: absoluteUrl(siteConfig.brand.logo.darkPng),
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': pageUrl,
     },
-    image: imageUrl,
+    image: [imageUrl, absoluteUrl(siteConfig.brand.ogImage)],
     keywords: article.categories?.join(', '),
     url: pageUrl,
   };

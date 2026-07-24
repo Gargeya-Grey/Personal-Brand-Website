@@ -8,7 +8,7 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { InteractiveBackgroundLazy } from '@/components/interactive-background-lazy';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
-import { getSiteOrigin, siteConfig } from '@/lib/site-config';
+import { getDefaultShareImage, getSiteOrigin, siteConfig } from '@/lib/site-config';
 import { getSiteJsonLdGraph } from '@/lib/structured-data';
 
 const themeInitScript = `
@@ -36,6 +36,7 @@ const monteCarlo = MonteCarlo({
 });
 
 const origin = getSiteOrigin();
+const shareImage = getDefaultShareImage();
 
 export const metadata: Metadata = {
   metadataBase: new URL(origin),
@@ -59,12 +60,22 @@ export const metadata: Metadata = {
     title: siteConfig.title,
     description: siteConfig.description,
     siteName: siteConfig.name,
+    images: [shareImage],
   },
   twitter: {
     card: 'summary_large_image',
     title: siteConfig.title,
     description: siteConfig.description,
+    site: siteConfig.twitterHandle,
     creator: siteConfig.twitterHandle,
+    images: [
+      {
+        url: shareImage.url,
+        alt: shareImage.alt,
+        width: shareImage.width,
+        height: shareImage.height,
+      },
+    ],
   },
   robots: {
     index: true,
