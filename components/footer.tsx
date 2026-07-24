@@ -413,7 +413,7 @@ function PublicFooter() {
               href="/"
               className="flex items-center gap-2 rounded-sm transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
-              <BrandMark size={28} onDarkChrome className="h-7 w-7 overflow-hidden rounded-md" />
+              <BrandMark size={28} onDarkChrome className="h-7 w-7" />
               <span className="sr-only">{siteConfig.name}</span>
             </Link>
             <Link

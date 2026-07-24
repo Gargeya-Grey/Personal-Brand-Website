@@ -6,18 +6,19 @@ type BrandMarkProps = {
   /** Pixel size of the square mark */
   size?: number;
   /**
-   * `auto` — dark-field mark in light UI, light-field mark in dark UI (CSS).
-   * `dark` — dark tile (for light chrome).
-   * `light` — light tile (for dark chrome).
+   * `auto` — dark G on light UI, light G on dark UI (CSS).
+   * `onLight` — dark G (light chrome / paper).
+   * `onDark` — light G (dark chrome / hero / footer).
    */
-  variant?: 'auto' | 'dark' | 'light';
-  /** Shortcut: use light-field mark on dark chrome (hero/footer). */
+  variant?: 'auto' | 'onLight' | 'onDark';
+  /** Shortcut: light G on dark chrome (hero/footer). */
   onDarkChrome?: boolean;
   priority?: boolean;
 };
 
 /**
- * Official SGargeya mark — square tile for nav, footer, and chrome.
+ * Official SGargeya mark — masked (transparent) for nav and chrome.
+ * Favicon uses the full unmasked tile separately.
  */
 export function BrandMark({
   className = '',
@@ -26,13 +27,14 @@ export function BrandMark({
   onDarkChrome = false,
   priority = false,
 }: BrandMarkProps) {
-  const resolved: 'dark' | 'light' | 'auto' = onDarkChrome ? 'light' : variant;
+  const resolved: 'onLight' | 'onDark' | 'auto' = onDarkChrome ? 'onDark' : variant;
   const alt = `${siteConfig.name} logo`;
+  const { onLight, onDark } = siteConfig.brand.logo;
 
-  if (resolved === 'dark' || resolved === 'light') {
+  if (resolved === 'onLight' || resolved === 'onDark') {
     return (
       <Image
-        src={siteConfig.brand.logo[resolved]}
+        src={resolved === 'onLight' ? onLight : onDark}
         alt={alt}
         width={size}
         height={size}
@@ -48,7 +50,7 @@ export function BrandMark({
       style={{ width: size, height: size }}
     >
       <Image
-        src={siteConfig.brand.logo.dark}
+        src={onLight}
         alt={alt}
         width={size}
         height={size}
@@ -56,7 +58,7 @@ export function BrandMark({
         priority={priority}
       />
       <Image
-        src={siteConfig.brand.logo.light}
+        src={onDark}
         alt=""
         width={size}
         height={size}

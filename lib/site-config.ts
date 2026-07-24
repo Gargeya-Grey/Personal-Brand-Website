@@ -21,11 +21,15 @@ export const siteConfig = {
   /** Official brand marks + social share card */
   brand: {
     logo: {
-      /** Dark tile — use on light chrome */
+      /**
+       * Masked (transparent) — nav / in-app chrome.
+       * `onLight` = dark G for light backgrounds; `onDark` = light G for dark backgrounds.
+       */
+      onLight: '/brand/sgargeya-logo-light-mask.svg',
+      onDark: '/brand/sgargeya-logo-dark-mask.svg',
+      /** Full tile (with background) — favicon, schema, downloads */
       dark: '/brand/sgargeya-logo-dark.svg',
-      /** Light tile — use on dark chrome */
       light: '/brand/sgargeya-logo-light.svg',
-      /** Raster fallbacks (schema, emails, download) */
       darkPng: '/brand/sgargeya-logo-dark.png',
       lightPng: '/brand/sgargeya-logo-light.png',
     },
