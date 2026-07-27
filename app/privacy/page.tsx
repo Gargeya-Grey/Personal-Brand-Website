@@ -5,7 +5,8 @@ import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
   title: 'Privacy Policy',
-  description: 'How this personal site handles contact and analytics data.',
+  description:
+    'How sgargeya.com handles contact form data, analytics, and privacy for Gargeya Sharma’s personal site.',
   alternates: { canonical: '/privacy' },
 };
 

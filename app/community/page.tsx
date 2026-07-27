@@ -7,7 +7,7 @@ import { Users, ArrowUpRight, TrendingUp, Award } from 'lucide-react';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Community',
+  title: 'X & Discord Community',
   description:
     'Follow Gargeya Sharma on X for public writing, or join Discord for high-signal builder chat.',
   alternates: { canonical: '/community' },

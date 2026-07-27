@@ -5,9 +5,9 @@ import BlogClient from './blog-client';
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: 'Blog',
+  title: 'Blog & Writing',
   description:
-    'Personal writing from Gargeya Sharma — systems, AI, craft, opinions, and useful finds.',
+    'Personal writing from Gargeya Sharma on systems, AI, craft, building in public, and useful finds.',
   alternates: { canonical: '/blog' },
 };
 

@@ -13,6 +13,7 @@ import {
 import { requireAllowedSession } from '@/lib/auth';
 import { isTrustedOrigin } from '@/lib/csrf';
 import { siteConfig } from '@/lib/site-config';
+import { clampMetaDescription } from '@/lib/meta';
 
 function checkCsrf(request: Request): boolean {
   return isTrustedOrigin(request);
@@ -160,7 +161,10 @@ export async function POST(request: Request) {
         id: existing.id,
         slug: cleanSlug,
         title: article.title.trim(),
-        excerpt: (article.excerpt ?? existing.excerpt) || '',
+        excerpt: clampMetaDescription(
+          (article.excerpt ?? existing.excerpt) || '',
+          { fallback: `${article.title.trim()} — writing by ${siteConfig.name}.` }
+        ),
         categories: article.categories?.length ? article.categories : existing.categories,
         readTime: article.readTime || existing.readTime,
         takeaways: article.takeaways ?? existing.takeaways,
@@ -186,7 +190,9 @@ export async function POST(request: Request) {
         id: newId,
         slug: cleanSlug,
         title: article.title.trim(),
-        excerpt: article.excerpt || '',
+        excerpt: clampMetaDescription(article.excerpt || '', {
+          fallback: `${article.title.trim()} — writing by ${siteConfig.name}.`,
+        }),
         categories: article.categories?.length ? article.categories : ['Engineering'],
         author: article.author || siteConfig.name,
         authorRole: article.authorRole || siteConfig.authorRole,

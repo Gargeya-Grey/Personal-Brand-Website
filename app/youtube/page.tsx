@@ -7,9 +7,9 @@ import { YoutubeGrid } from '@/components/youtube-grid';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'YouTube',
+  title: 'YouTube Journal',
   description:
-    'Travel essays, process, and the human side of building — plus systems thinking when the camera is on architecture.',
+    'Travel essays, process, and the human side of building — plus systems thinking on camera.',
   alternates: { canonical: '/youtube' },
 };
 

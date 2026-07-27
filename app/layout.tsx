@@ -9,6 +9,7 @@ import { InteractiveBackgroundLazy } from '@/components/interactive-background-l
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 import { getDefaultShareImage, getSiteOrigin, siteConfig } from '@/lib/site-config';
+import { clampMetaDescription } from '@/lib/meta';
 import { getSiteJsonLdGraph } from '@/lib/structured-data';
 
 const themeInitScript = `
@@ -37,6 +38,7 @@ const monteCarlo = MonteCarlo({
 
 const origin = getSiteOrigin();
 const shareImage = getDefaultShareImage();
+const rootDescription = clampMetaDescription(siteConfig.description);
 
 export const metadata: Metadata = {
   metadataBase: new URL(origin),
@@ -44,7 +46,7 @@ export const metadata: Metadata = {
     template: `%s | ${siteConfig.name}`,
     default: siteConfig.title,
   },
-  description: siteConfig.description,
+  description: rootDescription,
   keywords: [...siteConfig.keywords],
   authors: [{ name: siteConfig.name, url: origin }],
   creator: siteConfig.name,
@@ -58,14 +60,14 @@ export const metadata: Metadata = {
     locale: siteConfig.locale,
     url: origin,
     title: siteConfig.title,
-    description: siteConfig.description,
+    description: rootDescription,
     siteName: siteConfig.name,
     images: [shareImage],
   },
   twitter: {
     card: 'summary_large_image',
     title: siteConfig.title,
-    description: siteConfig.description,
+    description: rootDescription,
     site: siteConfig.twitterHandle,
     creator: siteConfig.twitterHandle,
     images: [

@@ -9,6 +9,7 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { ArticleClient } from './article-client';
 import { absoluteUrl, getDefaultShareImage, siteConfig } from '@/lib/site-config';
+import { clampMetaDescription } from '@/lib/meta';
 import { getBlogPostingJsonLd } from '@/lib/structured-data';
 
 interface PageProps {
@@ -47,7 +48,9 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const brandedTitle = `${article!.title} | ${siteConfig.name}`;
-  const descriptionText = article!.excerpt;
+  const descriptionText = clampMetaDescription(article!.excerpt, {
+    fallback: `${article!.title} — writing by ${siteConfig.name} on systems, AI, and building in public.`,
+  });
   const canonicalPath = `/blog/${article!.slug}`;
   const defaultShare = getDefaultShareImage(brandedTitle);
   const cover = article!.coverImage

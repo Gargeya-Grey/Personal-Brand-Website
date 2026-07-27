@@ -5,7 +5,8 @@ import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
   title: 'Terms of Service',
-  description: 'Terms for using this personal brand website.',
+  description:
+    'Terms of use for sgargeya.com — Gargeya Sharma’s personal brand, editorial, and portfolio website.',
   alternates: { canonical: '/terms' },
 };
 

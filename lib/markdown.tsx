@@ -198,12 +198,13 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       continue;
     }
     if (line.startsWith('# ')) {
+      // Demote body `#` to h2 so the page title remains the only H1 (SEO).
       const text = line.slice(2).trim();
       const id = slugify(text);
       elements.push(
-        <h1 key={`h1-${i}`} id={id} className="text-3xl md:text-4xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-12 mb-6 leading-tight">
+        <h2 key={`h1as2-${i}`} id={id} className="text-2xl md:text-3xl font-headline font-[520] dark:font-[480] text-slate-900 dark:text-white tracking-[-0.01em] mt-10 mb-5 scroll-mt-32 leading-tight">
           {text}
-        </h1>
+        </h2>
       );
       i++;
       continue;

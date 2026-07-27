@@ -6,9 +6,9 @@ import { ContactForm } from '@/components/contact-form';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Contact',
+  title: { absolute: 'Contact Gargeya Sharma | Strategy & Partnerships' },
   description:
-    'Discuss technical strategy, AI implementation, or venture partnership with Gargeya Sharma.',
+    'Discuss technical strategy, AI systems, or venture partnership with Gargeya Sharma at Edudojo.ai.',
   alternates: { canonical: '/contact' },
 };
 

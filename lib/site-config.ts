@@ -7,7 +7,7 @@ export const siteConfig = {
   shortName: 'Gargeya',
   title: 'Gargeya Sharma | The Engineering Editorial',
   description:
-    'Architecting the next generation of intelligent systems. Founder @ Edudojo.ai — AI for evaluation, assessment, and education.',
+    'Founder @ Edudojo.ai — building AI for evaluation, assessment, and education systems.',
   url: process.env.APP_URL || 'https://sgargeya.com',
   /** Public-facing brand email (mailto + contact page) */
   email: 'contact@sgargeya.com',

@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+﻿import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
 import * as motion from 'motion/react-client';
@@ -7,10 +7,11 @@ import { FeaturedProjects } from '@/components/featured-projects';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { siteConfig } from '@/lib/site-config';
+import { clampMetaDescription } from '@/lib/meta';
 
 export const metadata: Metadata = {
   title: { absolute: siteConfig.title },
-  description: siteConfig.description,
+  description: clampMetaDescription(siteConfig.description),
   alternates: { canonical: '/' },
 };
 
@@ -24,7 +25,7 @@ export default function Home() {
         tabIndex={-1}
         className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10 xl:px-12"
       >
-        {/* Hero — copy + media card */}
+        {/* Hero ΓÇö copy + media card */}
         <section className="relative grid min-h-[min(88svh,860px)] grid-cols-1 items-center gap-12 overflow-x-clip py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
           <div className="pointer-events-none absolute -right-40 top-8 hidden h-[42rem] w-[42rem] rounded-full border border-accent/15 lg:block" aria-hidden="true" />
           <div className="pointer-events-none absolute -right-24 top-28 hidden h-[30rem] w-[30rem] rounded-full border border-white/10 lg:block" aria-hidden="true" />
@@ -137,7 +138,7 @@ export default function Home() {
                 Choose a point of entry.
               </h2>
             </div>
-            <p className="max-w-sm font-body text-sm leading-relaxed text-on-surface-variant sm:text-right">A venture, a community, a journal, and a visual log—one system for building in public.</p>
+            <p className="max-w-sm font-body text-sm leading-relaxed text-on-surface-variant sm:text-right">A venture, a community, a journal, and a visual logΓÇöone system for building in public.</p>
           </div>
           <div className="grid grid-cols-1 gap-5 md:grid-cols-3 md:gap-6">
             {/* Startup Card */}
@@ -262,7 +263,7 @@ export default function Home() {
                 </div>
                 <div className="relative z-10 flex justify-center md:justify-end">
                   <span className="rounded-full border border-accent/30 bg-accent/10 px-5 py-2.5 font-label text-xs uppercase tracking-widest text-accent transition-all duration-300 group-hover:border-accent group-hover:bg-accent group-hover:text-slate-950">
-                    View Biography →
+                    View Biography ΓåÆ
                   </span>
                 </div>
               </motion.div>
@@ -282,7 +283,7 @@ export default function Home() {
               </h2>
               <p className="mx-auto max-w-2xl font-body text-base leading-relaxed text-white/72 sm:text-lg">
                 Whether it&apos;s an architectural audit, AI implementation strategy, or a new venture
-                partnership—let&apos;s discuss the technical roadmap.
+                partnershipΓÇölet&apos;s discuss the technical roadmap.
               </p>
 
               <div className="flex flex-col justify-center gap-3 pt-2 sm:flex-row sm:gap-4">
