@@ -225,7 +225,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
               <Link
                 key={link.key || link.name}
                 href={link.path}
-                scroll={false}
+                scroll={!isAtelier}
                 prefetch={isAtelier ? false : undefined}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
@@ -348,7 +348,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                 <Link
                   key={link.name}
                   href={link.path}
-                  scroll={false}
+                  scroll={!isAtelier}
                   prefetch={isAtelier ? false : undefined}
                   onClick={() => setMobileMenuOpen(false)}
                   target={link.external ? '_blank' : undefined}
