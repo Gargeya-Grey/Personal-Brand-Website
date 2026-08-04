@@ -888,7 +888,7 @@ export function XStudioClient() {
           </div>
         </div>
 
-        {/* Premium run picker — each 12h scout is its own card; completed runs hidden by default */}
+        {/* Premium run picker — each 2h IST scout is its own card; completed runs hidden by default */}
         {packs.length > 0 && (
           <div className="mt-6 pt-6 border-t border-[var(--atelier-line)] space-y-3">
             <div className="flex flex-wrap items-center justify-between gap-2">
@@ -978,7 +978,7 @@ export function XStudioClient() {
                 All open runs are cleared. Completed packs stay in the cloud but stay out of your way.
                 {completedRuns.length > 0
                   ? ' Use “Show completed” only if you need to restore a draft.'
-                  : ' Wait for the next 12h scout.'}
+                  : ' Wait for the next 2h scout (11:00–21:00 IST).'}
               </p>
             )}
           </div>

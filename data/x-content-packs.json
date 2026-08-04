@@ -1,314 +1,1515 @@
 [
   {
-    "id": "pack-2026-07-24-r10",
-    "date": "2026-07-24",
-    "title": "Phase 1 · 10 replies : 1 short (clean slate)",
-    "theme": "Reply-first growth. Critical thinking on AI, learning, ethics, values — under hot posts only. One optional short after the sprint.",
-    "briefing": "After DB wipe. ~10:1 reply:original. MVP = replies only. Skip prior packs. Source-grounded; one post per draft.",
-    "plannedMinutes": 45,
+    "id": "pack-2026-08-03-t19",
+    "date": "2026-08-03",
+    "title": "2h IST t19 · cheap AI vs thinking on your own · video models for learning experiences",
+    "theme": "When AI is cheap, owned thinking is the scarce skill · generative video can build learning experiences · still assess the path not the polish",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Slot t19 IST. No reuse of t13/t15/t17 handles.",
+    "plannedMinutes": 18,
     "mvpDraftIds": [
-      "r-unclebob",
-      "r-homework",
-      "r-cole",
-      "r-jensen-open",
-      "r-satya-open",
-      "r-sakana-lab",
-      "r-hardmaru",
-      "r-frontier",
-      "r-emil-variants",
-      "r-brockman-safety"
+      "r-dcinvestor-think-on-own",
+      "r-umesh-video-ed",
+      "short-cheap-ai-scarce-thinking"
     ],
     "signals": [
       {
-        "id": "s1",
-        "summary": "Uncle Bob: don't read agent code; extreme constraints/tests gauntlet.",
-        "whyItMatters": "Hyper discovery room.",
-        "url": "https://x.com/unclebobmartin/status/2080257779395154409",
-        "heat": 5,
-        "category": "ai-builders"
-      },
-      {
-        "id": "s2",
-        "summary": "dieworkwear: AI homework widens grades vs learning; causal reasoning at risk.",
-        "whyItMatters": "Education + values.",
-        "url": "https://x.com/dieworkwear/status/2080442347868037198",
-        "heat": 5,
-        "category": "education"
-      },
-      {
-        "id": "s3",
-        "summary": "Cole: coding agent annotated screenshots on PRs.",
-        "whyItMatters": "Process evidence for builders.",
-        "url": "https://x.com/colebemis/status/2080392348836790395",
-        "heat": 4,
-        "category": "ai-builders"
-      },
-      {
-        "id": "s4",
-        "summary": "Jensen first post: open models + closed models both needed; letter on open models.",
-        "whyItMatters": "Mega author; values/sovereignty/safety framing.",
-        "url": "https://x.com/JensenHuang/status/2080643682408321103",
-        "heat": 5,
-        "category": "ai-ethics"
-      },
-      {
-        "id": "s5",
-        "summary": "Satya: open-weight models essential; competitiveness + opportunity + national security.",
-        "whyItMatters": "Hyper; open ecosystem.",
-        "url": "https://x.com/satyanadella/status/2080646162483417097",
-        "heat": 5,
-        "category": "ai-ethics"
-      },
-      {
-        "id": "s6",
-        "summary": "Sakana lab Fugu v1.1: +7.9, ProgramBench, Terminal Bench 2.1 (no Fable in this post).",
-        "whyItMatters": "Eval honesty room.",
-        "url": "https://x.com/SakanaAILabs/status/2080448772778373586",
-        "heat": 5,
-        "category": "evals"
-      },
-      {
-        "id": "s7",
-        "summary": "hardmaru: Fable 5 without Fable in agent pool + 7.9 points.",
-        "whyItMatters": "Separate source from lab.",
-        "url": "https://x.com/hardmaru/status/2080454723195568596",
-        "heat": 4,
-        "category": "evals"
-      },
-      {
-        "id": "s8",
-        "summary": "Frontier-Bench v0.1: 74 tasks, best agents ~34%.",
-        "whyItMatters": "Honest hardness.",
-        "url": "https://x.com/ryanmart3n/status/2080322620248281252",
-        "heat": 4,
-        "category": "evals"
-      },
-      {
-        "id": "s9",
-        "summary": "Emil: coding agent feature variants + switcher + query param + Leva.",
-        "whyItMatters": "Learning/prototyping passion.",
-        "url": "https://x.com/emilkowalski/status/2080645760530448733",
+        "id": "sig-dc-think",
+        "summary": "Riff on Edison cheap-electricity line: “We will make AI so cheap that only the rich will think on their own”",
+        "whyItMatters": "Center Venn — cognitive offloading / social psych of cheap answers × who keeps the skill of thinking",
+        "url": "https://x.com/DCinvestor/status/2084241092451402236",
         "heat": 3,
-        "category": "builders"
+        "category": "cognitive-behavior"
       },
       {
-        "id": "s10",
-        "summary": "cb_doge: Brockman endorsed Musk proposal — AI cos meet on safety; peer review before release.",
-        "whyItMatters": "Ethics/governance room.",
-        "url": "https://x.com/cb_doge/status/2080643692587864545",
-        "heat": 4,
-        "category": "ai-ethics"
+        "id": "sig-umesh-video-ed",
+        "summary": "Video models will revolutionize education; turn vision into a prompt and generate a learning experience that once needed an entire production team (demo with MiniMax H3)",
+        "whyItMatters": "AI-in-education — student-centric media production as scaffold for learning experiences",
+        "url": "https://x.com/umesh_ai/status/2084227244533411987",
+        "heat": 3,
+        "category": "ai-in-education"
       }
     ],
     "skipList": [
-      "Original-heavy packs (flagship + multiple shorts)",
-      "Mixed-source claims",
-      "Crypto spam / pure politics / sports agents",
-      "Quiet posts under heat floor"
+      "Stale reply piles",
+      "Off-Venn crypto/politics/course spam",
+      "Reuse t13 chukwu Murphy; t15 cirnosad ItsmeAjayKV; t17 aaliya Iqra",
+      "Reuse jun_song bindureddy PearlWrap Primeagen karpathy",
+      "Invented Edison history beyond the quoted riff framing",
+      "Product spam / Edudojo dump"
     ],
     "drafts": [
       {
-        "id": "pack-2026-07-24-r10__r-unclebob",
+        "id": "pack-2026-08-03-t19__r-dcinvestor-think-on-own",
         "kind": "reply",
-        "label": "@unclebobmartin · gauntlet",
-        "body": "I get the posture. If you don't read the agent code, the only honest move is that gauntlet — unit tests, gherkin, QA, mutation testing, coverage.\n\nWhat I’m concerned as a builder: those can all go green while the agent still took a decision you never meant to hand over. High confidence in the last frame is not the same as confidence in the path.\n\nDo your suites also catch wrong intermediate choices, or only that the final metrics look right?",
-        "meta": "https://x.com/unclebobmartin/status/2080257779395154409",
+        "label": "Reply · thinking on your own should not be a luxury",
+        "body": "This line hits because it is almost true already.\n\nWe will make AI so cheap that only the rich will think on their own — unless education changes the incentive.\n\nIf the grade only rewards the polished last frame, outsourcing thinking is rational. Cheap answers + output-only assessment = cognitive offloading for everyone, not just the poor.\n\nMy take: make the scarce skill visible. Assess the path — what a student can defend without the model — and thinking on your own stops being a luxury brand.",
+        "meta": "https://x.com/DCinvestor/status/2084241092451402236",
         "status": "ready",
         "priority": 1,
         "intent": "growth",
         "session": "sprint",
         "estimatedSeconds": 85,
-        "why": "Largest builder room; path vs last-frame.",
+        "why": "Same-day high-signal one-liner on cheap AI vs owned thinking; 86 likes / ~10k views. Grounded only in his AI-so-cheap / think-on-their-own riff.",
+        "tip": "Copy & open first. Soft process-assessment bridge only. Do not invent Edison biography or economics beyond the parallel he set up.",
         "postingWindow": "anytime",
-        "targetHandle": "unclebobmartin",
-        "targetReach": "hyper"
+        "targetHandle": "DCinvestor",
+        "targetReach": "mid"
       },
       {
-        "id": "pack-2026-07-24-r10__r-homework",
+        "id": "pack-2026-08-03-t19__r-umesh-video-ed",
         "kind": "reply",
-        "label": "@dieworkwear · homework",
-        "body": "This lands. Secret AI homework makes grade-chasers look fine while people who wanted to learn still do the hard part.\n\nIf we only score the finished sheet, causal reasoning never gets pressure-tested — same bug as scoring the last token and never the thinking path.\n\nI personally always prefer assessments that watch how someone arrived, not only whether the homework looks done.",
-        "meta": "https://x.com/dieworkwear/status/2080442347868037198",
+        "label": "Reply · learning experiences not just answer videos",
+        "body": "This is the education use case I want more of.\n\nVideo models letting one person turn a vision into a learning experience that used to need a full production team — that is real access.\n\nBut the win is not only prettier content. It is when the media still forces the learner to notice, recall, and check themselves — not just watch a polished answer stream.\n\nStudent-centric means the path of understanding stays in the loop. Tools like this can scaffold that if we design for thinking, not only for the final clip.",
+        "meta": "https://x.com/umesh_ai/status/2084227244533411987",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 85,
+        "why": "Same-day AI-ed demo; 77 likes / solid bookmarks. Claims limited to video models revolutionize education + vision→prompt→learning experience once needing production team.",
+        "tip": "Stay on education access + learning experience. Do not invent curriculum outcomes beyond what the post states. Soft process note only.",
+        "postingWindow": "anytime",
+        "targetHandle": "umesh_ai",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-08-03-t19__short-cheap-ai-scarce-thinking",
+        "kind": "short",
+        "label": "Short · cheap tools, scarce owned thinking",
+        "body": "AI is getting cheaper and better at producing learning media.\n\nThat does not automatically make people better thinkers. It makes polished answers cheaper.\n\nThe scarce skill is still owned thinking — the path you can defend without the model. Assess that, or cheap AI just scales cognitive offloading.",
         "status": "ready",
         "priority": 2,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 80,
-        "why": "Education + values + causal reasoning.",
-        "postingWindow": "anytime",
-        "targetHandle": "dieworkwear",
-        "targetReach": "hyper"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-cole",
-        "kind": "reply",
-        "label": "@colebemis · PR screenshots",
-        "body": "This is underrated. Green CI still won’t tell you the UI feels wrong — annotated screenshots force a second look at what actually changed.\n\nI mean it as process evidence, not decoration: the PR stops being “tests passed” and becomes “here is what a human would notice.”\n\nDo you have the agent attach them by default, or only when the diff is visual?",
-        "meta": "https://x.com/colebemis/status/2080392348836790395",
-        "status": "ready",
-        "priority": 3,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "Process evidence for agents.",
-        "postingWindow": "anytime",
-        "targetHandle": "colebemis",
-        "targetReach": "viral"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-jensen-open",
-        "kind": "reply",
-        "label": "@JensenHuang · open models",
-        "body": "Welcome to X — and the letter framing is the right one: the world needs frontier closed models and frontier open models.\n\nWhat I’m still curious about as a builder: when open models “strengthen safety and cybersecurity,” which checks do we re-run after a release so the community can verify that claim next month, not only trust the announcement?\n\nSovereignty and diffusion matter. So does a fixed task suite people can actually re-check.",
-        "meta": "https://x.com/JensenHuang/status/2080643682408321103",
-        "status": "ready",
-        "priority": 4,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Mega first-post room; open + closed both needed.",
-        "postingWindow": "anytime",
-        "targetHandle": "JensenHuang",
-        "targetReach": "hyper"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-satya-open",
-        "kind": "reply",
-        "label": "@satyanadella · open-weight",
-        "body": "Open-weight models as essential to a healthy AI ecosystem is the right framing — competitiveness, opportunity, and national security all in one letter.\n\nThe part I still want next to that path: can the community re-check behavior with frozen tasks when weights move, not only trust the slide?\n\nHealthy open weights need healthy re-runnable evals too, in my humble opinion.",
-        "meta": "https://x.com/satyanadella/status/2080646162483417097",
-        "status": "ready",
-        "priority": 5,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Open-weight ecosystem + values.",
-        "postingWindow": "anytime",
-        "targetHandle": "satyanadella",
-        "targetReach": "hyper"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-sakana-lab",
-        "kind": "reply",
-        "label": "@SakanaAILabs · benches only",
-        "body": "Respect for shipping Fugu-Ultra v1.1 and putting numbers on the page — up to 7.9 points over v1.0, with ProgramBench and Terminal Bench 2.1 called out.\n\nWhen a patch moves benches that hard, I personally always prefer a small fixed task list + seeds the community can re-run next week, not only the chart on the announce.\n\nHappy to be wrong if you point to the exact public tasks behind those gains.",
-        "meta": "https://x.com/SakanaAILabs/status/2080448772778373586",
-        "status": "ready",
-        "priority": 6,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 80,
-        "why": "Lab text only — no Fable.",
-        "tip": "Do not mention Fable here.",
-        "postingWindow": "anytime",
-        "targetHandle": "SakanaAILabs",
-        "targetReach": "viral"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-hardmaru",
-        "kind": "reply",
-        "label": "@hardmaru · Fable claim",
-        "body": "Congrats on the v1.1 ship and the 7.9 point bump.\n\nThe line I’m still chewing on is “beating Fable 5 … without even having Fable 5 in our agent pool.” Strong claim — which coding/reasoning suites, and do those tasks stay frozen so outsiders can re-check next week?\n\nI get collective intelligence as the pitch. I personally always prefer that over a one-slide verdict.",
-        "meta": "https://x.com/hardmaru/status/2080454723195568596",
-        "status": "ready",
-        "priority": 7,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 75,
-        "why": "Fable-in-pool claim only on this post.",
-        "tip": "Skip if energy low after lab reply — one Fugu room is enough.",
-        "postingWindow": "anytime",
-        "targetHandle": "hardmaru",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-frontier",
-        "kind": "reply",
-        "label": "@ryanmart3n · Frontier-Bench",
-        "body": "This is the right shape of honesty — 74 tasks, best agents around 34%, and you call it an ongoing community effort instead of a finished leaderboard.\n\nI personally always prefer a hard suite that can still evolve over a saturated bench everyone memorizes.\n\nHow should outsiders re-run the same v0.1 tasks next month so “34%” stays comparable when you add more?",
-        "meta": "https://x.com/ryanmart3n/status/2080322620248281252",
-        "status": "ready",
-        "priority": 8,
-        "intent": "authority",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "Honest 34% / 74 tasks.",
-        "postingWindow": "anytime",
-        "targetHandle": "ryanmart3n",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-emil-variants",
-        "kind": "reply",
-        "label": "@emilkowalski · variants",
-        "body": "This is the part of AI that actually feels like learning, not just shipping faster — ask the coding agent for a few variants, switch between them, pass the selection as a query param so a colleague sees the same option.\n\nI’m curious how you decide which variant “wins” though. Is it still pure taste, or do you keep a small checklist so the switcher isn’t only demo candy?\n\nEither way, pairing that with Leva-style controls is a good instinct.",
-        "meta": "https://x.com/emilkowalski/status/2080645760530448733",
-        "status": "ready",
-        "priority": 9,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 65,
-        "why": "Passion for learning by trying options — still grounded.",
-        "postingWindow": "anytime",
-        "targetHandle": "emilkowalski",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-r10__r-brockman-safety",
-        "kind": "reply",
-        "label": "@cb_doge · safety meetings",
-        "body": "Meetings every few weeks on safety and security risks are better than silence — and peer review of frontier models before public release is the more interesting half of that proposal.\n\nWhat I’m not totally getting yet: what does “peer review” mean in practice — shared eval suites outsiders can re-run, or closed reviews between labs?\n\nIf it’s the first, I personally always prefer that. If it’s only the second, we still have a trust problem.",
-        "meta": "https://x.com/cb_doge/status/2080643692587864545",
-        "status": "ready",
-        "priority": 10,
-        "intent": "growth",
-        "session": "sprint",
-        "estimatedSeconds": 70,
-        "why": "Ethics: meetings + peer review before release.",
-        "postingWindow": "anytime",
-        "targetHandle": "cb_doge",
-        "targetReach": "high"
-      },
-      {
-        "id": "pack-2026-07-24-r10__short-path-once",
-        "kind": "short",
-        "label": "Short · one original only",
-        "body": "Green tests are not a verdict.\n\nAn agent can clear the whole gauntlet and still take a decision you never meant to delegate. Same bug as a homework sheet that looks perfect with no thinking underneath.\n\nScore the path. Re-run the same tasks. Last-frame scores will keep lying.",
-        "status": "ready",
-        "priority": 11,
         "intent": "authority",
         "session": "core",
-        "estimatedSeconds": 50,
-        "why": "Phase 1: single original after 10 replies. Skip if tired.",
+        "estimatedSeconds": 40,
+        "why": "Original Venn thesis tying both replies; no fake citations.",
         "postingWindow": "anytime"
       }
     ],
     "schedule": [
-      "0–40m: All 10 replies (MVP) — Copy & open each source",
-      "40–45m: Optional one short only if energy left",
-      "Mark Done in X To-Do after each"
+      "1) Reply DCinvestor (cheap AI / think on your own)",
+      "2) Reply umesh_ai (video models for learning experiences)",
+      "3) Post original short"
     ],
     "sessions": [
       {
         "id": "sprint",
-        "title": "Reply sprint",
-        "maxMinutes": 40,
-        "description": "All 10 replies — this is the whole job today"
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two same-day Venn posts — post while energy is live."
       },
       {
         "id": "core",
-        "title": "Optional original",
-        "maxMinutes": 8,
-        "description": "One short only if energy left"
-      },
-      {
-        "id": "bonus",
-        "title": "Bonus",
-        "maxMinutes": 5,
-        "description": "Skip in Phase 1 unless needed"
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "One short Venn thesis."
       }
     ],
-    "createdAt": "2026-07-24T14:30:00.000Z",
-    "updatedAt": "2026-07-24T14:24:44.907Z"
+    "createdAt": "2026-08-03T14:47:41.658Z",
+    "updatedAt": "2026-08-03T14:47:41.658Z"
+  },
+  {
+    "id": "pack-2026-08-03-t17",
+    "date": "2026-08-03",
+    "title": "2h IST t17 · AI that helps you learn vs does the work · interactive concepts not answers",
+    "theme": "Cognitive offload kills learning · use AI to understand not copy · interactive concept learning over magic answers",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Slot t17 IST. No reuse of t13/t15 handles.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-aaliya-learn-not-copy",
+      "r-iqra-interactive-not-answers",
+      "short-tutor-mode-not-crutch"
+    ],
+    "signals": [
+      {
+        "id": "sig-aaliya-offload",
+        "summary": "Daily AI use: the more you let AI think for you, the less you learn; devs who used AI to understand concepts beat those who only copied answers; best as learn-help not do-all-work",
+        "whyItMatters": "Center Venn — cognitive behavior × learning psych × AI usage design",
+        "url": "https://x.com/aaliya_va/status/2084175358710997180",
+        "heat": 3,
+        "category": "learning-psych"
+      },
+      {
+        "id": "sig-iqra-fenzo",
+        "summary": "AI learning tool interesting because instead of just giving answers it helps learn concepts interactively; studying more engaging",
+        "whyItMatters": "AI-in-education — student-centric interactive path vs answer machine",
+        "url": "https://x.com/AiWithIqra/status/2084237344446836963",
+        "heat": 3,
+        "category": "ai-in-education"
+      }
+    ],
+    "skipList": [
+      "Stale reply piles",
+      "Off-Venn crypto/politics/course spam",
+      "Reuse t13 chukwueloka88 RichardJMurphy; t15 cirnosad ItsmeAjayKV",
+      "Reuse jun_song bindureddy PearlWrap Primeagen karpathy",
+      "Invented study methods/numbers beyond source",
+      "Product spam / Edudojo dump"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-03-t17__r-aaliya-learn-not-copy",
+        "kind": "reply",
+        "label": "Reply · tutor mode beats copy mode",
+        "body": "Absolutely correct.\n\nThe more you let AI think for you, the less you actually learn. Same pattern I see with students who treat it as a magic answer machine.\n\nUsing it to understand concepts > copying the final sheet. One builds the path in your head. The other just ships a polished last frame.\n\nAI is at its best when it pulls thinking out of you — not when it does all the work for you. If we assessed the process, not only the answer, that habit would become the default.",
+        "meta": "https://x.com/aaliya_va/status/2084175358710997180",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Same-day center-Venn take on AI offloading vs learning; 86 likes / 8k+ views. Grounded only in think-for-you→less learn, understand-concepts vs copy answers, learn-help not do-all-work.",
+        "tip": "Copy & open first. Soft process bridge only. Do not invent study design or % beyond her developer-concepts-vs-copy claim.",
+        "postingWindow": "anytime",
+        "targetHandle": "aaliya_va",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-08-03-t17__r-iqra-interactive-not-answers",
+        "kind": "reply",
+        "label": "Reply · interactive concepts > answer dump",
+        "body": "This is the education use case I want more of.\n\nNot AI that only dumps answers. Tools that help you learn concepts interactively — so studying feels like exploration, not paste-and-submit.\n\nStudent-centric means the learner still has to poke, check, and build understanding. The path matters as much as the final sheet.\n\nIf more learning tools defaulted to that, the lazy-answer habit would shrink on its own.",
+        "meta": "https://x.com/AiWithIqra/status/2084237344446836963",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Fresh (~1–2h) AI-learning tool post; interactive concepts not just answers. Mid heat climbing (likes+RTs). Claims limited to interesting learning tool, not just answers, interactive concepts, engaging studying.",
+        "tip": "Agree on interactive learning pattern only — no endorsement of product claims beyond source text. No invented features.",
+        "postingWindow": "anytime",
+        "targetHandle": "AiWithIqra",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-08-03-t17__short-tutor-mode-not-crutch",
+        "kind": "short",
+        "label": "Short · default AI to tutor mode",
+        "body": "Two modes with the same model.\n\nCopy mode: it thinks, you paste, you learn almost nothing.\nTutor mode: it forces concepts, questions, and a path you can defend.\n\nIf school only grades the last polished answer, copy mode wins. Change what we assess — and tutor mode becomes the rational habit.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 40,
+        "why": "Original Venn thesis tying both replies; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply aaliya_va (learn not copy / offload)",
+      "2) Reply AiWithIqra (interactive concepts not answers)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two same-day Venn posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-03T12:48:01.344Z",
+    "updatedAt": "2026-08-03T12:48:01.344Z"
+  },
+  {
+    "id": "pack-2026-08-03-t15",
+    "date": "2026-08-03",
+    "title": "2h IST t15 · proof journey not QED · local open weights for builders who ship",
+    "theme": "Math/learning insight is the path not the last line · local Qwen open weights = access · personalize without process still fails",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Slot t15 IST. Avoid reuse of t13 chukwu/Murphy.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-cirnosad-journey-not-qed",
+      "r-aj-local-qwen-threejs",
+      "short-path-not-last-frame"
+    ],
+    "signals": [
+      {
+        "id": "sig-cirnosad-journey",
+        "summary": "Math insight is the journey not QED destination; machine proofs without human understanding are dead ends; LLMs next-token, weak as pedagogical teachers; need systems that model the learner",
+        "whyItMatters": "Center Venn — learning psych × process vs final answer × honest AI-for-thinking limits",
+        "url": "https://x.com/cirnosad/status/2084179945983783098",
+        "heat": 4,
+        "category": "learning-psych"
+      },
+      {
+        "id": "sig-aj-local-qwen",
+        "summary": "Builder shipping full three.js game on local qwen3.6-27b/35b Q4–Q6; hyped Qwen-3.8-27b open weights; asks MoE for less VRAM/more RAM; local AI community listened to",
+        "whyItMatters": "Open-source access + efficiency — serious build/learn without frontier-only cost",
+        "url": "https://x.com/ItsmeAjayKV/status/2084182045513982217",
+        "heat": 4,
+        "category": "open-source-access"
+      }
+    ],
+    "skipList": [
+      "Stale reply piles",
+      "Off-Venn crypto/engagement bait course spam",
+      "Reuse t13 chukwueloka88, RichardJMurphy",
+      "Reuse jun_song, bindureddy, PearlWrap, Primeagen, karpathy",
+      "Invented Altman quotes or model benches not in source",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-03-t15__r-cirnosad-journey-not-qed",
+        "kind": "reply",
+        "label": "Reply · QED is destination, learning is the journey",
+        "body": "You're pointing at the real thing.\n\nThe QED is just the destination. The meat is the journey — insight into why something holds, not only that a machine (or a student) produced a final line.\n\nSame failure mode in school. If we only grade the polished last frame, people skip the path. Critical thinking never gets reps.\n\nA model that only fills answers without modelling how the learner is thinking is closer to a smart search engine than a Socratic tutor. Keep the journey in the assessment and the habit can flip.",
+        "meta": "https://x.com/cirnosad/status/2084179945983783098",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Same-day (~8–9h) process thesis on math insight/journey vs QED; 122 likes / solid RTs. Grounded in journey-not-destination, insight, pedagogical limits, smart-search framing from post only.",
+        "tip": "Copy & open first. Soft process bridge only. Do not invent Altman quotes or specific conjecture results beyond what he stated.",
+        "postingWindow": "anytime",
+        "targetHandle": "cirnosad",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-03-t15__r-aj-local-qwen-threejs",
+        "kind": "reply",
+        "label": "Reply · local open weights that let solo-builders ship",
+        "body": "This is the access story I care about.\n\nBuilding a whole three.js game on local qwen3.6 27b/35b (Q4/Q5/Q6) and getting hyped for open Qwen 3.8 27b — thats how more solo-builders and students actually learn: by shipping on hardware they own, not only on frontier API bills.\n\nModels that punch above their class on consumer GPUs + labs that listen to the local AI community matter. MoE options for less VRAM / more RAM would unlock even more people.\n\nGreat time for open source if they keep shipping for the folks running weights at home.",
+        "meta": "https://x.com/ItsmeAjayKV/status/2084182045513982217",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 85,
+        "why": "Same-day local-open-weights builder story; 186 likes. Claims limited to three.js game, qwen3.6-27b/35b quant levels, Qwen-3.8-27b hype, local community, MoE VRAM/RAM request.",
+        "tip": "Stay on access + local build. Do not paste Qwen Max pricing/benches from the quoted post unless restated by AJ.",
+        "postingWindow": "anytime",
+        "targetHandle": "ItsmeAjayKV",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-03-t15__short-path-not-last-frame",
+        "kind": "short",
+        "label": "Short · personalize + open access still need the path",
+        "body": "Open local models make serious tools reachable. Personalised learning paths make the route feel tailored.\n\nNeither fixes the failure mode alone: treating the final polished answer as the whole skill.\n\nIf the journey of thinking is not assessed, personalisation just becomes a faster road to the same last frame. Keep the path in the grade.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 40,
+        "why": "Original Venn thesis tying both replies; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply cirnosad (journey vs QED / process)",
+      "2) Reply ItsmeAjayKV (local Qwen three.js access)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two same-day Venn posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-03T10:47:38.406Z",
+    "updatedAt": "2026-08-03T10:47:38.406Z"
+  },
+  {
+    "id": "pack-2026-08-03-t13",
+    "date": "2026-08-03",
+    "title": "2h IST t13 · critical thinking vs answer-dependency · AI is one layer of the stack",
+    "theme": "AI enhance not replace critical thinking · human thinking stack (brain + years + process) · open access still needs owned cognition",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Slot t13 IST.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-chukwu-critical-thinking",
+      "r-murphy-ai-plus-brain",
+      "short-tool-is-layer-not-brain"
+    ],
+    "signals": [
+      {
+        "id": "sig-chukwu-critical",
+        "summary": "AI should enhance human intelligence not replace it; if younger generation depends on AI for every answer, critical thinking (skill that drives innovation) weakens",
+        "whyItMatters": "Center Venn — AI × learning/cognitive behavior × youth dependency",
+        "url": "https://x.com/chukwueloka88/status/2084135469735178555",
+        "heat": 4,
+        "category": "learning-psych"
+      },
+      {
+        "id": "sig-murphy-stack",
+        "summary": "Used AI for post; also word processor, brain, thinking time, coffee, discussion, ~50 years of reading — tools sit beside lived cognition",
+        "whyItMatters": "Process/cognition honesty — AI as one layer, not the whole mind; maps to assessment of path not last frame",
+        "url": "https://x.com/RichardJMurphy/status/2084168661921566921",
+        "heat": 4,
+        "category": "cognitive-behavior"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics/engagement bait courses",
+      "Reuse jun_song, bindureddy, PearlWrap, Primeagen, karpathy from prior skips",
+      "Invented claims beyond source text (no extra study stats)",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-03-t13__r-chukwu-critical-thinking",
+        "kind": "reply",
+        "label": "Reply · enhance intelligence, dont outsource the hard part",
+        "body": "Absolutely correct.\n\nAI should enhance human intelligence, not replace it. But if the younger generation gets dependent on it for every answer, critical thinking is the skill that quietly dies first — and thats the skill that actually drives innovation.\n\nIts not the model alone. Its the habit of never sitting with a hard question long enough to form your own path.\n\nIf school only grades the final polished sheet, dependency is the rational strategy. Change what we assess — the thinking process, not only the last answer — and the habit can flip.",
+        "meta": "https://x.com/chukwueloka88/status/2084135469735178555",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 85,
+        "why": "Same-day high-view take (174+ likes / 128k views) on AI vs critical thinking in youth — center Venn. Grounded only in enhance-not-replace + dependency-for-every-answer + critical thinking / innovation claims.",
+        "tip": "Copy & open source first. Soft process-assessment bridge only — no Edudojo dump. Dont invent study stats.",
+        "postingWindow": "anytime",
+        "targetHandle": "chukwueloka88",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-03-t13__r-murphy-ai-plus-brain",
+        "kind": "reply",
+        "label": "Reply · AI is one layer next to thinking time",
+        "body": "This is the honest way to talk about AI in real work.\n\nYou used AI. You also used a word processor, your brain, thinking time, coffee, discussion, and about 50 years of reading.\n\nThe tool is one layer. The years of reading and the thinking time are the structure. Without that stack, AI is just a magic answer machine with no judgment behind it.\n\nSame in education. If students only outsource the last frame, they never build the stack you just listed.",
+        "meta": "https://x.com/RichardJMurphy/status/2084168661921566921",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Fresher same-day (~7–8h) high-signal process framing; 100 likes / strong RT ratio. Claims limited to AI + word processor + brain + thinking time + coffee + discussion + ~50 years reading from the post.",
+        "tip": "Stay on human stack vs tool layer; do not invent Marx/infographic details beyond what he stated about process.",
+        "postingWindow": "anytime",
+        "targetHandle": "RichardJMurphy",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-03-t13__short-tool-is-layer-not-brain",
+        "kind": "short",
+        "label": "Short · tool is a layer, owned thinking is still scarce",
+        "body": "Open models getting cheaper is real progress for access. Dependency on AI for every answer is still a cognitive habit problem.\n\nThe scarce skill is the stack underneath the tool: brain, thinking time, years of reading the domain, the path you can defend without the model.\n\nIf we only grade the last polished answer, we train outsourcing. Assess the process — and the tool becomes a layer, not a replacement brain.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 45,
+        "why": "Original Venn thesis tying both replies; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply chukwueloka88 (critical thinking / youth dependency)",
+      "2) Reply RichardJMurphy (AI + human thinking stack)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two same-day Venn posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-03T08:47:38.711Z",
+    "updatedAt": "2026-08-03T08:47:38.711Z"
+  },
+  {
+    "id": "pack-2026-08-02-t21",
+    "date": "2026-08-02",
+    "title": "2h IST t21 · interactive anatomy learning · learn so AI cant gaslight you",
+    "theme": "AI for engaging student-centric learning tools · own knowledge vs hallucinated answers · process over polish",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Last IST slot of day.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-buggeddev-anatomy-3d",
+      "r-orosz-learn-to-own",
+      "short-learn-so-tool-cant-own-you"
+    ],
+    "signals": [
+      {
+        "id": "sig-buggeddev-anatomy",
+        "summary": "3D human anatomy app (three.js + GPT/Codex): interactive organ hotspots; iterated ~900MB→28.6MB; education should feel this interactive",
+        "whyItMatters": "Center Venn — AI-in-education as exploration scaffold, not magic answer sheet",
+        "url": "https://x.com/thebuggeddev/status/2083884856531177942",
+        "heat": 5,
+        "category": "ai-in-education"
+      },
+      {
+        "id": "sig-orosz-learn",
+        "summary": "Liked AI search months then stopped after hallucinations; winning strategy still LEARN what you need so you dont worry about spammy links or bad AI answers",
+        "whyItMatters": "Learning psych / cognitive ownership — knowledge as defense against polished wrong answers",
+        "url": "https://x.com/GergelyOrosz/status/2083915988907573286",
+        "heat": 4,
+        "category": "learning-psych"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics",
+      "Reuse t13–t19 PearlWrap, Primeagen, jun_song, virattt, karpathy, baltabaev, fchollet, bindureddy",
+      "Invented anatomy demo claims beyond source text",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-02-t21__r-buggeddev-anatomy-3d",
+        "kind": "reply",
+        "label": "Reply · education should be this interactive",
+        "body": "This is the education use case I want more of.\n\nNot AI as a magic answer machine for the final sheet. Interactive 3D anatomy — explore organs, hotspots that explain parts, iterate until the web build actually runs.\n\nStudent-centric means the learner can poke the system and build understanding, not only paste a polished paragraph.\n\nThe path of making it (step by step, not one-shot) is part of the learning story too. Thats how critical thinking stays in the loop.",
+        "meta": "https://x.com/thebuggeddev/status/2083884856531177942",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Fresh (~4h) viral AI-ed demo; 1.5k+ likes / climbing (gdb QT). Grounded only in interactive anatomy + step-by-step / engaging learning claims from post.",
+        "tip": "Copy & open source first; soft process bridge only — no Edudojo dump. Dont invent organ counts beyond hotspots/illustrations stated.",
+        "postingWindow": "anytime",
+        "targetHandle": "thebuggeddev",
+        "targetReach": "viral"
+      },
+      {
+        "id": "pack-2026-08-02-t21__r-orosz-learn-to-own",
+        "kind": "reply",
+        "label": "Reply · learn so the answer cant gaslight you",
+        "body": "Absolutely correct.\n\nAI search felt like a cheat code until the hallucinations showed up. If you dont already know the domain, the polished answer can gaslight you.\n\nWinning strategy is still learning the thing yourself. Then the tool becomes a scaffold, not the whole brain.\n\nSame in school. If we only grade the final sheet, students outsource thinking. If we assess what they can defend without the model, the habit flips.",
+        "meta": "https://x.com/GergelyOrosz/status/2083915988907573286",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Fresh (~2h) high-signal learning ownership take; 100+ likes. Claims limited to AI search positive→hallucinate→stop trusting + LEARN as winning strategy.",
+        "tip": "Stay on learning ownership; do not invent Perplexity game examples from his follow-up unless in this meta status.",
+        "postingWindow": "anytime",
+        "targetHandle": "GergelyOrosz",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-02-t21__short-learn-so-tool-cant-own-you",
+        "kind": "short",
+        "label": "Short · interactive tools still need owned knowledge",
+        "body": "Interactive AI tools can make learning more engaging. Polished AI answers can make thinking feel optional.\n\nThe scarce skill is still the same: learn deep enough that a confident wrong answer cannot own you.\n\nAssess that path — what they can check and defend — not only the last frame the model spit out.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 45,
+        "why": "Original Venn thesis tying both replies; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply thebuggeddev (interactive anatomy → student-centric AI)",
+      "2) Reply GergelyOrosz (learn to own knowledge)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-02T16:07:50.348Z",
+    "updatedAt": "2026-08-02T16:07:50.348Z"
+  },
+  {
+    "id": "pack-2026-08-02-t19",
+    "date": "2026-08-02",
+    "title": "2h IST t19 · test-time patches vs real reasoning · benches maxxed ≠ path owned",
+    "theme": "Honest AI systems: patch (1) ubiquitous, patch (2) still ahead · benchmark maxxing vs real use · process over score",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-fchollet-patch2",
+      "r-bindu-bench-maxxed",
+      "short-scoreboard-vs-path"
+    ],
+    "signals": [
+      {
+        "id": "sig-fchollet-patches",
+        "summary": "Field applied patch (1) test-time adaptation (demo Dec 2024, now ubiquitous); long-term move to patch (2) discrete program search is inevitable",
+        "whyItMatters": "AI systems honesty + reasoning — not groundless excitement about curve-fitting plateaus",
+        "url": "https://x.com/fchollet/status/2083863030589231160",
+        "heat": 4,
+        "category": "ai-systems-honesty"
+      },
+      {
+        "id": "sig-bindu-flash",
+        "summary": "Deepseek Flash day 2: very good small model but benchmark maxxed; competes with gpt-luna; hopes v4 more like K3",
+        "whyItMatters": "Open-model eval honesty — scoreboard vs real usable intelligence for builders/learners",
+        "url": "https://x.com/bindureddy/status/2083767259089215526",
+        "heat": 4,
+        "category": "open-access"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics",
+      "Reuse t13/t15/t17 PearlWrap, Primeagen, jun_song, virattt, karpathy, baltabaev",
+      "Invented ARC scaling numbers from follow-up replies not in main meta status",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-02-t19__r-fchollet-patch2",
+        "kind": "reply",
+        "label": "Reply · ubiquitous patch is not solved reasoning",
+        "body": "I see it the same way.\n\nTest-time patching bought us a lot. He says it got demoed Dec 2024 and is now completely ubiquitous. That tracks.\n\nBut ubiquitous is not the same as \"reasoning is solved.\" If patch (1) was always the incremental fix, the harder move is still ahead — less pure curve fitting, more actual program search.\n\nMy take as a solo-builder: stay sceptical of groundless excitement. Clear things up about what the stack can do today vs what it still only pretends to own.",
+        "meta": "https://x.com/fchollet/status/2083863030589231160",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Fresh (~3–4h) high-signal AI reasoning post; 180+ likes / climbing. Grounded only in patch (1) ubiquitous + long-term patch (2) from main status.",
+        "tip": "Do not pull ARC 100000x claims from later replies — meta is this status only.",
+        "postingWindow": "anytime",
+        "targetHandle": "fchollet",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-02-t19__r-bindu-bench-maxxed",
+        "kind": "reply",
+        "label": "Reply · good small model + bench maxxed can both be true",
+        "body": "This is the right kind of skepticism.\n\n\"Very good small model\" and \"benchmark maxxed\" can both be true at once. Solo builders feel it fast — the scoreboard looks clean, the messy real task still breaks.\n\nI care more about intelligence with usable speed and honest behavior than a leaderboard that got maxxed.\n\nHopeful for the next ones too. Just keep the evals transparent.",
+        "meta": "https://x.com/bindureddy/status/2083767259089215526",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Same-day open-model honesty; 280+ likes. Claims limited to Flash good/small, bench maxxed, competes gpt-luna, hope v4 like K3.",
+        "tip": "No invented price/bench numbers; stay on her three bullets.",
+        "postingWindow": "anytime",
+        "targetHandle": "bindureddy",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-02-t19__short-scoreboard-vs-path",
+        "kind": "short",
+        "label": "Short · scoreboard maxxed, path empty",
+        "body": "Benches can look perfect while the real path of thinking is still empty.\n\nSame pattern in education. A polished final sheet is not the same as the student owning the process.\n\nIf we only grade the last frame, we get maxxed scores and hollow understanding. Assess what they can check and defend — and the behavior of learning shifts.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 45,
+        "why": "Original Venn bridge: eval honesty → process assessment; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply fchollet (patch 1 ubiquitous → patch 2 still ahead)",
+      "2) Reply bindureddy (bench maxxed ≠ real path)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-02T14:08:12.774Z",
+    "updatedAt": "2026-08-02T14:08:12.774Z"
+  },
+  {
+    "id": "pack-2026-08-02-t17",
+    "date": "2026-08-02",
+    "title": "2h IST t17 · generation stamina vs audit · verification as scarce skill",
+    "theme": "LLMs can ship janky worlds for free · experts can't verify at scale · self-verification / process assessment",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-karpathy-audit-gap",
+      "r-pavel-verify-bottleneck",
+      "short-output-free-verify-scarce"
+    ],
+    "signals": [
+      {
+        "id": "sig-karpathy-lotr",
+        "summary": "Opus 5 LoTR→three.js (~5500 lines, 1M tokens/~$10); stamina free; weakness = can't easily audit work (screenshots, jank)",
+        "whyItMatters": "Center Venn — generation is cheap; owning the path / self-verification is scarce",
+        "url": "https://x.com/karpathy/status/2083749667410727319",
+        "heat": 5,
+        "category": "cognitive-behavior"
+      },
+      {
+        "id": "sig-pavel-verify",
+        "summary": "10k hours math still can't verify model proofs without weeks; PhD friends same; not enough humans to verify LLM science output",
+        "whyItMatters": "Assessment crisis — final-sheet grading fails when output outruns human verification",
+        "url": "https://x.com/baltabaev/status/2083738966516207656",
+        "heat": 4,
+        "category": "process-assessment"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics",
+      "Reuse t13/t15 PearlWrap, Primeagen, jun_song, virattt",
+      "Invented Astra/OpenAI claim details beyond Pavel's own text",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-02-t17__r-karpathy-audit-gap",
+        "kind": "reply",
+        "label": "Reply · stamina is free, audit is not",
+        "body": "The stamina part is wild. 5500 lines of three.js from a LoTR paragraph because the model has patience humans dont.\n\nBut the last point is the real education story for me.\n\nIf the model cant easily audit its own work — slow screenshots, mess-ups, jank — then the scarce skill isnt generating the final sheet. Its owning the path: what you check, what you defend, when you stop trusting the polish.\n\nSame in school. Output is getting cheap. Self-verification is the scarce muscle.",
+        "meta": "https://x.com/karpathy/status/2083749667410727319",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 85,
+        "why": "Hyper viral (~16k likes / 1.4M views). Grounded only in LoTR→three.js stamina + audit weakness (screenshots/jank) from the post.",
+        "tip": "Copy & open source first; do not invent game/world claims beyond what Karpathy stated.",
+        "postingWindow": "anytime",
+        "targetHandle": "karpathy",
+        "targetReach": "hyper"
+      },
+      {
+        "id": "pack-2026-08-02-t17__r-pavel-verify-bottleneck",
+        "kind": "reply",
+        "label": "Reply · when experts cant verify the sheet",
+        "body": "This is the assessment crisis in one thread.\n\nIf even people with 10k hours in math need weeks to dig into proofs a model just produced — and PhD friends still cant verify without living in that subfield — then grading the final answer sheet starts to fail.\n\nAnyone can paste a confident output. The scarce skill shifts to process: how you question it, what you re-run, what you can defend without the model.\n\nI feel the real education fix is teaching and assessing that verification path — not faster magic answers.",
+        "meta": "https://x.com/baltabaev/status/2083738966516207656",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Strong verification thesis; 230+ likes. Claims limited to 10k hours, weeks to understand, PhD friends, verification bottleneck — not OpenAI Astra details from QT.",
+        "tip": "Stay on Pavel's verification point only; do not invent which problems were solved.",
+        "postingWindow": "anytime",
+        "targetHandle": "baltabaev",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-02-t17__short-output-free-verify-scarce",
+        "kind": "short",
+        "label": "Short · output free, verification scarce",
+        "body": "Output is getting free. Verification is not.\n\nWhether its a long AI demo or a homework essay, the scarce muscle is the same: can you audit the path, not just accept the polish?\n\nThat is what process-based assessment is for. Change the goal of assessment and the behavior of learning shifts with it.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 50,
+        "why": "Original Venn thesis on verification scarcity; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply karpathy (audit gap → self-verification)",
+      "2) Reply baltabaev (experts cant verify → assess the path)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-02T12:07:50.137Z",
+    "updatedAt": "2026-08-02T12:07:50.137Z"
+  },
+  {
+    "id": "pack-2026-08-02-t15",
+    "date": "2026-08-02",
+    "title": "2h IST t15 · own your intelligence + grade the thinking path",
+    "theme": "Local open-weight access · process assessment in hiring · AI as scaffold not shortcut",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-junsong-own-intelligence",
+      "r-virat-process-hire",
+      "short-assessment-picks-habit"
+    ],
+    "signals": [
+      {
+        "id": "sig-junsong-local",
+        "summary": "DGX Spark or 128GB Mac runs uncensored DeepSeek V4 Flash; freedom from caps/outages/bans — own intelligence on desk",
+        "whyItMatters": "Open-weight access + efficiency — rental API vs ownership for builders/learners",
+        "url": "https://x.com/jun_song/status/2083822963502232013",
+        "heat": 4,
+        "category": "open-access"
+      },
+      {
+        "id": "sig-virat-hire",
+        "summary": "Hiring: no leetcode/trivia/take-homes; 45min pair on real feature; AI for scoping/coding, brain for thinking",
+        "whyItMatters": "Process assessment outside school — scores the path under AI, not a polished sheet",
+        "url": "https://x.com/virattt/status/2083693088480932044",
+        "heat": 4,
+        "category": "process-assessment"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics",
+      "Reuse t13 PearlWrap / ThePrimeagen threads",
+      "Invented bench numbers beyond source",
+      "Product spam without thesis fit",
+      "MiniMax two-word teaser as sole claim surface"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-02-t15__r-junsong-own-intelligence",
+        "kind": "reply",
+        "label": "Reply · rental intelligence vs own it on desk",
+        "body": "This is the access story people keep underestimating.\n\nWeekly caps, outages, getting banned for asking what mitochondria is — that isnt \"AI for everyone.\" That is rental intelligence with a kill switch.\n\nRunning open-weight locally (even if the bar is still a DGX Spark or a high-RAM Mac) is the direction that actually compounds for solo builders and learners.\n\nI feel intelligence you own on your desk beats intelligence you beg for every week. Speed + ownership is how more people get serious AI, not just the labs.",
+        "meta": "https://x.com/jun_song/status/2083822963502232013",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Fresh (~2–3h) open-weight ownership post; 280+ likes / climbing. Grounded only in DGX Spark|128GB Mac, DeepSeek V4 Flash, caps/outages/bans/mitochondria claim from post.",
+        "tip": "Copy & open source first; do not invent pricing or hardware claims beyond what jun_song stated.",
+        "postingWindow": "anytime",
+        "targetHandle": "jun_song",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-02-t15__r-virat-process-hire",
+        "kind": "reply",
+        "label": "Reply · 45min real feature is process assessment",
+        "body": "This is process-based assessment in the wild.\n\nNo leetcode sheet. No take-home you can fully outsource overnight. 45 mins on a real feature — AI for scoping and coding, brain for thinking, or you run out of time.\n\nThat is the only honest signal left. How you think under the tool, not a polished final submission with no path.\n\nI wish more education graded like this. Once the goal is the thinking path, the behavior of learning shifts with it.",
+        "meta": "https://x.com/virattt/status/2083693088480932044",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "High-intent process hiring post; 400+ likes. Claims limited to no leetcode/trivia/take-homes, 45min pair, AI scoping/coding + brain for thinking.",
+        "tip": "Stay on assessment design; soft education bridge only — no Edudojo pitch dump.",
+        "postingWindow": "anytime",
+        "targetHandle": "virattt",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-02-t15__short-assessment-picks-habit",
+        "kind": "short",
+        "label": "Short · assessment design picks the habit",
+        "body": "If the only thing we grade is the final sheet, AI becomes the rational path.\n\nIf we grade the path — how you scoped, what you tried, what you can defend without the model — the tool becomes a scaffold, not a shortcut.\n\nSame AI. Different cognitive habit. The assessment design picks which one wins.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 50,
+        "why": "Original Venn thesis tying access + process heat; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply jun_song (own intelligence on desk → open access)",
+      "2) Reply virattt (45min real feature → process assessment)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-02T10:07:49.015Z",
+    "updatedAt": "2026-08-02T10:07:49.015Z"
+  },
+  {
+    "id": "pack-2026-08-02-t13",
+    "date": "2026-08-02",
+    "title": "2h IST t13 · Wikipedia ban vs ChatGPT shrug + AI prep then talk",
+    "theme": "Assessment standards chaos under AI · active cognition vs passive offloading · process over polish",
+    "briefing": "Exactly 2 fresh Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-pearl-wiki-chatgpt",
+      "r-primeagen-prep-talk",
+      "short-rules-reveal-goals"
+    ],
+    "signals": [
+      {
+        "id": "sig-pearl-wiki",
+        "summary": "School once banned citing Wikipedia; later shrugs ChatGPT use if you just disclose it",
+        "whyItMatters": "Live heat on broken academic standards — what we allow to be graded vs what we ban",
+        "url": "https://x.com/PearlWrap/status/2083739794023268415",
+        "heat": 5,
+        "category": "process-assessment"
+      },
+      {
+        "id": "sig-primeagen-prep",
+        "summary": "Uno reverse on AI kid-podcast: use AI to learn 15 questions + research kid's interest, then talk to the kid yourself",
+        "whyItMatters": "Center Venn — AI as prep for human thinking/conversation, not a substitute for the relationship or the mind",
+        "url": "https://x.com/ThePrimeagen/status/2083636005500801423",
+        "heat": 5,
+        "category": "cognitive-behavior"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics",
+      "Invented study claims beyond source text",
+      "Product spam without thesis fit",
+      "Pure Altman pile-on without cognitive reframe",
+      "MiniMax two-word open-weights teaser without enough claim surface"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-02-t13__r-pearl-wiki-chatgpt",
+        "kind": "reply",
+        "label": "Reply · Wikipedia hell-no vs ChatGPT whatever",
+        "body": "This is the whole assessment mess in one story.\n\nWikipedia was banned as a cite even when the path was \"start there, follow the sources.\" ChatGPT gets a shrug if you just say you used it.\n\nThat isnt a standard. Its a mood.\n\nIf schools only police the final sheet and the disclosure line, students learn to outsource thinking and polish the output. Change what we grade — the path, the sources they actually checked, what they can defend without the tool — and the behavior shifts.\n\nRight now the rules reveal we still care more about the last frame than the thinking.",
+        "meta": "https://x.com/PearlWrap/status/2083739794023268415",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Fresh (~5–6h) viral education standards post; 1k+ likes / climbing. Grounded only in school Wikipedia ban vs later ChatGPT shrug + disclose.",
+        "tip": "Copy & open source first; do not invent policy details beyond hell-no Wikipedia vs ChatGPT whatever just say you used it.",
+        "postingWindow": "anytime",
+        "targetHandle": "PearlWrap",
+        "targetReach": "viral"
+      },
+      {
+        "id": "pack-2026-08-02-t13__r-primeagen-prep-talk",
+        "kind": "reply",
+        "label": "Reply · AI for 15 questions, then you talk",
+        "body": "This is the correct use pattern.\n\nAI to learn 15 questions. YouTube + reading on whatever the kid is into. Then YOU talk on the way to school.\n\nSame tool, opposite cognitive habit. One path is passive offloading — let the model perform the relationship. The other is prep so the human does the thinking and the bonding.\n\nI see it the same in learning and assessment. If AI is the answer machine, critical thinking dies. If its a Socratic scaffold that forces you to show up, the mind stays in the loop.\n\nStructure around the tool beats fearing the tool.",
+        "meta": "https://x.com/ThePrimeagen/status/2083636005500801423",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 85,
+        "why": "High heat (1k+ likes) on Altman kid-podcast discourse; best Venn fit — active prep vs substitute. Claims limited to 15 questions + research then talk.",
+        "tip": "Stay on prep→human conversation; no product dump. Dont invent details about sama beyond what Primeagen reframes.",
+        "postingWindow": "anytime",
+        "targetHandle": "ThePrimeagen",
+        "targetReach": "viral"
+      },
+      {
+        "id": "pack-2026-08-02-t13__short-rules-reveal-goals",
+        "kind": "short",
+        "label": "Short · rules reveal what we actually grade",
+        "body": "Schools used to panic over Wikipedia cites. Now ChatGPT gets a shrug if you disclose it.\n\nThat shift isnt a standard upgrade. Its proof we still grade the final sheet more than the thinking path.\n\nChange the goal of assessment — process, defense, what they can do without the tool — and learning behavior changes with it.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 55,
+        "why": "Original Venn thesis tying today's heat (standards + offloading) without fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply PearlWrap (Wikipedia hell-no → ChatGPT shrug → grade the path)",
+      "2) Reply ThePrimeagen (15 questions prep → human talk → active cognition)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-02T08:07:57.573Z",
+    "updatedAt": "2026-08-02T08:07:57.573Z"
+  },
+  {
+    "id": "pack-2026-07-31-t17",
+    "date": "2026-07-31",
+    "title": "2h IST t17 · AI midterm traps + questions worth asking",
+    "theme": "Cheating scandals as measurement failure · judgment over memorization · process assessment",
+    "briefing": "Exactly 2 fresh Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-whales-midterm-ai",
+      "r-goenka-questions",
+      "short-optimize-what-we-grade"
+    ],
+    "signals": [
+      {
+        "id": "sig-whales-midterm",
+        "summary": "Alcorn State: 32/35 students caught via invisible AI prompt; Brown take-home averages jumped to 96%",
+        "whyItMatters": "Live heat on assessment design vs AI offloading — process over final sheet",
+        "url": "https://x.com/unusual_whales/status/2083154959806189946",
+        "heat": 5,
+        "category": "process-assessment"
+      },
+      {
+        "id": "sig-goenka-questions",
+        "summary": "AI can explain/write/code fast but can't decide which questions are worth asking; education must teach thinking not memorizing",
+        "whyItMatters": "Center Venn — judgment, curiosity, how education should change under AI",
+        "url": "https://x.com/hvgoenka/status/2083150910658576760",
+        "heat": 4,
+        "category": "learning-psych"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics",
+      "Invented study claims beyond source text",
+      "Product spam without thesis fit",
+      "Reuse of t15 jun_song / Taliforesight threads"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-31-t17__r-whales-midterm-ai",
+        "kind": "reply",
+        "label": "Reply · 32/35 is a measurement design story",
+        "body": "32 of 35 isnt a \"students got lazier\" story first. Its a measurement design story.\n\nIf the midterm only rewards a polished final sheet, AI becomes the rational path. Same with take-home averages jumping to 96% — the assessment is still scoring output, not how they reasoned.\n\nInvisible traps catch the symptom. What actually changes behavior is assessing process, judgment, and what they can defend without the tool.\n\nOtherwise we keep measuring the wrong thing and acting shocked at the score.",
+        "meta": "https://x.com/unusual_whales/status/2083154959806189946",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Hyper-fresh (~1h) viral education/AI cheating post; 290+ likes / 50+ replies / climbing. Grounded only in 32/35 + Brown take-home 96% claims from the post.",
+        "tip": "Copy & open source first; do not invent method details beyond invisible prompt + numbers stated.",
+        "postingWindow": "anytime",
+        "targetHandle": "unusual_whales",
+        "targetReach": "hyper"
+      },
+      {
+        "id": "pack-2026-07-31-t17__r-goenka-questions",
+        "kind": "reply",
+        "label": "Reply · questions worth asking is the scarce skill",
+        "body": "Absolutely correct. The bottleneck shifted.\n\nWhen AI can explain, write, and research in seconds, memorizing the answer is almost free. Judgement — which questions are worth asking — is the scarce skill.\n\nMost education still scores the finished answer sheet. That trains people to outsource the thinking and polish the output.\n\nIf we want curiosity and creativity to compound, we have to assess the path of thinking, not only the last frame.",
+        "meta": "https://x.com/hvgoenka/status/2083150910658576760",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Fresh (~1–2h) India-visible education thesis; 140+ likes. Claims limited to AI speed vs human question-selection + teach thinking not memorize.",
+        "tip": "Stay on judgment/curiosity; soft process bridge only — no product pitch dump.",
+        "postingWindow": "anytime",
+        "targetHandle": "hvgoenka",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-31-t17__short-optimize-what-we-grade",
+        "kind": "short",
+        "label": "Short · students optimize what we grade",
+        "body": "Cheating scandals keep proving the same thing.\n\nStudents are optimizing for what we grade. If we only grade the final submission, AI is the efficient move.\n\nChange the goal of assessment — process, defense, the questions they choose — and the behavior of learning shifts with it.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Original Venn thesis for timeline; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply unusual_whales (32/35 midterm → measurement design)",
+      "2) Reply hvgoenka (questions worth asking → assess the path)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-07-31T13:02:21.774Z",
+    "updatedAt": "2026-07-31T13:02:21.774Z"
+  },
+  {
+    "id": "pack-2026-07-31-t15",
+    "date": "2026-07-31",
+    "title": "2h IST t15 · open-weight access + teacher as final-output grader",
+    "theme": "Open-weight AI as access · teachers reduced to scoring the last sheet · process assessment keeps thinking in the loop",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-jun-song-openweight",
+      "r-tali-teacher-evaluator",
+      "short-first-tutor-process"
+    ],
+    "signals": [
+      {
+        "id": "sig-jun-song-openweight",
+        "summary": "Without open-weight labs we would pay $2000/mo or $200 for older leftovers — be grateful",
+        "whyItMatters": "Open access scales who can learn/build with serious AI; solo-builder efficiency angle",
+        "url": "https://x.com/jun_song/status/2083121024003137968",
+        "heat": 4,
+        "category": "open-access"
+      },
+      {
+        "id": "sig-tali-second-opinion",
+        "summary": "Students go to AI first; teachers risk becoming evaluators of final output not mentors of process",
+        "whyItMatters": "Center Venn — AI × learning × measurement; process assessment is the fix angle",
+        "url": "https://x.com/Taliforesight/status/2082836740616974618",
+        "heat": 3,
+        "category": "ai-education"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/politics flamewars",
+      "Invented model claims",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-31-t15__r-jun-song-openweight",
+        "kind": "reply",
+        "label": "Reply · open-weight labs = access not just cheaper tokens",
+        "body": "This is the part that matters beyond the hype cycle.\n\nWithout open-weight labs, serious AI becomes a luxury product. Students and solo builders dont get reps with real models — they get leftovers behind a paywall.\n\nAs a solo-builder I care about intelligence with speed and price. Grateful is the right word. Access is how more people actually learn to think with these tools, not only consume answers from them.",
+        "meta": "https://x.com/jun_song/status/2083121024003137968",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Fresh (~7h IST afternoon) open-weight pricing post, 280+ likes / active replies; grounded only in monopoly-price vs open-weight gratitude claim.",
+        "tip": "Copy & open source first; stay on access + learning, skip pure lab drama.",
+        "postingWindow": "anytime",
+        "targetHandle": "jun_song",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-31-t15__r-tali-teacher-evaluator",
+        "kind": "reply",
+        "label": "Reply · teacher as final-output grader is a measurement failure",
+        "body": "The line that lands hardest is teachers becoming evaluators of the final output instead of mentors of the learning process.\n\nThats not an AI problem first. Its a measurement problem. If the grade only cares about the last sheet, students will treat the teacher as a gate and the AI as the real tutor.\n\nI agree the ban ship has sailed. What we need is assessment that still scores how they reason, where they diverge from the model, and what they can defend without it.\n\nChange the goal and the behavior of learning changes with it.",
+        "meta": "https://x.com/Taliforesight/status/2082836740616974618",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Perfect center-Venn thesis (AI first tutor → teacher reduced to grading final output); mid likes but high views; claims limited to that post only.",
+        "tip": "Open source first; bridge process assessment softly — do not invent their product claims.",
+        "postingWindow": "anytime",
+        "targetHandle": "Taliforesight",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-07-31-t15__short-first-tutor-process",
+        "kind": "short",
+        "label": "Short · first tutor is AI → score the path",
+        "body": "If AI is the first tutor students open, scoring only the final answer trains them to offload.\n\nProcess-based assessment is how you keep critical thinking in the loop — path, judgment, self-verification — not just a polished last frame.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Original Venn thesis for timeline; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply jun_song (open-weight access + learning)",
+      "2) Reply Taliforesight (teacher as final-output grader → process assessment)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-07-31T11:02:58.145Z",
+    "updatedAt": "2026-07-31T11:02:58.145Z"
+  },
+  {
+    "id": "pack-2026-07-30-t13",
+    "date": "2026-07-30",
+    "title": "2h IST t13 · pre-ChatGPT education + open access",
+    "theme": "Cognitive habits without answer machines · open-source AI as access · process over final sheet",
+    "briefing": "Exactly 2 fresh Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-icreatelife-prechatgpt",
+      "r-bindureddy-opensource",
+      "short-score-the-path"
+    ],
+    "signals": [
+      {
+        "id": "sig-icreatelife",
+        "summary": "Brag prompt: who did all formal education without ChatGPT",
+        "whyItMatters": "Learning psych + how AI changes cognitive habits in school; measure process not nostalgia",
+        "url": "https://x.com/icreatelife/status/2082680464456724919",
+        "heat": 3,
+        "category": "learning-psych"
+      },
+      {
+        "id": "sig-bindureddy-open",
+        "summary": "Decentralization and open source AI is the only way vs monopolies and power abuse",
+        "whyItMatters": "Open access scales who can learn/build with serious AI",
+        "url": "https://x.com/bindureddy/status/2082662789966119112",
+        "heat": 4,
+        "category": "open-access"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn crypto/agent spam",
+      "Invented model claims",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-30-t13__r-icreatelife-prechatgpt",
+        "kind": "reply",
+        "label": "Reply · pre-ChatGPT education is about habits not nostalgia",
+        "body": "I did. And I get why it feels like a flex.\n\nBut the useful question isnt only \"did we survive without it\" — its what cognitive habits we built because there was no answer machine.\n\nThe danger now is not that students have ChatGPT. Its that formal education still scores the final sheet the same way, so the easy path is offloading the thinking and polishing the output.\n\nIf we change what we measure — process, judgment, how they work with the tool — the brag becomes less about nostalgia and more about systems that still force deep thinking.",
+        "meta": "https://x.com/icreatelife/status/2082680464456724919",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Fresh (~4–5h) education-without-ChatGPT thread with active replies; grounded only in that brag + formal education framing.",
+        "tip": "Copy & open source first; soft process-assessment bridge only if thread stays on learning.",
+        "postingWindow": "anytime",
+        "targetHandle": "icreatelife",
+        "targetReach": "mid"
+      },
+      {
+        "id": "pack-2026-07-30-t13__r-bindureddy-opensource",
+        "kind": "reply",
+        "label": "Reply · open source is an access + learning issue",
+        "body": "The open source point is the part that actually lands beyond the politics.\n\nIf models stay locked behind a few walls, fewer students and solo builders get to practice with serious AI. Closed systems dont fix bad use of intelligence — they just pick who gets the tool.\n\nAs a solo-builder I care about intelligence with speed and price. Open models are how access scales.\n\nAccess alone still isnt enough though. We need learning design so open tools become deeper thinking, not only faster answers.",
+        "meta": "https://x.com/bindureddy/status/2082662789966119112",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Hot open-source / decentralization post (~5–6h, 200+ likes); bridges access + learning without inventing policy claims.",
+        "tip": "Stay on access + learning; skip pure politics flamewar.",
+        "postingWindow": "anytime",
+        "targetHandle": "bindureddy",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-30-t13__short-score-the-path",
+        "kind": "short",
+        "label": "Short · score the path not the last frame",
+        "body": "Most systems still grade the last answer.\n\nWith AI in the loop that almost guarantees offloading — practice looks great until the tool is gone.\n\nScore how they reason with the tool. Change the goal of assessment and learning behavior shifts with it.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 60,
+        "why": "Original Venn thesis for timeline; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply icreatelife (pre-ChatGPT education → habits + process)",
+      "2) Reply bindureddy (open source access + learning design)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-07-30T08:48:45.291Z",
+    "updatedAt": "2026-07-30T08:48:45.291Z"
+  },
+  {
+    "id": "pack-2026-07-29-t19",
+    "date": "2026-07-29",
+    "title": "2h IST t19 · syllabus lag + open access",
+    "theme": "Curriculum lag vs AI pace · open-source access for learning · process over final sheet",
+    "briefing": "Exactly 2 fresh Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-hvgoenka-syllabus",
+      "r-deltaone-opensource",
+      "short-measure-process"
+    ],
+    "signals": [
+      {
+        "id": "sig-hvgoenka",
+        "summary": "Syllabus lag: businesses years, tech months, AI weeks, curriculum decades — need to move",
+        "whyItMatters": "Education practice + what we measure; process assessment closes the real gap",
+        "url": "https://x.com/hvgoenka/status/2082450617428254991",
+        "heat": 4,
+        "category": "education-practice"
+      },
+      {
+        "id": "sig-deltaone-open",
+        "summary": "Zuckerberg opposes restricting open-source AI; focus on competitiveness not limiting access",
+        "whyItMatters": "Open access scales who can learn/build with serious AI",
+        "url": "https://x.com/DeItaone/status/2082432213270896947",
+        "heat": 5,
+        "category": "open-access"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn robot-teacher scandal bait",
+      "Invented model claims",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-29-t19__r-hvgoenka-syllabus",
+        "kind": "reply",
+        "label": "Reply · syllabus lag still needs process scores",
+        "body": "You're right — the syllabus lag is real. Businesses every few years, tech every few months, AI every few weeks… curriculum every few decades. We need to move.\n\nBut updating the chapter list alone wont close the gap. If we still only score the final answer sheet, students will just use AI to produce a prettier sheet for the same old goals.\n\nMy take: we need to move what we measure. Student-centric methods + process-based assessment — the thinking path, judgment, how they work with the tool — not only the last frame.\n\nChange the goal of assessment and the behavior of learning will change with it.",
+        "meta": "https://x.com/hvgoenka/status/2082450617428254991",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Fresh India-reach education post; process assessment angle grounded in his syllabus claim only.",
+        "tip": "Copy & open source first; soft product only if it fits the thread.",
+        "postingWindow": "anytime",
+        "targetHandle": "hvgoenka",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-29-t19__r-deltaone-opensource",
+        "kind": "reply",
+        "label": "Reply · open-source access is a learning issue",
+        "body": "The access point is the part that actually lands beyond the politics.\n\nIf open-source models get restricted, fewer people get to learn, build, and practice with serious AI. Closed walls dont fix how we use intelligence — they just pick who gets the tool.\n\nAs a solo-builder I care about intelligence with speed and price. Open models are how access scales for students and founders outside a few labs.\n\nAccess alone is still not enough. We need learning design so access becomes deeper thinking, not only faster answers.",
+        "meta": "https://x.com/DeItaone/status/2082432213270896947",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Hot open-source access post (~3h); bridges C access + learning without inventing claims.",
+        "tip": "Stay on access + learning; skip US policy flamewar.",
+        "postingWindow": "anytime",
+        "targetHandle": "DeItaone",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-29-t19__short-measure-process",
+        "kind": "short",
+        "label": "Short · move what we measure",
+        "body": "Syllabus updates every decade. AI updates every week.\n\nUpdating content is necessary. But if assessment still only grades the final submission, students will offload the thinking and polish the output.\n\nScore the process. Watch how they reason with the tool. That's how learning behavior actually shifts.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 75,
+        "why": "Original Venn thesis for timeline; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply hvgoenka (syllabus lag + process)",
+      "2) Reply DeItaone (open-source access + learning)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-07-29T14:23:19.410Z",
+    "updatedAt": "2026-07-29T14:23:19.410Z"
+  },
+  {
+    "id": "pack-2026-07-29-t15",
+    "date": "2026-07-29",
+    "title": "2h IST t15 · access + education shift + process",
+    "theme": "Open access intelligence · education past memorization · process assessment",
+    "briefing": "First 2h-cadence pack. Exactly 2 fresh Venn replies + 1 original short. Sources fetched before draft. MVP = all three.",
+    "plannedMinutes": 20,
+    "mvpDraftIds": [
+      "r-quxiaoyin-access",
+      "r-herbert-education-shift",
+      "short-access-plus-design"
+    ],
+    "signals": [
+      {
+        "id": "sig-quxiaoyin",
+        "summary": "Open-weight progress vs slowdown narrative; equip everyone with cheaper intelligence + training",
+        "whyItMatters": "Center of Venn: access + learning systems, not closed-lab only",
+        "url": "https://x.com/quxiaoyin/status/2082333570891416062",
+        "heat": 5,
+        "category": "open-access"
+      },
+      {
+        "id": "sig-herbert-edu",
+        "summary": "Education shifts from memorizing to creativity, judgment, working with machines",
+        "whyItMatters": "AI-in-education + what we measure still decides behavior",
+        "url": "https://x.com/HerbertRSim/status/2082374054200435154",
+        "heat": 4,
+        "category": "ai-education"
+      }
+    ],
+    "skipList": [
+      "Stale 12h reply piles",
+      "Off-Venn engagement bait",
+      "Invented model claims",
+      "Product spam without thesis fit"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-07-29-t15__r-quxiaoyin-access",
+        "kind": "reply",
+        "label": "Reply · cheaper access + training > lock-in",
+        "body": "You're absolutely right on the last point — and that's the part most debates skip.\n\nIf we actually care how people use AI, locking intelligence behind closed walls doesn't fix the cognitive problem. It just picks who gets to offload thinking.\n\nEasier and cheaper access only helps when we also build the learning layer: training that forces reasoning, student-centric practice, assessment that scores the process — not a prettier final answer.\n\nOpen / efficient models are how that access scales beyond a few labs. Without the learning design, access is just faster answers.",
+        "meta": "https://x.com/quxiaoyin/status/2082333570891416062",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Hot open-access thread; bridges access + learning psych without inventing claims.",
+        "tip": "Copy & open source first; keep product soft or skip name if tight.",
+        "postingWindow": "anytime",
+        "targetHandle": "quxiaoyin",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-29-t15__r-herbert-education-shift",
+        "kind": "reply",
+        "label": "Reply · education past memorizing still needs process scores",
+        "body": "You're right that education has to move past memorizing answers toward creativity, judgment, and working with intelligent machines.\n\nMy take: if we still only score the final sheet, students will just use AI to produce a cleaner final sheet. The behavior doesn't change — the offloading just gets better at hiding.\n\nThe real shift is student-centric. Score the thinking path and the judgment in how they use the tool, not whether the last answer looks smart. Otherwise the \"augmented vs unaugmented\" divide becomes who can hide cognitive offloading better.",
+        "meta": "https://x.com/HerbertRSim/status/2082374054200435154",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "Fresh education+AI post; process assessment angle grounded in his claims.",
+        "tip": "His frame is future-of-work — land on assessment without lecture tone.",
+        "postingWindow": "anytime",
+        "targetHandle": "HerbertRSim",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-07-29-t15__short-access-plus-design",
+        "kind": "short",
+        "label": "Short · access without learning design",
+        "body": "AI access without learning design is just faster answers.\n\nIf we want people sharper, not lazier, we need both:\n- open / cheap / fast models so more people can actually use serious AI\n- education and assessment that reward the process of thinking\n\nThat's the intersection I'm building around.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 75,
+        "why": "Consistent original presence; pure Venn thesis for own timeline.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply quxiaoyin (access + training)",
+      "2) Reply HerbertRSim (education shift + process)",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two climbing posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 8,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-07-29T10:38:12.217Z",
+    "updatedAt": "2026-07-29T10:38:12.217Z"
   }
 ]

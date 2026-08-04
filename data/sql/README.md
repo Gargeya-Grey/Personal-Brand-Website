@@ -21,4 +21,6 @@ node scripts/merge-x-pack.mjs data/x-pack-today.json
 
 4. Refresh https://www.sgargeya.com/editorial?workspace=x — only the new pack remains.
 
+Current scout shape (see `data/x-scout-playbook.md`): **2 replies + 1 original**, every **2h IST** (11–21).
+
 This does **not** delete blog articles or other tables.

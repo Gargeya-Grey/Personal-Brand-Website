@@ -1,301 +1,107 @@
 {
-  "id": "pack-2026-07-24-r10",
-  "date": "2026-07-24",
-  "title": "Phase 1 · 10 replies : 1 short (clean slate)",
-  "theme": "Reply-first growth. Critical thinking on AI, learning, ethics, values — under hot posts only. One optional short after the sprint.",
-  "briefing": "After DB wipe. ~10:1 reply:original. MVP = replies only. Skip prior packs. Source-grounded; one post per draft.",
-  "plannedMinutes": 45,
+  "id": "pack-2026-08-03-t19",
+  "date": "2026-08-03",
+  "title": "2h IST t19 · cheap AI vs thinking on your own · video models for learning experiences",
+  "theme": "When AI is cheap, owned thinking is the scarce skill · generative video can build learning experiences · still assess the path not the polish",
+  "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Slot t19 IST. No reuse of t13/t15/t17 handles.",
+  "plannedMinutes": 18,
   "mvpDraftIds": [
-    "r-unclebob",
-    "r-homework",
-    "r-cole",
-    "r-jensen-open",
-    "r-satya-open",
-    "r-sakana-lab",
-    "r-hardmaru",
-    "r-frontier",
-    "r-emil-variants",
-    "r-brockman-safety"
+    "r-dcinvestor-think-on-own",
+    "r-umesh-video-ed",
+    "short-cheap-ai-scarce-thinking"
   ],
   "signals": [
     {
-      "id": "s1",
-      "summary": "Uncle Bob: don't read agent code; extreme constraints/tests gauntlet.",
-      "whyItMatters": "Hyper discovery room.",
-      "url": "https://x.com/unclebobmartin/status/2080257779395154409",
-      "heat": 5,
-      "category": "ai-builders"
-    },
-    {
-      "id": "s2",
-      "summary": "dieworkwear: AI homework widens grades vs learning; causal reasoning at risk.",
-      "whyItMatters": "Education + values.",
-      "url": "https://x.com/dieworkwear/status/2080442347868037198",
-      "heat": 5,
-      "category": "education"
-    },
-    {
-      "id": "s3",
-      "summary": "Cole: coding agent annotated screenshots on PRs.",
-      "whyItMatters": "Process evidence for builders.",
-      "url": "https://x.com/colebemis/status/2080392348836790395",
-      "heat": 4,
-      "category": "ai-builders"
-    },
-    {
-      "id": "s4",
-      "summary": "Jensen first post: open models + closed models both needed; letter on open models.",
-      "whyItMatters": "Mega author; values/sovereignty/safety framing.",
-      "url": "https://x.com/JensenHuang/status/2080643682408321103",
-      "heat": 5,
-      "category": "ai-ethics"
-    },
-    {
-      "id": "s5",
-      "summary": "Satya: open-weight models essential; competitiveness + opportunity + national security.",
-      "whyItMatters": "Hyper; open ecosystem.",
-      "url": "https://x.com/satyanadella/status/2080646162483417097",
-      "heat": 5,
-      "category": "ai-ethics"
-    },
-    {
-      "id": "s6",
-      "summary": "Sakana lab Fugu v1.1: +7.9, ProgramBench, Terminal Bench 2.1 (no Fable in this post).",
-      "whyItMatters": "Eval honesty room.",
-      "url": "https://x.com/SakanaAILabs/status/2080448772778373586",
-      "heat": 5,
-      "category": "evals"
-    },
-    {
-      "id": "s7",
-      "summary": "hardmaru: Fable 5 without Fable in agent pool + 7.9 points.",
-      "whyItMatters": "Separate source from lab.",
-      "url": "https://x.com/hardmaru/status/2080454723195568596",
-      "heat": 4,
-      "category": "evals"
-    },
-    {
-      "id": "s8",
-      "summary": "Frontier-Bench v0.1: 74 tasks, best agents ~34%.",
-      "whyItMatters": "Honest hardness.",
-      "url": "https://x.com/ryanmart3n/status/2080322620248281252",
-      "heat": 4,
-      "category": "evals"
-    },
-    {
-      "id": "s9",
-      "summary": "Emil: coding agent feature variants + switcher + query param + Leva.",
-      "whyItMatters": "Learning/prototyping passion.",
-      "url": "https://x.com/emilkowalski/status/2080645760530448733",
+      "id": "sig-dc-think",
+      "summary": "Riff on Edison cheap-electricity line: “We will make AI so cheap that only the rich will think on their own”",
+      "whyItMatters": "Center Venn — cognitive offloading / social psych of cheap answers × who keeps the skill of thinking",
+      "url": "https://x.com/DCinvestor/status/2084241092451402236",
       "heat": 3,
-      "category": "builders"
+      "category": "cognitive-behavior"
     },
     {
-      "id": "s10",
-      "summary": "cb_doge: Brockman endorsed Musk proposal — AI cos meet on safety; peer review before release.",
-      "whyItMatters": "Ethics/governance room.",
-      "url": "https://x.com/cb_doge/status/2080643692587864545",
-      "heat": 4,
-      "category": "ai-ethics"
+      "id": "sig-umesh-video-ed",
+      "summary": "Video models will revolutionize education; turn vision into a prompt and generate a learning experience that once needed an entire production team (demo with MiniMax H3)",
+      "whyItMatters": "AI-in-education — student-centric media production as scaffold for learning experiences",
+      "url": "https://x.com/umesh_ai/status/2084227244533411987",
+      "heat": 3,
+      "category": "ai-in-education"
     }
   ],
   "skipList": [
-    "Original-heavy packs (flagship + multiple shorts)",
-    "Mixed-source claims",
-    "Crypto spam / pure politics / sports agents",
-    "Quiet posts under heat floor"
+    "Stale reply piles",
+    "Off-Venn crypto/politics/course spam",
+    "Reuse t13 chukwu Murphy; t15 cirnosad ItsmeAjayKV; t17 aaliya Iqra",
+    "Reuse jun_song bindureddy PearlWrap Primeagen karpathy",
+    "Invented Edison history beyond the quoted riff framing",
+    "Product spam / Edudojo dump"
   ],
   "sessions": [
     {
       "id": "sprint",
-      "title": "Reply sprint",
-      "maxMinutes": 40,
-      "description": "All 10 replies — this is the whole job today"
+      "title": "Fresh replies",
+      "maxMinutes": 12,
+      "description": "Two same-day Venn posts — post while energy is live."
     },
     {
       "id": "core",
-      "title": "Optional original",
-      "maxMinutes": 8,
-      "description": "One short only if energy left"
-    },
-    {
-      "id": "bonus",
-      "title": "Bonus",
-      "maxMinutes": 5,
-      "description": "Skip in Phase 1 unless needed"
+      "title": "One original",
+      "maxMinutes": 6,
+      "description": "One short Venn thesis."
     }
   ],
   "drafts": [
     {
-      "id": "r-unclebob",
+      "id": "r-dcinvestor-think-on-own",
       "kind": "reply",
-      "label": "@unclebobmartin · gauntlet",
+      "label": "Reply · thinking on your own should not be a luxury",
+      "body": "This line hits because it is almost true already.\n\nWe will make AI so cheap that only the rich will think on their own — unless education changes the incentive.\n\nIf the grade only rewards the polished last frame, outsourcing thinking is rational. Cheap answers + output-only assessment = cognitive offloading for everyone, not just the poor.\n\nMy take: make the scarce skill visible. Assess the path — what a student can defend without the model — and thinking on your own stops being a luxury brand.",
+      "meta": "https://x.com/DCinvestor/status/2084241092451402236",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
       "estimatedSeconds": 85,
-      "targetHandle": "unclebobmartin",
-      "targetReach": "hyper",
-      "why": "Largest builder room; path vs last-frame.",
-      "meta": "https://x.com/unclebobmartin/status/2080257779395154409",
-      "body": "I get the posture. If you don't read the agent code, the only honest move is that gauntlet — unit tests, gherkin, QA, mutation testing, coverage.\n\nWhat I’m concerned as a builder: those can all go green while the agent still took a decision you never meant to hand over. High confidence in the last frame is not the same as confidence in the path.\n\nDo your suites also catch wrong intermediate choices, or only that the final metrics look right?"
+      "why": "Same-day high-signal one-liner on cheap AI vs owned thinking; 86 likes / ~10k views. Grounded only in his AI-so-cheap / think-on-their-own riff.",
+      "tip": "Copy & open first. Soft process-assessment bridge only. Do not invent Edison biography or economics beyond the parallel he set up.",
+      "postingWindow": "anytime",
+      "targetHandle": "DCinvestor",
+      "targetReach": "mid"
     },
     {
-      "id": "r-homework",
+      "id": "r-umesh-video-ed",
       "kind": "reply",
-      "label": "@dieworkwear · homework",
+      "label": "Reply · learning experiences not just answer videos",
+      "body": "This is the education use case I want more of.\n\nVideo models letting one person turn a vision into a learning experience that used to need a full production team — that is real access.\n\nBut the win is not only prettier content. It is when the media still forces the learner to notice, recall, and check themselves — not just watch a polished answer stream.\n\nStudent-centric means the path of understanding stays in the loop. Tools like this can scaffold that if we design for thinking, not only for the final clip.",
+      "meta": "https://x.com/umesh_ai/status/2084227244533411987",
+      "status": "ready",
+      "priority": 1,
+      "intent": "growth",
+      "session": "sprint",
+      "estimatedSeconds": 85,
+      "why": "Same-day AI-ed demo; 77 likes / solid bookmarks. Claims limited to video models revolutionize education + vision→prompt→learning experience once needing production team.",
+      "tip": "Stay on education access + learning experience. Do not invent curriculum outcomes beyond what the post states. Soft process note only.",
+      "postingWindow": "anytime",
+      "targetHandle": "umesh_ai",
+      "targetReach": "mid"
+    },
+    {
+      "id": "short-cheap-ai-scarce-thinking",
+      "kind": "short",
+      "label": "Short · cheap tools, scarce owned thinking",
+      "body": "AI is getting cheaper and better at producing learning media.\n\nThat does not automatically make people better thinkers. It makes polished answers cheaper.\n\nThe scarce skill is still owned thinking — the path you can defend without the model. Assess that, or cheap AI just scales cognitive offloading.",
       "status": "ready",
       "priority": 2,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 80,
-      "targetHandle": "dieworkwear",
-      "targetReach": "hyper",
-      "why": "Education + values + causal reasoning.",
-      "meta": "https://x.com/dieworkwear/status/2080442347868037198",
-      "body": "This lands. Secret AI homework makes grade-chasers look fine while people who wanted to learn still do the hard part.\n\nIf we only score the finished sheet, causal reasoning never gets pressure-tested — same bug as scoring the last token and never the thinking path.\n\nI personally always prefer assessments that watch how someone arrived, not only whether the homework looks done."
-    },
-    {
-      "id": "r-cole",
-      "kind": "reply",
-      "label": "@colebemis · PR screenshots",
-      "status": "ready",
-      "priority": 3,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 70,
-      "targetHandle": "colebemis",
-      "targetReach": "viral",
-      "why": "Process evidence for agents.",
-      "meta": "https://x.com/colebemis/status/2080392348836790395",
-      "body": "This is underrated. Green CI still won’t tell you the UI feels wrong — annotated screenshots force a second look at what actually changed.\n\nI mean it as process evidence, not decoration: the PR stops being “tests passed” and becomes “here is what a human would notice.”\n\nDo you have the agent attach them by default, or only when the diff is visual?"
-    },
-    {
-      "id": "r-jensen-open",
-      "kind": "reply",
-      "label": "@JensenHuang · open models",
-      "status": "ready",
-      "priority": 4,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 75,
-      "targetHandle": "JensenHuang",
-      "targetReach": "hyper",
-      "why": "Mega first-post room; open + closed both needed.",
-      "meta": "https://x.com/JensenHuang/status/2080643682408321103",
-      "body": "Welcome to X — and the letter framing is the right one: the world needs frontier closed models and frontier open models.\n\nWhat I’m still curious about as a builder: when open models “strengthen safety and cybersecurity,” which checks do we re-run after a release so the community can verify that claim next month, not only trust the announcement?\n\nSovereignty and diffusion matter. So does a fixed task suite people can actually re-check."
-    },
-    {
-      "id": "r-satya-open",
-      "kind": "reply",
-      "label": "@satyanadella · open-weight",
-      "status": "ready",
-      "priority": 5,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 75,
-      "targetHandle": "satyanadella",
-      "targetReach": "hyper",
-      "why": "Open-weight ecosystem + values.",
-      "meta": "https://x.com/satyanadella/status/2080646162483417097",
-      "body": "Open-weight models as essential to a healthy AI ecosystem is the right framing — competitiveness, opportunity, and national security all in one letter.\n\nThe part I still want next to that path: can the community re-check behavior with frozen tasks when weights move, not only trust the slide?\n\nHealthy open weights need healthy re-runnable evals too, in my humble opinion."
-    },
-    {
-      "id": "r-sakana-lab",
-      "kind": "reply",
-      "label": "@SakanaAILabs · benches only",
-      "status": "ready",
-      "priority": 6,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 80,
-      "targetHandle": "SakanaAILabs",
-      "targetReach": "viral",
-      "why": "Lab text only — no Fable.",
-      "tip": "Do not mention Fable here.",
-      "meta": "https://x.com/SakanaAILabs/status/2080448772778373586",
-      "body": "Respect for shipping Fugu-Ultra v1.1 and putting numbers on the page — up to 7.9 points over v1.0, with ProgramBench and Terminal Bench 2.1 called out.\n\nWhen a patch moves benches that hard, I personally always prefer a small fixed task list + seeds the community can re-run next week, not only the chart on the announce.\n\nHappy to be wrong if you point to the exact public tasks behind those gains."
-    },
-    {
-      "id": "r-hardmaru",
-      "kind": "reply",
-      "label": "@hardmaru · Fable claim",
-      "status": "ready",
-      "priority": 7,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 75,
-      "targetHandle": "hardmaru",
-      "targetReach": "high",
-      "why": "Fable-in-pool claim only on this post.",
-      "tip": "Skip if energy low after lab reply — one Fugu room is enough.",
-      "meta": "https://x.com/hardmaru/status/2080454723195568596",
-      "body": "Congrats on the v1.1 ship and the 7.9 point bump.\n\nThe line I’m still chewing on is “beating Fable 5 … without even having Fable 5 in our agent pool.” Strong claim — which coding/reasoning suites, and do those tasks stay frozen so outsiders can re-check next week?\n\nI get collective intelligence as the pitch. I personally always prefer that over a one-slide verdict."
-    },
-    {
-      "id": "r-frontier",
-      "kind": "reply",
-      "label": "@ryanmart3n · Frontier-Bench",
-      "status": "ready",
-      "priority": 8,
-      "intent": "authority",
-      "session": "sprint",
-      "estimatedSeconds": 70,
-      "targetHandle": "ryanmart3n",
-      "targetReach": "high",
-      "why": "Honest 34% / 74 tasks.",
-      "meta": "https://x.com/ryanmart3n/status/2080322620248281252",
-      "body": "This is the right shape of honesty — 74 tasks, best agents around 34%, and you call it an ongoing community effort instead of a finished leaderboard.\n\nI personally always prefer a hard suite that can still evolve over a saturated bench everyone memorizes.\n\nHow should outsiders re-run the same v0.1 tasks next month so “34%” stays comparable when you add more?"
-    },
-    {
-      "id": "r-emil-variants",
-      "kind": "reply",
-      "label": "@emilkowalski · variants",
-      "status": "ready",
-      "priority": 9,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 65,
-      "targetHandle": "emilkowalski",
-      "targetReach": "high",
-      "why": "Passion for learning by trying options — still grounded.",
-      "meta": "https://x.com/emilkowalski/status/2080645760530448733",
-      "body": "This is the part of AI that actually feels like learning, not just shipping faster — ask the coding agent for a few variants, switch between them, pass the selection as a query param so a colleague sees the same option.\n\nI’m curious how you decide which variant “wins” though. Is it still pure taste, or do you keep a small checklist so the switcher isn’t only demo candy?\n\nEither way, pairing that with Leva-style controls is a good instinct."
-    },
-    {
-      "id": "r-brockman-safety",
-      "kind": "reply",
-      "label": "@cb_doge · safety meetings",
-      "status": "ready",
-      "priority": 10,
-      "intent": "growth",
-      "session": "sprint",
-      "estimatedSeconds": 70,
-      "targetHandle": "cb_doge",
-      "targetReach": "high",
-      "why": "Ethics: meetings + peer review before release.",
-      "meta": "https://x.com/cb_doge/status/2080643692587864545",
-      "body": "Meetings every few weeks on safety and security risks are better than silence — and peer review of frontier models before public release is the more interesting half of that proposal.\n\nWhat I’m not totally getting yet: what does “peer review” mean in practice — shared eval suites outsiders can re-run, or closed reviews between labs?\n\nIf it’s the first, I personally always prefer that. If it’s only the second, we still have a trust problem."
-    },
-    {
-      "id": "short-path-once",
-      "kind": "short",
-      "label": "Short · one original only",
-      "status": "ready",
-      "priority": 11,
       "intent": "authority",
       "session": "core",
-      "estimatedSeconds": 50,
-      "why": "Phase 1: single original after 10 replies. Skip if tired.",
-      "body": "Green tests are not a verdict.\n\nAn agent can clear the whole gauntlet and still take a decision you never meant to delegate. Same bug as a homework sheet that looks perfect with no thinking underneath.\n\nScore the path. Re-run the same tasks. Last-frame scores will keep lying."
+      "estimatedSeconds": 40,
+      "why": "Original Venn thesis tying both replies; no fake citations.",
+      "postingWindow": "anytime"
     }
   ],
   "schedule": [
-    "0–40m: All 10 replies (MVP) — Copy & open each source",
-    "40–45m: Optional one short only if energy left",
-    "Mark Done in X To-Do after each"
-  ],
-  "createdAt": "2026-07-24T14:30:00.000Z",
-  "updatedAt": "2026-07-24T14:30:00.000Z"
+    "1) Reply DCinvestor (cheap AI / think on your own)",
+    "2) Reply umesh_ai (video models for learning experiences)",
+    "3) Post original short"
+  ]
 }

@@ -46,12 +46,43 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
-/** pack-YYYY-MM-DD-t00|t12 — one queue per 12h scout run (legacy t06/t18 still accepted) */
+/** Active 2h slots Asia/Kolkata (11–21). Legacy t00/t06/t12/t18 still accepted as ids. */
+const SCOUT_IST_SLOTS = [11, 13, 15, 17, 19, 21];
+
+function istParts(now = new Date()) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+  }).formatToParts(now);
+  const get = (type) => parts.find((p) => p.type === type)?.value ?? '';
+  let hour = parseInt(get('hour'), 10);
+  if (hour === 24) hour = 0;
+  return { date: `${get('year')}-${get('month')}-${get('day')}`, hour };
+}
+
+function shiftDateString(date, dayDelta) {
+  const [y, m, d] = date.split('-').map(Number);
+  return new Date(Date.UTC(y, m - 1, d + dayDelta)).toISOString().slice(0, 10);
+}
+
+/** pack-YYYY-MM-DD-tHH — HH is IST scout slot (11,13,…21) */
 function runPackId(now = new Date()) {
-  const date = now.toISOString().slice(0, 10);
-  const hour = now.getUTCHours();
-  const slot = Math.floor(hour / 12) * 12;
-  return `pack-${date}-t${String(slot).padStart(2, '0')}`;
+  let { date, hour } = istParts(now);
+  let slotHour;
+  if (hour < 11) {
+    date = shiftDateString(date, -1);
+    slotHour = 21;
+  } else {
+    slotHour = SCOUT_IST_SLOTS[0];
+    for (const s of SCOUT_IST_SLOTS) {
+      if (hour >= s) slotHour = s;
+    }
+  }
+  return `pack-${date}-t${String(slotHour).padStart(2, '0')}`;
 }
 
 function defaultSession(kind) {

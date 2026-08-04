@@ -3,11 +3,11 @@
 -- Table: public.x_content_packs ONLY (blog / auth / storage untouched)
 --
 -- WHEN TO RUN
---   • Fresh start before a new scout era (e.g. reply-first 10:1 packs)
+--   • Fresh start after a big cadence change (e.g. 2h IST · 2 replies + 1 original)
 --   • Every ~7–8 days to clear the dashboard of finished runs
 --
 -- AFTER YOU RUN THIS
---   On the laptop (repo root), refill with one new pack:
+--   On the laptop (repo root), refill with one new pack for the current IST slot:
 --     node scripts/merge-x-pack.mjs data/x-pack-today.json
 --   Requires APP_URL + X_SCOUT_SECRET in .env.local
 --

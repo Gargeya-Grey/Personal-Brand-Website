@@ -90,25 +90,29 @@ export interface XContentPack {
 export const DEFAULT_SESSIONS: XSessionBlock[] = [
   {
     id: 'sprint',
-    title: 'Reply sprint',
-    maxMinutes: 40,
+    title: 'Fresh replies',
+    maxMinutes: 12,
     description:
-      'Phase 1 growth: almost all time here. High-heat grounded replies (~8–10). Discovery from other people’s feeds.',
+      '2h cadence: two highest-heat, still-climbing posts. Reply while the room is alive (not 12h later).',
   },
   {
     id: 'core',
-    title: 'Optional original',
+    title: 'One original',
     maxMinutes: 10,
     description:
-      'Phase 1: at most one short (or skip). Do not stack flagship + multiple shorts until originals get real impressions.',
+      'Exactly one short (or rare mini-flagship). Consistent daily presence — not a pile of originals per slot.',
   },
   {
     id: 'bonus',
     title: 'Bonus QT',
-    maxMinutes: 10,
-    description: 'Optional quote on a still-hot thread if energy left.',
+    maxMinutes: 5,
+    description: 'Usually skip on 2h packs — only if a third hot source is too good to miss.',
   },
 ];
+
+/** Scout runs every 2h, 11:00–21:00 Asia/Kolkata (last slot 21:00; day ends ~22:00 IST). */
+export const SCOUT_TIMEZONE = 'Asia/Kolkata';
+export const SCOUT_IST_SLOTS = [11, 13, 15, 17, 19, 21] as const;
 
 export function defaultEstimatedSeconds(kind: XDraftKind): number {
   switch (kind) {
@@ -325,19 +329,62 @@ export function createPackId(date: string): string {
   return `pack-${date}`;
 }
 
-/**
- * One pack per scout run (12h slots UTC: t00, t12).
- * Two distinct queues per calendar day — never overwrites an earlier run.
- * (Legacy packs may still use t06 / t18 from the old 6h cadence.)
- */
-export function createRunPackId(now: Date = new Date()): string {
-  const date = now.toISOString().slice(0, 10);
-  const hour = now.getUTCHours();
-  const slot = Math.floor(hour / 12) * 12;
-  return `pack-${date}-t${String(slot).padStart(2, '0')}`;
+function istParts(now: Date): { date: string; hour: number } {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: SCOUT_TIMEZONE,
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    hour12: false,
+  }).formatToParts(now);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  let hour = parseInt(get('hour'), 10);
+  if (hour === 24) hour = 0; // some engines
+  return { date: `${get('year')}-${get('month')}-${get('day')}`, hour };
 }
 
-/** Human label e.g. "21 Jul · 12:00 UTC run" from pack id / timestamps. */
+/** Calendar date ± days (YYYY-MM-DD arithmetic, no TZ drift). */
+function shiftDateString(date: string, dayDelta: number): string {
+  const [y, m, d] = date.split('-').map(Number);
+  const utc = new Date(Date.UTC(y, m - 1, d + dayDelta));
+  return utc.toISOString().slice(0, 10);
+}
+
+/**
+ * Map a moment to the active IST scout slot hour (11,13,15,17,19,21).
+ * Before 11:00 IST → previous day's 21:00 slot.
+ * After 21:59 IST → same day's 21:00 slot.
+ */
+export function scoutIstSlot(now: Date = new Date()): { date: string; slotHour: number } {
+  const { date, hour } = istParts(now);
+  if (hour < SCOUT_IST_SLOTS[0]) {
+    return { date: shiftDateString(date, -1), slotHour: SCOUT_IST_SLOTS[SCOUT_IST_SLOTS.length - 1] };
+  }
+  let slotHour: number = SCOUT_IST_SLOTS[0];
+  for (const s of SCOUT_IST_SLOTS) {
+    if (hour >= s) slotHour = s;
+  }
+  return { date, slotHour };
+}
+
+/** True during the human posting day 11:00–21:59 IST (scout window). */
+export function isScoutWindowOpen(now: Date = new Date()): boolean {
+  const { hour } = istParts(now);
+  return hour >= 11 && hour < 22;
+}
+
+/**
+ * One pack per scout run — 2h slots in Asia/Kolkata (t11, t13, … t21).
+ * Six queues per IST calendar day; never overwrites an earlier slot.
+ * Legacy packs may still use t00/t06/t12/t18 (old 6h/12h UTC cadence).
+ */
+export function createRunPackId(now: Date = new Date()): string {
+  const { date, slotHour } = scoutIstSlot(now);
+  return `pack-${date}-t${String(slotHour).padStart(2, '0')}`;
+}
+
+/** Human label e.g. "29 Jul · 15:00 IST run" from pack id / timestamps. */
 export function formatPackRunLabel(pack: {
   id: string;
   date: string;
@@ -355,23 +402,35 @@ export function formatPackRunLabel(pack: {
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit',
+      timeZone: SCOUT_TIMEZONE,
     });
   } catch {
     /* keep datePart */
   }
   if (slotMatch) {
-    return `${when} · slot ${slotMatch[1]}:00 UTC`;
+    const slot = parseInt(slotMatch[1], 10);
+    // New cadence: 11–21 even IST hours. Old UTC 00/06/12/18 still labeled UTC.
+    const isIstCadence = SCOUT_IST_SLOTS.includes(slot as (typeof SCOUT_IST_SLOTS)[number]);
+    return isIstCadence
+      ? `${when} · ${slotMatch[1]}:00 IST`
+      : `${when} · slot ${slotMatch[1]}:00 UTC (legacy)`;
   }
   return when;
 }
 
 /**
- * Derive MVP ids: explicit list, else top-priority ready **replies only** (Phase 1).
- * Originals are optional after the reply sprint — small accounts grow from discovery first.
+ * Derive MVP ids: explicit list, else full mini-pack queue (2 replies + 1 original).
+ * 2h cadence packs are small — MVP is the whole run, not “replies only forever.”
  */
 export function resolveMvpIds(pack: XContentPack): string[] {
   if (pack.mvpDraftIds?.length) return pack.mvpDraftIds;
   const ready = sortDraftsForExecution(pack.drafts.filter((d) => d.status === 'ready'));
-  // Prefer 6 replies for MVP; never auto-include flagship/short into MVP in Phase 1
-  return ready.filter((d) => d.kind === 'reply').slice(0, 6).map((d) => d.id);
+  // Prefer replies first, then one original/short/flagship, then optional QT — cap 3
+  const replies = ready.filter((d) => d.kind === 'reply').slice(0, 2);
+  const original = ready.find((d) => d.kind === 'short' || d.kind === 'flagship');
+  const quote = ready.find((d) => d.kind === 'quote');
+  const ids = [...replies.map((d) => d.id)];
+  if (original) ids.push(original.id);
+  else if (quote && ids.length < 3) ids.push(quote.id);
+  return ids.slice(0, 3);
 }

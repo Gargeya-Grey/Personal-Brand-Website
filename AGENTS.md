@@ -1,15 +1,89 @@
 # Memory
 
 ## Project Overview
-See @README.md for project overview and @package.json for available npm/pnpm commands for this project.
+Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.js App Router portfolio + blog + Google OAuth CMS at `/editorial`, including **X To-Do** (human-in-the-loop content packs).
+
+- Repo: `https://github.com/Gargeya-Grey/Personal-Brand-Website` (public — never commit secrets; `.env*` is gitignored).
+- Live site packs come from **Supabase** `x_content_packs` (jsonb payload), not only from committed JSON.
+- See `README.md` and `package.json` for general template notes and npm scripts.
+
+## Owner goals (product)
+- Genuine **X growth** toward ~10k followers in ~3 months.
+- **2h IST scout cadence** (not 12h): every **2 hours from 11:00–21:00 IST** (slots 11,13,15,17,19,21); window ends ~22:00 IST. Pack shape **exactly 2 replies + 1 original** so replies hit **fresh/climbing** posts.
+- High **voice fidelity** (`data/gargeya-voice.md`); source **grounding** (one draft ↔ one real post; fetch before write).
+- **Topic Venn (not school-only):** social/learning/educational psychology + cognitive behavior + student-centric methods + AI-in-education + process assessment; **open-source AI as access + extreme efficiency** for all. Full map in `gargeya-voice.md` / scout heat queries in `x-scout-playbook.md`.
+- Laptop **Grok scout** → merge/ingest → **production Supabase** so live To-Do updates without waiting on git.
+- Blog CMS quality + perf (ISR/SSR, image priority, lazy canvas background).
 
 ## Code Style Guidelines
-- Use descriptive variable names
-- Follow existing patterns in the codebase
-- Extract complex conditions into meaningful boolean variables
+- Use descriptive variable names.
+- Follow existing patterns in the codebase.
+- Extract complex conditions into meaningful boolean variables.
+- Prefer public-safe commits; leave local pack JSON dirty if Supabase already has the live pack unless the user wants GitHub mirror.
 
 ## Architecture Notes
-Add important architectural decisions and patterns here.
+
+### Auth / CMS
+- Google OAuth + JWT session cookie; allowed email gate in `lib/auth.ts`.
+- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`).
+
+### X content system
+| Piece | Role |
+| :--- | :--- |
+| `lib/x-content-model.ts` | Pack shape, **IST 2h ids** (`createRunPackId` / `scoutIstSlot` / `isScoutWindowOpen`), sanitize, draft URL helpers, `resolveMvpIds` (full mini-pack: 2R+1O), sessions |
+| `lib/x-content-service.ts` | Hydrate packs, meta normalization, Supabase row ↔ pack |
+| `lib/x-source-grounding.ts` | Grounding rules / helpers |
+| `app/api/x-content/*` | Read + ingest (`X_SCOUT_SECRET`) |
+| `scripts/validate-x-pack.mjs` | Validate pack + evidence |
+| `scripts/merge-x-pack.mjs` | Merge local JSON → remote (IST 2h-aware ids) |
+| `data/x-scout-playbook.md` | Scout SOPs: 2h IST, 2R+1O, grounding, Venn heat |
+| `data/gargeya-voice.md` | Voice + topic Venn + growth |
+| `data/sql/x_content_packs.sql` | Schema |
+| `data/sql/x_content_packs_wipe.sql` | Full wipe ritual (user runs in Supabase) |
+| `data/x-content-packs.json` etc. | Local mirror / evidence; may lag live DB |
+
+**Critical UI rule:** draft `meta` for sources must be a **status URL string** (or normalize to one). Object-shaped `{url, note}` broke **Copy & open** (opened compose instead of source). Always use `draftOpenUrl` / `normalizeDraftMeta`.
+
+**Pack id:** `pack-YYYY-MM-DD-tHH` with **IST** date + hour ∈ {11,13,15,17,19,21}. Legacy UTC t00/t06/t12/t18 may still exist.
+
+### Analytics / social proof (site)
+- **Likes**: `localStorage` only, not a shared DB.
+- **Views**: Vercel Analytics (not a first-class DB counter).
+- Speed Insights / Core Web Vitals: platform metrics; blog perf work used ISR/SSR, `Image` priority, lazy `InteractiveBackground`.
+
+### Deploy
+- Vercel deploys this personal repo; wrong Vercel team/MCP credentials have caused confusion — use the personal project, not unrelated orgs.
+- Push often blocked for agent auto-mode; **user runs** `git push origin main` when needed.
+
+### Brand
+- Nav short name: **Gargeya**.
+- Logos under `public/brand/sgargeya-logo-*` (light/dark png/svg).
 
 ## Common Workflows
-Document frequently used workflows and commands here.
+
+### X scout → live To-Do (2h IST)
+1. Only during **11:00–21:59 IST**; else skip.
+2. Pack id via `createRunPackId()` → `pack-…-t11|t13|…|t21`.
+3. Scout per `data/x-scout-playbook.md` + voice (Venn + freshness).
+4. **2 grounded replies + 1 original short**; fetch each reply source first.
+5. Validate → `merge-x-pack` / ingest with secret → Supabase.
+6. Optional: commit pack JSON for GitHub mirror (not required for live To-Do).
+7. User posts from CMS while threads are still hot.
+
+### Wipe packs (clean slate)
+1. User runs `data/sql/x_content_packs_wipe.sql` in Supabase.
+2. Confirm empty.
+3. Merge a fresh **2R+1O** pack for the current IST slot.
+
+### Public-safe git
+- Commit code, playbooks, SQL, non-secret data.
+- Never commit `.env`, service roles, or OAuth secrets.
+- Uncommitted scout JSON + logo tweaks after a run are normal; live site uses Supabase.
+
+### Durable scout schedule
+- Prefer **2h** interval with prompt: if outside IST 11–22, exit without packing; else run full 2R+1O scout + merge.
+
+## Session state (durable)
+- Voice refreshed from live X (2026-07-29); Topic Venn added.
+- Cadence switched from 12h / 8–10 replies → **2h IST / 2 replies + 1 original**.
+- Do not invent claims; grounding still non-negotiable.
