@@ -63,7 +63,6 @@ function PublicFooter() {
   const [subscribing, setSubscribing] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [error, setError] = useState('');
-  const [statusHovered, setStatusHovered] = useState(false);
 
   const containerRef = useRef<HTMLElement>(null);
 
@@ -363,49 +362,12 @@ function PublicFooter() {
             <button
               type="button"
               className="group flex w-max cursor-pointer items-center gap-2 font-mono"
-              onMouseEnter={() => setStatusHovered(true)}
-              onMouseLeave={() => setStatusHovered(false)}
-              onFocus={() => setStatusHovered(true)}
-              onBlur={() => setStatusHovered(false)}
-              aria-describedby="telemetry-panel"
-              aria-expanded={statusHovered}
             >
               <span className="h-2 w-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.9)] animate-pulse" />
               <span className="text-[13px] text-slate-400 transition-colors duration-300 group-hover:text-white md:text-sm">
                 Site online
               </span>
             </button>
-
-            <AnimatePresence>
-              {statusHovered && (
-                <motion.div
-                  id="telemetry-panel"
-                  role="tooltip"
-                  initial={{ opacity: 0, y: 8, scale: 0.96 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 8, scale: 0.96 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                  className="pointer-events-none absolute bottom-7 left-1/2 z-50 w-60 -translate-x-1/2 rounded-xl border border-slate-800 bg-slate-900 p-3.5 shadow-lg sm:left-0 sm:translate-x-0"
-                >
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between border-b border-white/5 pb-1">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
-                        Edge status
-                      </span>
-                      <span className="rounded bg-emerald-500/10 px-1.5 py-0.5 text-[10px] font-bold text-emerald-400">
-                        Active
-                      </span>
-                    </div>
-                    <div className="grid grid-cols-2 gap-y-1 font-mono text-xs text-slate-300">
-                      <span className="text-slate-400">Delivery:</span>
-                      <span className="text-right font-bold text-emerald-500">Vercel Edge</span>
-                      <span className="text-slate-400">Rendering:</span>
-                      <span className="text-right font-bold text-white">Next.js</span>
-                    </div>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 font-ui text-sm">

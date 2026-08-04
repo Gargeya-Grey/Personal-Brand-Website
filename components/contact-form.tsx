@@ -156,7 +156,7 @@ export function ContactForm() {
               placeholder="Your name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-body text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-body text-base text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
             />
           </div>
 
@@ -176,7 +176,7 @@ export function ContactForm() {
               placeholder="you@company.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-body text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
+              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-body text-base text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
             />
           </div>
         </div>
@@ -228,7 +228,7 @@ export function ContactForm() {
             placeholder="What are you building, timeline, constraints, or the problem you want to solve..."
             value={formData.details}
             onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-            className="min-h-[140px] w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-4 font-body text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
+            className="min-h-[140px] w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-4 font-body text-base text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
           />
         </div>
 
