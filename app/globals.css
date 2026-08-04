@@ -157,6 +157,7 @@ canvas {
 
 /*
  * Board panels — solid surfaces in both modes.
+ * Neutral by default: the accent stays reserved for CTAs, links, and active states.
  */
 .board-card {
   background: #ffffff;
@@ -171,10 +172,10 @@ canvas {
 }
 
 .board-card:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 35%, rgba(15, 23, 42, 0.12));
+  border-color: rgba(15, 23, 42, 0.2);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 1) inset,
-    0 24px 48px -24px rgba(15, 23, 42, 0.2);
+    0 24px 48px -24px rgba(15, 23, 42, 0.22);
 }
 
 .dark .board-card {
@@ -186,7 +187,7 @@ canvas {
 }
 
 .dark .board-card:hover {
-  border-color: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.22);
   background: #151d2e;
 }
 
@@ -201,7 +202,7 @@ canvas {
 }
 
 .board-card-ink:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 40%, rgba(15, 23, 42, 0.35));
+  border-color: rgba(15, 23, 42, 0.55);
   box-shadow: 0 24px 48px -24px rgba(15, 23, 42, 0.42);
 }
 
@@ -215,7 +216,7 @@ canvas {
 
 .dark .board-card-ink:hover {
   background: #182234;
-  border-color: rgba(255, 255, 255, 0.16);
+  border-color: rgba(255, 255, 255, 0.2);
 }
 
 /*
@@ -686,10 +687,10 @@ canvas {
 }
 
 .liquid-glass:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 28%, rgba(15, 23, 42, 0.12));
+  border-color: rgba(15, 23, 42, 0.18);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.95) inset,
-    0 24px 48px -20px rgba(15, 23, 42, 0.18);
+    0 24px 48px -20px rgba(15, 23, 42, 0.2);
 }
 
 .dark .liquid-glass {
@@ -701,7 +702,7 @@ canvas {
 }
 
 .dark .liquid-glass:hover {
-  border-color: color-mix(in srgb, var(--color-accent) 30%, rgba(255, 255, 255, 0.14));
+  border-color: rgba(255, 255, 255, 0.2);
   background-color: #151d2e;
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.08) inset,
@@ -1133,20 +1134,20 @@ canvas {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: color-mix(in srgb, var(--color-accent) 40%, transparent);
+  background: rgba(148, 163, 184, 0.45);
   border-radius: 9999px;
   border: 2px solid var(--color-surface);
   transition: background-color 0.3s ease;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--color-accent);
+  background: rgba(148, 163, 184, 0.75);
 }
 
 /* Firefox styling support */
 * {
   scrollbar-width: thin;
-  scrollbar-color: color-mix(in srgb, var(--color-accent) 40%, transparent) var(--color-surface);
+  scrollbar-color: rgba(148, 163, 184, 0.45) var(--color-surface);
 }
 
 /* Reduced motion — respect user preference site-wide */
@@ -1178,6 +1179,12 @@ canvas {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+}
+
+/* Label micro-type floor — nothing below 11px reads comfortably at 100% DPI */
+.text-\[9px\],
+.text-\[10px\] {
+  font-size: 0.6875rem !important; /* 11px */
 }
 
 .focus\:not-sr-only:focus {

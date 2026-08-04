@@ -246,7 +246,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                   setSearchQuery(e.target.value);
                   setVisibleCount(9);
                 }}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-10 text-sm text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
+                className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-10 text-base text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
               />
               {searchQuery && (
                 <button 
@@ -269,7 +269,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                 aria-haspopup="listbox"
                 aria-expanded={isDropdownOpen}
                 aria-label="Filter by categories"
-                className="flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-semibold text-slate-700 shadow-sm transition-all hover:shadow-md dark:border-white/10 dark:bg-slate-900 dark:text-white/85 md:w-64"
+                className="flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-base font-semibold text-slate-700 shadow-sm transition-all hover:shadow-md dark:border-white/10 dark:bg-slate-900 dark:text-white/85 md:w-64"
               >
                 <span className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-slate-400" />
@@ -569,7 +569,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                         required
                         value={subscribeEmail}
                         onChange={(e) => setSubscribeEmail(e.target.value)}
-                        className="flex-grow rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm text-slate-800 shadow-inner placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
+                        className="flex-grow rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-base text-slate-800 shadow-inner placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
                       />
                       <button 
                         type="submit" 

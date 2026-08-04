@@ -37,7 +37,7 @@ export default function AboutClient() {
               Gargeya Sharma · Founder & Mentor
             </span>
             <h1 className="font-display text-[clamp(2.75rem,10vw,5.5rem)] font-medium tracking-[-0.02em] text-primary leading-[1.02]">
-              Architecting the <br /> <span className="text-accent">next</span> generation.
+              Building systems that <br /> <span className="text-accent">teach and scale</span>.
             </h1>
             
             <div className="relative pt-6 max-w-3xl">
@@ -59,9 +59,6 @@ export default function AboutClient() {
             <ChevronDown className="w-4 h-4 animate-bounce" />
           </motion.div>
         </section>
-
-        {/* Sections 2 + 3 in a relative wrapper for ambient background decoration */}
-        <div className="relative">
 
         {/* Section 2: The Journey / Inspiring Collaboration */}
         <section className="py-24 md:py-36 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
@@ -86,8 +83,8 @@ export default function AboutClient() {
                 }}
               />
 
-              <div className="relative z-10 mb-8 flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10 transition-all duration-300 ease-out group-hover:bg-accent group-hover:text-[#0F172A]">
-                <Network className="h-7 w-7 text-accent transition-all duration-300 ease-out group-hover:scale-110 group-hover:rotate-3 group-hover:text-[#0F172A]" />
+              <div className="relative z-10 mb-8 flex h-14 w-14 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10">
+                <Network className="h-7 w-7 text-accent" />
               </div>
 
               <h2 className="relative z-10 mb-6 font-display text-3xl font-light tracking-[-0.02em] text-primary md:text-4xl">
@@ -103,42 +100,6 @@ export default function AboutClient() {
           </motion.div>
         </section>
 
-        {/* Topographic contours — fade in after cards so entrance never looks accidental */}
-        <svg
-          className="topo-field pointer-events-none absolute inset-0 z-0 hidden h-full w-full lg:block"
-          viewBox="0 0 1000 600"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          preserveAspectRatio="xMidYMid meet"
-          aria-hidden="true"
-        >
-          <defs>
-            <filter id="topo-blur" x="-10%" y="-10%" width="120%" height="120%">
-              <feGaussianBlur stdDeviation="1.2" />
-            </filter>
-          </defs>
-
-          {/* Contour cluster A — upper-right, echoing card 1 position */}
-          <ellipse cx="620" cy="180" rx="60"  ry="28"  transform="rotate(-18 620 180)" stroke="var(--color-accent)" strokeWidth="1"   opacity="0.55" filter="url(#topo-blur)" />
-          <ellipse cx="620" cy="180" rx="100" ry="48"  transform="rotate(-18 620 180)" stroke="var(--color-accent)" strokeWidth="0.8" opacity="0.35" filter="url(#topo-blur)" />
-          <ellipse cx="620" cy="180" rx="145" ry="70"  transform="rotate(-18 620 180)" stroke="#94a3b8" strokeWidth="0.7" opacity="0.25" />
-          <ellipse cx="620" cy="180" rx="195" ry="94"  transform="rotate(-18 620 180)" stroke="#94a3b8" strokeWidth="0.6" opacity="0.18" />
-          <ellipse cx="620" cy="180" rx="250" ry="120" transform="rotate(-18 620 180)" stroke="#94a3b8" strokeWidth="0.5" opacity="0.13" />
-          <ellipse cx="620" cy="180" rx="310" ry="148" transform="rotate(-18 620 180)" stroke="#94a3b8" strokeWidth="0.4" opacity="0.09" />
-
-          {/* Contour cluster B — lower-left, echoing card 2 position */}
-          <ellipse cx="380" cy="440" rx="70"  ry="30"  transform="rotate(-18 380 440)" stroke="var(--color-accent)" strokeWidth="1"   opacity="0.45" filter="url(#topo-blur)" />
-          <ellipse cx="380" cy="440" rx="115" ry="52"  transform="rotate(-18 380 440)" stroke="var(--color-accent)" strokeWidth="0.8" opacity="0.30" filter="url(#topo-blur)" />
-          <ellipse cx="380" cy="440" rx="165" ry="76"  transform="rotate(-18 380 440)" stroke="#94a3b8" strokeWidth="0.7" opacity="0.22" />
-          <ellipse cx="380" cy="440" rx="220" ry="102" transform="rotate(-18 380 440)" stroke="#94a3b8" strokeWidth="0.6" opacity="0.15" />
-          <ellipse cx="380" cy="440" rx="280" ry="130" transform="rotate(-18 380 440)" stroke="#94a3b8" strokeWidth="0.5" opacity="0.10" />
-          <ellipse cx="380" cy="440" rx="345" ry="160" transform="rotate(-18 380 440)" stroke="#94a3b8" strokeWidth="0.4" opacity="0.07" />
-
-          {/* Shared mid-field contour — large ring that overlaps both clusters */}
-          <ellipse cx="500" cy="310" rx="340" ry="155" transform="rotate(-18 500 310)" stroke="#94a3b8" strokeWidth="0.5" opacity="0.10" />
-          <ellipse cx="500" cy="310" rx="430" ry="195" transform="rotate(-18 500 310)" stroke="#94a3b8" strokeWidth="0.4" opacity="0.07" />
-        </svg>
-
         {/* Section 3: The Craft (Engineering Philosophy) */}
         <section className="py-24 md:py-36 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
 
@@ -150,7 +111,7 @@ export default function AboutClient() {
             className="relative z-10 mr-auto w-full max-w-5xl lg:col-span-10"
           >
             <motion.div
-              className="board-card group relative overflow-hidden rounded-soft border-l-4 border-l-accent px-5 py-12 sm:px-8 sm:py-16 md:px-14 md:py-24"
+              className="board-card group relative overflow-hidden rounded-soft px-5 py-12 sm:px-8 sm:py-16 md:px-14 md:py-24"
               whileHover={{ y: -4 }}
               transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
             >
@@ -167,7 +128,7 @@ export default function AboutClient() {
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-16 relative z-10">
                 {/* Modern Vertical Divider Line */}
-                <div className="hidden md:block absolute left-1/2 top-[30%] bottom-[30%] w-[4px] bg-accent/20 -translate-x-1/2" />
+                <div className="hidden md:block absolute left-1/2 top-[30%] bottom-[30%] w-px bg-outline-variant -translate-x-1/2" />
                 
                 <div className="space-y-3 pr-0 md:pr-8">
                   <h3 className="font-bold text-primary text-xl md:text-2xl font-headline">Soft Minimalism</h3>
@@ -188,8 +149,6 @@ export default function AboutClient() {
           
           <div className="hidden lg:block lg:col-span-2" />
         </section>
-
-        </div>{/* end relative wrapper */}
 
         {/* Section 4: Closing invitation — centered finale, mint flare kept */}
         <section

@@ -23,13 +23,10 @@ export default function Home() {
       <main
         id="page-main"
         tabIndex={-1}
-        className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-28 sm:px-6 sm:pt-32 lg:px-10 xl:px-12"
+        className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-24 sm:px-6 sm:pt-28 lg:px-10 xl:px-12"
       >
         {/* Hero — copy + media card */}
         <section className="relative grid min-h-[min(88svh,860px)] grid-cols-1 items-center gap-12 overflow-x-clip py-16 md:py-24 lg:grid-cols-12 lg:gap-10">
-          <div className="pointer-events-none absolute -right-40 top-8 hidden h-[42rem] w-[42rem] rounded-full border border-accent/15 lg:block" aria-hidden="true" />
-          <div className="pointer-events-none absolute -right-24 top-28 hidden h-[30rem] w-[30rem] rounded-full border border-white/10 lg:block" aria-hidden="true" />
-
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -84,7 +81,7 @@ export default function Home() {
               </Link>
             </div>
 
-            <div className="flex items-center gap-3 pt-2 font-label text-[10px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/60">
+            <div className="flex items-center gap-3 pt-2 font-label text-[11px] font-bold uppercase tracking-[0.2em] text-on-surface-variant/70">
               <span className="h-px w-8 bg-accent/60" />
               <span>Systems / Stories / Experiments</span>
             </div>
@@ -112,7 +109,7 @@ export default function Home() {
                   blurDataURL="data:image/webp;base64,UklGRk4AAABXRUJQVlA4IEIAAAAwAgCdASoQABAAA4BaJQBOj+AC3/pHL/0kAAD9IZEXT+erWYGdY0DVhO4CgwBJIzKs48DW2vVvXqUgqIC1a+1wAAA="
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0F172A]/90 via-transparent to-transparent dark:from-[#0B1220]/90" />
-                <div className="absolute left-5 right-5 top-5 flex items-center justify-between font-label text-[9px] font-bold uppercase tracking-[0.22em] text-white/60">
+                <div className="absolute left-5 right-5 top-5 flex items-center justify-between font-label text-[11px] font-bold uppercase tracking-[0.22em] text-white/70">
                   <span>Field note / 001</span>
                   <span className="flex items-center gap-2">
                     <i className="h-1.5 w-1.5 rounded-full bg-accent" /> Live
@@ -247,20 +244,20 @@ export default function Home() {
             {/* About Card */}
             <Link href="/about" className="block md:col-span-3">
               <motion.div
-                className="board-card-ink group relative flex h-full min-h-[140px] flex-col justify-between gap-8 overflow-hidden rounded-soft p-6 sm:p-8 md:flex-row md:items-center md:gap-12 md:p-10"
+                className="board-card group relative flex h-full min-h-[140px] flex-col justify-between gap-8 overflow-hidden rounded-soft p-6 sm:p-8 md:flex-row md:items-center md:gap-12 md:p-10"
                 whileHover={{ y: -5 }}
                 transition={{ type: 'spring', stiffness: 320, damping: 24, mass: 0.7 }}
               >
                 <div className="relative z-10 flex flex-col items-center gap-5 sm:flex-row">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-white/15 bg-white/10">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 dark:border-white/10 dark:bg-white/5">
                     <User className="h-6 w-6 text-accent" />
                   </div>
                   <div className="text-center sm:text-left">
-                    <h3 className="font-headline text-2xl font-semibold tracking-tight text-white">
+                    <h3 className="font-headline text-2xl font-semibold tracking-tight text-slate-900 dark:text-primary">
                       About Gargeya
                     </h3>
-                    <p className="mt-1 font-body text-sm leading-relaxed text-white/65">
-                      Engineering the future. Lead Architect & Strategist focusing on Soft Minimalism.
+                    <p className="mt-1 font-body text-sm leading-relaxed text-slate-600 dark:text-on-surface-variant">
+                      Engineering the future. Lead Architect &amp; Strategist focusing on Soft Minimalism.
                     </p>
                   </div>
                 </div>

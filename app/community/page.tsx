@@ -54,7 +54,7 @@ export default function CommunityPage() {
               Global Network
             </span>
             <h1 className="font-display text-[clamp(2.5rem,8vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.02em] text-primary">
-              An elite collective of <br /> <span className="text-accent">top 1%</span> engineers.
+              A builder community for <br /> <span className="text-accent">high-signal work</span>.
             </h1>
             <p className="max-w-2xl pt-2 font-body text-lg leading-relaxed text-on-surface-variant sm:text-xl md:pt-4 md:text-2xl">
               High-signal builders, systems people, and curious minds. Start with my public writing
@@ -102,15 +102,6 @@ export default function CommunityPage() {
                   className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/25 to-transparent md:bg-gradient-to-r md:from-transparent md:via-transparent md:to-slate-950/90"
                   aria-hidden="true"
                 />
-                <div className="absolute left-5 top-5 flex items-center gap-2 rounded-full border border-white/15 bg-black/45 px-3 py-1.5 backdrop-blur-md md:left-6 md:top-6">
-                  <span className="relative flex h-2 w-2">
-                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-accent opacity-60" />
-                    <span className="relative inline-flex h-2 w-2 rounded-full bg-accent" />
-                  </span>
-                  <span className="font-label text-[10px] font-bold uppercase tracking-[0.18em] text-white/90">
-                    Active on X
-                  </span>
-                </div>
               </div>
 
               <div className="relative z-10 flex flex-col justify-between gap-8 p-6 sm:p-8 md:col-span-7 md:p-10 lg:col-span-8 lg:p-12">
@@ -184,32 +175,13 @@ export default function CommunityPage() {
                 </div>
               </div>
 
-              {/* Channel preview — atmosphere, not chrome clutter */}
+              {/* Atmosphere — light glyph, no fake channel list */}
               <div
                 className="relative hidden items-center md:col-span-5 md:flex lg:col-span-4"
                 aria-hidden="true"
               >
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_80%_at_70%_50%,rgba(88,101,242,0.18),transparent_65%)]" />
-                <div className="relative ml-auto mr-8 w-full max-w-[240px] space-y-2.5 lg:mr-10">
-                  {[
-                    { name: '# introductions', active: false },
-                    { name: '# build-logs', active: true },
-                    { name: '# architecture', active: false },
-                    { name: '# mentorship', active: false },
-                  ].map((channel) => (
-                    <div
-                      key={channel.name}
-                      className={`flex items-center gap-2.5 rounded-xl border px-3.5 py-2.5 font-mono text-[12px] tracking-wide transition-colors duration-300 ${
-                        channel.active
-                          ? 'border-accent/35 bg-accent/10 text-accent'
-                          : 'border-white/8 bg-white/[0.03] text-white/45 group-hover:border-white/12 group-hover:text-white/55'
-                      }`}
-                    >
-                      <span className="opacity-50">{channel.name.slice(0, 1)}</span>
-                      <span>{channel.name.slice(1)}</span>
-                    </div>
-                  ))}
-                </div>
+                <DiscordLogo className="pointer-events-none absolute right-8 h-40 w-40 text-white/[0.05] lg:right-12" />
               </div>
             </motion.a>
           </div>
@@ -227,9 +199,11 @@ export default function CommunityPage() {
                 <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-xl bg-surface-container-low dark:bg-white/5">
                   <TrendingUp className="h-6 w-6 text-accent" />
                 </div>
-                <div className="mb-2 font-headline text-5xl font-extrabold text-primary">∞</div>
+                <div className="mb-2 font-headline text-4xl font-extrabold text-primary lg:text-5xl">
+                  Deep reviews
+                </div>
                 <div className="mb-4 font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                  Infinite Growth
+                  What you get
                 </div>
                 <p className="text-sm leading-relaxed text-on-surface-variant">
                   Level up your engineering capabilities through collaborative mentorship, codebase
@@ -248,10 +222,10 @@ export default function CommunityPage() {
                   <Award className="h-6 w-6 text-accent" />
                 </div>
                 <div className="mb-2 font-headline text-4xl font-extrabold text-primary lg:text-5xl">
-                  Top 1%
+                  Craft &amp; scale
                 </div>
                 <div className="mb-4 font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                  Target Caliber
+                  The standard
                 </div>
                 <p className="text-sm leading-relaxed text-on-surface-variant">
                   We nurture and refine your software craft, aiming to elevate you into the elite

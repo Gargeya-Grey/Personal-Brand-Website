@@ -23,18 +23,6 @@ function EdudojoPreview({ href }: { href: string }) {
       className="relative mt-5 block overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-[0_12px_32px_-20px_rgba(15,23,42,0.35)] transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_16px_36px_-18px_rgba(16,185,129,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-slate-950/60 dark:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.65)] dark:hover:border-accent/35"
       aria-label="Open Edudojo.ai"
     >
-      <div className="flex items-center gap-2 border-b border-slate-200/90 bg-white px-3 py-2.5 dark:border-white/10 dark:bg-slate-900/80">
-        <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/20" />
-        <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/20" />
-        <span className="h-2 w-2 rounded-full bg-slate-300 dark:bg-white/20" />
-        <div className="ml-2 flex min-w-0 flex-1 items-center gap-2 rounded-full bg-slate-100 px-3 py-1 dark:bg-white/[0.06]">
-          <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-          <span className="truncate font-mono text-[10px] text-slate-500 dark:text-white/45">
-            edudojo.ai
-          </span>
-        </div>
-      </div>
-
       <div className="relative p-3.5 sm:p-4">
         <div
           className="pointer-events-none absolute inset-0 opacity-[0.3] dark:opacity-[0.18]"
@@ -48,14 +36,14 @@ function EdudojoPreview({ href }: { href: string }) {
         <div className="relative space-y-3.5">
           <div className="flex items-start justify-between gap-3">
             <div>
-              <p className="font-label text-[9px] font-bold uppercase tracking-[0.18em] text-accent">
+              <p className="font-label text-[11px] font-bold uppercase tracking-[0.18em] text-accent">
                 Process-based assessment
               </p>
               <p className="mt-1 font-headline text-[15px] font-semibold tracking-tight text-slate-800 dark:text-white/90">
                 Grade the process, not the submission
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-mono text-[10px] font-bold text-emerald-700 dark:text-accent">
+            <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-700 dark:text-accent">
               pilot
             </span>
           </div>
@@ -70,13 +58,13 @@ function EdudojoPreview({ href }: { href: string }) {
                     : 'border-slate-200/90 bg-white/90 dark:border-white/10 dark:bg-white/[0.04]'
                 }`}
               >
-                <p className="font-mono text-[9px] font-bold text-slate-400 dark:text-white/35">
+                <p className="font-mono text-[11px] font-bold text-slate-400 dark:text-white/35">
                   {step.n}
                 </p>
-                <p className="mt-0.5 font-label text-[9px] font-bold uppercase tracking-wide text-slate-700 dark:text-white/80 sm:text-[10px]">
+                <p className="mt-0.5 font-label text-[11px] font-bold uppercase tracking-wide text-slate-700 dark:text-white/80 sm:text-xs">
                   {step.label}
                 </p>
-                <p className="mt-0.5 hidden font-body text-[9px] text-slate-400 dark:text-white/40 sm:block">
+                <p className="mt-0.5 hidden font-body text-[11px] text-slate-400 dark:text-white/40 sm:block">
                   {step.hint}
                 </p>
               </div>
@@ -84,15 +72,15 @@ function EdudojoPreview({ href }: { href: string }) {
           </div>
 
           <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200/80 bg-white/80 px-2.5 py-2 dark:border-white/10 dark:bg-white/[0.03]">
-            <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[9px] text-slate-500 dark:bg-white/10 dark:text-white/45">
+            <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-500 dark:bg-white/10 dark:text-white/45">
               Raw Draft
             </span>
             <span className="text-[10px] text-slate-300 dark:text-white/25">→</span>
-            <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-[9px] font-semibold text-emerald-700 dark:text-accent">
+            <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-700 dark:text-accent">
               Socratic Polish
             </span>
             <span className="text-[10px] text-slate-300 dark:text-white/25">→</span>
-            <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[9px] text-slate-500 dark:bg-white/10 dark:text-white/45">
+            <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-500 dark:bg-white/10 dark:text-white/45">
               Verified
             </span>
           </div>
