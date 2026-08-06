@@ -2,7 +2,7 @@ import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { requireAllowedSession } from '@/lib/auth';
-import { getArticles } from '@/lib/blog-service';
+import { getEditorialArticlesLite } from '@/lib/blog-service';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { EditorialClient } from './editorial-client';
@@ -24,7 +24,7 @@ export default async function EditorialPage({
     redirect('/login?callbackUrl=/editorial');
   }
 
-  const articles = await getArticles();
+  const articles = await getEditorialArticlesLite();
   const params = await searchParams;
   const ws = params.workspace;
   const initialWorkspace: 'blog' | 'x' =

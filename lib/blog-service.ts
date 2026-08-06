@@ -719,5 +719,52 @@ export function isArticlePublished(article: Article | null | undefined): boolean
   return s === 'published' || s === '';
 }
 
+export type ArticleLite = Omit<Article, 'content' | 'takeaways'>;
+
+export async function getEditorialArticlesLite(): Promise<ArticleLite[]> {
+  const LIST_COLS =
+    'id, slug, featured, categories, title, excerpt, author, author_role, author_avatar, date, read_time, illustration_type, status, cover_image, updated_at';
+
+  if (isSupabaseUsable()) {
+    try {
+      const { data, error } = await supabase
+        .from('articles')
+        .select(LIST_COLS)
+        .order('id', { ascending: false });
+
+      if (error) {
+        markSupabaseUnavailable(error);
+      } else {
+        supabaseFailureLogged = false;
+        return (data || []).map((row) => {
+          const a = toCamelCase({ ...row, content: '', takeaways: [] });
+          const { content: _c, takeaways: _t, ...lite } = a;
+          return lite;
+        });
+      }
+    } catch (e) {
+      markSupabaseUnavailable(e);
+    }
+  }
+
+  const list = await getArticles();
+  return list.map(({ content: _c, takeaways: _t, ...lite }) => lite).sort((a, b) => b.id - a.id);
+}
+
+export async function getArticleById(id: number): Promise<Article | null> {
+  if (!Number.isFinite(id)) return null;
+  if (isSupabaseUsable()) {
+    try {
+      const { data, error } = await supabase.from('articles').select('*').eq('id', id).maybeSingle();
+      if (!error && data) return toCamelCase(data);
+      if (error) markSupabaseUnavailable(error);
+    } catch (e) {
+      markSupabaseUnavailable(e);
+    }
+  }
+  const list = await getArticles();
+  return list.find((a) => a.id === id) || null;
+}
+
 /** Max markdown body size (~500KB) — DoS guard for CMS. */
 export const MAX_ARTICLE_CONTENT_CHARS = 500_000;

@@ -32,11 +32,32 @@ function revalidateBlog(slug?: string) {
 /**
  * Public: published list (lite — no markdown bodies).
  * Auth: ?includeAll=true returns full rows for CMS.
+ * Auth: ?id=123 returns single full article (editor on-demand).
  */
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const includeAll = searchParams.get('includeAll') === 'true';
+    const idParam = searchParams.get('id');
+
+    if (idParam) {
+      const id = Number.parseInt(idParam, 10);
+      if (!Number.isFinite(id)) {
+        return NextResponse.json({ error: 'Invalid id' }, { status: 400 });
+      }
+      const cookieStore = await cookies();
+      const sessionCookie = cookieStore.get('auth_session');
+      const user = await requireAllowedSession(sessionCookie?.value);
+      if (!user) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      }
+      const { getArticleById } = await import('@/lib/blog-service');
+      const article = await getArticleById(id);
+      if (!article) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+      return NextResponse.json(article, {
+        headers: { 'Cache-Control': 'private, no-store' },
+      });
+    }
 
     if (includeAll) {
       const cookieStore = await cookies();

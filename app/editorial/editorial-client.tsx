@@ -2,21 +2,34 @@
 
 import { Component, useState, useEffect, type ErrorInfo, type ReactNode } from 'react';
 import { createPortal } from 'react-dom';
-import * as motion from 'motion/react-client';
+import dynamic from 'next/dynamic';
+import { motion } from 'motion/react';
 import { AnimatePresence } from 'motion/react';
 import {
   Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
   Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2,
 } from 'lucide-react';
-import { Article } from '@/lib/blog-service';
+import type { Article, ArticleLite } from '@/lib/blog-service';
 import { avatarForSession, type UserSession } from '@/lib/auth';
-import { renderMarkdown } from '@/lib/markdown';
 import Link from 'next/link';
 import { CATEGORIES as CATEGORIES_LIST } from '@/lib/categories';
 import { renderIllustration } from '@/components/render-illustration';
-import { XStudioClient } from './x-studio-client';
 import { siteConfig } from '@/lib/site-config';
+
+const XStudioClient = dynamic(() => import('./x-studio-client').then((m) => m.XStudioClient), {
+  ssr: false,
+  loading: () => (
+    <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
+      <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
+      <p className="text-sm">Loading queue…</p>
+    </div>
+  ),
+});
+const MarkdownPreview = dynamic(
+  () => import('@/components/editor/markdown-preview').then((m) => m.MarkdownPreview),
+  { ssr: false, loading: () => <p className="text-sm text-[var(--atelier-faint)] italic">Loading preview…</p> }
+);
 
 /** Keep blog CMS usable if X To-Do throws — avoid full-page error boundary. */
 class XStudioErrorBoundary extends Component<
@@ -63,7 +76,7 @@ const ILLUSTRATIONS_LIST = [
 ] as const;
 
 interface EditorialClientProps {
-  initialArticles: Article[];
+  initialArticles: ArticleLite[];
   user: UserSession;
   /** From server searchParams — never sync URL during render/mount via history API */
   initialWorkspace?: 'blog' | 'x';
@@ -135,20 +148,15 @@ function ArticleCard({
   isDeletingId,
   onPreview,
 }: {
-  post: Article;
+  post: ArticleLite;
   index: number;
-  onEdit: (a: Article) => void;
+  onEdit: (a: ArticleLite) => void;
   onDelete: (id: number) => void;
   isDeletingId: number | null;
   onPreview: (type: string, url?: string) => void;
 }) {
   return (
-    <motion.article
-      layout
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.98 }}
-      transition={{ duration: 0.35, delay: Math.min(index * 0.04, 0.28), ease: [0.16, 1, 0.3, 1] }}
+    <article
       className="group atelier-card p-4 sm:p-5 flex flex-col sm:flex-row gap-5 sm:items-center hover:shadow-[var(--atelier-shadow)] transition-shadow duration-300"
     >
       <div className="relative shrink-0 w-full sm:w-[148px] h-[110px] sm:h-[96px] rounded-[1.25rem] overflow-hidden border border-[var(--atelier-line)] bg-[var(--atelier-paper)] shadow-inner">
@@ -215,7 +223,7 @@ function ArticleCard({
           {isDeletingId === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
         </button>
       </div>
-    </motion.article>
+    </article>
   );
 }
 
@@ -227,7 +235,7 @@ export function EditorialClient({
   initialWorkspace = 'blog',
 }: EditorialClientProps) {
   const workspace = initialWorkspace;
-  const [articles, setArticles] = useState<Article[]>(initialArticles);
+  const [articles, setArticles] = useState<ArticleLite[]>(initialArticles);
   const [searchQuery, setSearchQuery] = useState('');
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -259,6 +267,7 @@ export function EditorialClient({
   const [isAiFilling, setIsAiFilling] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [previewItem, setPreviewItem] = useState<{ type: string; url?: string } | null>(null);
+  const [metaProvider, setMetaProvider] = useState<'meta' | 'openrouter'>('meta');
   const [mounted, setMounted] = useState(false);
   const [autoGenerateCoverImage, setAutoGenerateCoverImage] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
@@ -464,7 +473,7 @@ export function EditorialClient({
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: formContent }),
+        body: JSON.stringify({ content: formContent, provider: metaProvider }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to auto-fill metadata.');
@@ -591,19 +600,36 @@ export function EditorialClient({
     setGeneratedImagePrompt('');
   };
 
-  const startEditArticle = (article: Article) => {
-    setFormTitle(article.title);
-    setFormSlug(article.slug);
-    setFormExcerpt(article.excerpt);
-    setFormCategories(article.categories);
-    setFormIllustration(article.illustrationType);
-    setFormTakeaways(article.takeaways.length > 0 ? article.takeaways : ['']);
-    setFormContent(article.content);
-    setFormFeatured(!!article.featured);
-    setFormStatus(article.status || 'published');
-    setFormCoverImage(article.coverImage || '');
-    setEditingArticle(article);
+  const startEditArticle = async (lite: ArticleLite) => {
+    setFormTitle(lite.title);
+    setFormSlug(lite.slug);
+    setFormExcerpt(lite.excerpt);
+    setFormCategories(lite.categories);
+    setFormIllustration(lite.illustrationType);
+    setFormFeatured(!!lite.featured);
+    setFormStatus(lite.status || 'published');
+    setFormCoverImage(lite.coverImage || '');
     setGeneratedImagePrompt('');
+    setEditingArticle({ id: lite.id } as Partial<Article>);
+    try {
+      const res = await fetch(`/api/blog?id=${lite.id}`, { credentials: 'include' });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load article');
+      const full = data as Article;
+      setFormTitle(full.title);
+      setFormSlug(full.slug);
+      setFormExcerpt(full.excerpt);
+      setFormCategories(full.categories);
+      setFormIllustration(full.illustrationType);
+      setFormTakeaways(full.takeaways.length > 0 ? full.takeaways : ['']);
+      setFormContent(full.content);
+      setFormFeatured(!!full.featured);
+      setFormStatus(full.status || 'published');
+      setFormCoverImage(full.coverImage || '');
+      setEditingArticle(full);
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : 'Failed to load article');
+    }
   };
 
   const handleTitleChange = (val: string) => {
@@ -675,8 +701,20 @@ export function EditorialClient({
       }
       localStorage.removeItem('edudojo_draft_autosave');
       setHasBackupDraft(false);
-      const refresh = await fetch('/api/blog?includeAll=true', { credentials: 'include' });
-      if (refresh.ok) setArticles(await refresh.json());
+      const saved = await res.json();
+      const lite = saved.article ? (({ content: _c, takeaways: _t, ...rest }: Article) => rest)(saved.article as Article) as ArticleLite : null;
+      if (lite) setArticles((prev) => {
+        const idx = prev.findIndex((a) => a.id === lite.id);
+        if (idx >= 0) { const n = [...prev]; n[idx] = lite; return n; }
+        return [lite, ...prev].sort((a, b) => b.id - a.id);
+      });
+      else {
+        const refresh = await fetch('/api/blog?includeAll=true', { credentials: 'include' });
+        if (refresh.ok) {
+          const arr = (await refresh.json()) as Article[];
+          setArticles(arr.map(({ content: _c, takeaways: _t, ...rest }) => rest as ArticleLite));
+        }
+      }
       setEditingArticle(null);
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'Save failed');
@@ -697,8 +735,7 @@ export function EditorialClient({
         const err = await res.json();
         throw new Error(err.error || err.reason || 'Delete failed');
       }
-      const refresh = await fetch('/api/blog?includeAll=true', { credentials: 'include' });
-      if (refresh.ok) setArticles(await refresh.json());
+      setArticles((prev) => prev.filter((a) => a.id !== id));
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'Delete failed');
     } finally {
@@ -948,16 +985,29 @@ export function EditorialClient({
                       </h2>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
+                      <div className="flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50">
+                        {(['meta', 'openrouter'] as const).map((p) => (
+                          <button
+                            key={p}
+                            type="button"
+                            onClick={() => setMetaProvider(p)}
+                            className={`px-3 py-1.5 rounded-full text-[0.65rem] font-bold uppercase tracking-wide transition-colors ${
+                              metaProvider === p
+                                ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
+                                : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
+                            }`}
+                            title={p === 'meta' ? 'Muse Spark (default)' : 'OpenRouter'}
+                          >
+                            {p === 'meta' ? 'Meta' : 'OpenRouter'}
+                          </button>
+                        ))}
+                      </div>
                       <button
                         type="button"
                         onClick={handleAiFill}
                         disabled={isAiFilling || isGeneratingImage}
                         className="atelier-btn atelier-btn-violet disabled:opacity-50"
-                        title={
-                          autoGenerateCoverImage
-                            ? 'Metadata + prompt + Grok image'
-                            : 'Metadata + copyable cover prompt only'
-                        }
+                        title={`${metaProvider === 'meta' ? 'Meta' : 'OpenRouter'} · ${autoGenerateCoverImage ? 'Metadata + prompt + Grok image' : 'Metadata + copyable cover prompt only'}`}
                       >
                         <Sparkles className={`w-4 h-4 ${isAiFilling ? 'animate-spin' : ''}`} />
                         {isAiFilling ? 'Curating…' : 'AI Fill'}
@@ -1318,7 +1368,7 @@ export function EditorialClient({
                       </div>
                       <div className="flex-grow overflow-y-auto">
                         {formContent ? (
-                          <div className="text-left">{renderMarkdown(formContent)}</div>
+                          <div className="text-left"><MarkdownPreview content={formContent} /></div>
                         ) : (
                           <p className="text-sm text-[var(--atelier-faint)] italic">The page is blank — write to see light.</p>
                         )}

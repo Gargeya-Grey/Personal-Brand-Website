@@ -15,7 +15,8 @@ interface Metadata {
   coverImage?: string;
 }
 
-// Robust JSON extraction helper
+type Provider = 'meta' | 'openrouter';
+
 function parseJSONFromLLM(content: string) {
   try {
     return JSON.parse(content);
@@ -25,7 +26,6 @@ function parseJSONFromLLM(content: string) {
   }
 }
 
-// Call OpenRouter API helper
 async function callOpenRouter(apiKey: string, model: string, systemPrompt: string, userContent: string, jsonFormat: boolean = true) {
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
@@ -56,11 +56,77 @@ async function callOpenRouter(apiKey: string, model: string, systemPrompt: strin
     throw new Error('Failed to receive completion content from OpenRouter.');
   }
 
-  return content;
+  return content as string;
 }
 
+async function callMeta(apiKey: string, model: string, systemPrompt: string, userContent: string, _jsonFormat: boolean = true) {
+  const response = await fetch('https://api.meta.ai/v1/responses', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: model,
+      input: [
+        { role: 'system', content: [{ type: 'input_text', text: systemPrompt }] },
+        { role: 'user', content: [{ type: 'input_text', text: userContent }] },
+      ],
+      stream: false,
+    })
+  });
 
-// Programmatic verification rules
+  if (!response.ok) {
+    const errorText = await response.text();
+    throw new Error(`Meta API returned error: ${errorText}`);
+  }
+
+  const data = await response.json();
+
+  let content: string | null = null;
+
+  if (typeof data.output_text === 'string' && data.output_text.trim()) {
+    content = data.output_text;
+  } else if (typeof data.outputText === 'string' && data.outputText.trim()) {
+    content = data.outputText;
+  } else if (Array.isArray(data.output)) {
+    const pieces: string[] = [];
+    for (const item of data.output) {
+      if (item?.content && Array.isArray(item.content)) {
+        for (const c of item.content) {
+          if (typeof c?.text === 'string' && c.text.trim()) pieces.push(c.text);
+          else if (typeof c?.output_text === 'string' && c.output_text.trim()) pieces.push(c.output_text);
+        }
+      } else if (typeof item?.text === 'string' && item.text.trim()) {
+        pieces.push(item.text);
+      }
+    }
+    if (pieces.length) content = pieces.join('\n');
+    if (!content) {
+      const maybe = data.output?.[0]?.content?.find((c: any) => c?.type === 'output_text')?.text;
+      if (typeof maybe === 'string' && maybe.trim()) content = maybe;
+    }
+  }
+
+  if (!content && typeof data.content === 'string') content = data.content;
+  if (!content && typeof data.text === 'string') content = data.text;
+  if (!content && typeof data.response === 'string') content = data.response;
+  if (!content && data.choices?.[0]?.message?.content) content = data.choices[0].message.content;
+  if (!content && data.data?.choices?.[0]?.message?.content) content = data.data.choices[0].message.content;
+  if (!content && typeof data.result === 'string') content = data.result;
+
+  if (!content || !content.trim()) {
+    throw new Error('Failed to receive completion content from Meta.');
+  }
+
+  return content.trim();
+}
+
+function resolveProvider(requested?: string): Provider {
+  const raw = (requested || process.env.AI_METADATA_PROVIDER || 'meta').toString().toLowerCase().trim();
+  return raw === 'openrouter' ? 'openrouter' : 'meta';
+}
+
 function runProgrammaticValidation(meta: Partial<Metadata>): string[] {
   const issues: string[] = [];
   
@@ -109,7 +175,6 @@ function runProgrammaticValidation(meta: Partial<Metadata>): string[] {
   return issues;
 }
 
-// Programmatic correction fallback
 function applyProgrammaticCorrections(meta: Partial<Metadata>): Metadata {
   const corrected: Metadata = {
     title: meta.title || 'Untitled Blog Post',
@@ -161,7 +226,6 @@ function applyProgrammaticCorrections(meta: Partial<Metadata>): Metadata {
 
 export async function POST(request: Request) {
   try {
-    // 1. Authenticate Request (allowlisted Google session only)
     const cookieStore = await cookies();
     const sessionCookie = cookieStore.get('auth_session');
     const user = await requireAllowedSession(sessionCookie?.value);
@@ -169,25 +233,40 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    // 2. Parse request body
-    // Image generation is never done here — only metadata + imagePrompt.
-    // Client optionally calls /api/ai/generate-cover when user enables "+ Grok image".
-    const { content } = await request.json();
+    const body = await request.json().catch(() => ({}));
+    const content: string | undefined = body.content;
+    const requestedProvider: string | undefined = body.provider;
     if (!content) {
       return NextResponse.json({ error: 'Missing content body' }, { status: 400 });
     }
 
-    // 3. Check OpenRouter API Key
-    const apiKey = process.env.OPENROUTER_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({
-        error: 'OpenRouter API Key (OPENROUTER_API_KEY) is not configured in the server environment. Please configure it in your .env file.'
-      }, { status: 500 });
+    const provider = resolveProvider(requestedProvider);
+
+    let apiKey: string | undefined;
+    let model: string;
+    if (provider === 'meta') {
+      apiKey = process.env.MODEL_API_KEY;
+      if (!apiKey) {
+        return NextResponse.json({
+          error: 'Meta API key is not configured. Set MODEL_API_KEY in your .env file.'
+        }, { status: 500 });
+      }
+      model = process.env.META_MODEL || 'muse-spark-1.2';
+    } else {
+      apiKey = process.env.OPENROUTER_API_KEY;
+      if (!apiKey) {
+        return NextResponse.json({
+          error: 'OpenRouter API Key (OPENROUTER_API_KEY) is not configured in the server environment. Please configure it in your .env file.'
+        }, { status: 500 });
+      }
+      model = process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
     }
 
-    const model = process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+    const callLLM = (systemPrompt: string, userContent: string, jsonFormat: boolean = true) =>
+      provider === 'meta'
+        ? callMeta(apiKey as string, model, systemPrompt, userContent, jsonFormat)
+        : callOpenRouter(apiKey as string, model, systemPrompt, userContent, jsonFormat);
 
-    // 4. Prompts definition
     const generatorSystemPrompt = `You are an expert technical blog editor and AI metadata generator.
 Your job is to read the markdown blog content and generate highly accurate metadata fields in JSON format.
 You must return a raw JSON object matching the schema below (with no markdown code block formatting or backticks around it):
@@ -254,8 +333,7 @@ Return the final corrected metadata as a JSON object matching the original schem
   "illustrationType": "..."
 }`;
 
-    // 5. Run Step 1: Generator LLM call
-    let generatedRaw = await callOpenRouter(apiKey, model, generatorSystemPrompt, content, true);
+    let generatedRaw = await callLLM(generatorSystemPrompt, content, true);
     let meta: Partial<Metadata>;
     try {
       meta = parseJSONFromLLM(generatedRaw);
@@ -263,15 +341,11 @@ Return the final corrected metadata as a JSON object matching the original schem
       meta = {};
     }
 
-    // 6. Run Step 2: Programmatic checks
     let progIssues = runProgrammaticValidation(meta);
 
-    // 7. Run Step 2 (Cont.): LLM Evaluator agent call
     let evalJson = { isValid: true, feedback: '' };
     try {
-      const evaluatorRaw = await callOpenRouter(
-        apiKey,
-        model,
+      const evaluatorRaw = await callLLM(
         evaluatorSystemPrompt,
         `Original Content:\n${content}\n\nGenerated JSON:\n${JSON.stringify(meta, null, 2)}`,
         true
@@ -281,7 +355,6 @@ Return the final corrected metadata as a JSON object matching the original schem
       console.error('LLM Evaluator call failed, falling back to programmatic checks only:', err);
     }
 
-    // Determine if refinement is needed
     const needsRefinement = !evalJson.isValid || progIssues.length > 0;
     let finalMeta: Metadata;
 
@@ -292,9 +365,7 @@ Return the final corrected metadata as a JSON object matching the original schem
       ].join('\n');
 
       try {
-        const refinerRaw = await callOpenRouter(
-          apiKey,
-          model,
+        const refinerRaw = await callLLM(
           refinerSystemPrompt,
           `Original Content:\n${content}\n\nGenerated JSON:\n${JSON.stringify(meta, null, 2)}\n\nFeedback:\n${allFeedback}`,
           true
@@ -315,7 +386,6 @@ Return the final corrected metadata as a JSON object matching the original schem
       finalMeta = meta as Metadata;
     }
 
-    // 8. Generate optimized image prompt (actual image generation is decoupled to /api/ai/generate-cover)
     let imagePrompt: string | null = null;
     if (finalMeta.title) {
       try {
@@ -327,7 +397,6 @@ Return the final corrected metadata as a JSON object matching the original schem
           designSpec = 'Minimalist, editorial, academic authority, tech/AI motif. Use Slate background with Algorithmic Mint highlights.';
         }
 
-        // Generate a detailed visual prompt dynamically using the LLM for high-context images
         const promptOptimizerSystem = `You are a professional art director and visual designer.
 Your task is to convert the title and summary of a technical blog post into a highly detailed, visually descriptive prompt for a 3D/editorial image generator.
 You must construct a single descriptive prompt paragraph that will produce an image representing the core concept of the blog post.
@@ -347,7 +416,7 @@ Visual Brand Guidelines:
 ${designSpec}`;
 
         try {
-          const rawPrompt = await callOpenRouter(apiKey, model, promptOptimizerSystem, promptOptimizerUser, false);
+          const rawPrompt = await callLLM(promptOptimizerSystem, promptOptimizerUser, false);
           imagePrompt = rawPrompt.trim();
         } catch (promptErr) {
           console.error('Failed optimizing cover image prompt, falling back to static prompt:', promptErr);
@@ -358,9 +427,10 @@ ${designSpec}`;
       }
     }
 
-    // 9. Return final response
     return NextResponse.json({ 
       success: true, 
+      provider,
+      model,
       metadata: finalMeta,
       imagePrompt
     });
