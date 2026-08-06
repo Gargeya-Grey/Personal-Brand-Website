@@ -251,7 +251,7 @@ export async function POST(request: Request) {
           error: 'Meta API key is not configured. Set MODEL_API_KEY in your .env file.'
         }, { status: 500 });
       }
-      model = process.env.META_MODEL || 'muse-spark-1.2';
+      model = process.env.META_MODEL || 'muse-spark-1.2-contributor';
     } else {
       apiKey = process.env.OPENROUTER_API_KEY;
       if (!apiKey) {
