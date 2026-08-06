@@ -21,7 +21,29 @@ source fetch (grounding)
     → merge-x-pack
 ```
 
-Scouts **must** write the score honestly. Inflating scores is a system failure — structural heuristics in `scripts/score-x-drafts.mjs` will still fail sludge, monotony, and empty hooks.
+Scouts **must** write the score honestly. Inflating scores is a system failure — structural heuristics in `scripts/score-x-drafts.mjs` will still fail sludge, monotony, **post-like replies**, and empty hooks.
+
+---
+
+## Reply ≠ post (hard split — see voice file)
+
+| | **Reply / quote** | **Original (short / flagship)** |
+|--|-------------------|----------------------------------|
+| **Job** | Talk *to* OP about *their* post | Talk *from* Gargeya — standalone brand piece |
+| **Voice** | `you` / `this` / `yeah` / `love this` / reactive | Own thesis, scene, practice, values letter |
+| **Fails if** | Reads fine with the source deleted (post in disguise) | Reads like a comment on someone else's thread |
+| **Auto gate** | `score-x-drafts.mjs` fails post-like replies | Soft check: original shouldn't open like a reply to “you” only |
+
+### How to score replies for this
+
+- **voiceMatch / relatability / humanTexture** must assume conversational second-person energy.  
+- If the body is a polished standalone thesis, **cap voiceMatch ≤ 8** and **humanTexture ≤ 6** until rewritten — total will rarely hit 90 honestly.  
+- Prefer: “yeah love this framing — …” over “Open weights are the headline. The boring open infra…”
+
+### Agent self-check (replies)
+1. Delete the source URL from your mind. Does the text still feel like a complete blog take? → rewrite.  
+2. Does line 1 respond to *them*? → good.  
+3. Would this work as his own original with zero edits? → fail reply shape.
 
 ---
 
@@ -33,14 +55,14 @@ Score each dimension, then **sum**. Do not average then multiply — use the poi
 |-----|-----|-------------------------|
 | **lengthFit** | 12 | Right size for the room. Micro when a nod is enough; short when a take is enough; long only if the source earns it. Not a wall of text for a thin post. Not a one-word “nice” on a deep thesis. |
 | **clarity** | 15 | One clear idea. Easy to parse once. No fog, no stacked abstractions, no “as an AI / in today’s landscape.” |
-| **hook** | 15 | First line earns the next. Stops the scroll in a thread. Not a throat-clear (“I think it’s interesting that…”). |
+| **hook** | 15 | First line earns the next. Stops the scroll in a thread. Not a throat-clear (“I think it’s interesting that…”). **Replies:** hook is reactive (responds to OP), not a cold headline. |
 | **funRead** | 12 | Pleasant to read — rhythm, surprise, light wit, or a clean punch. “Fun” ≠ forced jokes. Serious can score high if it’s vivid and sharp. |
-| **relatability** | 15 | Feels like a person who gets the room. Concrete, lived, “yeah that’s real.” Not abstract essay-speak. |
-| **voiceMatch** | 15 | Sounds like @GargeyaS (voice file): imperfect English OK, values spine, Venn angle, **not** ghostwriter LinkedIn. Matches chosen **shape** (blunt / values jab / micro / etc.). |
-| **humanTexture** | 12 | Human signals: warmth, bluntness, emotion, dry humor, small imperfection, optional light pun **if natural**. Not sterile parallel AI prose. Not emoji spam. |
+| **relatability** | 15 | Feels like a person who gets the room. Concrete, lived, “yeah that’s real.” Not abstract essay-speak. **Replies:** in *their* room. |
+| **voiceMatch** | 15 | Sounds like @GargeyaS (voice file). **Replies must sound like replies** (conversational, second-person). Standalone thesis voice → low score. |
+| **humanTexture** | 12 | Warmth, bluntness, emotion, dry humor, small imperfection. Not sterile parallel AI prose. |
 | **groundingFit** | 4 | Reply/QT: only claims supportable from the source. Original: no fake citations. |
 
-**Total = sum of the eight.** Cap each at its max. **Pass if total ≥ 90.**
+**Total = sum of the eight.** Cap each at its max. **Pass if total ≥ 90** *and* structural floors pass (including reply≠post).
 
 ### Optional bonus (does not break 100)
 If a natural pun, twist, or memorable line exists, put that energy into **funRead** / **humanTexture** — do not add a 9th number past 100.
@@ -94,6 +116,12 @@ Score **funRead / relatability / humanTexture** harder on originals — a 91 wit
 6. If total < 85: full rewrite or new source.  
 7. Write `quality` on the draft (schema below).
 
+### Reply vs post test (before you finalize a reply)
+
+- Ask: does this read like **someone replying to *this* post**, or like a standalone post that happens to sit under it?
+- Self-check: **delete the source mentally.** If the reply still reads perfectly — that's a red flag. Replies should sound conversational and second-person (`you`, `this`, `yeah`, `love this framing`) and pick up OP's words. Posts sound thesis-y and self-contained.
+- For replies scoring **humanTexture / relatability**, be stricter: a post-like cadence can't be 11–12 on those, even if the idea is good.
+
 ### Honesty bar
 - 95–100: you would post this as your best self that hour  
 - 90–94: strong, ship it  
@@ -145,6 +173,8 @@ Enforced in `scripts/score-x-drafts.mjs` / `validate-x-pack.mjs`:
 7. Reply/quote without status URL  
 8. Meta is object (must be URL string)  
 9. Forced “You're absolutely right — but” on **both** replies  
+10. **Post-like reply** — long/formal body without conversational reply markers (`you` / `yeah` / `this` / reactive openers); see `looksLikeStandalonePost`  
+11. **Reply wall** — more than ~4 short paragraphs or extreme length in a thread reply  
 
 ---
 
@@ -159,6 +189,8 @@ Enforced in `scripts/score-x-drafts.mjs` / `validate-x-pack.mjs`:
 | Voice low | Read voice file examples; add one imperfect cadence |
 | Texture low | One dry punch or human aside — not emoji wall |
 | Grounding low | Delete unearned names/numbers; re-fetch source |
+| **Post-like reply** | Second-person; open with `yeah` / `haha` / OP’s phrase; kill standalone headline |
+| **Reply wall** | ≤3 short beats; only the lines that answer *them* |
 
 ---
 
@@ -169,6 +201,8 @@ Enforced in `scripts/score-x-drafts.mjs` / `validate-x-pack.mjs`:
 - [ ] ≥2 shapes in the pack  
 - [ ] Grounding + evidence OK  
 - [ ] No sludge / monotony auto-fails  
+- [ ] **Replies sound like replies** (not standalone posts)  
+- [ ] **Originals standalone** (not pure “yeah this is so true”)  
 - [ ] You would post each body as Gargeya without cringe  
 
 ---

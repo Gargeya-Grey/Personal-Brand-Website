@@ -251,7 +251,12 @@ export async function POST(request: Request) {
           error: 'Meta API key is not configured. Set MODEL_API_KEY in your .env file.'
         }, { status: 500 });
       }
-      model = process.env.META_MODEL || 'muse-spark-1.2-contributor';
+      model = (process.env.META_MODEL || '').trim();
+      if (!model) {
+        return NextResponse.json({
+          error: 'META_MODEL is not configured. Set META_MODEL in your .env file (no hardcoded model fallback).'
+        }, { status: 500 });
+      }
     } else {
       apiKey = process.env.OPENROUTER_API_KEY;
       if (!apiKey) {
@@ -259,7 +264,12 @@ export async function POST(request: Request) {
           error: 'OpenRouter API Key (OPENROUTER_API_KEY) is not configured in the server environment. Please configure it in your .env file.'
         }, { status: 500 });
       }
-      model = process.env.OPENROUTER_MODEL || 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free';
+      model = (process.env.OPENROUTER_MODEL || '').trim();
+      if (!model) {
+        return NextResponse.json({
+          error: 'OPENROUTER_MODEL is not configured. Set OPENROUTER_MODEL in your .env file (no hardcoded model fallback).'
+        }, { status: 500 });
+      }
     }
 
     const callLLM = (systemPrompt: string, userContent: string, jsonFormat: boolean = true) =>

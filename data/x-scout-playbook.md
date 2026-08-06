@@ -77,6 +77,12 @@ Read `data/gargeya-voice.md` **Anti-monotony rule**.
 Across the 3 drafts in a pack: **≥2 different shapes** (micro / blunt / values jab / system-failure / systems line / resource share / rare thesis).  
 Do **not** stamp “You're absolutely right — but…” or “score the path” / mission close on every draft. Same mind, different clothes — or the feed looks AI-written.
 
+### Reply ≠ post (mandatory — enforced by validator)
+Replies must sound like **comments in someone's room** (second-person, `yeah` / `this` / reactive).  
+If a reply reads fine with the source deleted, it is a **post in disguise** → rewrite.  
+`scripts/score-x-drafts.mjs` **auto-fails** long/formal replies without conversational markers.  
+Originals stay **standalone** (not a reply-shaped “yeah this is so true” only).
+
 ### Quality gate (mandatory — pass ≥ 90)
 Full rubric: **`data/x-reply-quality.md`**.
 

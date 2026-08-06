@@ -48,6 +48,66 @@ const STAMP_OPENERS = [
 ];
 
 /**
+ * Conversational / second-person energy expected in replies (voice: reply ≠ post).
+ * Avoid bare "this"/"that" — they appear in formal posts ("that's what…").
+ */
+const REPLY_MARKERS =
+  /\b(you|your|you'?re|you'?ve|yeah|yep|yup|haha|hehe|lol|lmao|btw|huh|thanks|thank you|love this|this lands|this tracks|this clicked|this is so true|this really|this framing|you'?re right|i get you|fair point|same here|opened my eyes|for me —|for me -|genuinely helpful)\b/i;
+
+const REPLY_OPENERS =
+  /^(yeah|yep|yup|haha|lol|btw|oh|wow|damn|true|fair|exactly|love this|you |you'?re |thanks )/i;
+
+/** Formal standalone openers that smell like an original post, not a reply. */
+const POST_LIKE_OPENERS =
+  /^(open weights|ai is |the real |the fastest |when knowledge|access without|if writing|if models|students are |believe it or not|here'?s a quiet|here is a |the boring |outsourcing thinking|sandboxes,|model weights)/i;
+
+/**
+ * True if a reply/quote body reads like a standalone post (fails quality gate).
+ * Short micros can pass without many markers; longer bodies need reply energy.
+ * @param {string} body
+ */
+export function looksLikeStandalonePost(body) {
+  const text = String(body || '').trim();
+  if (!text) return false;
+
+  const hasMarkers = REPLY_MARKERS.test(text) || REPLY_OPENERS.test(text);
+  const paragraphs = text.split(/\n\s*\n/).filter((p) => p.trim());
+  const lines = text.split(/\n/).filter((l) => l.trim());
+
+  // Wall of text in a thread reply
+  if (paragraphs.length > 4 || text.length > 900) return true;
+
+  // Long formal thesis with no conversational glue
+  if (text.length >= 140 && !hasMarkers) return true;
+
+  // Medium length + post-like cold open + no markers
+  if (text.length >= 90 && POST_LIKE_OPENERS.test(text) && !hasMarkers) return true;
+
+  // Multi-paragraph essay without any reply markers
+  if (paragraphs.length >= 2 && text.length >= 160 && !hasMarkers) return true;
+
+  // Three+ dense lines, cold open, no reply energy
+  if (lines.length >= 3 && text.length >= 160 && !hasMarkers) return true;
+
+  return false;
+}
+
+/**
+ * Soft: original that is only a reply-to-someone with no standalone meat.
+ * @param {string} body
+ */
+export function looksLikeReplyDisguisedAsOriginal(body) {
+  const text = String(body || '').trim();
+  if (text.length < 40) return false;
+  // Almost only addressing "you" about "this post" without a self-contained claim
+  const onlyReactive =
+    /^(yeah|yep|haha|love this|this is so true|thanks for)/i.test(text) &&
+    text.length < 120 &&
+    !/\b(i |i'?m |we |students |schools |when |if you learn|try this|here'?s )\b/i.test(text);
+  return onlyReactive;
+}
+
+/**
  * @param {object} pack
  * @returns {{ ok: boolean, issues: string[], scores: object[] }}
  */
@@ -101,6 +161,7 @@ export function scorePack(pack) {
     const id = d.id || '?';
     const body = typeof d.body === 'string' ? d.body.trim() : '';
     const q = d.quality;
+    const kind = d.kind || 'short';
 
     if (!body) {
       issues.push(`[error] ${id}: empty body`);
@@ -111,6 +172,29 @@ export function scorePack(pack) {
     for (const re of SLUDGE) {
       if (re.test(body)) {
         issues.push(`[error] ${id}: AI sludge matched ${re}`);
+      }
+    }
+
+    // Reply ≠ post gate (voice + quality docs)
+    if (kind === 'reply' || kind === 'quote') {
+      if (looksLikeStandalonePost(body)) {
+        issues.push(
+          `[error] ${id}: post-like reply — rewrite to sound conversational/second-person (see voice Reply vs original; x-reply-quality.md). Body should fail if it works as a standalone post.`
+        );
+      }
+      const paras = body.split(/\n\s*\n/).filter((p) => p.trim());
+      if (paras.length > 4) {
+        issues.push(
+          `[error] ${id}: reply wall of text (${paras.length} paragraphs) — cut to ≤4 short beats for a busy thread`
+        );
+      }
+    }
+
+    if (kind === 'short' || kind === 'flagship') {
+      if (looksLikeReplyDisguisedAsOriginal(body)) {
+        issues.push(
+          `[warn] ${id}: original may be reply-shaped only — ensure standalone insight (pillar + soul)`
+        );
       }
     }
 
@@ -159,8 +243,8 @@ export function scorePack(pack) {
       );
     }
 
-    // soft heuristic: very long body with low claimed lengthFit is inconsistent
     const chars = body.length;
+    const paras = body.split(/\n\s*\n/).filter(Boolean).length;
     if (chars > 900 && (dims.lengthFit ?? 0) >= 10) {
       issues.push(
         `[warn] ${id}: body is very long (${chars} chars) but lengthFit is high — double-check fit`
@@ -168,6 +252,11 @@ export function scorePack(pack) {
     }
     if (chars < 15 && (d.kind === 'reply' || d.kind === 'short')) {
       issues.push(`[warn] ${id}: extremely short body (${chars} chars) — is hook enough?`);
+    }
+    if ((d.kind === 'reply' || d.kind === 'quote') && (paras > 4 || chars > 900)) {
+      const msg = `[error] ${id}: reply wall — ${paras} paras / ${chars} chars (reply should be readable in thread; cut to conversational length, see gargeya-voice.md Length guidance)`;
+      if (paras > 5 || chars > 1100) issues.push(msg);
+      else issues.push(msg.replace('[error]', '[warn]'));
     }
 
     scores.push({

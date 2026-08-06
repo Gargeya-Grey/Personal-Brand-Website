@@ -1,73 +1,74 @@
 {
-  "id": "pack-2026-08-06-t20",
+  "id": "pack-2026-08-06-t22",
   "date": "2026-08-06",
-  "title": "1h IST t20 · outsource-reputation + open infra table stakes + independent close-tab bullets",
-  "theme": "Writers outsourcing craft · open weights + boring open infra · independent AI-education practice",
-  "briefing": "t20 IST. 2 fresh Venn replies + 1 original. Shapes: values_jab, blunt_systems, practice_drop. Original pillar: AI education (close tab, 3 memory bullets) — NOT outsource-reputation or open-infra mashup.",
+  "title": "1h IST t22 · cognitive offload workday + prove-a-point pricing + independent access needs a room",
+  "theme": "Cognitive labour offload · cheap API bargain ends · independent access + human room",
+  "briefing": "t22 IST last slot. 2 Venn replies + 1 original. Shapes: values_jab, blunt_systems, hope_with_spine. Original pillar: accessibility (free tool ≠ room + human) — NOT offload-workday or API-price mashup.",
   "plannedMinutes": 18,
   "mvpDraftIds": [
-    "r-suzania-outsource-reputation",
-    "r-tencent-open-infra-stakes",
-    "short-close-tab-three-bullets"
+    "r-pahoyeck-cognitive-offload",
+    "r-rohanpaul-prove-point-pricing",
+    "short-access-needs-a-room"
   ],
   "signals": [
     {
-      "id": "sig-suzania-outsource",
-      "summary": "People whose livelihoods depend on writing and thinking advertise they will outsource both to AI — so they won't be worth reading later",
-      "whyItMatters": "Values + cognitive honesty Venn; craft reputation as practice not brand",
-      "url": "https://x.com/suzania/status/2085311493008970218",
+      "id": "sig-pahoyeck-offload",
+      "summary": "ChatGPT only a couple years old; people already offload cognitive labour so much they can't imagine a workday without gen AI",
+      "whyItMatters": "Perfect psych/cognition Venn — philosophy teacher; fresh heat",
+      "url": "https://x.com/PAHoyeck/status/2085387924644708827",
       "heat": 3,
-      "category": "writing-thinking-craft"
+      "category": "cognitive-offload"
     },
     {
-      "id": "sig-tencent-open-infra",
-      "summary": "Open weights are table stakes; also open boring infra: CubeSandbox, Agent Memory, upstreamed RoCE/DeepEP and FlexKV",
-      "whyItMatters": "Access + efficiency — model download ≠ runnable agent loop without open unglamorous layer",
-      "url": "https://x.com/TencentAI_News/status/2085349987890925665",
+      "id": "sig-rohanpaul-deepseek-price",
+      "summary": "DeepSeek API pricing going up significantly; cheapest near-frontier ~prove-a-point rates; demand broke the arrangement; open-weight demand high on Ollama",
+      "whyItMatters": "Access + efficiency — bargain API vs durable practice path",
+      "url": "https://x.com/rohanpaul_ai/status/2085338471812722818",
       "heat": 3,
-      "category": "open-access-infra"
+      "category": "access-pricing"
     }
   ],
   "skipList": [
-    "fchollet harness / ylecun DNA (used t19)",
-    "pgodfreysmith / OopsGuess (used t18)",
-    "anon_opin / Mollick (used t17)",
-    "shadcn free-copy (still viral but ~20h — prefer fresher mid-heat Venn)",
-    "ylecun open-research reply (0 heat, same thread as t19 DNA)",
-    "VraserX jobs-learn (strong thesis, older ~13h)",
-    "Socratic / speed-path / hidden-trail originals (recent)",
-    "Pack glue original blending craft reputation + open sandboxes"
+    "fchollet dual / shadcn (used t21)",
+    "suzania / Tencent (t20)",
+    "ylecun / fchollet harness (t19)",
+    "pgodfreysmith / OopsGuess (t18)",
+    "anon_opin / Mollick (t17)",
+    "GavinBaker Cursor hybrid (thinner Venn; speculative next-iteration)",
+    "suchenzang drama dunk (off-brand)",
+    "autocomplete / close-tab / hidden-trail originals (recent)",
+    "Invented competitor model price claims beyond source"
   ],
   "sessions": [
     {
       "id": "sprint",
       "title": "Fresh replies",
       "maxMinutes": 12,
-      "description": "Two shapes — craft reputation values jab + open-infra blunt systems."
+      "description": "Two shapes — offload values jab + pricing blunt systems before window closes."
     },
     {
       "id": "core",
       "title": "One original",
       "maxMinutes": 6,
-      "description": "Independent AI-education practice; no reply collage."
+      "description": "Independent access + room insight; no reply collage."
     }
   ],
   "drafts": [
     {
-      "id": "r-suzania-outsource-reputation",
+      "id": "r-pahoyeck-cognitive-offload",
       "kind": "reply",
-      "label": "Reply · outsource craft reputation (values jab)",
-      "body": "If writing and thinking are your craft, announcing you'll outsource both is a strange long-term plan.\n\nReaders can feel when a mind left the room.\n\nTools can help. Turning \"I don't practice the thing I'm known for\" into a brand is a different choice — and yeah, it shows up later in the work.",
-      "meta": "https://x.com/suzania/status/2085311493008970218",
+      "label": "Reply · workday without the box (values jab)",
+      "body": "Two years without ChatGPT felt normal. Now a workday without it can feel impossible.\n\nThat's how fast cognitive offload becomes identity.\n\nUseful tools. Real risk: forgetting you used to finish the day with your own brain still in the chair.",
+      "meta": "https://x.com/PAHoyeck/status/2085387924644708827",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 60,
-      "why": "Grounded in livelihoods-on-writing/thinking + outsourcing = not worth reading; values jab, no invented stats.",
-      "tip": "Stay on craft + reputation + outsourcing thinking/writing only.",
+      "estimatedSeconds": 55,
+      "why": "Grounded in couple-years ChatGPT + cognitive labour offload + can't imagine workday without it.",
+      "tip": "Only main-post claims; do not invent study stats or student essay details from thread replies.",
       "postingWindow": "asap",
-      "targetHandle": "suzania",
+      "targetHandle": "PAHoyeck",
       "targetReach": "mid",
       "quality": {
         "total": 93,
@@ -82,25 +83,25 @@
           "humanTexture": 10,
           "groundingFit": 4
         },
-        "notes": "Opens on craft contradiction; mind-left-the-room human; tools vs brand distinction grounded in source thrust.",
+        "notes": "Two-years hook mirrors source pace; identity offload; human chair line without Alzheimer's-style invent.",
         "attempts": 1
       }
     },
     {
-      "id": "r-tencent-open-infra-stakes",
+      "id": "r-rohanpaul-prove-point-pricing",
       "kind": "reply",
-      "label": "Reply · open infra beyond weights (blunt systems)",
-      "body": "Open weights are the headline. The boring open infra is what actually makes them usable.\n\nSandboxes, shared agent memory, KV offload — that's what turns \"I can download a model\" into \"a student or solo builder can actually run a loop.\"\n\nTable stakes moved. Next fight is who ships the unglamorous layer for free.",
-      "meta": "https://x.com/TencentAI_News/status/2085349987890925665",
+      "label": "Reply · prove-a-point pricing ends (blunt systems)",
+      "body": "Prove-a-point API pricing works until demand shows up.\n\nWhen the cheapest near-frontier lane gets \"significantly\" more expensive, open weights and self-host stop looking like hobbies.\n\nAccess isn't the launch sticker. It's what still lets a builder practice after the bargain ends.",
+      "meta": "https://x.com/rohanpaul_ai/status/2085338471812722818",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
       "estimatedSeconds": 60,
-      "why": "Grounded in open-weights-as-table-stakes + open sandboxes/memory/upstream KV/RoCE; access×efficiency angle.",
-      "tip": "Don't invent benchmark numbers; only infra categories named in post.",
+      "why": "Grounded in significant price rise + cheapest near-frontier + demand broke prove-a-point rates + open-weight/Ollama demand context.",
+      "tip": "Avoid stacking unverified competitor model names; stay on pricing/demand/access.",
       "postingWindow": "asap",
-      "targetHandle": "TencentAI_News",
+      "targetHandle": "rohanpaul_ai",
       "targetReach": "mid",
       "quality": {
         "total": 92,
@@ -115,25 +116,25 @@
           "humanTexture": 11,
           "groundingFit": 4
         },
-        "notes": "Headline vs boring infra hook; student/solo builder access without inventing product claims; table stakes from source.",
+        "notes": "Prove-a-point hook from source; significantly quoted; access = post-bargain practice without sludge unlock.",
         "attempts": 1
       }
     },
     {
-      "id": "short-close-tab-three-bullets",
+      "id": "short-access-needs-a-room",
       "kind": "short",
-      "label": "Short · close the tab, three ugly bullets",
-      "body": "Hope without a practice is just mood.\n\nOne rule I've been trying: after any AI answer, close the tab and write three bullets from memory before I accept it.\n\nUgly bullets. Half wrong. Mine.\n\nThat's still where the learning lives — not in the polished paragraph the model already finished for me.",
+      "label": "Short · free tool still needs a room",
+      "body": "A free model on a phone still fails if a student never gets a quiet hour and one human who asks, \"Show me how you thought.\"\n\nAccess is necessary. It isn't sufficient.\n\nThe room around the tool is half the education — and that's the part we keep skipping because it's harder to ship.",
       "status": "ready",
       "priority": 2,
       "intent": "authority",
       "session": "core",
       "estimatedSeconds": 70,
-      "why": "Independent AI-education pillar — memory-first practice after AI; zero mashup of craft-reputation outsourcing or open-infra table stakes.",
+      "why": "Independent accessibility pillar — tool + room + human; zero mashup of workday offload identity or API prove-a-point pricing.",
       "postingWindow": "anytime",
       "quality": {
         "total": 94,
-        "shape": "practice_drop",
+        "shape": "hope_with_spine",
         "dimensions": {
           "lengthFit": 12,
           "clarity": 15,
@@ -144,14 +145,14 @@
           "humanTexture": 10,
           "groundingFit": 4
         },
-        "notes": "Independent insight: three closed-tab memory bullets beat accepting polished AI text for real learning. Bookmark-worthy practice; soul on ugly/half-wrong; not pack collage.",
+        "notes": "Independent insight: access without quiet hour + human 'show me how you thought' is incomplete education. Bookmark/RT for teachers; soul + spine; not pack collage.",
         "attempts": 1
       }
     }
   ],
   "schedule": [
-    "1) Reply suzania outsource craft reputation (asap)",
-    "2) Reply Tencent open infra / table stakes",
-    "3) Post original close-tab three bullets practice"
+    "1) Reply PAHoyeck cognitive offload workday (asap — last IST slot)",
+    "2) Reply rohanpaul prove-a-point pricing",
+    "3) Post original access-needs-a-room"
   ]
 }

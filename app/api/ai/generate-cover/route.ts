@@ -5,9 +5,8 @@ import { supabase, isSupabaseConfigured } from '@/lib/supabase';
 import fs from 'fs/promises';
 import path from 'path';
 
-// Helper to call OpenRouter for image generation
-async function generateCoverImage(apiKey: string, prompt: string): Promise<string | null> {
-  const imageModel = process.env.IMAGE_GENERATION_MODEL || 'x-ai/grok-imagine-image-quality';
+// Helper to call OpenRouter for image generation — model id must come from env only
+async function generateCoverImage(apiKey: string, prompt: string, imageModel: string): Promise<string | null> {
   const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
     method: 'POST',
     headers: {
@@ -112,16 +111,22 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Missing required field: prompt' }, { status: 400 });
     }
 
-    // 3. Check OpenRouter API Key
+    // 3. Check OpenRouter API Key + image model (from .env only — no hardcoded model ids)
     const apiKey = process.env.OPENROUTER_API_KEY;
     if (!apiKey) {
       return NextResponse.json({
         error: 'OpenRouter API Key (OPENROUTER_API_KEY) is not configured in the server environment.'
       }, { status: 500 });
     }
+    const imageModel = (process.env.IMAGE_GENERATION_MODEL || '').trim();
+    if (!imageModel) {
+      return NextResponse.json({
+        error: 'IMAGE_GENERATION_MODEL is not configured. Set it in your .env file (no hardcoded model fallback).'
+      }, { status: 500 });
+    }
 
     // 4. Generate the image
-    const base64Url = await generateCoverImage(apiKey, prompt);
+    const base64Url = await generateCoverImage(apiKey, prompt, imageModel);
     if (!base64Url) {
       return NextResponse.json({ error: 'Image generation failed or returned no image.' }, { status: 502 });
     }
