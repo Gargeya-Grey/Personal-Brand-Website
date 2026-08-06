@@ -46,8 +46,8 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
-/** Active 2h slots Asia/Kolkata (11–21). Legacy t00/t06/t12/t18 still accepted as ids. */
-const SCOUT_IST_SLOTS = [11, 13, 15, 17, 19, 21];
+/** Active 1h slots Asia/Kolkata (11–22). Legacy even-only / t00/t06/t12/t18 still accepted as ids. */
+const SCOUT_IST_SLOTS = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
 
 function istParts(now = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {
@@ -133,6 +133,7 @@ function normalize(input) {
       postingWindow: d.postingWindow || 'anytime',
       targetHandle: d.targetHandle,
       targetReach: d.targetReach,
+      quality: d.quality,
     };
   });
   return {

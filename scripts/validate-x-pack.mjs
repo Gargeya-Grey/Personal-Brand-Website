@@ -1,17 +1,21 @@
 /**
- * Validate a pack for scout bugs (meta shape, reply URLs, optional evidence map).
+ * Validate a pack for scout bugs (meta shape, reply URLs, optional evidence map)
+ * + quality gate (score ≥ 90) via score-x-drafts.mjs / data/x-reply-quality.md
  *
  * Usage:
  *   node scripts/validate-x-pack.mjs data/x-pack-today.json
  *   node scripts/validate-x-pack.mjs data/x-pack-today.json data/x-pack-evidence.json
+ *   node scripts/validate-x-pack.mjs data/x-pack-today.json data/x-pack-evidence.json --no-quality
  *
  * Evidence file (optional): { "https://x.com/.../status/123": "full source text..." }
  */
 import fs from 'fs';
 import path from 'path';
+import { scorePack } from './score-x-drafts.mjs';
 
 const packPath = process.argv[2] || 'data/x-pack-today.json';
-const evidencePath = process.argv[3];
+const evidencePath = process.argv[3] && !process.argv[3].startsWith('--') ? process.argv[3] : null;
+const skipQuality = process.argv.includes('--no-quality');
 
 const pack = JSON.parse(fs.readFileSync(path.resolve(packPath), 'utf8'));
 const evidence = evidencePath
@@ -89,13 +93,24 @@ for (const [url, ids] of byUrl) {
   }
 }
 
+// Quality gate (default on)
+if (!skipQuality) {
+  const q = scorePack(pack);
+  for (const s of q.scores) {
+    console.log(
+      `  quality ${s.pass ? 'PASS' : 'FAIL'} ${s.id}: ${s.total ?? '—'}/100 shape=${s.shape || '—'}`
+    );
+  }
+  for (const i of q.issues) issues.push(i);
+}
+
 const errors = issues.filter((i) => i.startsWith('[error]'));
 const warns = issues.filter((i) => i.startsWith('[warn]'));
 
 console.log(`Pack: ${pack.id || packPath}`);
 console.log(`Drafts: ${drafts.length}`);
 if (!issues.length) {
-  console.log('OK — no issues');
+  console.log('OK — no issues (grounding + quality)');
   process.exit(0);
 }
 for (const i of issues) console.log(i);

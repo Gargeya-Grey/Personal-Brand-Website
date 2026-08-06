@@ -1,107 +1,157 @@
 {
-  "id": "pack-2026-08-03-t19",
-  "date": "2026-08-03",
-  "title": "2h IST t19 · cheap AI vs thinking on your own · video models for learning experiences",
-  "theme": "When AI is cheap, owned thinking is the scarce skill · generative video can build learning experiences · still assess the path not the polish",
-  "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Slot t19 IST. No reuse of t13/t15/t17 handles.",
+  "id": "pack-2026-08-06-t20",
+  "date": "2026-08-06",
+  "title": "1h IST t20 · outsource-reputation + open infra table stakes + independent close-tab bullets",
+  "theme": "Writers outsourcing craft · open weights + boring open infra · independent AI-education practice",
+  "briefing": "t20 IST. 2 fresh Venn replies + 1 original. Shapes: values_jab, blunt_systems, practice_drop. Original pillar: AI education (close tab, 3 memory bullets) — NOT outsource-reputation or open-infra mashup.",
   "plannedMinutes": 18,
   "mvpDraftIds": [
-    "r-dcinvestor-think-on-own",
-    "r-umesh-video-ed",
-    "short-cheap-ai-scarce-thinking"
+    "r-suzania-outsource-reputation",
+    "r-tencent-open-infra-stakes",
+    "short-close-tab-three-bullets"
   ],
   "signals": [
     {
-      "id": "sig-dc-think",
-      "summary": "Riff on Edison cheap-electricity line: “We will make AI so cheap that only the rich will think on their own”",
-      "whyItMatters": "Center Venn — cognitive offloading / social psych of cheap answers × who keeps the skill of thinking",
-      "url": "https://x.com/DCinvestor/status/2084241092451402236",
+      "id": "sig-suzania-outsource",
+      "summary": "People whose livelihoods depend on writing and thinking advertise they will outsource both to AI — so they won't be worth reading later",
+      "whyItMatters": "Values + cognitive honesty Venn; craft reputation as practice not brand",
+      "url": "https://x.com/suzania/status/2085311493008970218",
       "heat": 3,
-      "category": "cognitive-behavior"
+      "category": "writing-thinking-craft"
     },
     {
-      "id": "sig-umesh-video-ed",
-      "summary": "Video models will revolutionize education; turn vision into a prompt and generate a learning experience that once needed an entire production team (demo with MiniMax H3)",
-      "whyItMatters": "AI-in-education — student-centric media production as scaffold for learning experiences",
-      "url": "https://x.com/umesh_ai/status/2084227244533411987",
+      "id": "sig-tencent-open-infra",
+      "summary": "Open weights are table stakes; also open boring infra: CubeSandbox, Agent Memory, upstreamed RoCE/DeepEP and FlexKV",
+      "whyItMatters": "Access + efficiency — model download ≠ runnable agent loop without open unglamorous layer",
+      "url": "https://x.com/TencentAI_News/status/2085349987890925665",
       "heat": 3,
-      "category": "ai-in-education"
+      "category": "open-access-infra"
     }
   ],
   "skipList": [
-    "Stale reply piles",
-    "Off-Venn crypto/politics/course spam",
-    "Reuse t13 chukwu Murphy; t15 cirnosad ItsmeAjayKV; t17 aaliya Iqra",
-    "Reuse jun_song bindureddy PearlWrap Primeagen karpathy",
-    "Invented Edison history beyond the quoted riff framing",
-    "Product spam / Edudojo dump"
+    "fchollet harness / ylecun DNA (used t19)",
+    "pgodfreysmith / OopsGuess (used t18)",
+    "anon_opin / Mollick (used t17)",
+    "shadcn free-copy (still viral but ~20h — prefer fresher mid-heat Venn)",
+    "ylecun open-research reply (0 heat, same thread as t19 DNA)",
+    "VraserX jobs-learn (strong thesis, older ~13h)",
+    "Socratic / speed-path / hidden-trail originals (recent)",
+    "Pack glue original blending craft reputation + open sandboxes"
   ],
   "sessions": [
     {
       "id": "sprint",
       "title": "Fresh replies",
       "maxMinutes": 12,
-      "description": "Two same-day Venn posts — post while energy is live."
+      "description": "Two shapes — craft reputation values jab + open-infra blunt systems."
     },
     {
       "id": "core",
       "title": "One original",
       "maxMinutes": 6,
-      "description": "One short Venn thesis."
+      "description": "Independent AI-education practice; no reply collage."
     }
   ],
   "drafts": [
     {
-      "id": "r-dcinvestor-think-on-own",
+      "id": "r-suzania-outsource-reputation",
       "kind": "reply",
-      "label": "Reply · thinking on your own should not be a luxury",
-      "body": "This line hits because it is almost true already.\n\nWe will make AI so cheap that only the rich will think on their own — unless education changes the incentive.\n\nIf the grade only rewards the polished last frame, outsourcing thinking is rational. Cheap answers + output-only assessment = cognitive offloading for everyone, not just the poor.\n\nMy take: make the scarce skill visible. Assess the path — what a student can defend without the model — and thinking on your own stops being a luxury brand.",
-      "meta": "https://x.com/DCinvestor/status/2084241092451402236",
+      "label": "Reply · outsource craft reputation (values jab)",
+      "body": "If writing and thinking are your craft, announcing you'll outsource both is a strange long-term plan.\n\nReaders can feel when a mind left the room.\n\nTools can help. Turning \"I don't practice the thing I'm known for\" into a brand is a different choice — and yeah, it shows up later in the work.",
+      "meta": "https://x.com/suzania/status/2085311493008970218",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 85,
-      "why": "Same-day high-signal one-liner on cheap AI vs owned thinking; 86 likes / ~10k views. Grounded only in his AI-so-cheap / think-on-their-own riff.",
-      "tip": "Copy & open first. Soft process-assessment bridge only. Do not invent Edison biography or economics beyond the parallel he set up.",
-      "postingWindow": "anytime",
-      "targetHandle": "DCinvestor",
-      "targetReach": "mid"
+      "estimatedSeconds": 60,
+      "why": "Grounded in livelihoods-on-writing/thinking + outsourcing = not worth reading; values jab, no invented stats.",
+      "tip": "Stay on craft + reputation + outsourcing thinking/writing only.",
+      "postingWindow": "asap",
+      "targetHandle": "suzania",
+      "targetReach": "mid",
+      "quality": {
+        "total": 93,
+        "shape": "values_jab",
+        "dimensions": {
+          "lengthFit": 12,
+          "clarity": 14,
+          "hook": 14,
+          "funRead": 11,
+          "relatability": 14,
+          "voiceMatch": 14,
+          "humanTexture": 10,
+          "groundingFit": 4
+        },
+        "notes": "Opens on craft contradiction; mind-left-the-room human; tools vs brand distinction grounded in source thrust.",
+        "attempts": 1
+      }
     },
     {
-      "id": "r-umesh-video-ed",
+      "id": "r-tencent-open-infra-stakes",
       "kind": "reply",
-      "label": "Reply · learning experiences not just answer videos",
-      "body": "This is the education use case I want more of.\n\nVideo models letting one person turn a vision into a learning experience that used to need a full production team — that is real access.\n\nBut the win is not only prettier content. It is when the media still forces the learner to notice, recall, and check themselves — not just watch a polished answer stream.\n\nStudent-centric means the path of understanding stays in the loop. Tools like this can scaffold that if we design for thinking, not only for the final clip.",
-      "meta": "https://x.com/umesh_ai/status/2084227244533411987",
+      "label": "Reply · open infra beyond weights (blunt systems)",
+      "body": "Open weights are the headline. The boring open infra is what actually makes them usable.\n\nSandboxes, shared agent memory, KV offload — that's what turns \"I can download a model\" into \"a student or solo builder can actually run a loop.\"\n\nTable stakes moved. Next fight is who ships the unglamorous layer for free.",
+      "meta": "https://x.com/TencentAI_News/status/2085349987890925665",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 85,
-      "why": "Same-day AI-ed demo; 77 likes / solid bookmarks. Claims limited to video models revolutionize education + vision→prompt→learning experience once needing production team.",
-      "tip": "Stay on education access + learning experience. Do not invent curriculum outcomes beyond what the post states. Soft process note only.",
-      "postingWindow": "anytime",
-      "targetHandle": "umesh_ai",
-      "targetReach": "mid"
+      "estimatedSeconds": 60,
+      "why": "Grounded in open-weights-as-table-stakes + open sandboxes/memory/upstream KV/RoCE; access×efficiency angle.",
+      "tip": "Don't invent benchmark numbers; only infra categories named in post.",
+      "postingWindow": "asap",
+      "targetHandle": "TencentAI_News",
+      "targetReach": "mid",
+      "quality": {
+        "total": 92,
+        "shape": "blunt_systems",
+        "dimensions": {
+          "lengthFit": 12,
+          "clarity": 14,
+          "hook": 14,
+          "funRead": 10,
+          "relatability": 13,
+          "voiceMatch": 14,
+          "humanTexture": 11,
+          "groundingFit": 4
+        },
+        "notes": "Headline vs boring infra hook; student/solo builder access without inventing product claims; table stakes from source.",
+        "attempts": 1
+      }
     },
     {
-      "id": "short-cheap-ai-scarce-thinking",
+      "id": "short-close-tab-three-bullets",
       "kind": "short",
-      "label": "Short · cheap tools, scarce owned thinking",
-      "body": "AI is getting cheaper and better at producing learning media.\n\nThat does not automatically make people better thinkers. It makes polished answers cheaper.\n\nThe scarce skill is still owned thinking — the path you can defend without the model. Assess that, or cheap AI just scales cognitive offloading.",
+      "label": "Short · close the tab, three ugly bullets",
+      "body": "Hope without a practice is just mood.\n\nOne rule I've been trying: after any AI answer, close the tab and write three bullets from memory before I accept it.\n\nUgly bullets. Half wrong. Mine.\n\nThat's still where the learning lives — not in the polished paragraph the model already finished for me.",
       "status": "ready",
       "priority": 2,
       "intent": "authority",
       "session": "core",
-      "estimatedSeconds": 40,
-      "why": "Original Venn thesis tying both replies; no fake citations.",
-      "postingWindow": "anytime"
+      "estimatedSeconds": 70,
+      "why": "Independent AI-education pillar — memory-first practice after AI; zero mashup of craft-reputation outsourcing or open-infra table stakes.",
+      "postingWindow": "anytime",
+      "quality": {
+        "total": 94,
+        "shape": "practice_drop",
+        "dimensions": {
+          "lengthFit": 12,
+          "clarity": 15,
+          "hook": 14,
+          "funRead": 11,
+          "relatability": 14,
+          "voiceMatch": 14,
+          "humanTexture": 10,
+          "groundingFit": 4
+        },
+        "notes": "Independent insight: three closed-tab memory bullets beat accepting polished AI text for real learning. Bookmark-worthy practice; soul on ugly/half-wrong; not pack collage.",
+        "attempts": 1
+      }
     }
   ],
   "schedule": [
-    "1) Reply DCinvestor (cheap AI / think on your own)",
-    "2) Reply umesh_ai (video models for learning experiences)",
-    "3) Post original short"
+    "1) Reply suzania outsource craft reputation (asap)",
+    "2) Reply Tencent open infra / table stakes",
+    "3) Post original close-tab three bullets practice"
   ]
 }

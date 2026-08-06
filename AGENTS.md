@@ -9,8 +9,10 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ## Owner goals (product)
 - Genuine **X growth** toward ~10k followers in ~3 months.
-- **2h IST scout cadence** (not 12h): every **2 hours from 11:00–21:00 IST** (slots 11,13,15,17,19,21); window ends ~22:00 IST. Pack shape **exactly 2 replies + 1 original** so replies hit **fresh/climbing** posts.
-- High **voice fidelity** (`data/gargeya-voice.md`); source **grounding** (one draft ↔ one real post; fetch before write).
+- **1h IST scout cadence**: every **1 hour from 11:00–22:00 IST** (slots t11…t22); pack shape **exactly 2 replies + 1 original** so replies hit **fresh/climbing** posts.
+- High **voice fidelity** (`data/gargeya-voice.md`): **anti-monotony**; **originals are independent brand posts** (soul + informative, never mashup of the two replies); follow-worthy pillars (AI ed, use cases, access, efficiency, psych/cognition, ethics/values, positivity-with-spine).
+- Source **grounding** for replies (one draft ↔ one real post).
+- **Quality gate:** every draft ≥ **90** (`data/x-reply-quality.md`); originals also pass bookmark/RT/soul tests.
 - **Topic Venn (not school-only):** social/learning/educational psychology + cognitive behavior + student-centric methods + AI-in-education + process assessment; **open-source AI as access + extreme efficiency** for all. Full map in `gargeya-voice.md` / scout heat queries in `x-scout-playbook.md`.
 - Laptop **Grok scout** → merge/ingest → **production Supabase** so live To-Do updates without waiting on git.
 - Blog CMS quality + perf (ISR/SSR, image priority, lazy canvas background).
@@ -30,13 +32,15 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### X content system
 | Piece | Role |
 | :--- | :--- |
-| `lib/x-content-model.ts` | Pack shape, **IST 2h ids** (`createRunPackId` / `scoutIstSlot` / `isScoutWindowOpen`), sanitize, draft URL helpers, `resolveMvpIds` (full mini-pack: 2R+1O), sessions |
+| `lib/x-content-model.ts` | Pack shape, **IST 1h ids** (`createRunPackId` / `scoutIstSlot` / `isScoutWindowOpen`), sanitize, draft URL helpers, `resolveMvpIds` (full mini-pack: 2R+1O), sessions |
 | `lib/x-content-service.ts` | Hydrate packs, meta normalization, Supabase row ↔ pack |
 | `lib/x-source-grounding.ts` | Grounding rules / helpers |
 | `app/api/x-content/*` | Read + ingest (`X_SCOUT_SECRET`) |
-| `scripts/validate-x-pack.mjs` | Validate pack + evidence |
-| `scripts/merge-x-pack.mjs` | Merge local JSON → remote (IST 2h-aware ids) |
-| `data/x-scout-playbook.md` | Scout SOPs: 2h IST, 2R+1O, grounding, Venn heat |
+| `scripts/validate-x-pack.mjs` | Validate pack + evidence + **quality ≥90** |
+| `scripts/score-x-drafts.mjs` | Quality gate (dimensions, monotony, sludge) |
+| `scripts/merge-x-pack.mjs` | Merge local JSON → remote (IST 1h-aware ids) |
+| `data/x-scout-playbook.md` | Scout SOPs: 1h IST, 2R+1O, grounding, Venn heat, quality |
+| `data/x-reply-quality.md` | Score rubric (pass ≥90) |
 | `data/gargeya-voice.md` | Voice + topic Venn + growth |
 | `data/sql/x_content_packs.sql` | Schema |
 | `data/sql/x_content_packs_wipe.sql` | Full wipe ritual (user runs in Supabase) |
@@ -61,12 +65,12 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ## Common Workflows
 
-### X scout → live To-Do (2h IST)
-1. Only during **11:00–21:59 IST**; else skip.
-2. Pack id via `createRunPackId()` → `pack-…-t11|t13|…|t21`.
+### X scout → live To-Do (1h IST)
+1. Only during **11:00–22:59 IST**; else skip.
+2. Pack id via `createRunPackId()` → `pack-…-t11` … `t22`.
 3. Scout per `data/x-scout-playbook.md` + voice (Venn + freshness).
-4. **2 grounded replies + 1 original short**; fetch each reply source first.
-5. Validate → `merge-x-pack` / ingest with secret → Supabase.
+4. **2 grounded replies + 1 original short**; fetch each reply source first; **score each ≥90** (rewrite loop).
+5. Validate (grounding + quality) → `merge-x-pack` / ingest with secret → Supabase.
 6. Optional: commit pack JSON for GitHub mirror (not required for live To-Do).
 7. User posts from CMS while threads are still hot.
 
@@ -81,9 +85,9 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - Uncommitted scout JSON + logo tweaks after a run are normal; live site uses Supabase.
 
 ### Durable scout schedule
-- Prefer **2h** interval with prompt: if outside IST 11–22, exit without packing; else run full 2R+1O scout + merge.
+- Prefer **1h** interval with prompt: if outside IST 11–22, exit without packing; else run full 2R+1O scout + merge.
 
 ## Session state (durable)
 - Voice refreshed from live X (2026-07-29); Topic Venn added.
-- Cadence switched from 12h / 8–10 replies → **2h IST / 2 replies + 1 original**.
+- Cadence: **1h IST / 2 replies + 1 original** (was 2h, then earlier 12h mega-packs).
 - Do not invent claims; grounding still non-negotiable.

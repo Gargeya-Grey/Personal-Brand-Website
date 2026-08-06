@@ -16,6 +16,43 @@ export type XSessionId = 'sprint' | 'core' | 'bonus';
 
 export type XPostingWindow = 'morning' | 'midday' | 'evening' | 'anytime';
 
+/** Per-draft quality gate — see data/x-reply-quality.md. Pass if total ≥ 90. */
+export interface XDraftQualityDimensions {
+  lengthFit: number;
+  clarity: number;
+  hook: number;
+  funRead: number;
+  relatability: number;
+  voiceMatch: number;
+  humanTexture: number;
+  groundingFit: number;
+}
+
+export interface XDraftQuality {
+  /** 0–100; must be ≥ 90 to ship */
+  total: number;
+  /** Shape from voice palette (values_jab, blunt, micro, …) */
+  shape?: string;
+  dimensions: XDraftQualityDimensions;
+  /** Why it passed / what was rewritten */
+  notes: string;
+  /** Rewrite attempts before pass */
+  attempts?: number;
+}
+
+export const QUALITY_PASS_SCORE = 90;
+
+export const QUALITY_DIMENSION_CAPS: Record<keyof XDraftQualityDimensions, number> = {
+  lengthFit: 12,
+  clarity: 15,
+  hook: 15,
+  funRead: 12,
+  relatability: 15,
+  voiceMatch: 15,
+  humanTexture: 12,
+  groundingFit: 4,
+};
+
 export interface XDraftItem {
   id: string;
   kind: XDraftKind;
@@ -47,6 +84,11 @@ export interface XDraftItem {
    * e.g. "viral" | "hyper" | "50k-followers" | "2k-likes" | "mid"
    */
   targetReach?: string;
+  /**
+   * Quality gate (required for new scout packs). total ≥ 90 to pass.
+   * See data/x-reply-quality.md
+   */
+  quality?: XDraftQuality;
 }
 
 export interface XSignalItem {
@@ -93,7 +135,7 @@ export const DEFAULT_SESSIONS: XSessionBlock[] = [
     title: 'Fresh replies',
     maxMinutes: 12,
     description:
-      '2h cadence: two highest-heat, still-climbing posts. Reply while the room is alive (not 12h later).',
+      '1h cadence: two highest-heat, still-climbing posts. Reply while the room is alive.',
   },
   {
     id: 'core',
@@ -106,13 +148,15 @@ export const DEFAULT_SESSIONS: XSessionBlock[] = [
     id: 'bonus',
     title: 'Bonus QT',
     maxMinutes: 5,
-    description: 'Usually skip on 2h packs — only if a third hot source is too good to miss.',
+    description: 'Usually skip on 1h packs — only if a third hot source is too good to miss.',
   },
 ];
 
-/** Scout runs every 2h, 11:00–21:00 Asia/Kolkata (last slot 21:00; day ends ~22:00 IST). */
+/** Scout runs every 1h, 11:00–22:00 Asia/Kolkata (slots t11…t22). */
 export const SCOUT_TIMEZONE = 'Asia/Kolkata';
-export const SCOUT_IST_SLOTS = [11, 13, 15, 17, 19, 21] as const;
+export const SCOUT_IST_SLOTS = [
+  11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
+] as const;
 
 export function defaultEstimatedSeconds(kind: XDraftKind): number {
   switch (kind) {
@@ -257,6 +301,32 @@ export function sanitizeDraft(raw: Partial<XDraftItem> | null | undefined, index
     postingWindow: raw.postingWindow ?? 'anytime',
     targetHandle: typeof raw.targetHandle === 'string' ? raw.targetHandle : undefined,
     targetReach: typeof raw.targetReach === 'string' ? raw.targetReach : undefined,
+    quality: sanitizeQuality((raw as { quality?: unknown }).quality),
+  };
+}
+
+function sanitizeQuality(raw: unknown): XDraftQuality | undefined {
+  if (!raw || typeof raw !== 'object') return undefined;
+  const q = raw as Partial<XDraftQuality> & { dimensions?: Partial<XDraftQualityDimensions> };
+  const dimsIn = q.dimensions && typeof q.dimensions === 'object' ? q.dimensions : null;
+  if (!dimsIn) return undefined;
+  const dimensions = {} as XDraftQualityDimensions;
+  for (const key of Object.keys(QUALITY_DIMENSION_CAPS) as (keyof XDraftQualityDimensions)[]) {
+    const n = dimsIn[key];
+    dimensions[key] = typeof n === 'number' && Number.isFinite(n) ? n : 0;
+  }
+  const total =
+    typeof q.total === 'number' && Number.isFinite(q.total)
+      ? q.total
+      : Object.values(dimensions).reduce((a, b) => a + b, 0);
+  const notes = typeof q.notes === 'string' ? q.notes : '';
+  return {
+    total,
+    shape: typeof q.shape === 'string' ? q.shape : undefined,
+    dimensions,
+    notes,
+    attempts:
+      typeof q.attempts === 'number' && Number.isFinite(q.attempts) ? q.attempts : undefined,
   };
 }
 
@@ -368,16 +438,16 @@ export function scoutIstSlot(now: Date = new Date()): { date: string; slotHour: 
   return { date, slotHour };
 }
 
-/** True during the human posting day 11:00–21:59 IST (scout window). */
+/** True during the human posting day 11:00–22:59 IST (scout window). */
 export function isScoutWindowOpen(now: Date = new Date()): boolean {
   const { hour } = istParts(now);
-  return hour >= 11 && hour < 22;
+  return hour >= 11 && hour <= 22;
 }
 
 /**
- * One pack per scout run — 2h slots in Asia/Kolkata (t11, t13, … t21).
- * Six queues per IST calendar day; never overwrites an earlier slot.
- * Legacy packs may still use t00/t06/t12/t18 (old 6h/12h UTC cadence).
+ * One pack per scout run — 1h slots in Asia/Kolkata (t11 … t22).
+ * Up to twelve queues per IST calendar day; never overwrites an earlier slot.
+ * Legacy packs may still use even-only hours or t00/t06/t12/t18 (old cadences).
  */
 export function createRunPackId(now: Date = new Date()): string {
   const { date, slotHour } = scoutIstSlot(now);
@@ -409,7 +479,7 @@ export function formatPackRunLabel(pack: {
   }
   if (slotMatch) {
     const slot = parseInt(slotMatch[1], 10);
-    // New cadence: 11–21 even IST hours. Old UTC 00/06/12/18 still labeled UTC.
+    // New cadence: IST hours 11–22. Old UTC 00/06/12/18 still labeled UTC.
     const isIstCadence = SCOUT_IST_SLOTS.includes(slot as (typeof SCOUT_IST_SLOTS)[number]);
     return isIstCadence
       ? `${when} · ${slotMatch[1]}:00 IST`
@@ -420,7 +490,7 @@ export function formatPackRunLabel(pack: {
 
 /**
  * Derive MVP ids: explicit list, else full mini-pack queue (2 replies + 1 original).
- * 2h cadence packs are small — MVP is the whole run, not “replies only forever.”
+ * 1h cadence packs are small — MVP is the whole run, not “replies only forever.”
  */
 export function resolveMvpIds(pack: XContentPack): string[] {
   if (pack.mvpDraftIds?.length) return pack.mvpDraftIds;

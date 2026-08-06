@@ -1,5 +1,1163 @@
 [
   {
+    "id": "pack-2026-08-06-t20",
+    "date": "2026-08-06",
+    "title": "1h IST t20 · outsource-reputation + open infra table stakes + independent close-tab bullets",
+    "theme": "Writers outsourcing craft · open weights + boring open infra · independent AI-education practice",
+    "briefing": "t20 IST. 2 fresh Venn replies + 1 original. Shapes: values_jab, blunt_systems, practice_drop. Original pillar: AI education (close tab, 3 memory bullets) — NOT outsource-reputation or open-infra mashup.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-suzania-outsource-reputation",
+      "r-tencent-open-infra-stakes",
+      "short-close-tab-three-bullets"
+    ],
+    "signals": [
+      {
+        "id": "sig-suzania-outsource",
+        "summary": "People whose livelihoods depend on writing and thinking advertise they will outsource both to AI — so they won't be worth reading later",
+        "whyItMatters": "Values + cognitive honesty Venn; craft reputation as practice not brand",
+        "url": "https://x.com/suzania/status/2085311493008970218",
+        "heat": 3,
+        "category": "writing-thinking-craft"
+      },
+      {
+        "id": "sig-tencent-open-infra",
+        "summary": "Open weights are table stakes; also open boring infra: CubeSandbox, Agent Memory, upstreamed RoCE/DeepEP and FlexKV",
+        "whyItMatters": "Access + efficiency — model download ≠ runnable agent loop without open unglamorous layer",
+        "url": "https://x.com/TencentAI_News/status/2085349987890925665",
+        "heat": 3,
+        "category": "open-access-infra"
+      }
+    ],
+    "skipList": [
+      "fchollet harness / ylecun DNA (used t19)",
+      "pgodfreysmith / OopsGuess (used t18)",
+      "anon_opin / Mollick (used t17)",
+      "shadcn free-copy (still viral but ~20h — prefer fresher mid-heat Venn)",
+      "ylecun open-research reply (0 heat, same thread as t19 DNA)",
+      "VraserX jobs-learn (strong thesis, older ~13h)",
+      "Socratic / speed-path / hidden-trail originals (recent)",
+      "Pack glue original blending craft reputation + open sandboxes"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-06-t20__r-suzania-outsource-reputation",
+        "kind": "reply",
+        "label": "Reply · outsource craft reputation (values jab)",
+        "body": "If writing and thinking are your craft, announcing you'll outsource both is a strange long-term plan.\n\nReaders can feel when a mind left the room.\n\nTools can help. Turning \"I don't practice the thing I'm known for\" into a brand is a different choice — and yeah, it shows up later in the work.",
+        "meta": "https://x.com/suzania/status/2085311493008970218",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 60,
+        "why": "Grounded in livelihoods-on-writing/thinking + outsourcing = not worth reading; values jab, no invented stats.",
+        "tip": "Stay on craft + reputation + outsourcing thinking/writing only.",
+        "postingWindow": "asap",
+        "targetHandle": "suzania",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "values_jab",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Opens on craft contradiction; mind-left-the-room human; tools vs brand distinction grounded in source thrust.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t20__r-tencent-open-infra-stakes",
+        "kind": "reply",
+        "label": "Reply · open infra beyond weights (blunt systems)",
+        "body": "Open weights are the headline. The boring open infra is what actually makes them usable.\n\nSandboxes, shared agent memory, KV offload — that's what turns \"I can download a model\" into \"a student or solo builder can actually run a loop.\"\n\nTable stakes moved. Next fight is who ships the unglamorous layer for free.",
+        "meta": "https://x.com/TencentAI_News/status/2085349987890925665",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 60,
+        "why": "Grounded in open-weights-as-table-stakes + open sandboxes/memory/upstream KV/RoCE; access×efficiency angle.",
+        "tip": "Don't invent benchmark numbers; only infra categories named in post.",
+        "postingWindow": "asap",
+        "targetHandle": "TencentAI_News",
+        "targetReach": "mid",
+        "quality": {
+          "total": 92,
+          "shape": "blunt_systems",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Headline vs boring infra hook; student/solo builder access without inventing product claims; table stakes from source.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t20__short-close-tab-three-bullets",
+        "kind": "short",
+        "label": "Short · close the tab, three ugly bullets",
+        "body": "Hope without a practice is just mood.\n\nOne rule I've been trying: after any AI answer, close the tab and write three bullets from memory before I accept it.\n\nUgly bullets. Half wrong. Mine.\n\nThat's still where the learning lives — not in the polished paragraph the model already finished for me.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent AI-education pillar — memory-first practice after AI; zero mashup of craft-reputation outsourcing or open-infra table stakes.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "practice_drop",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: three closed-tab memory bullets beat accepting polished AI text for real learning. Bookmark-worthy practice; soul on ugly/half-wrong; not pack collage.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply suzania outsource craft reputation (asap)",
+      "2) Reply Tencent open infra / table stakes",
+      "3) Post original close-tab three bullets practice"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two shapes — craft reputation values jab + open-infra blunt systems."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent AI-education practice; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-06T14:39:25.939Z",
+    "updatedAt": "2026-08-06T14:39:25.939Z"
+  },
+  {
+    "id": "pack-2026-08-06-t19",
+    "date": "2026-08-06",
+    "title": "1h IST t19 · neurosymbolic harness + openness DNA + independent hidden-path classroom",
+    "theme": "Harness as architecture · openness as research DNA · independent education-design honesty",
+    "briefing": "t19 IST. 2 fresh Venn replies + 1 original. Shapes: blunt_systems, values_jab, scene. Original pillar: psychology/education design (honest trail when answers are free) — NOT harness/neurosymbolic or openness mashup.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-fchollet-harness-neurosymbolic",
+      "r-ylecun-openness-dna",
+      "short-hidden-trail-classroom"
+    ],
+    "signals": [
+      {
+        "id": "sig-fchollet-harness",
+        "summary": "Million-line inference harness orchestrating thousands of NN calls is the exact definition of neurosymbolic architecture",
+        "whyItMatters": "AI systems honesty — what counts as the system vs model-alone myth; high heat builder room",
+        "url": "https://x.com/fchollet/status/2085323411903889876",
+        "heat": 5,
+        "category": "ai-systems"
+      },
+      {
+        "id": "sig-ylecun-openness",
+        "summary": "Joined Facebook 2013 for openness DNA not Google; didn't know how to advance AI without openness; left when DNA mutated",
+        "whyItMatters": "Openness/access as research method not brand; ultra-fresh high-signal voice",
+        "url": "https://x.com/ylecun/status/2085348089548640685",
+        "heat": 4,
+        "category": "openness-access"
+      }
+    ],
+    "skipList": [
+      "pgodfreysmith AI-free writing (used t18)",
+      "OopsGuess lower-end cope (used t18)",
+      "Mollick / anon_opin (used t17)",
+      "shadcn free-copy creativity (strong ethics; older ~18h — prefer fresher pair)",
+      "VraserX UCO / productivity (thin engagement, less Venn center)",
+      "Socratic one-question / speed-without-path originals (recent slots)",
+      "Pack glue original blending harness + openness",
+      "Invented ARC prize or Meta org claims beyond post text"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-06-t19__r-fchollet-harness-neurosymbolic",
+        "kind": "reply",
+        "label": "Reply · harness = neurosymbolic (blunt systems)",
+        "body": "A million-line harness calling a net thousands of times isn't a footnote.\n\nIt's the architecture.\n\nIf the outer loop is planning, tools, and orchestration, the \"model alone\" story was always incomplete. The system doing the work is the sandwich — not the weights in isolation.",
+        "meta": "https://x.com/fchollet/status/2085323411903889876",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 60,
+        "why": "Grounded only in harness-as-neurosymbolic definition; blunt systems shape; high heat Chollet thread.",
+        "tip": "No invented ARC/eval scores; stay on harness + orchestration = neurosymbolic.",
+        "postingWindow": "asap",
+        "targetHandle": "fchollet",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_systems",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Hook reframes harness as architecture; model-alone incomplete from source definition; sandwich line stays human not whitepaper.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t19__r-ylecun-openness-dna",
+        "kind": "reply",
+        "label": "Reply · openness DNA (values jab)",
+        "body": "\"I didn't know how to advance AI without openness\" is the whole argument in one sentence.\n\nJoin a place for its DNA. Leave when that DNA mutates.\n\nOpenness isn't a brand flavor for some researchers — it's the only method they trust to actually move the field.",
+        "meta": "https://x.com/ylecun/status/2085348089548640685",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 55,
+        "why": "LeCun join/leave framed by openness DNA; values jab distinct from harness technical take.",
+        "tip": "Only claims in post: joined FB for openness not Google, advance AI needs openness, left when DNA mutated — no extra Meta drama.",
+        "postingWindow": "asap",
+        "targetHandle": "ylecun",
+        "targetReach": "high",
+        "quality": {
+          "total": 92,
+          "shape": "values_jab",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Opens with his exact thesis line energy; DNA join/leave mirror; method-not-flavor without inventing lab gossip.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t19__short-hidden-trail-classroom",
+        "kind": "short",
+        "label": "Short · brilliant at hiding the trail",
+        "body": "I keep noticing the same quiet skill in classrooms: students get brilliant at hiding how they got there.\n\nNot because they're lazy. Because the room mostly rewards the finished surface.\n\nWhen answers are abundant, the scarce thing is an honest trail of thinking — and almost nothing in the gradebook asks for it.\n\nIf we only celebrate the clean last page, we shouldn't act surprised when the path goes missing.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 75,
+        "why": "Independent psych + education-design pillar — hide the work / reward surface; zero mashup of harness architecture or openness DNA.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "scene",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: abundance of answers + surface-only grades trains hidden trails, not deeper minds. Bookmark/RT for teachers/students; soul on quiet skill; not pack collage of Chollet/LeCun topics.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply fchollet harness/neurosymbolic (asap — high heat)",
+      "2) Reply ylecun openness DNA (asap — ultra fresh)",
+      "3) Post original hidden-trail classroom scene"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two shapes — harness blunt systems + openness values jab while threads move."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent classroom trail insight; no reply-topic collage."
+      }
+    ],
+    "createdAt": "2026-08-06T13:39:22.791Z",
+    "updatedAt": "2026-08-06T13:39:22.791Z"
+  },
+  {
+    "id": "pack-2026-08-06-t18",
+    "date": "2026-08-06",
+    "title": "1h IST t18 · AI-free writing line + open-model price cope + independent explain-the-path",
+    "theme": "Writing practice reputation · open cheap capability vs luxury framing · independent efficiency/metacognition",
+    "briefing": "t18 IST. 2 fresh Venn replies + 1 original. Shapes: values_jab, blunt_systems, teaching_beat. Original pillar: efficiency + metacognition (defend the path without reopening chat) — NOT writing-ban or open-price mashup.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-pgodfreysmith-ai-free-writing",
+      "r-oopsguess-lower-end-cope",
+      "short-speed-without-path"
+    ],
+    "signals": [
+      {
+        "id": "sig-pgodfreysmith-writing",
+        "summary": "Students: don't write with AI at any stage; search OK; draw a line; 'AI-free writing' reputation may become valuable",
+        "whyItMatters": "Core education practice + values Venn — writing as thinking practice, not anti-search absolutism",
+        "url": "https://x.com/pgodfreysmith/status/2085221430346891464",
+        "heat": 3,
+        "category": "ai-writing-education"
+      },
+      {
+        "id": "sig-oopsguess-lower-end",
+        "summary": "CNBC framed China's open-source AI as lower end of value chain; comments push back — frontier-close + cheap = margin cope, not low-end work",
+        "whyItMatters": "Access + efficiency Venn; open models as commodity capability vs brand worship pricing",
+        "url": "https://x.com/OopsGuess/status/2085261807862821132",
+        "heat": 3,
+        "category": "open-source-access"
+      }
+    ],
+    "skipList": [
+      "Mollick open-net security (used t17)",
+      "anon_opin magic-box offload (used t17)",
+      "VraserX jobs-that-learn (strong but chose writing + open-price pair)",
+      "AlternativeTo open NotebookLM (good resource share; slightly thinner thesis heat)",
+      "MengTo sketchbook craft (weaker education Venn)",
+      "Socratic one-question riff (t17 original — rotate)",
+      "Pack glue original blending writing ban + open models",
+      "Invented CNBC quotes or clinical claims"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-06-t18__r-pgodfreysmith-ai-free-writing",
+        "kind": "reply",
+        "label": "Reply · AI-free writing line (values jab)",
+        "body": "Drawing a hard line at writing isn't anti-search.\n\nYou can use AI to find sources and still insist the sentences that carry your name come from a mind that practiced forming them.\n\n\"This is AI-free writing\" as a reputation isn't nostalgia. In more fields it'll just mean: you can still think on the page without a co-author in the tab.",
+        "meta": "https://x.com/pgodfreysmith/status/2085221430346891464",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Philosopher-to-students advice on AI-free writing; values jab grounded only in search-OK vs writing line + reputation claim.",
+        "tip": "Stay on writing-as-practice + reputation; do not invent detection stats or field-wide policy claims.",
+        "postingWindow": "asap",
+        "targetHandle": "pgodfreysmith",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "values_jab",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Opens on hard line ≠ anti-search (mirrors source); reputation line grounded; human texture on co-author in the tab.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t18__r-oopsguess-lower-end-cope",
+        "kind": "reply",
+        "label": "Reply · lower-end cope (blunt systems)",
+        "body": "\"Lower end of the value chain\" is branding, not a capability map.\n\nWhen open models sit near frontier quality and stay absurdly cheap, the uncomfortable question isn't whether the work is low-end.\n\nIt's why closed stacks still charge luxury prices for output that is getting more interchangeable every month.",
+        "meta": "https://x.com/OopsGuess/status/2085261807862821132",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 60,
+        "why": "Grounded in CNBC lower-end framing + comments on cheap frontier-close capability and margin protection; blunt systems shape.",
+        "tip": "Only claims from post: lower-end phrase, cheap near-frontier open models, price/margin framing — no invented CNBC quotes beyond that.",
+        "postingWindow": "asap",
+        "targetHandle": "OopsGuess",
+        "targetReach": "mid",
+        "quality": {
+          "total": 92,
+          "shape": "blunt_systems",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Hook reframes lower-end as branding; cheap near-frontier + luxury pricing from source thrust; no sludge openers.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t18__short-speed-without-path",
+        "kind": "short",
+        "label": "Short · speed only wins if you can defend the path",
+        "body": "Cheap tokens made me ship faster.\n\nThey also made me hit submit on drafts I couldn't fully defend out loud — because the model held the structure and I held the button.\n\nSpeed is only a win if you can still walk someone through the path without reopening the chat.\n\nIf you can't, you didn't finish thinking. You finished generating.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 75,
+        "why": "Independent efficiency + metacognition pillar — ship-fast vs hold-the-structure; zero mashup of AI-free writing reputation or open-model price cope.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "teaching_beat",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: speed without ability to defend the path is unfinished thinking. Bookmark/RT-worthy for builders/students who over-trust generate→submit; soul on button vs structure; not pack collage of writing ban or CNBC framing.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply pgodfreysmith AI-free writing line (asap)",
+      "2) Reply OopsGuess lower-end / open-price cope",
+      "3) Post original speed-without-path teaching beat"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two shapes — writing-line values jab + open-price blunt systems while threads still move."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent efficiency/metacognition insight; no reply-topic collage."
+      }
+    ],
+    "createdAt": "2026-08-06T12:39:44.039Z",
+    "updatedAt": "2026-08-06T12:39:44.039Z"
+  },
+  {
+    "id": "pack-2026-08-06-t17",
+    "date": "2026-08-06",
+    "title": "2h IST t17 · magic-box offload + open-net security + Socratic tutor practice",
+    "theme": "Cognitive offload concern · individual AI security · independent AI-education practice",
+    "briefing": "t17 IST. 2 fresh Venn replies + 1 original. Shapes: values_jab, blunt_systems, practice_drop. Original pillar: AI education (Socratic friction) — NOT offload/security mashup.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-anon-magic-box-offload",
+      "r-mollick-open-net-security",
+      "short-socratic-one-question"
+    ],
+    "signals": [
+      {
+        "id": "sig-anon-magic-box",
+        "summary": "Heavy AI users develop Alzheimer's-like symptoms; outsourcing thinking to the magic box is bad for you",
+        "whyItMatters": "Perfect psych/cognition Venn — offloading + self-awareness; room for values jab without inventing studies",
+        "url": "https://x.com/anon_opin/status/2085273425803657297",
+        "heat": 3,
+        "category": "cognitive-offload"
+      },
+      {
+        "id": "sig-mollick-security",
+        "summary": "Take AI security seriously at individual level; open weights will catch secrets on the open internet when they catch up",
+        "whyItMatters": "AI systems honesty + open weights reality; high-signal education account; practical builder hygiene",
+        "url": "https://x.com/emollick/status/2085219237182726166",
+        "heat": 4,
+        "category": "ai-security-open"
+      }
+    ],
+    "skipList": [
+      "MengTo sketchbook (craft/UI — weaker Venn than security + offload pair)",
+      "OopsGuess CNBC lower-end cope (access mashup risk with prior packs)",
+      "HalCranmer lifelong AI learning (aging wellness thread, thinner AI-ed hook)",
+      "Access-is-sprinting / path pack glue for original",
+      "Same opener on both replies",
+      "Invented Alzheimer's research claims"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-06-t17__r-anon-magic-box-offload",
+        "kind": "reply",
+        "label": "Reply · magic-box offload (values jab)",
+        "body": "Outsourcing thinking to the magic box isn't free.\n\nYou get speed. You slowly lose the discomfort that used to force you to reason in your own words.\n\nWhether the symptoms look like Alzheimer's or not — the habit of never holding a hard thought alone is already a quiet kind of decline.",
+        "meta": "https://x.com/anon_opin/status/2085273425803657297",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 65,
+        "why": "Fresh psych heat; values jab only on offload + magic-box + Alzheimer's framing from source; no fake paper cites.",
+        "tip": "Stay on outsourcing habit — do not invent clinical studies.",
+        "postingWindow": "asap",
+        "targetHandle": "anon_opin",
+        "targetReach": "mid",
+        "quality": {
+          "total": 94,
+          "shape": "values_jab",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Opens on cost of magic-box offload; holds Alzheimer's as framing not proven claim; human cadence on quiet decline.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t17__r-mollick-open-net-security",
+        "kind": "reply",
+        "label": "Reply · open-net secrets (blunt systems)",
+        "body": "If it can be found on the open internet, assume a model will find it.\n\nNot someday. As open weights catch up, the search gets cheaper and more tireless — not only lab-gated.\n\nKeys sitting in old repos aren't a \"maybe later\" hygiene item. They're already public inventory.",
+        "meta": "https://x.com/emollick/status/2085219237182726166",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 60,
+        "why": "Mollick individual AI-security + open-weights catch-up; blunt systems shape different from values jab.",
+        "tip": "Only claims from post: open internet findability, open weights catching up, individual-level seriousness.",
+        "postingWindow": "asap",
+        "targetHandle": "emollick",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_systems",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Hook mirrors assume-found rule; open-weights catch-up from source; practical keys-in-repos without inventing breach stories.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-06-t17__short-socratic-one-question",
+        "kind": "short",
+        "label": "Short · one Socratic question, not the finished sheet",
+        "body": "The fastest AI tutor is usually the worst one for learning.\n\nInstant answers feel productive. They skip the friction where memory actually forms.\n\nTry this once today: ask for one question that makes *you* do the next step — not the finished solution.\n\nThe tool that slows you down on purpose is often the one that actually teaches.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent AI-education pillar — Socratic friction vs answer machine; zero mashup of offload Alzheimer's framing or key-hygiene security.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "practice_drop",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: one Socratic next-step question beats finished solution for real learning. Save-worthy practice students/builders can run today; teaches + gentle challenge; not access/path or reply mashup.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply anon_opin magic-box offload (asap — still warm)",
+      "2) Reply Mollick open-net / open-weights security",
+      "3) Post original Socratic one-question practice"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two shapes — offload values jab + security blunt line while threads still move."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent AI-education practice; no reply-topic collage."
+      }
+    ],
+    "createdAt": "2026-08-06T11:39:33.438Z",
+    "updatedAt": "2026-08-06T11:39:33.438Z"
+  },
+  {
+    "id": "pack-2026-08-05-t21",
+    "date": "2026-08-05",
+    "title": "2h IST t21 · Tier-3 survival grit + medical AI on phone",
+    "theme": "Student survival is curriculum · local medical AI ambition · independent metacognition practice",
+    "briefing": "t21 IST last slot. 2 fresh Venn replies + 1 original. Shapes: values_jab, hope_spine, practice_drop. Original pillar: psychology/cognitive — NOT access/path mashup of replies.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-aditya-tier3-survival",
+      "r-openmed-phone-medical",
+      "short-close-tab-test"
+    ],
+    "signals": [
+      {
+        "id": "sig-aditya-tier3",
+        "summary": "How to identify a Tier 3 eng student: 20 tabs, OA celebrations, 50+ rejections; corporate says lack of experience — we call it survival",
+        "whyItMatters": "Student-centric psych + grit under hiring systems; India builder room; high relatability",
+        "url": "https://x.com/_adityaa21/status/2084990639700398232",
+        "heat": 3,
+        "category": "student-psych"
+      },
+      {
+        "id": "sig-openmed-phone",
+        "summary": "OpenMed: we have no choice but to make a medical AI model that runs on everyone's phone (QT efficient open Maple-class)",
+        "whyItMatters": "Open-source × access × real-world care — efficiency as justice, not demo theater",
+        "url": "https://x.com/OpenMed_AI/status/2084918303806411062",
+        "heat": 4,
+        "category": "open-access-health"
+      }
+    ],
+    "skipList": [
+      "Clem open-weights steel (already used t19)",
+      "Antonio free DL math book (already used t19)",
+      "SSI continual-learning speculation without hard claims",
+      "Access-is-sprinting / path pack glue for original",
+      "Same opener on both replies"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-05-t21__r-aditya-tier3-survival",
+        "kind": "reply",
+        "label": "Reply · Tier-3 survival is curriculum (values jab)",
+        "body": "Corporate calling this \"lack of experience\" is lazy labelling.\n\n20 tabs, OA celebrations, 50 rejections and still \"next one might be it\" — that's not a soft-skills deficit. That's grit under a system that rarely teaches how to think through rejection.\n\nSurvival is underrated curriculum.",
+        "meta": "https://x.com/_adityaa21/status/2084990639700398232",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 65,
+        "why": "Fresh student-room heat; values jab only from post claims; different shape from t19 systems/resource.",
+        "tip": "Stay on survival vs lack-of-experience — no product bridge.",
+        "postingWindow": "asap",
+        "targetHandle": "_adityaa21",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "values_jab",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Opens on corporate label flip; only 20 tabs/OA/50 rejections/survival from source; sincere grit angle without lecture sludge.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-05-t21__r-openmed-phone-medical",
+        "kind": "reply",
+        "label": "Reply · medical AI on phone (hope with spine)",
+        "body": "Medical AI on everyone's phone is the access thesis I actually care about.\n\nNot another SOTA screenshot for people who already have compute. A care tool that can live where humans live — local, cheap, open enough to actually ship.\n\nIf models keep getting small enough for a pocket, locking useful help behind cloud-only defaults starts to look like a choice, not a hard limit.",
+        "meta": "https://x.com/OpenMed_AI/status/2084918303806411062",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "OpenMed phone ambition + open health stack; hope-with-spine different from values jab.",
+        "tip": "Only ground the phone medical ambition from OpenMed line; no invented benchmark numbers.",
+        "postingWindow": "asap",
+        "targetHandle": "OpenMed_AI",
+        "targetReach": "high",
+        "quality": {
+          "total": 92,
+          "shape": "hope_spine",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Hook on phone-medical ambition from post; hope + spine on cloud-only as choice; no fake metrics.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-05-t21__short-close-tab-test",
+        "kind": "short",
+        "label": "Short · close-the-tab learning test",
+        "body": "Here's a quiet test I use when I learn with AI:\n\nAfter the answer appears, close the tab.\nCan you still explain the why in plain words — without peeking?\n\nIf yes, the model was a sparring partner.\nIf no, you just rented a clean final sheet.\n\nAbundance of answers isn't the crisis.\nLosing the habit of checking whether *you* still did the thinking is.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 75,
+        "why": "Independent psych/cognitive pillar — practice drop; zero mashup of Tier-3 hiring or medical-phone themes.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "practice_drop",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: close-tab sparring vs rented final sheet as metacognition check. Save-worthy because students/builders can run it today; teaches + gentle challenge; not access/path pack glue.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply Aditya Tier-3 survival (asap — still warm)",
+      "2) Reply OpenMed phone medical AI",
+      "3) Post original close-tab practice"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two shapes — post while Tier-3 thread still has reply energy."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent metacognition practice; no reply-topic collage."
+      }
+    ],
+    "createdAt": "2026-08-05T16:27:33.950Z",
+    "updatedAt": "2026-08-05T16:27:33.950Z"
+  },
+  {
+    "id": "pack-2026-08-05-t19",
+    "date": "2026-08-05",
+    "title": "2h IST t19 · open weights as steel + free DL math book",
+    "theme": "Open research layer free for access · free rigorous learning resources · access ≠ proof of thinking",
+    "briefing": "t19 IST. 2 fresh Venn replies + 1 original. Shapes: systems line, resource share, short thesis. No product stamp; no repeated openers from t17.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-clem-weights-steel",
+      "r-antonio-free-dl-math",
+      "short-access-vs-path"
+    ],
+    "signals": [
+      {
+        "id": "sig-clem-weights",
+        "summary": "Clem: weights vs APIs vs apps; weights are steel of AI; regulate deployment not research layer",
+        "whyItMatters": "Open weights as access for labs, ignored languages, safety audit — center of open-source × learning Venn",
+        "url": "https://x.com/ClementDelangue/status/2084992457674990033",
+        "heat": 4,
+        "category": "open-access"
+      },
+      {
+        "id": "sig-antonio-dl-math",
+        "summary": "Free ~300p Mathematical Foundations of Deep Learning; math-first, accessible with background",
+        "whyItMatters": "Free rigorous learning resource — access + student builders who need the why",
+        "url": "https://x.com/antoniolupetti/status/2084931805002564023",
+        "heat": 5,
+        "category": "learning-resource"
+      }
+    ],
+    "skipList": [
+      "Crypto/Bittensor product spam without Venn hook",
+      "SSI continual-learning speculation without source proof",
+      "Repeat Madagascar/32-students thesis already used today",
+      "Same opener on both replies"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-05-t19__r-clem-weights-steel",
+        "kind": "reply",
+        "label": "Reply · weights as steel (systems line)",
+        "body": "Model weights as steel is the right cut. You don't crash-test a mill.\n\nRestrict open weights and you don't reduce risk — you just kill the lab fine-tuning for rare diseases and the safety folks who can only audit because the weights are open. Risk lives in the app, not the raw research output.",
+        "meta": "https://x.com/ClementDelangue/status/2084992457674990033",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 70,
+        "why": "Fresh HF CEO heat; open-weights access Venn; systems shape only from post claims.",
+        "tip": "Open source first; stay on steel/apps cut — no product bridge.",
+        "postingWindow": "asap",
+        "targetHandle": "ClementDelangue",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "systems_line",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "Opens mid-claim on steel analogy; only claims from Clem (weights/apps, rare diseases, safety audit); dry punch close.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-05-t19__r-antonio-free-dl-math",
+        "kind": "reply",
+        "label": "Reply · free DL math book (resource share)",
+        "body": "Btw — free, almost 300 pages, math-first deep learning. This is the kind of reference that actually helps people who can't buy every course.\n\nKeep it in a personal library if you care about the why, not just vibes. Optimisation + Neural ODEs chapters alone are worth the download.",
+        "meta": "https://x.com/antoniolupetti/status/2084931805002564023",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 65,
+        "why": "High bookmarks; free rigorous resource; resource-share shape different from Clem reply.",
+        "tip": "Only claims from post: free ~300p, mathematical focus, library rec, chapter themes named in source.",
+        "postingWindow": "anytime",
+        "targetHandle": "antoniolupetti",
+        "targetReach": "high",
+        "quality": {
+          "total": 92,
+          "shape": "resource_share",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 13,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Btw opener + free/300p/math-first from source; casual library tip matches voice resource-share examples.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-05-t19__short-access-vs-path",
+        "kind": "short",
+        "label": "Short · access is racing, proof of thinking isn't",
+        "body": "Open weights, free textbooks, cheaper tokens — access is sprinting.\n\nWhat barely moves is whether anyone can defend the path they took, or only paste a clean last frame.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 55,
+        "why": "Own-timeline short; ties pack theme without product name; different shape from both replies.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 91,
+          "shape": "short_thesis",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 13,
+            "funRead": 10,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Two-beat access vs path; process assessment spine without slogan stamp; micro length for 2h pack.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply Clem open-weights steel (asap — still climbing)",
+      "2) Reply Antonio free DL math book",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two shapes — post while Clem thread is still moving."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Short; different energy from both replies."
+      }
+    ],
+    "createdAt": "2026-08-05T14:27:19.073Z",
+    "updatedAt": "2026-08-05T14:27:19.073Z"
+  },
+  {
+    "id": "pack-2026-08-05-t17",
+    "date": "2026-08-05",
+    "title": "2h IST t17 · judgement scarce + open free coding model",
+    "theme": "Judgement/curiosity vs abundant knowledge · open access that people can actually use",
+    "briefing": "Manual run. 2 fresh Venn replies + 1 original. Varied shapes: values jab + practical access + short original. No product stamp on every draft.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-hvgoenka-judgement",
+      "r-opencode-longcat",
+      "short-scarce-skills"
+    ],
+    "signals": [
+      {
+        "id": "sig-hvgoenka",
+        "summary": "AI makes knowledge abundant; scarce = judgement, curiosity, originality, adaptability",
+        "whyItMatters": "Center Venn — what education/assessment should actually grow",
+        "url": "https://x.com/hvgoenka/status/2084933465477411194",
+        "heat": 5,
+        "category": "education-psych"
+      },
+      {
+        "id": "sig-opencode",
+        "summary": "LongCat-2.0 free on OpenCode, 1M context, fully open source, coding-optimized",
+        "whyItMatters": "Open access + efficiency so more people can learn/build",
+        "url": "https://x.com/opencode/status/2084879638807842918",
+        "heat": 5,
+        "category": "open-access"
+      }
+    ],
+    "skipList": [
+      "Shopify market noise",
+      "Crypto/RWA GPU games",
+      "SSI speculation without substance",
+      "Same opener on both replies"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-05-t17__r-hvgoenka-judgement",
+        "kind": "reply",
+        "label": "Reply · judgement/curiosity scarce (values jab)",
+        "body": "Yeah, this lands. For decades we optimised for marks and placements — and knowledge just got cheap.\n\nJudgement, curiosity, originality, adaptability… nobody is really teaching those as first-class skills. They're the ones that keep you grounded when answers are free.",
+        "meta": "https://x.com/hvgoenka/status/2084933465477411194",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "High heat, pure Venn; values jab shape — not the long thesis template.",
+        "tip": "Open source first; keep it short as drafted.",
+        "postingWindow": "anytime",
+        "targetHandle": "hvgoenka",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-05-t17__r-opencode-longcat",
+        "kind": "reply",
+        "label": "Reply · free open coding model (practical access)",
+        "body": "Free + fully open source + 1M context on something coding-optimized is the kind of access that actually changes who gets to practice.\n\nNot theoretically useful. People can open it and learn by doing. That's how open models win for builders and students who can't burn money on every frontier call.",
+        "meta": "https://x.com/opencode/status/2084879638807842918",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 80,
+        "why": "Viral open-source access post; practical/blunt shape, no mission close.",
+        "tip": "Only claims from the post: free on OpenCode, 1M context, fully open source, Meituan coding-optimized.",
+        "postingWindow": "anytime",
+        "targetHandle": "opencode",
+        "targetReach": "viral"
+      },
+      {
+        "id": "pack-2026-08-05-t17__short-scarce-skills",
+        "kind": "short",
+        "label": "Short · what gets scarce when answers are free",
+        "body": "When knowledge is abundant, the scarce things are boring to measure: judgement, curiosity, how you actually think through a mess.\n\nIf schools still only score the final sheet, students will just get better at hiding the offloading.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Own-timeline thesis, different shape from both replies; no product name.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [
+      "1) Reply hvgoenka (judgement/curiosity)",
+      "2) Reply opencode LongCat free open",
+      "3) Post original short"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two different shapes — post while heat is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Short, different energy from the replies."
+      }
+    ],
+    "createdAt": "2026-08-05T12:26:55.130Z",
+    "updatedAt": "2026-08-05T12:26:55.130Z"
+  },
+  {
+    "id": "pack-2026-08-05-t15",
+    "date": "2026-08-05",
+    "title": "2h IST t15 · Madagascar trap = process gap · free open coding model access",
+    "theme": "Output-only midterms reward AI paste · free open models expand access — still assess the path not the last frame",
+    "briefing": "Exactly 2 Venn replies + 1 original short. Sources fetched before draft. MVP = all three. Slot t15 IST (15:00).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-madagascar-ai-trap",
+      "r-opencode-longcat-free",
+      "short-access-without-path"
+    ],
+    "signals": [
+      {
+        "id": "sig-madagascar-trap",
+        "summary": "History professor hid white-text instruction telling AI to include “Madagascar”; 32 of 35 students used the word — copied assignment into AI",
+        "whyItMatters": "Center Venn — assessment design × cognitive offloading × final sheet vs thinking path",
+        "url": "https://x.com/HumansNoContext/status/2084702528357142804",
+        "heat": 4,
+        "category": "process-assessment"
+      },
+      {
+        "id": "sig-longcat-opencode",
+        "summary": "LongCat-2.0 free on OpenCode — 1M context, fully open source, Meituan coding-optimized model",
+        "whyItMatters": "Open efficient AI for access — free + open so more builders/learners can use serious coding models",
+        "url": "https://x.com/opencode/status/2084879638807842918",
+        "heat": 4,
+        "category": "open-source-access"
+      }
+    ],
+    "skipList": [
+      "Stale reply piles",
+      "Off-Venn crypto/politics/course spam",
+      "Reuse bindureddy (prior packs)",
+      "SSI continual-learning speculation as fact",
+      "eurofounder school donation (read as satire / unclear)",
+      "Invented professor name, school, or Madagascar story details beyond post text",
+      "Product spam / Edudojo dump"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-05-t15__r-madagascar-ai-trap",
+        "kind": "reply",
+        "label": "Reply · Madagascar trap is an assessment design fail",
+        "body": "This is the assessment problem in one screenshot.\n\nA professor hides white text that tells AI to say “Madagascar.” 32 of 35 students put the word in their answers. So they pasted the midterm into a model. Not a mystery about tools — a system that only grades the last frame.\n\nIf the goal is the polished sheet, outsourcing thinking is rational. Cognitive offloading is the path of least resistance.\n\nMy take: assess the path. What can they defend without the model. Use AI as a Socratic push, not a magic answer machine.\n\nProcess based assessment is one way out of this loop.",
+        "meta": "https://x.com/HumansNoContext/status/2084702528357142804",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 90,
+        "why": "High-signal AI-in-assessment story (~833 likes / 173k views). Claims limited to white-text Madagascar trap + 32/35 used the word = copied into AI.",
+        "tip": "Copy & open first. Soft process-assessment bridge only. Do not invent professor name, school, or country.",
+        "postingWindow": "anytime",
+        "targetHandle": "HumansNoContext",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-05-t15__r-opencode-longcat-free",
+        "kind": "reply",
+        "label": "Reply · free open coding model is real access",
+        "body": "This is the kind of drop that actually moves access.\n\nLongCat-2.0 free on OpenCode — 1M context, fully open source, coding-optimized. For solo builders and learners that is intelligence with less gatekeeping.\n\nAs a solo-builder/founder I feel open + free + usable context beats locked APIs for people who are still learning the craft.\n\nHype this for the access story. Just remember free answers still dont equal owned thinking — that part is on how we practice and assess.",
+        "meta": "https://x.com/opencode/status/2084879638807842918",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 75,
+        "why": "Same-day open-source heat (~1.1k likes / 78k views). Claims limited to free on OpenCode, 1M context, fully open source, Meituan coding model — as stated.",
+        "tip": "Stay on access + open weights. Do not invent bench scores beyond what this post states. Soft process note only at the end.",
+        "postingWindow": "anytime",
+        "targetHandle": "opencode",
+        "targetReach": "high"
+      },
+      {
+        "id": "pack-2026-08-05-t15__short-access-without-path",
+        "kind": "short",
+        "label": "Short · free tools still need path assessment",
+        "body": "Open models getting free and usable is a real win for access.\n\nBut midterms that only grade the final sheet still train people to paste first and think later.\n\nMore access is good. Assess the path you can defend without the model — or we just scale cognitive offloading with better tools.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 40,
+        "why": "Original Venn thesis tying both replies; no fake citations.",
+        "postingWindow": "anytime"
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Two same-window Venn posts — post while energy is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "One short Venn thesis."
+      }
+    ],
+    "createdAt": "2026-08-05T09:38:49.530Z",
+    "updatedAt": "2026-08-05T09:38:49.530Z"
+  },
+  {
     "id": "pack-2026-08-03-t19",
     "date": "2026-08-03",
     "title": "2h IST t19 · cheap AI vs thinking on your own · video models for learning experiences",
