@@ -24,11 +24,14 @@ export default async function EditorialPage({
     redirect('/login?callbackUrl=/editorial');
   }
 
-  const articles = await getEditorialArticlesLite();
   const params = await searchParams;
   const ws = params.workspace;
   const initialWorkspace: 'blog' | 'x' =
     ws === 'x' || ws === 'todo' || ws === 'x-todo' ? 'x' : 'blog';
+
+  // Skip blog list I/O when opening X To-Do — major latency win for hourly scout workflow
+  const articles =
+    initialWorkspace === 'blog' ? await getEditorialArticlesLite() : [];
 
   return (
     <div className="atelier-root min-h-screen relative flex flex-col justify-between antialiased">

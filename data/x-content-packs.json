@@ -1,5 +1,321 @@
 [
   {
+    "id": "pack-2026-08-07-t14",
+    "date": "2026-08-07",
+    "title": "1h IST t14 · instant answer amnesia + Qwen free→rev share + decision-making gap",
+    "theme": "Sarcastic productivity of not remembering · open free meets major-user pricing · missing decision-making curriculum",
+    "briefing": "t14 IST. 2 Venn replies + 1 original. Shapes: blunt_humor, blunt_systems, values_letter. Original pillar: education/values — decision-making never taught as core (independent of reels/AI amnesia and Qwen pricing).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-unseenvalue-remember-nothing",
+      "r-mts-qwen-revshare",
+      "short-decision-making-gap"
+    ],
+    "signals": [
+      {
+        "id": "sig-unseenvalue-instant",
+        "summary": "Sarcasm: reels or asking AI more 'productive' than books; scroll/ask/instant answer then remember nothing five minutes later vs hour of thinking/learning",
+        "whyItMatters": "Learning psych / cognition — cheap answers vs durable memory",
+        "url": "https://x.com/unseenvalue/status/2085615722818867650",
+        "heat": 2,
+        "category": "cognition-learning"
+      },
+      {
+        "id": "sig-mts-qwen-revshare",
+        "summary": "Alibaba pivoting from fully free open-source AI; major users of upcoming Qwen 3.8-Max open-weight asked for revenue share starting next week (Reuters)",
+        "whyItMatters": "Access — free open becomes conditional for big commercial users",
+        "url": "https://x.com/MTSlive/status/2085539581961855161",
+        "heat": 3,
+        "category": "access-open"
+      }
+    ],
+    "skipList": [
+      "emollick seed-42 / FCC roadmap (used t13)",
+      "emollick harness asterisk (strong honesty angle; held to avoid double-Mollick hour)",
+      "HeyArsy AI=new IQ (engagement bait; thin grounding)",
+      "quant_xbt learn-to-code (held)",
+      "Claude Fable bio / crypto Canopy shills",
+      "Chevening law LLM false positive",
+      "Invented competitor model prices beyond Reuters/MTS claims"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-07-t14__r-unseenvalue-remember-nothing",
+        "kind": "reply",
+        "label": "Reply · five-minute amnesia (blunt humor)",
+        "body": "haha yeah the sarcasm is doing the real work here — scroll, ask, instant answer, blank five minutes later is the productivity theater a lot of people call \"learning.\"\n\nyou're naming the trade people keep pretending isn't a trade. cheap answers. thin memory. the hour of thinking still buys something the feed won't refund.",
+        "meta": "https://x.com/unseenvalue/status/2085615722818867650",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 55,
+        "why": "Grounded in reels/AI instant answer vs books + remember nothing five minutes later + hour thinking/learning contrast.",
+        "tip": "Tone is sarcastic source — mirror irony; do not invent study stats.",
+        "postingWindow": "asap",
+        "targetHandle": "unseenvalue",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_humor",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 12,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 9,
+            "groundingFit": 4
+          },
+          "notes": "haha yeah + you're markers; five-minute blank from source; trade framing without fake research.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t14__r-mts-qwen-revshare",
+        "kind": "reply",
+        "label": "Reply · free open meets major-user bill (blunt systems)",
+        "body": "yeah this is the access plot twist a lot of people skipped — \"fully free\" open-source turning into a revenue share for major users of the next Qwen open-weight, starting next week.\n\nfor solo builders the useful cut is simpler: plan like the free lunch for big commercial users is temporary. practice paths that only work while someone else subsidizes them don't stay free forever.",
+        "meta": "https://x.com/MTSlive/status/2085539581961855161",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 55,
+        "why": "Grounded only in MTS: fully free pivot, major users, Qwen 3.8-Max open-weight, revenue share, next week/Reuters frame.",
+        "tip": "Do not invent fee %, who is exempt, or claims from jun_song thread not in this status.",
+        "postingWindow": "asap",
+        "targetHandle": "MTSlive",
+        "targetReach": "high",
+        "quality": {
+          "total": 92,
+          "shape": "blunt_systems",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 13,
+            "funRead": 10,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "yeah + you energy via practical 'for solo builders'; source phrases (fully free, major users, open-weight, next week); no invented %.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t14__short-decision-making-gap",
+        "kind": "short",
+        "label": "Short · nobody taught decision-making",
+        "body": "Nobody really hands you a class called decision-making.\n\nYou get subjects. You get marks. Somewhere in the middle you're supposed to invent judgment.\n\nFaster answers make that gap louder, not smaller. If schools won't teach the skill, practice it on purpose — small choices, spoken reasons, one check: would I still pick this if the chat said the opposite?",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent values/education pillar — decision-making as missing core skill; not mashup of five-minute amnesia or Qwen rev-share.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "values_letter",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: decision-making never taught as a subject; practice with opposite-of-chat check. Bookmark for students/teachers; soul + practice; not pack collage.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply unseenvalue remember-nothing sarcasm (asap)",
+      "2) Reply MTSlive Qwen major-user rev share",
+      "3) Post original decision-making-gap"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Remember-nothing sarcasm + Qwen rev-share access while both still moving."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent decision-making curriculum gap; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-07T09:11:11.950Z",
+    "updatedAt": "2026-08-07T09:11:11.950Z"
+  },
+  {
+    "id": "pack-2026-08-07-t13",
+    "date": "2026-08-07",
+    "title": "1h IST t13 · syntax converges + free AI eng roadmap + protect the pause",
+    "theme": "Human prompter variety · free sequential AI skills path · pre-AI pause as judgment practice",
+    "briefing": "t13 IST. 2 Venn replies + 1 original. Shapes: appreciative_echo, resource_share, teaching_beat. Original pillar: psychology/cognition (protect the blank pause before chat) — NOT Mollick seed-42 variety or FCC roadmap mashup.",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-emollick-syntax-vs-approach",
+      "r-fcc-ai-eng-roadmap",
+      "short-protect-the-pause"
+    ],
+    "signals": [
+      {
+        "id": "sig-emollick-code-same",
+        "summary": "95% Kaggle random seeds that set a seed use 42 (LLM hitchhiker joke); coding syntax converging but approaches to problems are not; human prompters drive real variety",
+        "whyItMatters": "Psych/cognition × AI learning — judgement and problem framing still human",
+        "url": "https://x.com/emollick/status/2085557443166146951",
+        "heat": 3,
+        "category": "cognition-prompting"
+      },
+      {
+        "id": "sig-fcc-ai-roadmap",
+        "summary": "freeCodeCamp AI Engineering roadmap: math, ML, deep learning, hands-on engineering; stats, data science, gen AI, RL, RAG",
+        "whyItMatters": "AI education + access — free sequential practice path vs tip spam",
+        "url": "https://x.com/freeCodeCamp/status/2085576928669376808",
+        "heat": 3,
+        "category": "ai-education-access"
+      }
+    ],
+    "skipList": [
+      "quant_xbt learn-to-code cope (strong but edged crypto room; held for spice later)",
+      "Claude Fable biology educational (viral product update; thinner personal room)",
+      "Luke Stamps formation/cheating (older; religious subthread)",
+      "Chevening LLM scholarship (law degree not AI LLM)",
+      "PAHoyeck / rohanpaul (used t22 yesterday)",
+      "crypto Canopy vibe-code shills",
+      "Invented study stats beyond Mollick 95%/seed 42 claims"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-07-t13__r-emollick-syntax-vs-approach",
+        "kind": "reply",
+        "label": "Reply · seed 42 same, approaches not (appreciative echo)",
+        "body": "yeah this really landed — 95% of the seeds can be 42 and the syntax can all start to rhyme, and still the approaches diverge because a human is steering what problem even gets asked.\n\nyou're right that the lesson goes past coding. models standardize the handwriting. judgement still sits with whoever prompts.",
+        "meta": "https://x.com/emollick/status/2085557443166146951",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 55,
+        "why": "Grounded in 95% seed 42 + syntax converging + approaches not + human prompters + lesson beyond coding.",
+        "tip": "Only main-post claims; do not invent paper findings beyond what's in the tweet text.",
+        "postingWindow": "asap",
+        "targetHandle": "emollick",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "appreciative_echo",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Reactive yeah + seed-42 hook from source; second-person you're right; handwriting/judgement without inventing paper stats.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t13__r-fcc-ai-eng-roadmap",
+        "kind": "reply",
+        "label": "Reply · free roadmap still starts with fundamentals (resource share)",
+        "body": "love this — still leads with math, ML, deep learning, and hands-on engineering, not just \"prompt harder.\"\n\nbtw this is the kind of free sequential path people without a lab badge actually need. roadmaps beat another viral tip dump when you're trying to get into the craft for real.",
+        "meta": "https://x.com/freeCodeCamp/status/2085576928669376808",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in skills list (math/ML/DL/hands-on) + AI Engineering roadmap framing; access angle only.",
+        "tip": "Do not invent course length, difficulty, or outcomes not in the post.",
+        "postingWindow": "asap",
+        "targetHandle": "freeCodeCamp",
+        "targetReach": "high",
+        "quality": {
+          "total": 92,
+          "shape": "resource_share",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 13,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "love this + btw markers; mirrors source skill list; free sequential path angle; different shape from reply 1.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t13__short-protect-the-pause",
+        "kind": "short",
+        "label": "Short · protect the pause before the chat",
+        "body": "There's a tiny pause right before you paste a problem into the chat.\n\nThat pause used to be where you built the skill — outlining, guessing, getting stuck on purpose.\n\nIf you skip it every time, the answer still arrives. The person who can sit with not-knowing gets thinner.\n\nProtect the pause. It's not inefficiency. It's how judgement grows.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent psych/cognition pillar — productive struggle / pre-tool pause; zero mashup of seed-42 variety or FCC roadmap.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "teaching_beat",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: the blank moment before AI is where judgement forms; skip it and answers arrive while the self thins. Bookmark for students/builders; soul + spine; not pack collage of Mollick or FCC.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply emollick syntax converging / human approach variety (asap)",
+      "2) Reply freeCodeCamp AI Engineering roadmap",
+      "3) Post original protect-the-pause"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Mollick variety echo + FCC roadmap resource share while heat is live."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent protect-the-pause cognition insight; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-07T08:11:27.721Z",
+    "updatedAt": "2026-08-07T08:11:27.721Z"
+  },
+  {
     "id": "pack-2026-08-06-t22",
     "date": "2026-08-06",
     "title": "1h IST t22 · cognitive offload workday + prove-a-point pricing + independent access needs a room",

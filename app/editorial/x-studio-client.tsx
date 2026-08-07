@@ -48,7 +48,8 @@ import {
   draftOpenUrl,
 } from '@/lib/x-content-model';
 
-const POLL_MS = 15_000;
+/** Poll while tab is visible; silent reloads only. */
+const POLL_MS = 20_000;
 
 type ViewMode = 'focus' | 'list' | 'library';
 type FilterId = 'all' | 'mvp' | 'sprint' | 'core' | 'bonus' | 'replies' | 'originals' | 'p1';
@@ -537,6 +538,8 @@ export function XStudioClient() {
   const knownUpdated = useRef<string | null>(null);
   /** When set, user manually chose a pack; auto-switch only if that pack has no ready work. */
   const userPickedRef = useRef<string | null>(null);
+  /** Skip silent poll apply while a status mutation is in flight (avoids clobbering optimistic UI). */
+  const statusInflightRef = useRef(0);
 
   const applyPacks = useCallback((data: XContentPack[], opts?: { forceLatest?: boolean }) => {
     if (!Array.isArray(data)) {
@@ -596,6 +599,8 @@ export function XStudioClient() {
 
   const load = useCallback(
     async (opts?: { silent?: boolean; forceLatest?: boolean }) => {
+      // Don't overwrite optimistic Done/Skip with a stale poll mid-request
+      if (opts?.silent && statusInflightRef.current > 0) return;
       if (!opts?.silent) {
         setLoading(true);
         setError(null);
@@ -609,6 +614,7 @@ export function XStudioClient() {
         const raw = await res.json().catch(() => ({}));
         if (!res.ok) throw new Error(raw.error || `Failed to load (${res.status})`);
         if (!Array.isArray(raw)) throw new Error('Unexpected API response — not a pack list');
+        if (opts?.silent && statusInflightRef.current > 0) return;
         applyPacks(raw as XContentPack[], { forceLatest: opts?.forceLatest });
         setError(null);
       } catch (e: unknown) {
@@ -695,24 +701,41 @@ export function XStudioClient() {
   const onStatus = useCallback(
     async (draftId: string, status: XDraftStatus) => {
       if (!active) return;
+      const packId = active.id;
+      statusInflightRef.current += 1;
+      // Optimistic update — UI feels instant; rollback on failure
+      let snapshot: XContentPack[] | null = null;
+      setPacks((prev) => {
+        snapshot = prev;
+        const next = prev.map((p) => {
+          if (p.id !== packId) return p;
+          return {
+            ...p,
+            drafts: (p.drafts || []).map((d) => (d.id === draftId ? { ...d, status } : d)),
+            updatedAt: new Date().toISOString(),
+          };
+        });
+        return sortPacks(next);
+      });
       try {
         const res = await fetch('/api/x-content', {
           method: 'POST',
           credentials: 'include',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ packId: active.id, draftId, status }),
+          body: JSON.stringify({ packId, draftId, status }),
         });
         const data = await res.json().catch(() => ({}));
         if (!res.ok) {
+          if (snapshot) setPacks(snapshot);
           alert(data.error || 'Update failed');
           return;
         }
-        const updated = data as XContentPack;
+        const updated = sanitizePack(data as XContentPack) ?? (data as XContentPack);
         setPacks((prev) => {
           const next = sortPacks(prev.map((p) => (p.id === updated.id ? updated : p)));
-          // If this pack is fully cleared, jump to another with ready work
+          // Only jump after server confirms (not on optimistic-only empty)
           if (readyCount(updated) === 0) {
-            const best = pickBestPackId(next);
+            const best = pickBestPackId(next.filter((p) => readyCount(p) > 0));
             if (best && best !== updated.id) {
               userPickedRef.current = null;
               queueMicrotask(() => setSelectedId(best));
@@ -721,7 +744,10 @@ export function XStudioClient() {
           return next;
         });
       } catch {
+        if (snapshot) setPacks(snapshot);
         alert('Update failed — check your connection and try again.');
+      } finally {
+        statusInflightRef.current = Math.max(0, statusInflightRef.current - 1);
       }
     },
     [active]
@@ -762,9 +788,27 @@ export function XStudioClient() {
 
   if (loading) {
     return (
-      <div className="atelier-card-lg py-28 flex flex-col items-center gap-5 text-[var(--atelier-muted)]">
-        <Loader2 className="w-8 h-8 animate-spin text-[var(--atelier-gold)]" />
-        <p className="text-sm">Loading queue…</p>
+      <div className="space-y-6 max-w-4xl mx-auto animate-pulse" aria-busy="true" aria-label="Loading queue">
+        <div className="atelier-card px-6 py-6 sm:px-8 space-y-4">
+          <div className="flex flex-wrap gap-2">
+            <div className="h-6 w-16 rounded-full bg-[var(--atelier-line)]" />
+            <div className="h-6 w-24 rounded-full bg-[var(--atelier-line)]" />
+          </div>
+          <div className="h-7 w-2/3 max-w-md rounded-xl bg-[var(--atelier-line)]" />
+          <div className="h-1.5 w-48 rounded-full bg-[var(--atelier-line)]" />
+        </div>
+        <div className="atelier-card-lg p-8 sm:p-10 space-y-4">
+          <div className="h-5 w-28 rounded-full bg-[var(--atelier-line)]" />
+          <div className="h-24 w-full rounded-2xl bg-[var(--atelier-line)]" />
+          <div className="flex gap-2">
+            <div className="h-10 w-28 rounded-full bg-[var(--atelier-line)]" />
+            <div className="h-10 w-24 rounded-full bg-[var(--atelier-line)]" />
+          </div>
+        </div>
+        <p className="text-center text-sm text-[var(--atelier-faint)] flex items-center justify-center gap-2">
+          <Loader2 className="w-4 h-4 animate-spin text-[var(--atelier-gold)]" />
+          Loading queue…
+        </p>
       </div>
     );
   }
@@ -786,14 +830,14 @@ export function XStudioClient() {
   }
 
   return (
-    <div className="space-y-8 sm:space-y-10 max-w-4xl mx-auto">
+    <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
       {/* Slim status bar — not a second hero */}
       <div
-        className={`atelier-card px-6 py-5 sm:px-8 sm:py-6 transition-shadow duration-500 ${
+        className={`atelier-card px-5 py-4 sm:px-7 sm:py-5 transition-shadow duration-500 ${
           pulse ? 'ring-2 ring-[var(--atelier-gold)]/40' : ''
         }`}
       >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-5">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-5">
           <div className="min-w-0 space-y-2">
             <div className="flex flex-wrap items-center gap-2.5">
               <span

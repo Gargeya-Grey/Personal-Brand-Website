@@ -90,19 +90,25 @@ A **90+ micro** and a **90+ thesis** look different:
 
 ## Originals — extra bar (kind short / flagship)
 
-Replies can be short and sharp. **Originals must feel follow-worthy.**
+Replies can be short and sharp. **Originals must feel follow-worthy — and storyteller-first.**
+
+Write as a **short story with a point**: cohesive arc, plain language, relatable scene, pull to finish every line.  
+Not slogan stacks, not abstract AI takes, not a one-line punch with no middle.
 
 Honestly fail total **under 90** (or rewrite) if any of these are true:
 
 1. **Pack mashup** — the post only exists as a blend of today’s two reply topics  
 2. **No standalone insight** — remove the pack context and nothing valuable remains  
 3. **No soul** — clever but cold; no recognition, hope, urgency, or care for learners  
-4. **Not save-worthy** — no teacher/student/builder would bookmark it  
-5. **Vague fog** — “AI is changing education” with no concrete turn  
+4. **Not finishable** — hard to follow, no pull; reader bounces mid-post  
+5. **No story arc** — disconnected claims / bullets with no beginning–middle–end  
+6. **Not relatable** — pure abstraction, no human scene or lived moment  
+7. **Not save-worthy** — no teacher/student/builder would bookmark it  
+8. **Vague fog** — “AI is changing education” with no story turn  
 
-`quality.notes` for originals **must** include: (a) independent insight, (b) why someone might bookmark/RT/comment.
+`quality.notes` for originals **must** include: (a) independent insight, (b) **story hook/scene**, (c) why someone would **finish** and maybe bookmark/RT/comment.
 
-Score **funRead / relatability / humanTexture** harder on originals — a 91 with flat emotion is dishonest; aim for real pulse.
+Score **funRead / relatability / humanTexture / clarity** harder on originals — a 91 that is a dry bullet thesis or unreadable abstraction is dishonest.
 
 ---
 

@@ -46,77 +46,111 @@ self-awareness · critical thinking · decision-making · transparency · sincer
 
 The **1 original per 1h pack** is his **brand asset**. Replies borrow distribution; originals build **who he is**. Quality ≥90 still beats filling every hour.
 
-## Hard rules for originals
+## Writing stance: storyteller first
 
-1. **Independent thought.**  
-   The original must **stand alone** if the two replies never existed.  
-   ❌ Forbidden: mashup / recap / “access is sprinting… path…” that only exists because reply A was open-weights and reply B was a free book.  
-   ❌ Forbidden: “pack theme” collage of the two sources.  
-   ✅ Required: a **new insight, story, teaching, or feeling** from his pillars.
+Originals are **not** tweet-threads of slogans, bullet wisdom, or abstract “AI takes.”  
+They are **short stories with a point** — cohesive, plain language, easy to follow, hard to stop mid-way.
 
-2. **Value first.**  
-   Reader should leave with: a clearer idea, a better question, a practice, a reframe, or an emotional truth.  
-   If they only nod and forget — fail quality.
+### Storyteller craft (hard rules for style)
 
-3. **Soul + human.**  
-   Someone should feel *something*: recognition, relief, urgency, warmth, courage, gentle challenge.  
-   Sterile cleverness without heart → rewrite.
+1. **Pull them through the whole thing.**  
+   Line 1 opens a door (scene, tension, curiosity). Middle deepens. Last line lands meaning or a soft open question.  
+   Self-check: would a tired student still finish this in 20 seconds? If they’d bounce after sentence two → rewrite.
 
-4. **Bookmark / RT / comment test (score these honestly).**  
-   Before shipping, ask:
-   - **Bookmark?** Would a student, teacher, or builder save this?  
-   - **RT?** Would they share it as *their* stance?  
-   - **Comment?** Does it invite a story or disagreement without bait?  
-   If all three are “nah” → total cannot honestly be ≥90.
+2. **Cohesive arc (beginning → middle → end).**  
+   One thread only. Each sentence earns the next. No random leap to a second thesis.  
+   Prefer: *moment → what it means → what we do / feel / notice*  
+   over: *claim → claim → claim*.
 
-5. **Informative, not vague.**  
-   Prefer one concrete image (marks, final sheet, Cursor bill, exam hall, free PDF library, a student hiding chat tabs) over three abstract nouns.
+3. **Easy language.**  
+   Speak like a thoughtful human at a café, not a whitepaper. Short words. Clear rhythm.  
+   Cut stacked abstractions (“metacognitive optimization of learning ecosystems”).  
+   Keep one concrete image the reader can *see*.
 
-6. **Positivity with teeth.**  
-   Point at hope *and* the real failure (system, habit, measurement) — not empty “AI will save us.”
+4. **Relatable before clever.**  
+   Start where the reader already lives (exam night, Cursor tab, free PDF, hiding the chat window, parents asking about marks).  
+   Insight should feel like *“oh — that’s me”* before *“that’s smart.”*
 
-7. **Length:** usually **4–10 short lines** or 2–4 tight paragraphs. Micro one-liners are for replies; originals need enough meat to *teach* or *move*. Rare long thread only when the idea earns it.
+5. **Attractive, not clickbaity.**  
+   Warmth, honesty, a little tension, maybe dry humor. No fake urgency, no “3 ways to…”, no engagement bait.  
+   Attractive = someone wants to **finish the story** and maybe sit with it.
 
-8. **Product:** 0 times most days. Soft bridge only if the insight is complete without it.
+6. **Independent thought.**  
+   Stand alone if the two replies never existed.  
+   ❌ Pack mashup / “theme of the hour” collage  
+   ✅ New story or lived observation from the pillars  
+
+7. **Value + soul.**  
+   Leave them with a clearer idea, a practice, a reframe, or an emotional truth.  
+   Someone should feel recognition, relief, urgency, warmth, or gentle courage.
+
+8. **Bookmark / finish / share test.**  
+   - **Finish?** Would they read every line without skimming?  
+   - **Bookmark?** Save for later?  
+   - **Share / comment?** Feels like *their* story too?  
+   If finish is “no” → fail (even if the idea is good).
+
+9. **Positivity with teeth.**  
+   Name the real wound (system, habit, measurement) *and* a human way forward — not empty “AI will save us.”
+
+10. **Length:** usually **5–12 short lines** or 3–5 tight beats — enough room to *tell*, not a micro one-liner (those are for replies). Rare longer thread only when the story earns it.
+
+11. **Product:** 0 most days. Soft bridge only if the story is complete without it.
+
+## Story spine (default structure — vary the clothes)
+
+Use this invisible spine almost every time:
+
+| Beat | Job | Example energy |
+|------|-----|----------------|
+| **1. Hook scene** | Concrete moment or tension | “I closed the tab…” / “Nobody taught us…” |
+| **2. Human middle** | What it feels like / what’s going wrong | recognition, friction, honesty |
+| **3. Turn** | The insight in plain words | one clear “so…” |
+| **4. Land** | Hope, practice, or quiet challenge | something they can carry |
+
+Not every post needs all four labeled — but the **flow** should feel like a tiny story, not a list.
 
 ## Original idea bank (pick ONE per run — not from the replies)
 
-Rotate so the week feels multi-dimensional:
+Rotate so the week feels multi-dimensional. Always wrap the idea in a **scene or story**, not a headline:
 
 - A **cognitive** truth (attention, offloading, “hiding intelligence”)  
 - An **education design** truth (what we grade, student-centric practice)  
 - An **access** story (why open/cheap models change who gets to practice)  
 - An **efficiency** builder note (speed + cost as justice, not flex)  
 - A **values** moment (sincerity, kindness with boldness, transparency)  
-- A **use-case** that improves learning (Socratic tutor vs answer machine)  
+- An **AI use-case** that improves learning (Socratic next-step vs finished sheet)  
 - A **personal reflection** that teaches (mindful growth, impatience vs sincerity)  
 - A **small practice** people can try today  
 
 **Never** invent fake research. Lived observation + clear reasoning is enough.
 
-## Original shapes (different clothes, same soul)
+## Original shapes (different clothes, same storyteller soul)
 
 | Shape | Feel | When |
 |-------|------|------|
-| **Teaching beat** | “Here’s what actually happens when…” | Cognitive / school design |
-| **Scene** | One concrete moment, then the lesson | High emotion + bookmark |
-| **Gentle challenge** | Warm but sharp question to the reader | Comment bait done right |
-| **Hope with spine** | Names the wound, then the better path | Positivity pillar |
-| **Builder diary** | What he’s noticing while building | Authenticity |
-| **Values letter** | Short, sincere, almost spoken | Ethics / self-awareness |
-| **Practice drop** | One thing to try this week | Informative save-worthy |
+| **Scene → lesson** | One concrete moment, then meaning | Highest default — bookmark + finish |
+| **Quiet confession** | “I’ve been noticing…” | Builder authenticity |
+| **Hope with spine** | Wound, then better path | Positivity pillar |
+| **Gentle challenge** | Story, then a warm hard question | Comment without bait |
+| **Practice as story** | “Here’s what I try when…” | Informative + save-worthy |
+| **Values letter** | Spoken, sincere, almost to a friend | Ethics / self-awareness |
+| **Teaching beat** | “Here’s what actually happens when…” | Cognitive / school design — still narrative, not a lecture |
 
-Still: **vary** across the day. Don’t ship “teaching beat” six times.
+Still: **vary** across the day. Don’t ship the same skeleton six times — but keep the **storyteller** stance.
 
 ## Original anti-patterns (auto-reject)
 
 - ❌ Collage of today’s two reply topics  
-- ❌ Generic “AI is changing education” with no concrete turn  
+- ❌ Slogan stack / three disconnected hot takes  
+- ❌ Abstract fog with no person in the frame  
+- ❌ Generic “AI is changing education” with no story turn  
 - ❌ Pure product pitch  
 - ❌ Cynical dunk with no care for learners  
 - ❌ LinkedIn carousel energy (“3 ways to…”)  
 - ❌ Empty gratitude with zero information  
 - ❌ Same “access vs path / score the path” riff every slot  
+- ❌ Clever one-liner only — no arc, nothing to *finish*  
 
 ## Original quality bar (on top of `x-reply-quality.md`)
 
@@ -125,42 +159,54 @@ For **kind: short | flagship** originals, scouts must mentally rate:
 | Extra check | Fail if… |
 |-------------|----------|
 | **Standalone** | Only makes sense after reading the pack replies |
+| **Story arc** | No beginning–middle–end; just slogans |
+| **Finishable** | Reader would stop mid-post; hard language or no pull |
+| **Relatable** | No human scene; pure abstraction |
 | **Emotional charge** | Flat, corporate, no pulse |
 | **Teach or move** | No new idea and no feeling |
-| **Follow-worthy** | Sounds like a content farm, not a person building a worldview |
+| **Follow-worthy** | Content farm, not a person with a worldview |
 
-`quality.notes` for originals **must** say: the independent insight + why someone would save/share it.
+`quality.notes` for originals **must** say: (a) the independent insight, (b) the story hook/scene used, (c) why someone would finish and maybe save it.
+
+Score **funRead / relatability / humanTexture / clarity** harder on originals — a 91 that is a dry bullet thesis is dishonest.
 
 ### Example originals (energy to aim for — do not paste)
 
-**Teaching + scene (cognitive):**
+**Scene → lesson (cognitive):**
 > Believe it or not, students are crazy intelligent when it comes to hiding.
 >
-> When answers are free, the hard part isn’t getting a clean final sheet.  
-> It’s knowing whether *you* still did the thinking.
+> I’ve watched people get a clean final sheet in minutes — and still not know if the thinking was theirs.
 >
-> If we only grade the last page, we train the best hiders — not the deepest minds.
+> When answers are free, the hard part isn’t the answer.  
+> It’s knowing whether *you* still did the work underneath.
+>
+> If we only grade the last page, we don’t train deep minds.  
+> We train the best hiders.
 
-**Values + hope:**
-> Nobody really teaches decision-making, critical thinking, or self-awareness like they’re core subjects.
+**Story of a system (values):**
+> Nobody sat us down and taught decision-making like a real subject.
 >
-> They’re treated like soft extras. They’re not.
+> Critical thinking and self-awareness got treated like soft extras — nice if you have time.
 >
-> They’re how you stay progressive with fewer bad choices when every tool wants to think for you.
+> Then every tool showed up offering to think for us.
+>
+> Those “soft” skills were never soft.  
+> They’re how you stay progressive with fewer bad choices when the easy path is to disappear into the model.
 
-**Access with soul (not pack collage):**
+**Access as human story (not pack collage):**
 > A free textbook or an open model doesn’t automatically make someone freer.
 >
-> It only helps if we still ask people to struggle productively — to explain, to choose, to check themselves.
+> I’ve seen people download everything and still only copy the last step — because nobody asked them to explain the why out loud.
 >
-> Access without cognitive honesty is just faster copying. Access *with* it is how more humans actually level up.
+> Access without cognitive honesty is just faster copying.  
+> Access *with* it is how more humans actually level up.
 
-**Mindful builder:**
-> Numbers will turn up eventually.
+**Mindful builder (personal story):**
+> Numbers will turn up eventually. I keep telling myself that on quiet days.
 >
 > Right now I’m trying to stay mindful and sincere — to share things I’d want to receive myself — instead of feeding my impatience for views.
 >
-> If even a few people feel seen or sharper after reading, that already counts.
+> If even a few people feel seen or a little sharper after reading, that already counts as a win I can live with.
 
 ---
 

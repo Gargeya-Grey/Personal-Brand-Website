@@ -139,7 +139,7 @@ Both replies should be `hyper` | `viral` | `high` when possible; one `mid` OK if
 3. Search heat + **recency** across the Venn.  
 4. Fetch candidates; keep top **2 reply targets**.  
 5. Draft **2 grounded replies** (voice file) → **score each ≥90** or rewrite.  
-6. **Original (strict):** choose an independent pillar idea from voice idea bank — **do not theme it off the two replies**. Draft for soul + teaching + emotion → standalone / bookmark tests → **score ≥90**. If it reads like a pack summary, delete and rewrite.  
+6. **Original (strict):** choose an independent pillar idea from voice idea bank — **do not theme it off the two replies**. Write as a **storyteller**: cohesive arc (hook → middle → turn → land), easy language, relatable scene, pull to finish the whole post. Soul + teaching + emotion → standalone / **finish** / bookmark tests → **score ≥90**. If pack summary, slogan stack, or cold abstraction → delete and rewrite.  
 7. Varied shapes + quality{} on every draft (`quality.notes` for originals must name the independent insight).  
 8. `validate-x-pack` (grounding + quality) → merge/ingest.  
 9. Chat status ≤8 lines including **scores** + original pillar.

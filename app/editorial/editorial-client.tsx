@@ -1,14 +1,23 @@
 'use client';
 
-import { Component, useState, useEffect, type ErrorInfo, type ReactNode } from 'react';
+import {
+  Component,
+  useState,
+  useEffect,
+  useMemo,
+  useDeferredValue,
+  memo,
+  type ErrorInfo,
+  type ReactNode,
+} from 'react';
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
-import { motion } from 'motion/react';
+import * as motion from 'motion/react-client';
 import { AnimatePresence } from 'motion/react';
 import {
   Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
-  Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2,
+  Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2, ListTodo, BookOpen,
 } from 'lucide-react';
 import type { Article, ArticleLite } from '@/lib/blog-service';
 import { avatarForSession, type UserSession } from '@/lib/auth';
@@ -140,16 +149,14 @@ function StatusBadge({ status }: { status: 'draft' | 'published' | undefined }) 
   );
 }
 
-function ArticleCard({
+const ArticleCard = memo(function ArticleCard({
   post,
-  index,
   onEdit,
   onDelete,
   isDeletingId,
   onPreview,
 }: {
   post: ArticleLite;
-  index: number;
   onEdit: (a: ArticleLite) => void;
   onDelete: (id: number) => void;
   isDeletingId: number | null;
@@ -157,7 +164,7 @@ function ArticleCard({
 }) {
   return (
     <article
-      className="group atelier-card p-4 sm:p-5 flex flex-col sm:flex-row gap-5 sm:items-center hover:shadow-[var(--atelier-shadow)] transition-shadow duration-300"
+      className="group atelier-card p-4 sm:p-5 flex flex-col sm:flex-row gap-5 sm:items-center hover:shadow-[var(--atelier-shadow)] transition-shadow duration-300 [content-visibility:auto] [contain-intrinsic-size:auto_140px]"
     >
       <div className="relative shrink-0 w-full sm:w-[148px] h-[110px] sm:h-[96px] rounded-[1.25rem] overflow-hidden border border-[var(--atelier-line)] bg-[var(--atelier-paper)] shadow-inner">
         <IllustrationThumb type={post.illustrationType} coverImage={post.coverImage} onPreview={onPreview} />
@@ -225,9 +232,48 @@ function ArticleCard({
       </div>
     </article>
   );
-}
+});
 
 const WORKSPACE_KEY = 'editorial_workspace';
+
+function WorkspaceSwitch({ active }: { active: 'blog' | 'x' }) {
+  return (
+    <div
+      className="inline-flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 shadow-[var(--atelier-shadow-sm)]"
+      role="tablist"
+      aria-label="Editorial workspace"
+    >
+      <Link
+        href="/editorial"
+        role="tab"
+        aria-selected={active === 'blog'}
+        prefetch
+        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-colors ${
+          active === 'blog'
+            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
+            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
+        }`}
+      >
+        <BookOpen className="w-3.5 h-3.5" />
+        Blog
+      </Link>
+      <Link
+        href="/editorial?workspace=x"
+        role="tab"
+        aria-selected={active === 'x'}
+        prefetch
+        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-colors ${
+          active === 'x'
+            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
+            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
+        }`}
+      >
+        <ListTodo className="w-3.5 h-3.5" />
+        X To-Do
+      </Link>
+    </div>
+  );
+}
 
 export function EditorialClient({
   initialArticles,
@@ -237,6 +283,7 @@ export function EditorialClient({
   const workspace = initialWorkspace;
   const [articles, setArticles] = useState<ArticleLite[]>(initialArticles);
   const [searchQuery, setSearchQuery] = useState('');
+  const deferredSearch = useDeferredValue(searchQuery);
   const [editingArticle, setEditingArticle] = useState<Partial<Article> | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeletingId, setIsDeletingId] = useState<number | null>(null);
@@ -578,11 +625,28 @@ export function EditorialClient({
     setHasBackupDraft(false);
   };
 
-  const filteredArticles = articles.filter(
-    (a) =>
-      a.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.slug.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      a.categories.some((c) => c.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredArticles = useMemo(() => {
+    const q = deferredSearch.trim().toLowerCase();
+    if (!q) return articles;
+    return articles.filter(
+      (a) =>
+        a.title.toLowerCase().includes(q) ||
+        a.slug.toLowerCase().includes(q) ||
+        a.categories.some((c) => c.toLowerCase().includes(q))
+    );
+  }, [articles, deferredSearch]);
+
+  const publishedCount = useMemo(
+    () => articles.filter((a) => a.status === 'published').length,
+    [articles]
+  );
+  const draftCount = useMemo(
+    () => articles.filter((a) => a.status === 'draft').length,
+    [articles]
+  );
+  const featuredCount = useMemo(
+    () => articles.filter((a) => a.featured).length,
+    [articles]
   );
 
   const startNewArticle = () => {
@@ -754,9 +818,6 @@ export function EditorialClient({
 
   const wordCount = formContent.trim().split(/\s+/).filter(Boolean).length;
   const charCount = formContent.length;
-  const publishedCount = articles.filter((a) => a.status === 'published').length;
-  const draftCount = articles.filter((a) => a.status === 'draft').length;
-  const featuredCount = articles.filter((a) => a.featured).length;
 
   return (
     <div
@@ -804,26 +865,40 @@ export function EditorialClient({
       <header className={workspace === 'x' ? 'mb-6 sm:mb-8' : 'mb-10 sm:mb-12'}>
         {workspace === 'x' ? (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
-            <div className="space-y-1">
+            <div className="space-y-2">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
                 Private atelier
               </p>
               <h1 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
                 X To-Do
               </h1>
+              <p className="text-sm text-[var(--atelier-muted)] max-w-md leading-relaxed">
+                Focus queue for scout packs — reply, post, mark done. Switch to Blog anytime.
+              </p>
             </div>
-            <div className="flex items-center gap-3">
+            <div className="flex flex-wrap items-center gap-3">
+              <WorkspaceSwitch active="x" />
               <div className="flex items-center gap-2.5 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] px-3 py-1.5 pr-3.5">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={avatarForSession(user)}
                   alt=""
+                  width={32}
+                  height={32}
                   className="w-8 h-8 rounded-full object-cover ring-1 ring-[var(--atelier-gold)]/25"
                 />
                 <span className="font-headline text-xs font-bold text-[var(--atelier-ink)] truncate max-w-[8rem]">
                   {user.name}
                 </span>
               </div>
+              <Link
+                href="/api/auth/logout"
+                className="atelier-btn atelier-btn-ghost h-10 w-10 !px-0 !text-red-600 dark:!text-red-400"
+                title="Sign out"
+                aria-label="Sign out"
+              >
+                <LogOut className="w-4 h-4" />
+              </Link>
             </div>
           </div>
         ) : (
@@ -846,7 +921,8 @@ export function EditorialClient({
                 <p className="text-[var(--atelier-muted)] text-base sm:text-lg leading-relaxed max-w-lg">
                   Shape essays with quiet control — AI for scaffolding, you for the voice.
                 </p>
-                <div className="flex flex-wrap gap-2 pt-1">
+                <div className="flex flex-wrap items-center gap-2 pt-1">
+                  <WorkspaceSwitch active="blog" />
                   <span className="atelier-chip !py-1.5 !px-3.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     {publishedCount} live
@@ -866,6 +942,8 @@ export function EditorialClient({
                   <img
                     src={avatarForSession(user)}
                     alt=""
+                    width={40}
+                    height={40}
                     className="w-10 h-10 rounded-2xl object-cover ring-2 ring-[var(--atelier-gold)]/30"
                   />
                   <div className="min-w-0 leading-tight">
@@ -1475,11 +1553,10 @@ export function EditorialClient({
                     )}
                   </motion.div>
                 ) : (
-                  filteredArticles.map((post, i) => (
+                  filteredArticles.map((post) => (
                     <ArticleCard
                       key={post.id}
                       post={post}
-                      index={i}
                       onEdit={startEditArticle}
                       onDelete={handleDelete}
                       isDeletingId={isDeletingId}
