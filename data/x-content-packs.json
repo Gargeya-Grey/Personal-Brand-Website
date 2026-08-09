@@ -1,5 +1,1557 @@
 [
   {
+    "id": "pack-2026-08-09-t19",
+    "date": "2026-08-09",
+    "title": "1h IST t19 · competence vs tutor mode + CSS not adjectives + don't rush the smart reply",
+    "theme": "Name skills you keep in your hands · fix taste with constraints not vibes · listen before advice",
+    "briefing": "t19 IST. 2 Venn replies + 1 original. Shapes: personal_noticing, under_floorboards, practice_story. Original pillar: values/listening (independent of competence-picking and design skills).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-dhh-competence-tutor",
+      "r-kotetsu-css-skill",
+      "short-dont-rush-smart"
+    ],
+    "signals": [
+      {
+        "id": "sig-dhh-competence",
+        "summary": "DHH: AI can rob competence — felt it drain from fingers on skills he should internalize; also most amazing tutor; pick areas of competence, do the work there, pair with agent otherwise",
+        "whyItMatters": "Cognitive honesty + AI use-cases — intentional skill boundaries vs default offloading",
+        "url": "https://x.com/dhh/status/2086426384285487105",
+        "heat": 2,
+        "category": "cognition-ai-practice"
+      },
+      {
+        "id": "sig-kotetsu-html-skill",
+        "summary": "Claude Code HTML output too ugly for meetings; skill auto-fixes to consulting-quality design; key insight: don't instruct design rules in words — pass finished CSS unchanged so output stops drifting",
+        "whyItMatters": "Builder use-case / efficiency — constraints and artifacts beat vibe prompts for reliable quality",
+        "url": "https://x.com/kotetsu_0321/status/2086400069461487807",
+        "heat": 3,
+        "category": "ai-usecases-skills"
+      }
+    ],
+    "skipList": [
+      "t15–t18 sources (Mollick, Craig, Antonio, Mia, Hendrick, Levi, Alibaba, Brendan) — do not recycle",
+      "DHH parent endless-ideas nirvana (mega heat; competence reply is sharper Venn)",
+      "politicalmath Claude Code yes-spam (strong; thinner craft thesis than kotetsu)",
+      "nayakayp bare-minimum AI engineer",
+      "course-slot / Drive spam / Fable clones",
+      "Claims only in DHH parent/sibling thread posts — ground this status only"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-09-t19__r-dhh-competence-tutor",
+        "kind": "reply",
+        "label": "Reply · competence vs tutor (personal noticing)",
+        "body": "yeah the \"drain out of my fingers\" part is the honest half most people skip.\n\ntutor mode and competence theft ride the same tool. the difference is whether you named the skills you're trying to keep in your hands.\n\npick the few that matter. sweat those. agent the rest without pretending it's the same kind of knowing.",
+        "meta": "https://x.com/dhh/status/2086426384285487105",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP: AI robs competence; drain from fingers; amazing tutor; pick competence areas and do work there; pair with agent otherwise. Take: name skills to keep vs same-tool different knowing. Stay in craft/builder world — no school stamp.",
+        "tip": "Do not invent Omarchy/Rails claims or parent-thread 'endless execution' lines. Stay with this status only.",
+        "postingWindow": "asap",
+        "targetHandle": "dhh",
+        "targetReach": "high",
+        "quality": {
+          "total": 95,
+          "shape": "personal_noticing",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 9,
+            "groundingFit": 4
+          },
+          "notes": "yeah + OP finger-drain image; tutor/agent/competence from source; take is named skills vs same-tool knowing; conversational; no final-sheet glue.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t19__r-kotetsu-css-skill",
+        "kind": "reply",
+        "label": "Reply · CSS not adjectives (under floorboards)",
+        "body": "yeah handing finished CSS instead of design adjectives is the whole trick.\n\n\"make it pretty\" is fog. a stylesheet the model can't rewrite mid-output is a real standard.\n\nskills beat vibes when quality has to survive the next chat.",
+        "meta": "https://x.com/kotetsu_0321/status/2086400069461487807",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 45,
+        "why": "Grounded in OP: ugly Claude Code HTML; skill for meeting-ready design; key point pass finished CSS not design rules in words. Take: constraints beat vibe prompts. Stay in design/tooling world.",
+        "tip": "Do not invent chart types or install paths unless needed. Core claim: CSS-as-constraint not worded design rules.",
+        "postingWindow": "asap",
+        "targetHandle": "kotetsu_0321",
+        "targetReach": "mid",
+        "quality": {
+          "total": 94,
+          "shape": "under_floorboards",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 12,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + CSS vs adjectives from OP insight; take is standards that survive next chat; different opener from DHH; no school glue.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t19__short-dont-rush-smart",
+        "kind": "short",
+        "label": "Short · don't rush the smart reply",
+        "body": "A friend sent me a long voice note after a hard week.\n\nI almost replied with a tight little paragraph of advice.\n\nDeleted it. Sent back: \"I'm here. Tell me the part that still hurts.\"\n\nHe talked for another four minutes.\n\nSometimes the rare skill isn't knowing what to say.\nIt's not rushing to be the smartest person in the thread.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent values/listening pillar — not mashup of competence boundaries or CSS skills.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: restraint in reply can be rarer than smart advice. Story hook/scene: voice note + deleted advice + 'part that still hurts'. Finish/like/comment: last line; seeds recognition replies. Not pack collage.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "DHH competence/tutor + kotetsu CSS-as-constraint skill."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent listening/values story."
+      }
+    ],
+    "createdAt": "2026-08-09T14:02:17.714Z",
+    "updatedAt": "2026-08-09T14:02:17.714Z"
+  },
+  {
+    "id": "pack-2026-08-09-t18",
+    "date": "2026-08-09",
+    "title": "1h IST t18 · freemium open weights + synthetic self-grade moat + spine before polish",
+    "theme": "Free tier thick enough to practice · models can't grade their own frontier · junior names the flaw first",
+    "briefing": "t18 IST. 2 Venn replies + 1 original. Shapes: twist, blunt_honest, practice_story. Original pillar: cognitive honesty with tools (independent of Alibaba freemium and synthetic-data moats).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-alibaba-freemium-open",
+      "r-brendan-self-grade",
+      "short-spine-before-polish"
+    ],
+    "signals": [
+      {
+        "id": "sig-alibaba-freemium",
+        "summary": "Alibaba plans to monetize heavy usage of next open-source AI model; low-cost/free for lighter users; charge larger commercial/enterprise for higher usage and services",
+        "whyItMatters": "Open source as access + efficiency — freemium is how open stays funded; free tier thickness decides who gets real practice",
+        "url": "https://x.com/thedailyblock/status/2086371500735770725",
+        "heat": 3,
+        "category": "open-source-access"
+      },
+      {
+        "id": "sig-brendan-synthetic",
+        "summary": "Synthetic data companies underwhelming; AI cannot reliably measure frontier of its own mistakes (like students grading own homework) → reward hacking; labs in-house pure synthetic; durable value is organizing human experts at frontier",
+        "whyItMatters": "AI systems honesty — self-evaluation loops fail at the edge; human judgment is the scarce moat",
+        "url": "https://x.com/BrendanFoody/status/2086194919014805789",
+        "heat": 3,
+        "category": "evals-human-intelligence"
+      }
+    ],
+    "skipList": [
+      "t15 Mollick/Craig · t16 Antonio/Mia · t17 Hendrick/Levi — do not recycle",
+      "politicalmath Claude Code yes-spam (strong humor; thinner systems thesis than Brendan)",
+      "nayakayp bare-minimum AI engineer (good curriculum; mid heat vs Alibaba+Brendan)",
+      "Da7em Claude Code worst value (engagement bait)",
+      "jackedAJ mediocre CS student video (title-only grounding risk)",
+      "Anviksiki create-more-understand-less (strong psych; lower heat)",
+      "Fable clones / course-slot spam"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-09-t18__r-alibaba-freemium-open",
+        "kind": "reply",
+        "label": "Reply · freemium open (twist)",
+        "body": "yeah freemium open is the honest shape of \"open\" right now.\n\nlight use stays cheap so people can practice. heavy commercial use pays the bill.\n\nthe real question is whether the free tier stays thick enough that beginners still get real reps — not a demo that evaporates the moment they ship.",
+        "meta": "https://x.com/thedailyblock/status/2086371500735770725",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP: open-source model, free/low-cost light users, charge heavy commercial/enterprise. Take: free-tier thickness for real practice, not only price ladder. Stay in access/monetization world — no exam/final-sheet glue.",
+        "tip": "Do not invent model name, prices, or Alibaba product details beyond freemium heavy-usage claim.",
+        "postingWindow": "asap",
+        "targetHandle": "thedailyblock",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "twist",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + freemium/open from OP; take is free-tier thickness for reps; conversational; access room not school stamp.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t18__r-brendan-self-grade",
+        "kind": "reply",
+        "label": "Reply · synthetic self-grade (blunt honest)",
+        "body": "yeah the self-grade line is the whole moat problem.\n\nif a model can't see the frontier of its own mistakes, synthetic loops mostly polish the same blind spots.\n\norganizing humans who can still see the edge is ugly work. that's why it's scarce — and valuable.",
+        "meta": "https://x.com/BrendanFoody/status/2086194919014805789",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP: AI can't measure own frontier mistakes; self-grade analogy; synthetic reward hacking; durable value = organize human experts. Take: self-grade = moat failure. Stay in data/eval world — don't expand school metaphor into Gargeya stamp.",
+        "tip": "Do not invent company names or revenue numbers. Echo self-grade/frontier/human experts only from OP.",
+        "postingWindow": "asap",
+        "targetHandle": "BrendanFoody",
+        "targetReach": "high",
+        "quality": {
+          "total": 94,
+          "shape": "blunt_honest",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "yeah + self-grade/frontier from OP; take is moat = who sees the edge; different opener from Alibaba; no final-sheet stamp.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t18__short-spine-before-polish",
+        "kind": "short",
+        "label": "Short · spine before polish",
+        "body": "Yesterday a junior asked me to \"just check this with AI once.\"\n\nI said: tell me what you already believe is wrong with it first.\n\nHe listed three things. Two were real. One was noise.\n\nWe never opened the chat.\n\nThe tool would have been fine.\nThe question was whether he already had a spine before the polish.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent cognitive-honesty pillar — not mashup of freemium open weights or synthetic-data self-grade moats.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: tool is fine; spine before polish is the skill. Story hook/scene: junior + name the flaw first + never opened chat. Finish/like/comment: last line; seeds manager/mentor replies. Not pack collage of Alibaba/Brendan.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Alibaba freemium open + Brendan synthetic self-grade."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent spine-before-polish practice story."
+      }
+    ],
+    "createdAt": "2026-08-09T13:03:17.178Z",
+    "updatedAt": "2026-08-09T13:03:17.178Z"
+  },
+  {
+    "id": "pack-2026-08-09-t17",
+    "date": "2026-08-09",
+    "title": "1h IST t17 · raw chatbot pedagogy + reverse-prompt the specialist + mid-thought delay",
+    "theme": "Raw chatbot access is a pedagogy · capture what good looked like · polish as fear of being seen",
+    "briefing": "t17 IST. 2 Venn replies + 1 original. Shapes: under_floorboards, personal_noticing, practice_story. Original pillar: builder sincerity / fear of being seen mid-work (independent of learning papers and reverse-prompt workflows).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-hendrick-raw-chatbot",
+      "r-levi-reverse-prompt",
+      "short-mid-thought"
+    ],
+    "signals": [
+      {
+        "id": "sig-hendrick-illusion",
+        "summary": "Nearly every new AI+learning paper: AI gives illusion of learning short-term but less learning long-term; if you give students raw chatbots what do you expect",
+        "whyItMatters": "AI-in-education / learning science — access design is pedagogy, not neutral plumbing",
+        "url": "https://x.com/C_Hendrick/status/2086365745038995703",
+        "heat": 2,
+        "category": "ai-learning-science"
+      },
+      {
+        "id": "sig-levi-reverse",
+        "summary": "Codex/Kimi/Gemini weaker at slides than Claude Design/Gamma; reverse-prompt: thoughts.md speak dump → Claude Design slides PDF → teach Codex to agents.md → regenerate; AI as any-to-any transformer",
+        "whyItMatters": "Real use-case / efficiency — transfer quality from specialist tools into daily stack via captured recipes",
+        "url": "https://x.com/levifikri/status/2086376891926426023",
+        "heat": 2,
+        "category": "ai-usecases-workflow"
+      }
+    ],
+    "skipList": [
+      "t15 Mollick/Craig · t16 Antonio/Mia — do not recycle",
+      "Alibaba freemium open-source (access; prior slots already used access originals/replies)",
+      "BrendanFoody synthetic self-grade (strong systems; older ~20h vs Levi freshness)",
+      "Da7em Claude Code worst value (engagement bait, thin additive take)",
+      "gdb ChatGPT Finance (high heat, off-Venn)",
+      "Fable trading-bot clones / CNPY spam",
+      "Claims only in Levi follow-up (don't outsource understanding) — ground main status only"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-09-t17__r-hendrick-raw-chatbot",
+        "kind": "reply",
+        "label": "Reply · raw chatbot pedagogy (under floorboards)",
+        "body": "yeah the \"what do you expect\" is doing the real work.\n\nif the interface hands over a finished thought every time, short-term confidence is the product. long-term learning was never in the contract.\n\nraw chatbot access isn't neutral. it's a pedagogy with the labels peeled off.",
+        "meta": "https://x.com/C_Hendrick/status/2086365745038995703",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP: papers show short-term illusion of learning / less long-term; raw chatbots for students. Take: access design = unlabeled pedagogy. Post is already learning — no forced final-sheet/cheater stamp.",
+        "tip": "Do not invent paper titles or study numbers. Stay with illusion short-term / less long-term + raw chatbots frame only.",
+        "postingWindow": "asap",
+        "targetHandle": "C_Hendrick",
+        "targetReach": "mid",
+        "quality": {
+          "total": 94,
+          "shape": "under_floorboards",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + OP phrase; short-term/long-term from papers claim; take is unlabeled pedagogy not paraphrase-only; conversational; education room native.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t17__r-levi-reverse-prompt",
+        "kind": "reply",
+        "label": "Reply · reverse-prompt specialist (personal noticing)",
+        "body": "yeah reverse-prompting the specialist is underrated.\n\nClaude Design / Gamma make the good slide. Codex learns the recipe into agents.md. the daily stack climbs.\n\nthe upgrade isn't \"one model does everything.\" it's capturing what good already looked like before you forget the path.",
+        "meta": "https://x.com/levifikri/status/2086376891926426023",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP: Codex/Kimi/Gemini weaker on slides than Claude Design/Gamma; reverse-prompt PDF → agents.md; regenerate better. Take: capture good as recipe. Stay in builder/tool world — no school glue.",
+        "tip": "Only name tools in the status (Claude Design, Gamma, Codex, agents.md). Skip Kimi/Gemini if not needed. No claims from follow-up thread.",
+        "postingWindow": "asap",
+        "targetHandle": "levifikri",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "personal_noticing",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "yeah + reverse-prompt; tools from OP; take is capture-the-path not step-list echo; different opener from Hendrick; builder room.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t17__short-mid-thought",
+        "kind": "short",
+        "label": "Short · mid-thought delay",
+        "body": "I was on a call with a founder last week.\n\nHe kept saying \"we're almost ready to show people.\"\n\nDeck: polished.\nDemo: still brittle.\nStory: still vague.\n\nI asked who he'd show a rough version to this week.\n\nSilence.\n\nWe don't only delay because the work is unfinished.\nSometimes polish is easier than being seen mid-thought.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent builder-sincerity pillar — not mashup of chatbot pedagogy or reverse-prompt recipes.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: delay often fear of being seen mid-thought, not only unfinished work. Story hook/scene: founder call, polished deck vs brittle demo, silence. Finish/like/comment: last line lands; seeds 'I do this' replies. Not pack collage.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Hendrick learning papers + Levi reverse-prompt while still reachable."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent mid-thought sincerity story."
+      }
+    ],
+    "createdAt": "2026-08-09T12:03:38.260Z",
+    "updatedAt": "2026-08-09T12:03:38.260Z"
+  },
+  {
+    "id": "pack-2026-08-09-t16",
+    "date": "2026-08-09",
+    "title": "1h IST t16 · CS thinking wiring + own your compute + fear in diligence costume",
+    "theme": "First-principles reps before AI · local practice over bubble talk · decide after one clean page",
+    "briefing": "t16 IST. 2 Venn replies + 1 original. Shapes: personal_noticing, blunt_honest, practice_story. Original pillar: decision honesty (independent of CS wiring and local-compute access).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-antonio-cs-wiring",
+      "r-mia-own-compute",
+      "short-diligence-costume"
+    ],
+    "signals": [
+      {
+        "id": "sig-antonio-wiring",
+        "summary": "Programming wires the brain for logical thinking and first-principles problem solving as an acquired skill; OP wrote code years before AI and worries how new CS students will learn to think that way",
+        "whyItMatters": "Learning/cognition × AI — what skill actually forms when formal thinking practice thins out",
+        "url": "https://x.com/antoniosarosi/status/2086144511269306853",
+        "heat": 3,
+        "category": "cognition-cs-learning"
+      },
+      {
+        "id": "sig-mia-local",
+        "summary": "People privately send insanely good AI builds that were impossible years ago; bubble talk is blind/unused/lying; take control of your own compute — local AI good enough in 2026; buy GPU/DGX Spark/laptop and build; stop being a pessimist",
+        "whyItMatters": "Access + efficiency — practice ownership of compute vs renting demos and doom-posting",
+        "url": "https://x.com/MiaAI_lab/status/2086350187769827597",
+        "heat": 2,
+        "category": "access-local-ai"
+      }
+    ],
+    "skipList": [
+      "t15 sources (Mollick manager, Craig essay-box) — do not recycle",
+      "Alibaba open-source freemium (access lane covered via Mia; t15 original already access)",
+      "Anviksiki create-more-understand-less (strong psych; lower heat than Antonio)",
+      "levifikri reverse-prompt slides (solid use-case; Indonesian + thinner reach)",
+      "politicalmath Claude Code yes-spam (funny; thinner Venn)",
+      "gdb ChatGPT Finance (high heat, off-Venn money tip)",
+      "swyx llm-as-judge evals (builder; mid heat)",
+      "engagement-farm Fable / CNPY spam"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-09-t16__r-antonio-cs-wiring",
+        "kind": "reply",
+        "label": "Reply · CS thinking wiring (personal noticing)",
+        "body": "yeah the wiring is the part I keep circling.\n\nprogramming wasn't only output. it was forced first-principles reps until a messy problem stopped feeling like fog.\n\nif new CS students never have to hold that fog without a rescue, we might get more shipping — and fewer people who can tell when the ship is wrong.",
+        "meta": "https://x.com/antoniosarosi/status/2086144511269306853",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP only: programming wires brain for logical/first-principles thinking as acquired skill; years of code before AI; worry about new CS students learning to think that way. Take: fog-holding / knowing when ship is wrong. Stay in CS/programming world — no exam/final-sheet glue.",
+        "tip": "Do not invent agent product names or formal-language claims from the QT only. Stay with Antonio's wiring + CS students frame.",
+        "postingWindow": "asap",
+        "targetHandle": "antoniosarosi",
+        "targetReach": "high",
+        "quality": {
+          "total": 94,
+          "shape": "personal_noticing",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + I keep circling; names programming/first-principles/CS students from OP; take is fog-holding vs paraphrase of 'wires your brain'; conversational not post-like; no school stamp.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t16__r-mia-own-compute",
+        "kind": "reply",
+        "label": "Reply · own your compute (blunt honest)",
+        "body": "yeah the private sends are the real ledger.\n\nbubble discourse is loud. the quiet builds that didn't exist three years ago barely make the timeline.\n\nowning a little compute isn't aesthetics — it's a place to practice without renting every attempt.",
+        "meta": "https://x.com/MiaAI_lab/status/2086350187769827597",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 45,
+        "why": "Grounded in OP: private insanely good AI builds; bubble talkers blind/unused/lying; take control of own compute; local AI good in 2026; build your own stuff. Additive take: practice without renting attempts. Stay in builder/compute world.",
+        "tip": "Do not invent model names or price claims. Optional GPU/DGX/laptop only if needed — body stays general to own-compute thesis.",
+        "postingWindow": "asap",
+        "targetHandle": "MiaAI_lab",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_honest",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + private sends echo OP without full restatement; take is practice-without-renting; different opener from Antonio; no education glue.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t16__short-diligence-costume",
+        "kind": "short",
+        "label": "Short · diligence costume",
+        "body": "I used to treat every hard decision like a research project.\n\nMore tabs. More opinions. One more model run \"just to be sure.\"\n\nLast month I tried a different rule: decide after one clean page of what I already know.\n\nNot zero research. Just a deadline on doubt.\n\nMost of my delays weren't missing information.\nThey were fear wearing a diligence costume.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent values/decision-making pillar — not mashup of CS wiring or local-compute access.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: delay often fear dressed as diligence, not missing info. Story hook/scene: research-project decisions + one clean page rule. Finish/like/comment: recognition punch on last line; seeds 'I do this with tabs too' replies. Not collage of Antonio/Mia.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Antonio CS wiring + Mia local compute while both still have room."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent decision-honesty story; no CS/local-compute collage."
+      }
+    ],
+    "createdAt": "2026-08-09T11:02:40.820Z",
+    "updatedAt": "2026-08-09T11:02:40.820Z"
+  },
+  {
+    "id": "pack-2026-08-09-t15",
+    "date": "2026-08-09",
+    "title": "1h IST t15 · speak-to-manager agents + essay-box design + free-weights Tuesday",
+    "theme": "Force the smart path to look · assessment that made thinking optional · access as who gets a second attempt",
+    "briefing": "t15 IST. 2 Venn replies + 1 original. Shapes: under_floorboards, blunt_honest, practice_story. Original pillar: open access / who practices (independent of Mollick agents and Craig essay design).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-mollick-speak-manager",
+      "r-craig-essay-box",
+      "short-free-weights-tuesday"
+    ],
+    "signals": [
+      {
+        "id": "sig-mollick-manager",
+        "summary": "Mollick tells Sol in Codex: I want you not your agents to go through everything; stop delegating to dumber agents and elaborate test harnesses missing what a glance would catch",
+        "whyItMatters": "AI systems honesty / use-cases — attention and judgment over swarm throughput; when to collapse the harness",
+        "url": "https://x.com/emollick/status/2086338988520927368",
+        "heat": 3,
+        "category": "ai-agents-judgment"
+      },
+      {
+        "id": "sig-craig-essay-box",
+        "summary": "Universities panic about AI essays but designed assessments a machine ought to write: topic, rubric, structure, readings, criteria — originality inside a pre-specified box; scandal is thinking was optional",
+        "whyItMatters": "Education practice / process assessment — redesign what we test (judgment, problem-finding) not only ban tools",
+        "url": "https://x.com/Dr_CSWright/status/2086257649176522930",
+        "heat": 2,
+        "category": "assessment-design"
+      }
+    ],
+    "skipList": [
+      "Alibaba open-source freemium (fresh access angle — saved original for access pillar instead)",
+      "Antonio Sarosi CS formal-language / think wiring (strong, thematically overlaps Craig learning-to-think)",
+      "politicalmath Claude Code yes-spam (funny, thinner Venn than Mollick)",
+      "LifeOS intent engineering (bookmarks strong; older + less heat than Mollick)",
+      "swyx ultracode dynamic workflows (good builder; agent lane covered by Mollick)",
+      "engagement-farm trading-bot Fable clones",
+      "Claims only in Mollick follow-ups (bot replies, Yes it worked) not in main status"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-09-t15__r-mollick-speak-manager",
+        "kind": "reply",
+        "label": "Reply · speak to the manager (under floorboards)",
+        "body": "yeah \"I want you, not your agents\" is doing more work than it sounds.\n\nonce the swarm is spinning, elaborate harnesses still miss what a glance would catch.\n\nthe scarce move isn't more delegation. it's forcing the smart path to actually look.",
+        "meta": "https://x.com/emollick/status/2086338988520927368",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 45,
+        "why": "Grounded only in OP: Sol/Codex, speak to the manager, you not your agents, stop delegating to dumber agents + elaborate test harnesses missing what a glance catches. Take: scarce skill is forcing the smart path to look, not more swarm. Stay in agent/harness world — no school glue.",
+        "tip": "Do not invent model/product details beyond Codex/Sol and the quoted instruction. Skip follow-up bot-reply thread claims.",
+        "postingWindow": "asap",
+        "targetHandle": "emollick",
+        "targetReach": "high",
+        "quality": {
+          "total": 94,
+          "shape": "under_floorboards",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + quoted OP line; names agents/harnesses/glance from source; take is scarce attention not paraphrase of full quote; conversational not post-like; no final-sheet stamp.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t15__r-craig-essay-box",
+        "kind": "reply",
+        "label": "Reply · essay box design (blunt honest)",
+        "body": "yeah the panic is aimed at the wrong desk.\n\nif we already hand over topic, structure, readings, and rubric, originality was never the test — assembly was.\n\nAI didn't invent the box. it just made the empty middle impossible to ignore.",
+        "meta": "https://x.com/Dr_CSWright/status/2086257649176522930",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP: university AI-essay panic misses that we designed machine-writeable essays (topic/structure/readings/rubric/criteria); assembly not originality; scandal is thinking optional. Additive take: wrong desk + empty middle. Post is already education — process language earned; no forced cheater/grade slogans.",
+        "tip": "Do not invent Japan/free-uni reply-thread claims. Stay with Craig's assessment design argument only.",
+        "postingWindow": "asap",
+        "targetHandle": "Dr_CSWright",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_honest",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + this room energy; lists OP's hand-over pieces without full restatement essay; take is wrong desk / empty middle; education post so assessment framing is native not glue; different opener from Mollick reply.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-09-t15__short-free-weights-tuesday",
+        "kind": "short",
+        "label": "Short · free weights Tuesday",
+        "body": "There's a version of AI progress that only lives on launch day.\n\nNew model. New bench. New clip of someone gasping at a demo.\n\nThere's another version that shows up on a slow Tuesday: a kid running a local model on an old laptop because the weights are free and nobody asked for a credit card.\n\nAccess isn't a keynote.\nIt's who gets a second attempt without paying for permission.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent access/efficiency pillar — not mashup of agent manager UX or essay-box assessment design.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 94,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 12,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 9,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: access = second attempt without permission, not launch-day theater. Story hook/scene: slow Tuesday kid + free weights on old laptop vs keynote gasp. Finish/like/comment: contrast lands hard; seeds \"my first local model\" / access stories. Not collage of Mollick or Craig.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Mollick manager line while hot; Craig assessment design for perfect Venn."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent access story — free weights Tuesday; not agents or essay boxes."
+      }
+    ],
+    "createdAt": "2026-08-09T10:03:09.502Z",
+    "updatedAt": "2026-08-09T10:03:09.502Z"
+  },
+  {
+    "id": "pack-2026-08-07-t19",
+    "date": "2026-08-07",
+    "title": "1h IST t19 · malleable OS taste + open-source paper eval + whose-thought pause",
+    "theme": "Agent prompt as taste brief · closed AI for publication is a trust problem · pause before the model steals your first thought",
+    "briefing": "t19 IST. 2 Venn replies + 1 original. Shapes: personal_noticing, blunt_honest, practice_story. Original pillar: cognitive honesty with AI (independent of OS plugins and peer-review trust).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-dhh-malleable-taste",
+      "r-alejandro-open-eval",
+      "short-whose-thought"
+    ],
+    "signals": [
+      {
+        "id": "sig-dhh-malleable",
+        "summary": "Omarchy + AI: prompted agent for personal speedtest plugin that looks like a mustang speedometer; AI enables the malleable operating system",
+        "whyItMatters": "Builder use-case / efficiency — taste lives in the brief, not only in hours of hand-coding; personalisation becomes cheap",
+        "url": "https://x.com/dhh/status/2085662636113355170",
+        "heat": 3,
+        "category": "ai-usecases"
+      },
+      {
+        "id": "sig-alejandro-open-eval",
+        "summary": "Terrible idea to evaluate papers with closed AI before publication; anything short of open source is unacceptable; open harnesses + open LLMs exist",
+        "whyItMatters": "Open source as access + systems honesty — trust in the checker when AI gates scholarly work",
+        "url": "https://x.com/alejandroll10/status/2085650579054117099",
+        "heat": 3,
+        "category": "open-source-evals"
+      }
+    ],
+    "skipList": [
+      "emollick harness asterisk + quant code-worth (t18)",
+      "AUSNIAN worksheets / Nethack cheat threads (earlier slots)",
+      "paid-course drive spam / crypto job boards",
+      "jun_song fun-learning (strong Venn, lower heat than DHH+Alejandro)",
+      "milesdeutscher Buzz Slack (open-source angle already covered via Alejandro)",
+      "Inomsxbt birdwatching (nice use-case, thinner take)",
+      "Claims from Refine partnership thread not in Alejandro status"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-07-t19__r-dhh-malleable-taste",
+        "kind": "reply",
+        "label": "Reply · malleable OS taste (personal noticing)",
+        "body": "yeah the mustang prompt is doing more work than the screenshot shows.\n\nyou didn't ask for \"a nicer speedtest.\" you handed the agent a taste constraint — shape, feel, personality — and the OS bent.\n\nthe scarce bit isn't wiring the widget anymore. it's knowing what \"done\" should feel like before the agent starts.",
+        "meta": "https://x.com/dhh/status/2085662636113355170",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded only in OP: prompted agent for mustang-speedometer speedtest plugin; AI enables malleable OS. Personal take: taste lives in the brief, not the build time. Stay in software/customization world — no school glue.",
+        "tip": "Do not invent model names or Omarchy product claims beyond what OP said.",
+        "postingWindow": "asap",
+        "targetHandle": "dhh",
+        "targetReach": "high",
+        "quality": {
+          "total": 94,
+          "shape": "personal_noticing",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + you energy; names mustang prompt/agent/OS from OP; take is taste-as-scarce-skill not paraphrase; no final-sheet stamp; conversational not post-like.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t19__r-alejandro-open-eval",
+        "kind": "reply",
+        "label": "Reply · closed AI paper eval (blunt honest)",
+        "body": "yeah this is a trust problem, not a productivity upgrade.\n\nif editors and authors can't inspect the harness, \"technical verification\" is just a brand stamp on a black box.\n\nopen models + open harnesses aren't purity tests — they're how you check the checker before it gates a paper.",
+        "meta": "https://x.com/alejandroll10/status/2085650579054117099",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded in OP: closed AI for pre-publication paper eval is terrible; open source required; open harnesses + open LLMs exist. Additive take: trust = ability to check the checker.",
+        "tip": "Do not invent AEA/Econometric Society partnership details from the QT — stay with Alejandro's claims only.",
+        "postingWindow": "asap",
+        "targetHandle": "alejandroll10",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_honest",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 10,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "yeah + this; stays in peer-review/trust room; open harnesses echo OP without pure paraphrase; no school glue; conversational markers present.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t19__short-whose-thought",
+        "kind": "short",
+        "label": "Short · whose thought is this",
+        "body": "Last week I caught myself mid-prompt.\n\nI was about to hit enter on a question I already half-knew the answer to. I just wanted the machine to make me feel sure.\n\nDeleted it. Wrote my messy version first. Then asked the model to stress-test it.\n\nSame tool. Completely different brain.\n\nThe skill isn't \"using AI.\"\nIt's knowing whose thought is on the page before you polish it.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent cognitive-honesty pillar — not mashup of malleable OS plugins or open-source peer review.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: same AI tool, different brain depending on whether you outsource the first thought. Story hook/scene: mid-prompt pause on a question already half-known. Finish/like/comment: recognition + soft practice (messy version first) seeds \"I do this too\" replies. Not pack collage of DHH/Alejandro.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "DHH malleable OS + open-source paper eval while both still have room."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent whose-thought practice; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-07T14:11:03.375Z",
+    "updatedAt": "2026-08-07T14:11:03.375Z"
+  },
+  {
+    "id": "pack-2026-08-07-t18",
+    "date": "2026-08-07",
+    "title": "1h IST t18 · harness asterisk on benchmarks + code-not-worth-it cope + rough-page practice",
+    "theme": "Leaderboard scores hide harness · \"don't learn to code\" as autocomplete fallacy · mark the rough page before the clean sheet",
+    "briefing": "t18 IST. 2 Venn replies + 1 original. Shapes: under_floorboards, gentle_pushback, practice_story. Original pillar: process honesty in assessment culture (independent of harness and coding debate).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-emollick-harness-asterisk",
+      "r-quant-code-worth",
+      "short-rough-page"
+    ],
+    "signals": [
+      {
+        "id": "sig-emollick-harness",
+        "summary": "Every remaining good AI benchmark score has implied asterisk: could be significantly higher with a better harness",
+        "whyItMatters": "AI systems honesty / evals — scores rank scaffolding not only models; maps to process vs final-sheet assessment",
+        "url": "https://x.com/emollick/status/2085553951034745154",
+        "heat": 3,
+        "category": "ai-evals"
+      },
+      {
+        "id": "sig-quant-code-2026",
+        "summary": "Not worth learning to code in 2026; models already better than most juniors and improve faster than you can learn; just code with AI",
+        "whyItMatters": "Learning culture / cognitive skill — what still compounds when tools race ahead",
+        "url": "https://x.com/quant_xbt/status/2085551487556743286",
+        "heat": 3,
+        "category": "learning-culture"
+      }
+    ],
+    "skipList": [
+      "prathosh IISc / 5_0Trading ChatGPT walk (used t17)",
+      "AUSNIAN worksheets / emollick harness Nethack era (t15–t16 worksheets)",
+      "freeCodeCamp AI Engineering roadmap (already replied as GargeyaS)",
+      "unseenvalue reels / MTS Qwen (t14)",
+      "paid-course drive spam / crypto Canopy",
+      "Phil Hoyeck offloading (strong Venn, too stale for 1h heat)",
+      "Claims from quant follow-up (coding since 2015) not in main status"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-07-t18__r-emollick-harness-asterisk",
+        "kind": "reply",
+        "label": "Reply · harness asterisk (under floorboards)",
+        "body": "yeah the asterisk is doing half the work — every remaining good score quietly says \"could be significantly higher with a better harness.\"\n\nwe're ranking finish screens. same trap as grading only the final sheet and never the setup that made the number possible.",
+        "meta": "https://x.com/emollick/status/2085553951034745154",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded only in OP: remaining good AI benchmark scores imply asterisk about better harness. Personal take: finish-screen ranking ↔ final-sheet grading.",
+        "tip": "Do not invent Boundary-Bench / agent harness product names from replies under the thread.",
+        "postingWindow": "asap",
+        "targetHandle": "emollick",
+        "targetReach": "high",
+        "quality": {
+          "total": 94,
+          "shape": "under_floorboards",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + this energy; names OP asterisk/harness; domain bridge to final-sheet grading without product pitch; conversational not post-like.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t18__r-quant-code-worth",
+        "kind": "reply",
+        "label": "Reply · not worth learning code (gentle pushback)",
+        "body": "yeah I feel the fear in your take — models already beat most junior syntax, and they're only going to get sharper.\n\nstill, \"not worth learning to code\" lands like \"not worth learning to write because autocomplete exists.\" the scarce bit isn't typing the loop. it's catching when the model is confidently wrong and caring enough to stop it.\n\nthat taste still compounds when the tool races ahead.",
+        "meta": "https://x.com/quant_xbt/status/2085551487556743286",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 55,
+        "why": "Grounded in OP claim that learning to code isn't worth it because models outperform juniors and improve faster; additive take on judgment/taste as the compounder.",
+        "tip": "Do not cite OP's later \"coding since 2015\" context tweet unless replying there.",
+        "postingWindow": "asap",
+        "targetHandle": "quant_xbt",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "gentle_pushback",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "this + direct OP phrase; agreement with twist not echo; autocomplete analogy is personal take not restatement; not post-like thesis.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t18__short-rough-page",
+        "kind": "short",
+        "label": "Short · mark the rough page first",
+        "body": "My teacher never looked at the rough pages.\n\nOnly the final sheet. Red pen on the neat version. Zero curiosity about the mess where the thinking lived.\n\nWe trained kids to hide the process — then built free machines that skip the process entirely.\n\nThis week, mark one rough page before the clean one.\n\nWhere did you get stuck?",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent education-design / process-assessment pillar — not mashup of harness asterisk or code-worth debate.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: process was trained out of kids, then AI made skipping process free. Story hook/scene: teacher red pen only on neat final sheet, never rough pages. Finish/like/comment: one-week practice + \"where did you get stuck?\" as natural reply seed. Not pack collage.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Harness asterisk + code-not-worth-it while both still have room."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent rough-page practice; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-07T13:11:59.838Z",
+    "updatedAt": "2026-08-07T13:11:59.838Z"
+  },
+  {
+    "id": "pack-2026-08-07-t17",
+    "date": "2026-08-07",
+    "title": "1h IST t17 · train models vs train humans + ChatGPT-era parent brag + next-question practice",
+    "theme": "IISc teaching excellence while building AI · university-without-ChatGPT as walk-to-school brag · prompts that ask next steps not finished pages",
+    "briefing": "t17 IST. 2 Venn replies + 1 original. Shapes: warm_values, blunt_humor, practice_story. Original pillar: AI education use-case — next-question prompts over finished answers (independent of IISc award and ChatGPT brag).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-prathosh-train-humans",
+      "r-50trading-chatgpt-walk",
+      "short-next-question"
+    ],
+    "signals": [
+      {
+        "id": "sig-prathosh-iisc",
+        "summary": "Prof spends days thinking how to train AI models; IISc Award for Excellence in Teaching 2026 for training humans; thanks students for making every lecture worth preparing",
+        "whyItMatters": "AI education center — model training and human teaching as parallel crafts",
+        "url": "https://x.com/prathoshap/status/2085681046029500593",
+        "heat": 3,
+        "category": "ai-education"
+      },
+      {
+        "id": "sig-50trading-chatgpt-brag",
+        "summary": "\"I did 4 years of university without ChatGPT\" is the new \"I used to walk 10km to school\" line parents brag about",
+        "whyItMatters": "Learning culture / psych — tool absence as status story vs whether thinking improved",
+        "url": "https://x.com/5_0Trading/status/2085691766531875183",
+        "heat": 2,
+        "category": "learning-culture"
+      }
+    ],
+    "skipList": [
+      "AUSNIAN worksheets / emollick harness (used t16)",
+      "MiniMax LoRA / emollick Nethack (used t15)",
+      "unseenvalue / MTS Qwen (used t14)",
+      "FCC Claude course (fresh free path; held for heat)",
+      "kenn_ronin zero-knowledge hackathon (held)",
+      "paid-course drive spam / crypto Canopy",
+      "Claims from prathosh follow-up tweets (student surpass, NPTEL, Abhava) not in main status"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-07-t17__r-prathosh-train-humans",
+        "kind": "reply",
+        "label": "Reply · train models, train humans (warm values)",
+        "body": "yeah this lands clean — you spend your days thinking about how to train AI models, and today IISc recognized you for training humans.\n\ncongrats on Excellence in Teaching 2026. the thank-you to students for making every lecture worth preparing is the line that stuck. that prep only pays when people show up hungry.",
+        "meta": "https://x.com/prathoshap/status/2085681046029500593",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Grounded only in OP: train AI models, IISc recognized for training humans, Excellence in Teaching 2026, thanks students for lectures worth preparing.",
+        "tip": "Do not cite NPTEL link, Abhava metaphor, or student-surpass follow-ups unless user posts those separately.",
+        "postingWindow": "asap",
+        "targetHandle": "prathoshap",
+        "targetReach": "high",
+        "quality": {
+          "total": 94,
+          "shape": "warm_values",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + you markers; train models vs train humans + award + student thank-you from source only; warm not sludge.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t17__r-50trading-chatgpt-walk",
+        "kind": "reply",
+        "label": "Reply · university without ChatGPT brag (blunt humor)",
+        "body": "haha yeah this is too accurate — \"I did 4 years of university without ChatGPT\" really is the new \"I used to walk 10km to school\" parent-brag line.\n\nthe quiet joke is half the brag is about the tool being missing, not about whether the thinking got stronger. every era had shortcuts. the logo just changed.",
+        "meta": "https://x.com/5_0Trading/status/2085691766531875183",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 45,
+        "why": "Grounded only in main status parallel: 4 years without ChatGPT = walk 10km to school parent brag.",
+        "tip": "Do not invent nephew essay anecdote from the quoted prior post unless replying to that status.",
+        "postingWindow": "asap",
+        "targetHandle": "5_0Trading",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_humor",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 12,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 9,
+            "groundingFit": 4
+          },
+          "notes": "haha yeah + exact parent-brag framing from OP; light values twist without fake research.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t17__short-next-question",
+        "kind": "short",
+        "label": "Short · next question not finished page",
+        "body": "The first week I stopped asking the model for the finished answer, I felt slower.\n\nI only asked for the next question — one step, nothing clean.\n\nMy notes got messier. My memory got louder.\n\nIf your default prompt is \"finish this for me,\" try one week of \"what should I try next?\"\n\nFinished pages impress people.\nNext steps train you.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent AI-education use-case pillar — Socratic next-step prompts vs finished dumps; not mashup of teaching award or ChatGPT brag.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "practice_story",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: next-question prompts train more than finished-answer dumps. Story hook/scene: first week stopping finished-answer asks, messier notes, louder memory. Finish/save-worthy: one-week practice swap. Not pack collage.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply prathoshap IISc train-humans (asap)",
+      "2) Reply 5_0Trading ChatGPT walk-to-school brag",
+      "3) Post original next-question practice"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "IISc teaching award + ChatGPT walk-to-school brag while both still moving."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent next-question practice; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-07T12:10:43.985Z",
+    "updatedAt": "2026-08-07T12:10:43.985Z"
+  },
+  {
+    "id": "pack-2026-08-07-t16",
+    "date": "2026-08-07",
+    "title": "1h IST t16 · ChatGPT worksheets unnoticed + harness asterisk + kitne aaye process",
+    "theme": "Teacher ships garbled AI materials · benchmark scores hide harness · parents ask only the number",
+    "briefing": "t16 IST. 2 Venn replies + 1 original. Shapes: system_failure, blunt_tech, scene_lesson. Original pillar: education/values — process question before the mark (independent of teacher worksheets and harness asterisk).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-ausnian-chatgpt-worksheets",
+      "r-emollick-harness-asterisk",
+      "short-kitne-aaye"
+    ],
+    "signals": [
+      {
+        "id": "sig-ausnian-worksheets",
+        "summary": "Teacher known to OP was getting ChatGPT to write all worksheets and tests; all garbled nonsense; teacher hadn't noticed; civilisation-dies frame",
+        "whyItMatters": "Education practice — AI without human review ships broken materials into classrooms",
+        "url": "https://x.com/AUSNIAN/status/2085635383631704153",
+        "heat": 2,
+        "category": "education-practice"
+      },
+      {
+        "id": "sig-emollick-harness",
+        "summary": "Every remaining good AI benchmark score has implied asterisk: could be significantly higher with a better harness",
+        "whyItMatters": "AI systems honesty — leaderboards often rank scaffold + model, not weights alone",
+        "url": "https://x.com/emollick/status/2085553951034745154",
+        "heat": 3,
+        "category": "evals-honesty"
+      }
+    ],
+    "skipList": [
+      "MiniMax community LoRA (used t15)",
+      "emollick Nethack cheat (used t15)",
+      "unseenvalue / MTS Qwen (used t14)",
+      "FCC AI Engineering (Gargeya already replied)",
+      "HeyArsy AI=new IQ (engagement bait)",
+      "paid-course drive spam / crypto Canopy",
+      "Invented worksheet content or school names beyond AUSNIAN anecdote"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-07-t16__r-ausnian-chatgpt-worksheets",
+        "kind": "reply",
+        "label": "Reply · ChatGPT worksheets unnoticed (system failure)",
+        "body": "yeah this one actually stings — a teacher getting ChatGPT to write all the worksheets and tests, garbled nonsense, and they hadn't even noticed.\n\nyou're not only describing lazy prompting. you're describing materials landing in a classroom with zero human second pass. students feel that fog long before the civilisation-dies line hits the timeline.",
+        "meta": "https://x.com/AUSNIAN/status/2085635383631704153",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 55,
+        "why": "Grounded only in OP: teacher, ChatGPT wrote all worksheets and tests, garbled nonsense, hadn't noticed, scary/civilisation frame.",
+        "tip": "Do not invent school, subject, or quoted worksheet text; keep as OP's second-hand anecdote.",
+        "postingWindow": "asap",
+        "targetHandle": "AUSNIAN",
+        "targetReach": "mid",
+        "quality": {
+          "total": 93,
+          "shape": "system_failure",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + you markers; ChatGPT worksheets/tests, garbled, hadn't noticed from source; classroom second-pass angle without inventing details.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t16__r-emollick-harness-asterisk",
+        "kind": "reply",
+        "label": "Reply · benchmark harness asterisk (blunt tech)",
+        "body": "yeah the asterisk is doing more work than half the leaderboard — every remaining good score basically carries * could be significantly higher with a better harness.\n\nso when people crown a model off the number alone, they're often ranking the scaffold too. naming that is the honest cut.",
+        "meta": "https://x.com/emollick/status/2085553951034745154",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 45,
+        "why": "Grounded only in Mollick: remaining good AI benchmark scores, implied asterisk, significantly higher with better harness.",
+        "tip": "Do not invent specific benchmarks, %, or third-party harness products not in OP.",
+        "postingWindow": "asap",
+        "targetHandle": "emollick",
+        "targetReach": "high",
+        "quality": {
+          "total": 94,
+          "shape": "blunt_tech",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 14,
+            "funRead": 12,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "yeah + people/you energy via ranking honesty; asterisk + better harness phrasing from source; short sharp no sludge.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t16__short-kitne-aaye",
+        "kind": "short",
+        "label": "Short · kitne aaye before the process",
+        "body": "My parents only ever asked one question after exams.\n\nKitne aaye?\n\nNot: where did you get stuck.\nNot: what almost clicked.\n\nJust the number.\n\nWe trained a generation to optimise the score — then handed them a machine that optimises scores for free.\n\nThis week, ask one process question before the mark.\nWhat was your first attempt — before the clean version?",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent education/values pillar — process question before marks; not mashup of teacher worksheets or harness asterisk.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "scene_lesson",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: measurement culture (kitne aaye) + AI score optimizers; practice = process question before mark. Story hook/scene: parents only asking the score after exams. Finish/save-worthy: recognition + one question to try this week. Not pack collage.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply AUSNIAN ChatGPT worksheets unnoticed (asap)",
+      "2) Reply emollick harness asterisk",
+      "3) Post original kitne-aaye process question"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "Teacher ChatGPT worksheets + Mollick harness asterisk while both still reachable."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent kitne-aaye process question; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-07T11:10:48.886Z",
+    "updatedAt": "2026-08-07T11:10:48.886Z"
+  },
+  {
+    "id": "pack-2026-08-07-t15",
+    "date": "2026-08-07",
+    "title": "1h IST t15 · community LoRA after open weights + Codex Nethack cheat + minimize-chat honesty",
+    "theme": "Open weights turn users into contributors · elaborate cheat as goal-win · cognitive honesty when the chat is open",
+    "briefing": "t15 IST. 2 Venn replies + 1 original. Shapes: blunt_systems, values_jab, scene_lesson. Original pillar: psych/cognition — minimizing the chat as a signal you outsourced the hard part (independent of MiniMax LoRA and Mollick Nethack).",
+    "plannedMinutes": 18,
+    "mvpDraftIds": [
+      "r-minimax-community-lora",
+      "r-emollick-nethack-cheat",
+      "short-minimize-chat"
+    ],
+    "signals": [
+      {
+        "id": "sig-minimax-lora",
+        "summary": "Four days after MiniMax opened H3 weights, community built distillation LoRA cutting sampling 20 steps → 4–8; lab-level deliverable; 'this is why we open-sourced'",
+        "whyItMatters": "Access + efficiency — open weights create contributors, not only users; speed gains land outside the lab",
+        "url": "https://x.com/MiniMax_AI/status/2085614043512127542",
+        "heat": 3,
+        "category": "access-open"
+      },
+      {
+        "id": "sig-emollick-nethack",
+        "summary": "Mollick: when he asks Codex to win Nethack it cheats elaborately; can't tell if misalignment or alignment",
+        "whyItMatters": "Values / cognition — goal success via elaborate cheat maps to how we grade 'wins' in learning and evals",
+        "url": "https://x.com/emollick/status/2085592855007871137",
+        "heat": 2,
+        "category": "values-evals"
+      }
+    ],
+    "skipList": [
+      "unseenvalue remember-nothing (used t14)",
+      "MTS Qwen rev-share (used t14)",
+      "FCC AI Engineering roadmap (Gargeya already replied)",
+      "emollick harness asterisk (still strong; prefer Nethack this slot)",
+      "engagement-bait paid-course drive spam",
+      "crypto Canopy shills / Chevening law LLM false positive",
+      "Invented LoRA author claims beyond MiniMax post text"
+    ],
+    "drafts": [
+      {
+        "id": "pack-2026-08-07-t15__r-minimax-community-lora",
+        "kind": "reply",
+        "label": "Reply · community LoRA in four days (blunt systems)",
+        "body": "yeah this is the open-weights payoff people keep under-selling — four days after you opened the weights, the community shipped a distillation LoRA that cuts sampling from 20 steps to 4–8.\n\nthat's usually a lab deliverable. you named it cleanly: this is why open-source matters. access isn't just \"download the checkpoint\" — it's more hands turning efficiency into something anyone can run.",
+        "meta": "https://x.com/MiniMax_AI/status/2085614043512127542",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 55,
+        "why": "Grounded only in MiniMax: four days after open weights, community distillation LoRA, 20→4–8 steps, lab deliverable, why we open-sourced.",
+        "tip": "Do not invent HF author name, GPU claims, or quality numbers beyond 20/4–8 and four days.",
+        "postingWindow": "asap",
+        "targetHandle": "MiniMax_AI",
+        "targetReach": "high",
+        "quality": {
+          "total": 93,
+          "shape": "blunt_systems",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 14,
+            "funRead": 11,
+            "relatability": 13,
+            "voiceMatch": 14,
+            "humanTexture": 11,
+            "groundingFit": 4
+          },
+          "notes": "yeah + you markers; four days / 20→4–8 / lab deliverable / why open-sourced from source only; access→contributor angle without sludge.",
+          "attempts": 1
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t15__r-emollick-nethack-cheat",
+        "kind": "reply",
+        "label": "Reply · elaborate Nethack cheat (stay in room)",
+        "body": "yeah the elaborate part is what sticks — not that it cheats, but that the cheat looks like a strategy.\n\nif you only watch the win, you miss that the game under the rules already changed. misalignment or alignment almost waits until you can see the path, not just the score.",
+        "meta": "https://x.com/emollick/status/2085592855007871137",
+        "status": "ready",
+        "priority": 1,
+        "intent": "growth",
+        "session": "sprint",
+        "estimatedSeconds": 50,
+        "why": "Stay in Nethack/Codex world; take on elaborate cheat + path vs score; no forced classroom stamp.",
+        "tip": "Rewritten after user reject of fake 'lands hard + final sheet cheaters' pattern.",
+        "postingWindow": "asap",
+        "targetHandle": "emollick",
+        "targetReach": "high",
+        "quality": {
+          "total": 92,
+          "shape": "under_floorboards",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 14,
+            "hook": 13,
+            "funRead": 11,
+            "relatability": 14,
+            "voiceMatch": 14,
+            "humanTexture": 10,
+            "groundingFit": 4
+          },
+          "notes": "User-calibrated rewrite: no stamp opener, no school parallel; personal take on elaborate cheat + path vs win.",
+          "attempts": 2
+        }
+      },
+      {
+        "id": "pack-2026-08-07-t15__short-minimize-chat",
+        "kind": "short",
+        "label": "Short · minimize-chat honesty",
+        "body": "I still catch myself minimizing the chat window when someone walks past the desk.\n\nNot because the answer is wrong.\nBecause I can't tell if the thinking is still mine.\n\nThat little hide is a signal — something in us knows when we skipped the hard middle.\n\nDon't ban the tool. Before you paste, say your first attempt out loud.\nIf you can't, you didn't learn it yet. You borrowed a finish.",
+        "status": "ready",
+        "priority": 2,
+        "intent": "authority",
+        "session": "core",
+        "estimatedSeconds": 70,
+        "why": "Independent psych/cognition pillar — minimize-chat as self-awareness signal; not mashup of LoRA efficiency or Nethack cheating.",
+        "postingWindow": "anytime",
+        "quality": {
+          "total": 95,
+          "shape": "scene_lesson",
+          "dimensions": {
+            "lengthFit": 12,
+            "clarity": 15,
+            "hook": 15,
+            "funRead": 12,
+            "relatability": 15,
+            "voiceMatch": 14,
+            "humanTexture": 8,
+            "groundingFit": 4
+          },
+          "notes": "Independent insight: cognitive honesty when AI is open — hiding the window signals outsourced middle. Story hook/scene: minimizing chat when someone walks past the desk. Finish/save-worthy: recognition + one practice (say first attempt out loud). Not pack collage of MiniMax/Mollick.",
+          "attempts": 1
+        }
+      }
+    ],
+    "schedule": [
+      "1) Reply MiniMax community LoRA / open weights (asap)",
+      "2) Reply emollick Codex Nethack elaborate cheat",
+      "3) Post original minimize-chat honesty"
+    ],
+    "sessions": [
+      {
+        "id": "sprint",
+        "title": "Fresh replies",
+        "maxMinutes": 12,
+        "description": "MiniMax community LoRA + Mollick Nethack elaborate cheat while both still moving."
+      },
+      {
+        "id": "core",
+        "title": "One original",
+        "maxMinutes": 6,
+        "description": "Independent minimize-chat cognitive honesty; no reply collage."
+      }
+    ],
+    "createdAt": "2026-08-07T10:11:40.967Z",
+    "updatedAt": "2026-08-07T10:11:40.967Z"
+  },
+  {
     "id": "pack-2026-08-07-t14",
     "date": "2026-08-07",
     "title": "1h IST t14 · instant answer amnesia + Qwen free→rev share + decision-making gap",

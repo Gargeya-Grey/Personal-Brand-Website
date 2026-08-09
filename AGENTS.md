@@ -10,7 +10,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ## Owner goals (product)
 - Genuine **X growth** toward ~10k followers in ~3 months.
 - **1h IST scout cadence**: every **1 hour from 11:00–22:00 IST** (slots t11…t22); pack shape **exactly 2 replies + 1 original** so replies hit **fresh/climbing** posts.
-- High **voice fidelity** (`data/gargeya-voice.md`): **anti-monotony**; **originals are independent brand posts** written as **storyteller** (cohesive, easy, relatable, finishable — never mashup of the two replies); follow-worthy pillars (AI ed, use cases, access, efficiency, psych/cognition, ethics/values, positivity-with-spine).
+- High **voice fidelity** (`data/gargeya-voice.md`): replies = **personal additive takes** (not echo/paraphrase bots); originals = **cross-domain stories** with hook, attachment, finish/like/comment pull; anti-monotony; pillars AI ed / use cases / access / efficiency / psych / ethics / positivity.
 - Source **grounding** for replies (one draft ↔ one real post).
 - **Quality gate:** every draft ≥ **90** (`data/x-reply-quality.md`); originals also pass bookmark/RT/soul tests; **replies auto-fail if post-like** (`score-x-drafts.mjs` conversational markers).
 - **Topic Venn (not school-only):** social/learning/educational psychology + cognitive behavior + student-centric methods + AI-in-education + process assessment; **open-source AI as access + extreme efficiency** for all. Full map in `gargeya-voice.md` / scout heat queries in `x-scout-playbook.md`.

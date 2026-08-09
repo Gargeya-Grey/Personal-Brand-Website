@@ -45,6 +45,18 @@ const STAMP_OPENERS = [
   /^you'?re absolutely right\s*[—–-]/i,
   /^my take on your question is/i,
   /^that'?s the actual problem i'?m trying to solve/i,
+  /^haha this lands hard/i,
+  /^yeah this lands clean/i,
+  /^this lands hard/i,
+];
+
+/** Fake “clever brand” parallel — banned as default reply glue (voice file). */
+const FAKE_CLEVER_SCHOOL = [
+  /same fog students hit/i,
+  /clean final sheet/i,
+  /grade still smiles/i,
+  /train the best cheaters/i,
+  /if we only score the win/i,
 ];
 
 /**
@@ -186,6 +198,18 @@ export function scorePack(pack) {
       if (paras.length > 4) {
         issues.push(
           `[error] ${id}: reply wall of text (${paras.length} paragraphs) — cut to ≤4 short beats for a busy thread`
+        );
+      }
+      // Echo OP then slam school/assessment slogan (canonical fake Gargeya)
+      const schoolHits = FAKE_CLEVER_SCHOOL.filter((re) => re.test(body)).length;
+      if (schoolHits >= 2) {
+        issues.push(
+          `[error] ${id}: fake-clever school parallel — restating OP then forcing final-sheet/grade/cheater glue (see gargeya-voice.md forbidden). Stay in the post's world.`
+        );
+      }
+      if (/^haha this lands hard/i.test(body) || /^this lands hard —/i.test(body)) {
+        issues.push(
+          `[error] ${id}: stamp opener "lands hard" — rewrite in natural voice (banned house style)`
         );
       }
     }

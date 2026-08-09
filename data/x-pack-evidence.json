@@ -1,4 +1,4 @@
 {
-  "https://x.com/unseenvalue/status/2085615722818867650": "Watching reels on Instagram and Facebook, or asking AI for the answer, is obviously far more productive than reading books. Why spend an hour thinking and learning something when you can scroll, ask, get an instant answer, and remember nothing five minutes later?",
-  "https://x.com/MTSlive/status/2085539581961855161": "SITUATION DETECTED: Alibaba is pivoting away from fully free open-source AI and plans to ask major users of its upcoming Qwen 3.8-Max open-weight model for a share of the revenue they generate, starting next week, per Reuters."
+  "https://x.com/dhh/status/2086426384285487105": "I do think AI can rob you of competence. I've felt it drain out of my fingers in the past on skills I really should have been internalizing. But! It's also the most amazing tutor in the world. So pick your areas of competence, do the work there, and pair with an agent otherwise.",
+  "https://x.com/kotetsu_0321/status/2086400069461487807": "Claude CodeのHTML出力がダサすぎる問題。HTML出力を「そのまま会議に出せるクオリティ」に自動で整えるskillsを作った。Claude CodeがHTMLを書き出す瞬間にコンサル風デザインに調整。仕組み: AIが構造を「線と箱」で作る vs コンサル資料は「余白と文字の階層」。スキルは「HTMLで出して」と言った瞬間だけ働き、枠・グラデ・絵文字を禁止し、完成済みCSSを一字も変えずに使わせて出力の瞬間にデザインを矯正。ポイントは「デザインルールを言葉で指示せず、CSSごと渡す」こと。これで出力がブレなくなります。ChatGPT派向けのコピペ用凝縮版もリポジトリに。"
 }

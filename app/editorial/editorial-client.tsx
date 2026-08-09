@@ -865,7 +865,7 @@ export function EditorialClient({
       <header className={workspace === 'x' ? 'mb-6 sm:mb-8' : 'mb-10 sm:mb-12'}>
         {workspace === 'x' ? (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
-            <div className="space-y-2">
+            <div className="space-y-2 min-w-0">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
                 Private atelier
               </p>
@@ -876,29 +876,31 @@ export function EditorialClient({
                 Focus queue for scout packs — reply, post, mark done. Switch to Blog anytime.
               </p>
             </div>
-            <div className="flex flex-wrap items-center gap-3">
+            <div className="flex flex-wrap items-center gap-2.5 sm:justify-end shrink-0">
               <WorkspaceSwitch active="x" />
-              <div className="flex items-center gap-2.5 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] px-3 py-1.5 pr-3.5">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={avatarForSession(user)}
-                  alt=""
-                  width={32}
-                  height={32}
-                  className="w-8 h-8 rounded-full object-cover ring-1 ring-[var(--atelier-gold)]/25"
-                />
-                <span className="font-headline text-xs font-bold text-[var(--atelier-ink)] truncate max-w-[8rem]">
-                  {user.name}
-                </span>
+              <div className="inline-flex items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] overflow-hidden shadow-[var(--atelier-shadow-sm)]">
+                <div className="flex items-center gap-2 pl-1.5 pr-2.5 py-1.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={avatarForSession(user)}
+                    alt=""
+                    width={28}
+                    height={28}
+                    className="w-7 h-7 rounded-full object-cover ring-1 ring-[var(--atelier-gold)]/25"
+                  />
+                  <span className="font-headline text-xs font-bold text-[var(--atelier-ink)] truncate max-w-[7.5rem]">
+                    {user.name}
+                  </span>
+                </div>
+                <Link
+                  href="/api/auth/logout"
+                  title="Sign out"
+                  aria-label="Sign out"
+                  className="inline-flex h-9 w-9 items-center justify-center border-l border-[var(--atelier-line)] text-[var(--atelier-faint)] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </Link>
               </div>
-              <Link
-                href="/api/auth/logout"
-                className="atelier-btn atelier-btn-ghost h-10 w-10 !px-0 !text-red-600 dark:!text-red-400"
-                title="Sign out"
-                aria-label="Sign out"
-              >
-                <LogOut className="w-4 h-4" />
-              </Link>
             </div>
           </div>
         ) : (
@@ -907,8 +909,8 @@ export function EditorialClient({
               className="absolute -right-16 -top-20 w-72 h-72 rounded-full opacity-40 pointer-events-none"
               style={{ background: 'radial-gradient(circle, var(--atelier-gold-soft), transparent 70%)' }}
             />
-            <div className="relative flex flex-col lg:flex-row lg:items-end justify-between gap-8">
-              <div className="space-y-4 max-w-2xl">
+            <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8 lg:gap-10">
+              <div className="space-y-4 max-w-2xl min-w-0">
                 <p className="text-[0.7rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
                   Private atelier · Google OAuth
                 </p>
@@ -936,36 +938,45 @@ export function EditorialClient({
                 </div>
               </div>
 
-              <div className="flex flex-wrap items-center gap-2.5">
-                <div className="flex items-center gap-3 rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/60 px-3.5 py-2.5 pr-4">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={avatarForSession(user)}
-                    alt=""
-                    width={40}
-                    height={40}
-                    className="w-10 h-10 rounded-2xl object-cover ring-2 ring-[var(--atelier-gold)]/30"
-                  />
-                  <div className="min-w-0 leading-tight">
-                    <p className="font-headline font-bold text-sm text-[var(--atelier-ink)] truncate max-w-[9rem] sm:max-w-none">
-                      {user.name}
-                    </p>
-                    <p className="text-[0.65rem] text-[var(--atelier-faint)] truncate max-w-[10rem] sm:max-w-[14rem]">
-                      {user.email}
-                    </p>
+              {/* Account panel — one neat unit (identity + actions) */}
+              <div className="w-full sm:w-auto sm:min-w-[16.5rem] lg:max-w-[18rem] shrink-0">
+                <div className="rounded-2xl border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/55 overflow-hidden shadow-[var(--atelier-shadow-sm)]">
+                  <div className="flex items-center gap-3 px-3.5 py-3">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={avatarForSession(user)}
+                      alt=""
+                      width={40}
+                      height={40}
+                      className="w-10 h-10 rounded-xl object-cover ring-2 ring-[var(--atelier-gold)]/25 shrink-0"
+                    />
+                    <div className="min-w-0 flex-1 leading-tight">
+                      <p className="font-headline font-bold text-sm text-[var(--atelier-ink)] truncate">
+                        {user.name}
+                      </p>
+                      <p className="text-[0.65rem] text-[var(--atelier-faint)] truncate mt-0.5">
+                        {user.email}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 border-t border-[var(--atelier-line)]">
+                    <button
+                      type="button"
+                      onClick={exportJson}
+                      className="inline-flex items-center justify-center gap-1.5 h-11 px-3 text-xs font-bold tracking-tight text-[var(--atelier-ink)] hover:bg-[var(--atelier-gold-soft)]/40 transition-colors border-r border-[var(--atelier-line)]"
+                    >
+                      <Download className="w-3.5 h-3.5 text-[var(--atelier-gold)] shrink-0" />
+                      Backup
+                    </button>
+                    <Link
+                      href="/api/auth/logout"
+                      className="inline-flex items-center justify-center gap-1.5 h-11 px-3 text-xs font-bold tracking-tight text-[var(--atelier-muted)] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
+                    >
+                      <LogOut className="w-3.5 h-3.5 shrink-0" />
+                      Sign out
+                    </Link>
                   </div>
                 </div>
-                <button type="button" onClick={exportJson} className="atelier-btn atelier-btn-ghost">
-                  <Download className="w-4 h-4 text-[var(--atelier-gold)]" />
-                  <span className="hidden sm:inline">Backup</span>
-                </button>
-                <Link
-                  href="/api/auth/logout"
-                  className="atelier-btn atelier-btn-ghost !text-red-600 dark:!text-red-400"
-                >
-                  <LogOut className="w-4 h-4" />
-                  <span className="hidden sm:inline">Sign out</span>
-                </Link>
               </div>
             </div>
           </div>
@@ -1588,7 +1599,7 @@ export function EditorialClient({
             aria-modal="true"
           >
             <div
-              className="relative w-full max-w-4xl rounded-[2rem] bg-[#1a1714] border border-white/10 p-6 sm:p-8 shadow-2xl"
+              className="relative w-full max-w-4xl rounded-[2rem] bg-[#0f172a] border border-white/10 p-6 sm:p-8 shadow-2xl"
               onClick={(e) => e.stopPropagation()}
             >
               <button

@@ -1,156 +1,150 @@
 {
-  "id": "pack-2026-08-07-t14",
-  "date": "2026-08-07",
-  "title": "1h IST t14 · instant answer amnesia + Qwen free→rev share + decision-making gap",
-  "theme": "Sarcastic productivity of not remembering · open free meets major-user pricing · missing decision-making curriculum",
-  "briefing": "t14 IST. 2 Venn replies + 1 original. Shapes: blunt_humor, blunt_systems, values_letter. Original pillar: education/values — decision-making never taught as core (independent of reels/AI amnesia and Qwen pricing).",
+  "id": "pack-2026-08-09-t19",
+  "date": "2026-08-09",
+  "title": "1h IST t19 · competence vs tutor mode + CSS not adjectives + don't rush the smart reply",
+  "theme": "Name skills you keep in your hands · fix taste with constraints not vibes · listen before advice",
+  "briefing": "t19 IST. 2 Venn replies + 1 original. Shapes: personal_noticing, under_floorboards, practice_story. Original pillar: values/listening (independent of competence-picking and design skills).",
   "plannedMinutes": 18,
   "mvpDraftIds": [
-    "r-unseenvalue-remember-nothing",
-    "r-mts-qwen-revshare",
-    "short-decision-making-gap"
+    "r-dhh-competence-tutor",
+    "r-kotetsu-css-skill",
+    "short-dont-rush-smart"
   ],
   "signals": [
     {
-      "id": "sig-unseenvalue-instant",
-      "summary": "Sarcasm: reels or asking AI more 'productive' than books; scroll/ask/instant answer then remember nothing five minutes later vs hour of thinking/learning",
-      "whyItMatters": "Learning psych / cognition — cheap answers vs durable memory",
-      "url": "https://x.com/unseenvalue/status/2085615722818867650",
+      "id": "sig-dhh-competence",
+      "summary": "DHH: AI can rob competence — felt it drain from fingers on skills he should internalize; also most amazing tutor; pick areas of competence, do the work there, pair with agent otherwise",
+      "whyItMatters": "Cognitive honesty + AI use-cases — intentional skill boundaries vs default offloading",
+      "url": "https://x.com/dhh/status/2086426384285487105",
       "heat": 2,
-      "category": "cognition-learning"
+      "category": "cognition-ai-practice"
     },
     {
-      "id": "sig-mts-qwen-revshare",
-      "summary": "Alibaba pivoting from fully free open-source AI; major users of upcoming Qwen 3.8-Max open-weight asked for revenue share starting next week (Reuters)",
-      "whyItMatters": "Access — free open becomes conditional for big commercial users",
-      "url": "https://x.com/MTSlive/status/2085539581961855161",
+      "id": "sig-kotetsu-html-skill",
+      "summary": "Claude Code HTML output too ugly for meetings; skill auto-fixes to consulting-quality design; key insight: don't instruct design rules in words — pass finished CSS unchanged so output stops drifting",
+      "whyItMatters": "Builder use-case / efficiency — constraints and artifacts beat vibe prompts for reliable quality",
+      "url": "https://x.com/kotetsu_0321/status/2086400069461487807",
       "heat": 3,
-      "category": "access-open"
+      "category": "ai-usecases-skills"
     }
   ],
   "skipList": [
-    "emollick seed-42 / FCC roadmap (used t13)",
-    "emollick harness asterisk (strong honesty angle; held to avoid double-Mollick hour)",
-    "HeyArsy AI=new IQ (engagement bait; thin grounding)",
-    "quant_xbt learn-to-code (held)",
-    "Claude Fable bio / crypto Canopy shills",
-    "Chevening law LLM false positive",
-    "Invented competitor model prices beyond Reuters/MTS claims"
+    "t15–t18 sources (Mollick, Craig, Antonio, Mia, Hendrick, Levi, Alibaba, Brendan) — do not recycle",
+    "DHH parent endless-ideas nirvana (mega heat; competence reply is sharper Venn)",
+    "politicalmath Claude Code yes-spam (strong; thinner craft thesis than kotetsu)",
+    "nayakayp bare-minimum AI engineer",
+    "course-slot / Drive spam / Fable clones",
+    "Claims only in DHH parent/sibling thread posts — ground this status only"
   ],
   "sessions": [
     {
       "id": "sprint",
       "title": "Fresh replies",
       "maxMinutes": 12,
-      "description": "Remember-nothing sarcasm + Qwen rev-share access while both still moving."
+      "description": "DHH competence/tutor + kotetsu CSS-as-constraint skill."
     },
     {
       "id": "core",
       "title": "One original",
       "maxMinutes": 6,
-      "description": "Independent decision-making curriculum gap; no reply collage."
+      "description": "Independent listening/values story."
     }
   ],
   "drafts": [
     {
-      "id": "r-unseenvalue-remember-nothing",
+      "id": "r-dhh-competence-tutor",
       "kind": "reply",
-      "label": "Reply · five-minute amnesia (blunt humor)",
-      "body": "haha yeah the sarcasm is doing the real work here — scroll, ask, instant answer, blank five minutes later is the productivity theater a lot of people call \"learning.\"\n\nyou're naming the trade people keep pretending isn't a trade. cheap answers. thin memory. the hour of thinking still buys something the feed won't refund.",
-      "meta": "https://x.com/unseenvalue/status/2085615722818867650",
+      "label": "Reply · competence vs tutor (personal noticing)",
+      "body": "yeah the \"drain out of my fingers\" part is the honest half most people skip.\n\ntutor mode and competence theft ride the same tool. the difference is whether you named the skills you're trying to keep in your hands.\n\npick the few that matter. sweat those. agent the rest without pretending it's the same kind of knowing.",
+      "meta": "https://x.com/dhh/status/2086426384285487105",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 55,
-      "why": "Grounded in reels/AI instant answer vs books + remember nothing five minutes later + hour thinking/learning contrast.",
-      "tip": "Tone is sarcastic source — mirror irony; do not invent study stats.",
+      "estimatedSeconds": 50,
+      "why": "Grounded in OP: AI robs competence; drain from fingers; amazing tutor; pick competence areas and do work there; pair with agent otherwise. Take: name skills to keep vs same-tool different knowing. Stay in craft/builder world — no school stamp.",
+      "tip": "Do not invent Omarchy/Rails claims or parent-thread 'endless execution' lines. Stay with this status only.",
       "postingWindow": "asap",
-      "targetHandle": "unseenvalue",
-      "targetReach": "mid",
+      "targetHandle": "dhh",
+      "targetReach": "high",
       "quality": {
-        "total": 93,
-        "shape": "blunt_humor",
+        "total": 95,
+        "shape": "personal_noticing",
         "dimensions": {
           "lengthFit": 12,
-          "clarity": 14,
-          "hook": 14,
+          "clarity": 15,
+          "hook": 15,
           "funRead": 12,
           "relatability": 14,
           "voiceMatch": 14,
           "humanTexture": 9,
           "groundingFit": 4
         },
-        "notes": "haha yeah + you're markers; five-minute blank from source; trade framing without fake research.",
+        "notes": "yeah + OP finger-drain image; tutor/agent/competence from source; take is named skills vs same-tool knowing; conversational; no final-sheet glue.",
         "attempts": 1
       }
     },
     {
-      "id": "r-mts-qwen-revshare",
+      "id": "r-kotetsu-css-skill",
       "kind": "reply",
-      "label": "Reply · free open meets major-user bill (blunt systems)",
-      "body": "yeah this is the access plot twist a lot of people skipped — \"fully free\" open-source turning into a revenue share for major users of the next Qwen open-weight, starting next week.\n\nfor solo builders the useful cut is simpler: plan like the free lunch for big commercial users is temporary. practice paths that only work while someone else subsidizes them don't stay free forever.",
-      "meta": "https://x.com/MTSlive/status/2085539581961855161",
+      "label": "Reply · CSS not adjectives (under floorboards)",
+      "body": "yeah handing finished CSS instead of design adjectives is the whole trick.\n\n\"make it pretty\" is fog. a stylesheet the model can't rewrite mid-output is a real standard.\n\nskills beat vibes when quality has to survive the next chat.",
+      "meta": "https://x.com/kotetsu_0321/status/2086400069461487807",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 55,
-      "why": "Grounded only in MTS: fully free pivot, major users, Qwen 3.8-Max open-weight, revenue share, next week/Reuters frame.",
-      "tip": "Do not invent fee %, who is exempt, or claims from jun_song thread not in this status.",
+      "estimatedSeconds": 45,
+      "why": "Grounded in OP: ugly Claude Code HTML; skill for meeting-ready design; key point pass finished CSS not design rules in words. Take: constraints beat vibe prompts. Stay in design/tooling world.",
+      "tip": "Do not invent chart types or install paths unless needed. Core claim: CSS-as-constraint not worded design rules.",
       "postingWindow": "asap",
-      "targetHandle": "MTSlive",
-      "targetReach": "high",
+      "targetHandle": "kotetsu_0321",
+      "targetReach": "mid",
       "quality": {
-        "total": 92,
-        "shape": "blunt_systems",
+        "total": 94,
+        "shape": "under_floorboards",
         "dimensions": {
           "lengthFit": 12,
-          "clarity": 14,
-          "hook": 13,
-          "funRead": 10,
-          "relatability": 14,
+          "clarity": 15,
+          "hook": 14,
+          "funRead": 12,
+          "relatability": 13,
           "voiceMatch": 14,
-          "humanTexture": 11,
+          "humanTexture": 10,
           "groundingFit": 4
         },
-        "notes": "yeah + you energy via practical 'for solo builders'; source phrases (fully free, major users, open-weight, next week); no invented %.",
+        "notes": "yeah + CSS vs adjectives from OP insight; take is standards that survive next chat; different opener from DHH; no school glue.",
         "attempts": 1
       }
     },
     {
-      "id": "short-decision-making-gap",
+      "id": "short-dont-rush-smart",
       "kind": "short",
-      "label": "Short · nobody taught decision-making",
-      "body": "Nobody really hands you a class called decision-making.\n\nYou get subjects. You get marks. Somewhere in the middle you're supposed to invent judgment.\n\nFaster answers make that gap louder, not smaller. If schools won't teach the skill, practice it on purpose — small choices, spoken reasons, one check: would I still pick this if the chat said the opposite?",
+      "label": "Short · don't rush the smart reply",
+      "body": "A friend sent me a long voice note after a hard week.\n\nI almost replied with a tight little paragraph of advice.\n\nDeleted it. Sent back: \"I'm here. Tell me the part that still hurts.\"\n\nHe talked for another four minutes.\n\nSometimes the rare skill isn't knowing what to say.\nIt's not rushing to be the smartest person in the thread.",
       "status": "ready",
       "priority": 2,
       "intent": "authority",
       "session": "core",
       "estimatedSeconds": 70,
-      "why": "Independent values/education pillar — decision-making as missing core skill; not mashup of five-minute amnesia or Qwen rev-share.",
+      "why": "Independent values/listening pillar — not mashup of competence boundaries or CSS skills.",
       "postingWindow": "anytime",
       "quality": {
-        "total": 94,
-        "shape": "values_letter",
+        "total": 95,
+        "shape": "practice_story",
         "dimensions": {
           "lengthFit": 12,
           "clarity": 15,
-          "hook": 14,
-          "funRead": 11,
-          "relatability": 14,
+          "hook": 15,
+          "funRead": 12,
+          "relatability": 15,
           "voiceMatch": 14,
-          "humanTexture": 10,
+          "humanTexture": 8,
           "groundingFit": 4
         },
-        "notes": "Independent insight: decision-making never taught as a subject; practice with opposite-of-chat check. Bookmark for students/teachers; soul + practice; not pack collage.",
+        "notes": "Independent insight: restraint in reply can be rarer than smart advice. Story hook/scene: voice note + deleted advice + 'part that still hurts'. Finish/like/comment: last line; seeds recognition replies. Not pack collage.",
         "attempts": 1
       }
     }
-  ],
-  "schedule": [
-    "1) Reply unseenvalue remember-nothing sarcasm (asap)",
-    "2) Reply MTSlive Qwen major-user rev share",
-    "3) Post original decision-making-gap"
   ]
 }

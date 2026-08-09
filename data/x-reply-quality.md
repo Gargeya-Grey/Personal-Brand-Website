@@ -29,21 +29,25 @@ Scouts **must** write the score honestly. Inflating scores is a system failure �
 
 | | **Reply / quote** | **Original (short / flagship)** |
 |--|-------------------|----------------------------------|
-| **Job** | Talk *to* OP about *their* post | Talk *from* Gargeya — standalone brand piece |
-| **Voice** | `you` / `this` / `yeah` / `love this` / reactive | Own thesis, scene, practice, values letter |
-| **Fails if** | Reads fine with the source deleted (post in disguise) | Reads like a comment on someone else's thread |
-| **Auto gate** | `score-x-drafts.mjs` fails post-like replies | Soft check: original shouldn't open like a reply to “you” only |
+| **Job** | Talk *to* OP + add **your take** under their roof | Standalone story that attaches |
+| **Voice** | Conversational, personal, additive | Story arc, hook, cross-domain if earned |
+| **Fails if** | Paraphrase-only echo of OP **or** post-like thesis | Slogan stack / no story / pack mashup |
+| **Auto gate** | `score-x-drafts.mjs` fails post-like replies | Soft: not reply-shaped only |
 
 ### How to score replies for this
 
-- **voiceMatch / relatability / humanTexture** must assume conversational second-person energy.  
-- If the body is a polished standalone thesis, **cap voiceMatch ≤ 8** and **humanTexture ≤ 6** until rewritten — total will rarely hit 90 honestly.  
-- Prefer: “yeah love this framing — …” over “Open weights are the headline. The boring open infra…”
+- **voiceMatch / relatability / humanTexture** = conversational + **opinionated** (a real take, not a mirror).  
+- Paraphrase of OP’s best line with “so true” → **cap voiceMatch ≤ 7**, **funRead ≤ 6** until rewritten.  
+- Polished standalone thesis with no “you/yeah/this” room energy → **cap voiceMatch ≤ 8**, **humanTexture ≤ 6**.  
+- Prefer: twist, under-the-floorboards, domain bridge, personal noticing — over echo.  
+- **Hard fail energy:** “haha this lands hard” + restate OP + forced final-sheet/grade/cheater parallel. Cap **voiceMatch ≤ 5** until rewritten. That is fake Gargeya.
 
 ### Agent self-check (replies)
-1. Delete the source URL from your mind. Does the text still feel like a complete blog take? → rewrite.  
-2. Does line 1 respond to *them*? → good.  
-3. Would this work as his own original with zero edits? → fail reply shape.
+1. Is there a **take OP did not already say**? If no → rewrite.  
+2. Does it still sound like you’re **in their thread** (not a blog dump)?  
+3. Would this work as his original with zero edits? → fail reply shape.  
+4. Read out loud: robotic / corporate / **fake clever**? → rewrite.  
+5. Did you force **school / final sheet / grade / cheaters** under a non-education post? → rewrite (save that for learning posts or originals).
 
 ---
 
@@ -103,10 +107,12 @@ Honestly fail total **under 90** (or rewrite) if any of these are true:
 4. **Not finishable** — hard to follow, no pull; reader bounces mid-post  
 5. **No story arc** — disconnected claims / bullets with no beginning–middle–end  
 6. **Not relatable** — pure abstraction, no human scene or lived moment  
-7. **Not save-worthy** — no teacher/student/builder would bookmark it  
-8. **Vague fog** — “AI is changing education” with no story turn  
+7. **No attachment** — reader never feels “that’s me / I agree rising”  
+8. **No comment-seed** — nothing that makes a reader form their own line while reading  
+9. **Not save-worthy** — no teacher/student/builder would bookmark it  
+10. **Vague fog** — “AI is changing education” with no story turn  
 
-`quality.notes` for originals **must** include: (a) independent insight, (b) **story hook/scene**, (c) why someone would **finish** and maybe bookmark/RT/comment.
+`quality.notes` for originals **must** include: (a) independent insight, (b) **story hook/scene**, (c) why someone would **finish**, **agree/like**, and maybe **comment**.
 
 Score **funRead / relatability / humanTexture / clarity** harder on originals — a 91 that is a dry bullet thesis or unreadable abstraction is dishonest.
 
