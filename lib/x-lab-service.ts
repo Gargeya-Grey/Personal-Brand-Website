@@ -218,7 +218,8 @@ export async function runRefresh(opts?: {
 }> {
   const db = requireDb();
   const force = !!opts?.force;
-  const maxPages = Math.min(5, Math.max(1, opts?.maxPages ?? 2));
+  // Default 4 pages × 50 = up to 200 posts per paid refresh (maximize value per credit)
+  const maxPages = Math.min(8, Math.max(1, opts?.maxPages ?? 4));
 
   if (!force) {
     const { data: last } = await db
@@ -447,28 +448,32 @@ export function buildChatDataPacket(
   return {
     legend: {
       engagement_sum: 'likes+replies+reposts+quotes+bookmarks',
-      engagement_rate: 'engagement_sum / impressions when impressions exist',
+      engagement_rate: 'engagement_sum / impressions when impressions ≥ 15',
+      reach_vs_conversion:
+        'High impressions with low ER = reach play; high ER on modest imp = conversion play',
+      reply_archetypes:
+        'additive_take | question | agreement_only | story_or_scene | off_topic | other',
       ist: 'Asia/Kolkata local time for hour/dow slices',
       caution: 'Associations only. Small-n buckets may be unreliable.',
     },
     kpis: summary.kpis,
     principles: summary.principles,
-    insights: summary.insights,
+    playbook: summary.playbook,
     contentClasses: summary.contentClasses,
+    replyArchetypes: summary.replyArchetypes,
+    funnel: summary.funnel,
+    pareto: summary.pareto,
     hours: summary.hours.filter((h) => h.n > 0),
     days: summary.days,
-    topPosts: summary.topPosts.slice(0, 12),
+    lengths: summary.lengths,
+    leaderboards: {
+      reach: summary.leaderboards.reach.slice(0, 8),
+      conversion: summary.leaderboards.conversion.slice(0, 8),
+      bestReplies: summary.leaderboards.bestReplies.slice(0, 8),
+      worstReplies: summary.leaderboards.worstReplies.slice(0, 6),
+      bestOriginals: summary.leaderboards.bestOriginals.slice(0, 6),
+    },
     followerSeries: summary.followerSeries.slice(-60),
     sampleSize: posts.length,
-    postIndex: posts.slice(0, 40).map((p) => ({
-      id: p.tweet_id,
-      class: p.content_class,
-      likes: p.like_count,
-      eng: p.engagement_sum,
-      er: p.engagement_rate,
-      hour_ist: p.created_at_ist_hour,
-      dow_ist: p.created_at_ist_dow,
-      preview: p.text.slice(0, 100),
-    })),
   };
 }

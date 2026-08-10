@@ -11,7 +11,7 @@ export async function POST(request: Request) {
 
     const body = await request.json().catch(() => ({}));
     const force = !!body.force;
-    const maxPages = typeof body.maxPages === 'number' ? body.maxPages : 2;
+    const maxPages = typeof body.maxPages === 'number' ? body.maxPages : 4;
 
     const result = await runRefresh({ force, maxPages });
     if (!result.ok) {
