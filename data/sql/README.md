@@ -8,6 +8,19 @@
 | `x_content_packs_retain_2d.sql` | **Keep only last 2 days** (recommended cleanup) |
 | `x_content_packs_wipe.sql` | Full wipe (empty dashboard) |
 
+## X Lab (growth analytics)
+
+| File | Purpose |
+|------|---------|
+| `x_lab.sql` | Warehouse tables: OAuth tokens, account snapshots, posts, metric history, refresh runs |
+
+### Setup
+
+1. Run `x_lab.sql` in Supabase SQL Editor.
+2. Set on Vercel + local `.env`: `X_CLIENT_ID`, `X_CLIENT_SECRET`, `X_OAUTH_REDIRECT_URI`, `X_TOKEN_ENCRYPTION_KEY`.
+3. X Developer Portal: OAuth 2.0 callback = `X_OAUTH_REDIRECT_URI` (prod + localhost if needed).
+4. Open `/editorial?workspace=lab` → **Connect X** as @GargeyaS → **Refresh data**.
+
 ### Retention (default product rule)
 
 Live X To-Do keeps **at most 2 calendar days** of packs (`pack.date` in IST).

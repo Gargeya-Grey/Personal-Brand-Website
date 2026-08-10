@@ -26,10 +26,14 @@ export default async function EditorialPage({
 
   const params = await searchParams;
   const ws = params.workspace;
-  const initialWorkspace: 'blog' | 'x' =
-    ws === 'x' || ws === 'todo' || ws === 'x-todo' ? 'x' : 'blog';
+  const initialWorkspace: 'blog' | 'x' | 'lab' =
+    ws === 'x' || ws === 'todo' || ws === 'x-todo'
+      ? 'x'
+      : ws === 'lab' || ws === 'x-lab' || ws === 'analytics'
+        ? 'lab'
+        : 'blog';
 
-  // Skip blog list I/O when opening X To-Do — major latency win for hourly scout workflow
+  // Skip blog list I/O when opening X workspaces — major latency win
   const articles =
     initialWorkspace === 'blog' ? await getEditorialArticlesLite() : [];
 

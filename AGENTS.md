@@ -27,7 +27,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ### Auth / CMS
 - Google OAuth + JWT session cookie; allowed email gate in `lib/auth.ts`.
-- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`).
+- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`).
 
 ### X content system
 | Piece | Role |
@@ -42,7 +42,10 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 | `data/x-scout-playbook.md` | Scout SOPs: 1h IST, 2R+1O, grounding, Venn heat, quality |
 | `data/x-reply-quality.md` | Score rubric (pass ≥90) |
 | `data/gargeya-voice.md` | Voice + topic Venn + growth |
-| `data/sql/x_content_packs.sql` | Schema |
+| `lib/x-lab-service.ts` / `x-api.ts` / `x-lab-analytics.ts` | X Lab OAuth + warehouse + analytics |
+| `app/api/x-lab/*` | Lab refresh / summary / posts / chat / OAuth |
+| `data/sql/x_lab.sql` | X Lab warehouse schema |
+| `data/sql/x_content_packs.sql` | Pack schema |
 | `data/sql/x_content_packs_retain_2d.sql` | Keep only last 2 days (manual Supabase prune) |
 | `data/sql/x_content_packs_wipe.sql` | Full wipe ritual (user runs in Supabase) |
 | `data/x-content-packs.json` etc. | Local mirror / evidence; may lag live DB |

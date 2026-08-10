@@ -18,6 +18,7 @@ import {
   Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
   Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2, ListTodo, BookOpen,
+  BarChart3,
 } from 'lucide-react';
 import type { Article, ArticleLite } from '@/lib/blog-service';
 import { avatarForSession, type UserSession } from '@/lib/auth';
@@ -32,6 +33,15 @@ const XStudioClient = dynamic(() => import('./x-studio-client').then((m) => m.XS
     <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
       <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
       <p className="text-sm">Loading queue…</p>
+    </div>
+  ),
+});
+const XLabClient = dynamic(() => import('./x-lab-client').then((m) => m.XLabClient), {
+  ssr: false,
+  loading: () => (
+    <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
+      <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
+      <p className="text-sm">Loading X Lab…</p>
     </div>
   ),
 });
@@ -88,7 +98,7 @@ interface EditorialClientProps {
   initialArticles: ArticleLite[];
   user: UserSession;
   /** From server searchParams — never sync URL during render/mount via history API */
-  initialWorkspace?: 'blog' | 'x';
+  initialWorkspace?: 'blog' | 'x' | 'lab';
 }
 
 function IllustrationThumb({
@@ -236,41 +246,32 @@ const ArticleCard = memo(function ArticleCard({
 
 const WORKSPACE_KEY = 'editorial_workspace';
 
-function WorkspaceSwitch({ active }: { active: 'blog' | 'x' }) {
+function WorkspaceSwitch({ active }: { active: 'blog' | 'x' | 'lab' }) {
+  const tab = (id: 'blog' | 'x' | 'lab', href: string, label: string, Icon: typeof BookOpen) => (
+    <Link
+      href={href}
+      role="tab"
+      aria-selected={active === id}
+      prefetch
+      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-colors ${
+        active === id
+          ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
+          : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
+      }`}
+    >
+      <Icon className="w-3.5 h-3.5" />
+      {label}
+    </Link>
+  );
   return (
     <div
       className="inline-flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 shadow-[var(--atelier-shadow-sm)]"
       role="tablist"
       aria-label="Editorial workspace"
     >
-      <Link
-        href="/editorial"
-        role="tab"
-        aria-selected={active === 'blog'}
-        prefetch
-        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-colors ${
-          active === 'blog'
-            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-        }`}
-      >
-        <BookOpen className="w-3.5 h-3.5" />
-        Blog
-      </Link>
-      <Link
-        href="/editorial?workspace=x"
-        role="tab"
-        aria-selected={active === 'x'}
-        prefetch
-        className={`inline-flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-bold transition-colors ${
-          active === 'x'
-            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-        }`}
-      >
-        <ListTodo className="w-3.5 h-3.5" />
-        X To-Do
-      </Link>
+      {tab('blog', '/editorial', 'Blog', BookOpen)}
+      {tab('x', '/editorial?workspace=x', 'X To-Do', ListTodo)}
+      {tab('lab', '/editorial?workspace=lab', 'X Lab', BarChart3)}
     </div>
   );
 }
@@ -826,7 +827,9 @@ export function EditorialClient({
           ? 'max-w-[96%] 2xl:max-w-[1700px]'
           : workspace === 'x'
             ? 'max-w-5xl'
-            : 'max-w-6xl'
+            : workspace === 'lab'
+              ? 'max-w-6xl'
+              : 'max-w-6xl'
       }`}
     >
       {/* Draft recovery */}
@@ -862,22 +865,24 @@ export function EditorialClient({
       </AnimatePresence>
 
       {/* Hero — full for blog CMS; compact for X To-Do so the queue has room */}
-      <header className={workspace === 'x' ? 'mb-6 sm:mb-8' : 'mb-10 sm:mb-12'}>
-        {workspace === 'x' ? (
+      <header className={workspace === 'x' || workspace === 'lab' ? 'mb-6 sm:mb-8' : 'mb-10 sm:mb-12'}>
+        {workspace === 'x' || workspace === 'lab' ? (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
             <div className="space-y-2 min-w-0">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
                 Private atelier
               </p>
               <h1 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
-                X To-Do
+                {workspace === 'lab' ? 'X Lab' : 'X To-Do'}
               </h1>
               <p className="text-sm text-[var(--atelier-muted)] max-w-md leading-relaxed">
-                Focus queue for scout packs — reply, post, mark done. Switch to Blog anytime.
+                {workspace === 'lab'
+                  ? 'Growth analytics from X API snapshots. Refresh, explore, ask the AI analyst.'
+                  : 'Focus queue for scout packs. Reply, post, mark done. Switch workspaces anytime.'}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2.5 sm:justify-end shrink-0">
-              <WorkspaceSwitch active="x" />
+              <WorkspaceSwitch active={workspace === 'lab' ? 'lab' : 'x'} />
               <div className="inline-flex items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] overflow-hidden shadow-[var(--atelier-shadow-sm)]">
                 <div className="flex items-center gap-2 pl-1.5 pr-2.5 py-1.5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -986,6 +991,10 @@ export function EditorialClient({
       {workspace === 'x' && !editingArticle ? (
         <XStudioErrorBoundary>
           <XStudioClient />
+        </XStudioErrorBoundary>
+      ) : workspace === 'lab' && !editingArticle ? (
+        <XStudioErrorBoundary>
+          <XLabClient />
         </XStudioErrorBoundary>
       ) : (
       <AnimatePresence mode="wait">

@@ -61,6 +61,12 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  if (pathname.startsWith('/api/x-lab')) {
+    if (!user) {
+      return unauthorizedJson('Unauthorized: valid allowlisted session required', reason);
+    }
+  }
+
   const res = NextResponse.next();
   if (pathname.startsWith('/editorial') || pathname.startsWith('/api/')) {
     res.headers.set('Cache-Control', 'private, no-store');
@@ -78,5 +84,7 @@ export const config = {
     '/api/ai/:path*',
     '/api/x-content',
     '/api/x-content/:path*',
+    '/api/x-lab',
+    '/api/x-lab/:path*',
   ],
 };
