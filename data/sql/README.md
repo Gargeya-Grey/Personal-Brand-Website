@@ -5,22 +5,31 @@
 | File | Purpose |
 |------|---------|
 | `x_content_packs.sql` | Create table + RLS (one-time setup) |
-| `x_content_packs_wipe.sql` | **Empty the X To-Do dashboard** |
+| `x_content_packs_retain_2d.sql` | **Keep only last 2 days** (recommended cleanup) |
+| `x_content_packs_wipe.sql` | Full wipe (empty dashboard) |
 
-### Clean slate / weekly cleanup (~every 7–8 days)
+### Retention (default product rule)
 
-1. Supabase → **SQL Editor** → open `x_content_packs_wipe.sql` (or paste its contents).
-2. Run it → `packs_after` should be **0**.
-3. On your laptop, from the repo root:
+Live X To-Do keeps **at most 2 calendar days** of packs (`pack.date` in IST).
+
+- App auto-prunes older rows on load/ingest (`X_PACK_RETENTION_DAYS = 2` in `lib/x-content-service.ts`).
+- `merge-x-pack.mjs` also prunes the local JSON mirror.
+- Manual: run `x_content_packs_retain_2d.sql` in Supabase SQL Editor anytime.
+
+### Full clean slate (rare)
+
+1. Supabase → **SQL Editor** → run `x_content_packs_wipe.sql`.
+2. Confirm `packs_after` = **0**.
+3. Laptop:
 
 ```bash
 node scripts/merge-x-pack.mjs data/x-pack-today.json
 ```
 
-(`APP_URL` + `X_SCOUT_SECRET` must be set in `.env.local`.)
+(`APP_URL` + `X_SCOUT_SECRET` in `.env.local`.)
 
-4. Refresh https://www.sgargeya.com/editorial?workspace=x — only the new pack remains.
+4. Refresh https://www.sgargeya.com/editorial?workspace=x
 
-Current scout shape (see `data/x-scout-playbook.md`): **2 replies + 1 original**, every **1h IST** (11–22).
+Current scout shape: **2 replies + 1 original**, every **1h IST** (11–22).
 
-This does **not** delete blog articles or other tables.
+These scripts do **not** delete blog articles or other tables.

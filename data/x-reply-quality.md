@@ -13,7 +13,7 @@ This is an **agentic loop** (draft → score → rewrite until ≥90 or abandon)
 
 ```
 source fetch (grounding)
-    → draft body (voice + Venn + shape palette)
+    → draft body (gut opinion first — no shape palette)
     → score vs rubric (all dimensions)
     → if total < 90: rewrite (max 3 attempts) or pick new source
     → if total ≥ 90: attach quality{} on draft
@@ -21,7 +21,7 @@ source fetch (grounding)
     → merge-x-pack
 ```
 
-Scouts **must** write the score honestly. Inflating scores is a system failure — structural heuristics in `scripts/score-x-drafts.mjs` will still fail sludge, monotony, **post-like replies**, and empty hooks.
+Scouts **must** write the score honestly. Inflating scores is a system failure — structural heuristics in `scripts/score-x-drafts.mjs` will still fail sludge, monotony, **post-like replies**, **twin 3-para essays**, banned house stamps, and empty hooks.
 
 ---
 
@@ -39,15 +39,29 @@ Scouts **must** write the score honestly. Inflating scores is a system failure �
 - **voiceMatch / relatability / humanTexture** = conversational + **opinionated** (a real take, not a mirror).  
 - Paraphrase of OP’s best line with “so true” → **cap voiceMatch ≤ 7**, **funRead ≤ 6** until rewritten.  
 - Polished standalone thesis with no “you/yeah/this” room energy → **cap voiceMatch ≤ 8**, **humanTexture ≤ 6**.  
-- Prefer: twist, under-the-floorboards, domain bridge, personal noticing — over echo.  
-- **Hard fail energy:** “haha this lands hard” + restate OP + forced final-sheet/grade/cheater parallel. Cap **voiceMatch ≤ 5** until rewritten. That is fake Gargeya.
+- Prefer: whatever he actually thinks — raw, polite, biased, passionate — over any shape menu.  
+- **Hard fail energy:** “haha this lands hard” + restate OP + forced final-sheet/grade/cheater parallel. Cap **voiceMatch ≤ 5** until rewritten. That is fake Gargeya.  
+- **Pattern fail:** if both replies share the same structure (same opener family + same beat count + same moral land), cap **humanTexture ≤ 6** and rewrite one from the gut.  
+- **House essay fail:** `yeah … whole argument` + tidy 3 paragraphs + `isn't/it's` or `that's not/that's` closer → cap **voiceMatch ≤ 6**, **humanTexture ≤ 5** until form is broken.  
+- **Twin yeah-open fail:** both replies start with `yeah` → hard monotony rewrite.
 
 ### Agent self-check (replies)
 1. Is there a **take OP did not already say**? If no → rewrite.  
 2. Does it still sound like you’re **in their thread** (not a blog dump)?  
 3. Would this work as his original with zero edits? → fail reply shape.  
-4. Read out loud: robotic / corporate / **fake clever**? → rewrite.  
-5. Did you force **school / final sheet / grade / cheaters** under a non-education post? → rewrite (save that for learning posts or originals).
+4. Read out loud: robotic / corporate / **fake clever** / **templated**? → rewrite.  
+5. Did you force **school / final sheet / grade / cheaters** under a non-education post? → rewrite.  
+6. Could someone guess this was “draft 1 of a system”? → rewrite until it sounds like a one-off thought.  
+7. Do both replies share paragraph count + landing style? → break one into a different form (1 block, 2 lines, longer rant, softer open).  
+8. Would a stranger say “these always sound the same”? → rewrite until unpredictable.  
+9. Any **em-dash (`—`)**? → remove/rewrite.  
+10. Does every sentence start with a **capital letter**? If not → fix (replies and originals).
+
+### Originals self-check
+1. Independent of today’s replies?  
+2. **Generalized** (no invented “Last night I / my teammate / my cousin” diary)? Real personal stories are owner-only.  
+3. No em-dash; sentence caps.  
+4. Would he post this without feeling like the scout fabricated his life?
 
 ---
 

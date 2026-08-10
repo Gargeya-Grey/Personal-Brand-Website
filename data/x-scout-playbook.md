@@ -72,17 +72,29 @@ Full diagram in `data/gargeya-voice.md`. Short form:
 
 Not product spam. One angle per draft, grounded in **that** source only.
 
-### Voice (anti-monotony — mandatory)
-Read `data/gargeya-voice.md` **Anti-monotony rule**.  
-Across the 3 drafts in a pack: **≥2 different shapes** (micro / blunt / values jab / system-failure / systems line / resource share / rare thesis).  
-Do **not** stamp “You're absolutely right — but…” or “score the path” / mission close on every draft. Same mind, different clothes — or the feed looks AI-written.
+### Voice (anti-pattern - mandatory)
+Read `data/gargeya-voice.md` first. Humans do **not** reply in patterns.
 
-### Replies: human take, not echo (mandatory)
-- Grounded in one source — but **add a personal take** (twist, under-the-floorboards, one domain bridge).  
-- **Not** a paraphrase of OP’s best line. **Not** a robotic restatement.  
-- Sound like a comment in their room (`yeah` / `you` / reactive) — if it reads as a standalone blog post, rewrite.  
-- `score-x-drafts.mjs` auto-fails post-like replies.  
-- Originals: **stories** with hook + attachment + cross-domain only when it deepens the tale (see voice ORIGINALS).
+- **No shape menu.** Do not pick from twist / bridge / mechanism / land. Think, then type.  
+- **No shared spine** across the two replies (same opener family, same paragraph count + moral ending = fail; rewrite one cold).  
+- **Banned house essay (even if “smart”):**  
+  - both replies open with `yeah`  
+  - both are exactly 3 short paragraphs  
+  - `…is the whole argument` / `…is the part that…`  
+  - antithesis lands: `X isn't Y. it's Z.` / `that's not A. that's B.` used as default closer  
+- **Form must differ:** one draft can be 1 block; another 2 lines; another a soft hedge then a hard take. Length follows the thought.  
+- Energy: **raw opinion**, polite, transparent, humble, a little biased, driven/passionate.  
+- **No em-dash (`—`)** anywhere in draft bodies. Use period, comma, colon, or rewrite.  
+- **Capitalize sentences** (first letter of each sentence). Not all-lowercase chat. Clean enough that phone keyboards would not need to fix them.  
+- Not paraphrase. Not brand template. Not LinkedIn. Not a polished content pack that rhymes with last hour.  
+- `score-x-drafts.mjs` auto-fails post-like replies, twin structure, banned stamps, em-dashes, and bad sentence caps.  
+- **Originals:** independent, **generalized** (principle/practice/noticing). Never invent personal diary scenes ("Last night I…", fake teammate/cousin). He will share real personal stories himself. Never mashup of the two replies.
+
+### Replies: opinion under their roof (mandatory)
+- Fetch one real source; `meta` = status URL.  
+- Say what you actually think about **their** post.  
+- Length follows the thought (short is fine; forced 3-beat essays are not).  
+- If it only works as a polished standalone blog post with zero “you/this/yeah” contact → rewrite.
 
 ### Quality gate (mandatory — pass ≥ 90)
 Full rubric: **`data/x-reply-quality.md`**.

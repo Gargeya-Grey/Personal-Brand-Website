@@ -2,11 +2,10 @@
 -- X To-Do — wipe packs (Supabase SQL Editor)
 -- Table: public.x_content_packs ONLY (blog / auth / storage untouched)
 --
--- WHEN TO RUN
---   • Fresh start after a big cadence change (e.g. 2h IST · 2 replies + 1 original)
---   • Every ~7–8 days to clear the dashboard of finished runs
+-- Prefer day-to-day: data/sql/x_content_packs_retain_2d.sql (keeps 2 days).
+-- Use THIS file only for a full clean slate.
 --
--- AFTER YOU RUN THIS
+-- AFTER A FULL WIPE
 --   On the laptop (repo root), refill with one new pack for the current IST slot:
 --     node scripts/merge-x-pack.mjs data/x-pack-today.json
 --   Requires APP_URL + X_SCOUT_SECRET in .env.local
@@ -35,8 +34,8 @@ select count(*) as packs_after from public.x_content_packs;
 -- Expect: packs_after = 0
 
 -- =============================================================================
--- OPTIONAL (comment out the DELETE above if you use this instead):
--- Keep only packs from the last 7 days
+-- OPTIONAL: keep only last 2 days (same as x_content_packs_retain_2d.sql)
+-- Comment out the FULL WIPE DELETE above if you use this instead.
 -- =============================================================================
 -- delete from public.x_content_packs
--- where coalesce(date::timestamptz, updated_at) < (now() - interval '7 days');
+-- where date < ((timezone('Asia/Kolkata', now()))::date - 1);

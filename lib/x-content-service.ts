@@ -44,9 +44,86 @@ export {
 const dataDir = path.join(process.cwd(), 'data');
 const dataFilePath = path.join(dataDir, 'x-content-packs.json');
 
+/** Keep at most this many calendar days of packs (pack.date, IST-oriented). */
+export const X_PACK_RETENTION_DAYS = 2;
+
 let cachedPacks: XContentPack[] | null = null;
 let cacheLoadedAt = 0;
 const CACHE_TTL_MS = 2_000;
+let lastPruneAt = 0;
+const PRUNE_EVERY_MS = 60_000;
+
+/**
+ * Bare draft id for fuzzy match (handles `pack-…-t15__r-foo` vs `r-foo`).
+ */
+export function bareDraftId(draftId: string, packId?: string): string {
+  const id = String(draftId || '').trim();
+  if (!id) return id;
+  if (packId && id.startsWith(`${packId}__`)) return id.slice(packId.length + 2);
+  const m = id.match(/^pack-\d{4}-\d{2}-\d{2}-t\d{2}__(.+)$/);
+  return m ? m[1] : id;
+}
+
+export function draftIdsEqual(a: string, b: string, packId?: string): boolean {
+  if (a === b) return true;
+  return bareDraftId(a, packId) === bareDraftId(b, packId);
+}
+
+/** YYYY-MM-DD in Asia/Kolkata, shifted by dayDelta. */
+function istDateOnly(dayDelta = 0, now = new Date()): string {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(now);
+  const get = (type: string) => parts.find((p) => p.type === type)?.value ?? '';
+  const y = parseInt(get('year'), 10);
+  const m = parseInt(get('month'), 10);
+  const d = parseInt(get('day'), 10);
+  const utc = new Date(Date.UTC(y, m - 1, d + dayDelta));
+  return utc.toISOString().slice(0, 10);
+}
+
+export function packRetentionCutoffDate(days = X_PACK_RETENTION_DAYS): string {
+  // Keep today and (days-1) previous days → cutoff is today-(days-1) inclusive min date
+  return istDateOnly(-(Math.max(1, days) - 1));
+}
+
+/**
+ * Merge draft statuses from an existing pack into an incoming scout pack.
+ * Always keep posted/skipped for the same draft identity (even if body was polished).
+ * Body-only changes on ready drafts stay ready with new text.
+ */
+export function mergePreservedDraftStatuses(
+  incoming: XDraftItem[],
+  existing: XDraftItem[] | undefined,
+  packId: string
+): XDraftItem[] {
+  const prevList = Array.isArray(existing) ? existing : [];
+  const byExact = new Map(prevList.map((d) => [d.id, d]));
+  const byBare = new Map(prevList.map((d) => [bareDraftId(d.id, packId), d]));
+
+  return incoming.map((d) => {
+    const prev = byExact.get(d.id) || byBare.get(bareDraftId(d.id, packId));
+    if (!prev) return { ...d, status: d.status || 'ready' };
+    // User already cleared this task — never re-open on scout re-ingest / polish.
+    if (prev.status === 'posted' || prev.status === 'skipped') {
+      return { ...d, status: prev.status };
+    }
+    if (prev.status === 'ready' || !prev.status) {
+      return { ...d, status: d.status || 'ready' };
+    }
+    return { ...d, status: prev.status || d.status || 'ready' };
+  });
+}
+
+export function findDraftInPack(
+  pack: XContentPack,
+  draftId: string
+): XDraftItem | undefined {
+  return pack.drafts.find((d) => draftIdsEqual(d.id, draftId, pack.id));
+}
 
 let supabaseCooldownUntil = 0;
 let supabaseFailureLogged = false;
@@ -218,13 +295,63 @@ function rowToPack(row: {
   } as XContentPack;
 }
 
+/**
+ * Drop packs older than retention window (by pack.date).
+ * Returns kept packs; optionally deletes expired rows from Supabase.
+ */
+export async function pruneOldXContentPacks(
+  packs: XContentPack[],
+  options?: { persist?: boolean; days?: number }
+): Promise<XContentPack[]> {
+  const days = options?.days ?? X_PACK_RETENTION_DAYS;
+  const cutoff = packRetentionCutoffDate(days);
+  const kept = packs.filter((p) => {
+    const d = toDateOnly(p.date);
+    return d && d >= cutoff;
+  });
+  const removed = packs.length - kept.length;
+  if (removed <= 0) return packs;
+
+  if (options?.persist !== false) {
+    if (isSupabaseUsable()) {
+      try {
+        const { error } = await supabase
+          .from('x_content_packs')
+          .delete()
+          .lt('date', cutoff);
+        if (error) console.warn('[x-content] prune Supabase delete failed:', error);
+      } catch (e) {
+        console.warn('[x-content] prune Supabase delete failed:', e);
+      }
+    }
+    await saveLocalSafe(kept);
+  }
+
+  cachedPacks = kept;
+  cacheLoadedAt = Date.now();
+  lastPruneAt = Date.now();
+  return kept;
+}
+
+async function maybePrune(packs: XContentPack[]): Promise<XContentPack[]> {
+  if (Date.now() - lastPruneAt < PRUNE_EVERY_MS) {
+    // Still filter in-memory so UI never shows stale rows between prune runs
+    const cutoff = packRetentionCutoffDate();
+    return packs.filter((p) => {
+      const d = toDateOnly(p.date);
+      return d && d >= cutoff;
+    });
+  }
+  return pruneOldXContentPacks(packs);
+}
+
 export async function getXContentPacks(): Promise<XContentPack[]> {
   if (cachedPacks && Date.now() - cacheLoadedAt < CACHE_TTL_MS) {
     return cachedPacks;
   }
 
   if (!isSupabaseUsable()) {
-    const local = await loadLocal();
+    const local = await maybePrune(await loadLocal());
     cachedPacks = local;
     cacheLoadedAt = Date.now();
     return local;
@@ -238,22 +365,23 @@ export async function getXContentPacks(): Promise<XContentPack[]> {
 
     if (error) {
       markSupabaseUnavailable(error);
-      const local = await loadLocal();
+      const local = await maybePrune(await loadLocal());
       cachedPacks = local;
       cacheLoadedAt = Date.now();
       return local;
     }
 
     supabaseFailureLogged = false;
-    cachedPacks = (data || []).map((row) =>
+    const loaded = (data || []).map((row) =>
       hydratePack(rowToPack(row as Parameters<typeof rowToPack>[0]))
     );
+    cachedPacks = await maybePrune(loaded);
     cacheLoadedAt = Date.now();
     void saveLocalSafe(cachedPacks);
     return cachedPacks;
   } catch (e) {
     markSupabaseUnavailable(e);
-    const local = await loadLocal();
+    const local = await maybePrune(await loadLocal());
     cachedPacks = local;
     cacheLoadedAt = Date.now();
     return local;
@@ -315,26 +443,23 @@ export async function upsertXContentPack(
   pack: XContentPack,
   options?: { preserveStatuses?: boolean }
 ): Promise<XContentPack> {
-  const packs = await getXContentPacks();
+  let packs = await getXContentPacks();
+  packs = await maybePrune(packs);
   const idx = packs.findIndex((p) => p.id === pack.id);
   const preserve = options?.preserveStatuses !== false;
-  let next: XContentPack = { ...pack, updatedAt: new Date().toISOString() };
+  let next: XContentPack = hydratePack({
+    ...pack,
+    updatedAt: new Date().toISOString(),
+  });
 
   if (idx >= 0) {
     const existing = packs[idx];
     if (preserve) {
-      // Only keep posted/skipped when body text is unchanged (same draft, not a scout refresh).
-      const prevById = new Map(existing.drafts.map((d) => [d.id, d]));
+      // Keep posted/skipped even when scout polishes body text (Done must survive re-ingest).
       next = {
         ...next,
         createdAt: existing.createdAt || next.createdAt,
-        drafts: next.drafts.map((d) => {
-          const prev = prevById.get(d.id);
-          if (prev && prev.body === d.body && prev.status) {
-            return { ...d, status: prev.status };
-          }
-          return { ...d, status: d.status || 'ready' };
-        }),
+        drafts: mergePreservedDraftStatuses(next.drafts, existing.drafts, next.id),
       };
     } else {
       next = { ...next, createdAt: existing.createdAt || next.createdAt };
@@ -344,6 +469,11 @@ export async function upsertXContentPack(
     if (!next.createdAt) next.createdAt = new Date().toISOString();
     packs.unshift(next);
   }
+
+  packs = packs.filter((p) => {
+    const d = toDateOnly(p.date);
+    return d && d >= packRetentionCutoffDate();
+  });
 
   if (isSupabaseUsable()) {
     try {
@@ -372,15 +502,45 @@ export async function updateDraftStatus(
   draftId: string,
   status: XDraftStatus
 ): Promise<XContentPack | null> {
+  // Bypass short cache so we never patch a stale snapshot after scout ingest
+  cacheLoadedAt = 0;
   const packs = await getXContentPacks();
-  const pack = packs.find((p) => p.id === packId);
-  if (!pack) return null;
-  const draft = pack.drafts.find((d) => d.id === draftId);
+  const packIndex = packs.findIndex((p) => p.id === packId);
+  if (packIndex < 0) return null;
+  const pack = packs[packIndex];
+  const draft = findDraftInPack(pack, draftId);
   if (!draft) return null;
-  draft.status = status;
-  pack.updatedAt = new Date().toISOString();
-  await upsertXContentPack(pack, { preserveStatuses: false });
-  return pack;
+
+  const next: XContentPack = hydratePack({
+    ...pack,
+    drafts: pack.drafts.map((d) =>
+      draftIdsEqual(d.id, draftId, pack.id) ? { ...d, status } : d
+    ),
+    updatedAt: new Date().toISOString(),
+  });
+
+  // Direct write — do not go through preserveStatuses path (this IS the status source of truth)
+  packs[packIndex] = next;
+
+  if (isSupabaseUsable()) {
+    try {
+      const { error } = await supabase.from('x_content_packs').upsert(toRow(next), { onConflict: 'id' });
+      if (error) throw error;
+      supabaseFailureLogged = false;
+      cachedPacks = packs;
+      cacheLoadedAt = Date.now();
+      await saveLocalSafe(packs);
+      return next;
+    } catch (e) {
+      markSupabaseUnavailable(e);
+      if (process.env.VERCEL || isSupabaseConfigured()) {
+        throw e instanceof Error ? e : new Error(String(e));
+      }
+    }
+  }
+
+  await saveXContentPacks(packs);
+  return next;
 }
 
 export function xContentUsesCloud(): boolean {

@@ -166,14 +166,21 @@ async function mergeLocal(pack) {
   const idx = packs.findIndex((p) => p.id === pack.id);
   if (idx >= 0) {
     const existing = packs[idx];
-    // Preserve posted/skipped ONLY when the same draft id still has the same body.
-    // Same-day scout refreshes often reuse flag-1 / short-a ids with NEW text —
-    // those must become ready again so the workspace shows the new run.
-    const prevById = new Map((existing.drafts || []).map((d) => [d.id, d]));
+    // Always keep posted/skipped for the same draft identity — even if body was polished.
+    // Re-opening Done tasks after scout re-ingest was a production bug.
+    const packId = pack.id;
+    const bare = (id) => {
+      const s = String(id || '');
+      if (s.startsWith(`${packId}__`)) return s.slice(packId.length + 2);
+      const m = s.match(/^pack-\d{4}-\d{2}-\d{2}-t\d{2}__(.+)$/);
+      return m ? m[1] : s;
+    };
+    const prevByExact = new Map((existing.drafts || []).map((d) => [d.id, d]));
+    const prevByBare = new Map((existing.drafts || []).map((d) => [bare(d.id), d]));
     pack.createdAt = existing.createdAt || pack.createdAt;
     pack.drafts = pack.drafts.map((d) => {
-      const prev = prevById.get(d.id);
-      if (prev && prev.body === d.body && prev.status) {
+      const prev = prevByExact.get(d.id) || prevByBare.get(bare(d.id));
+      if (prev && (prev.status === 'posted' || prev.status === 'skipped')) {
         return { ...d, status: prev.status };
       }
       return { ...d, status: d.status || 'ready' };
@@ -183,9 +190,36 @@ async function mergeLocal(pack) {
     packs.unshift(pack);
   }
 
+  // Retention: keep last 2 calendar days of packs (IST-oriented pack.date)
+  const cutoff = retentionCutoffDate(2);
+  const pruned = packs.filter((p) => {
+    const d = String(p.date || '').slice(0, 10);
+    return d && d >= cutoff;
+  });
+  if (pruned.length !== packs.length) {
+    console.log(
+      `Local prune: dropped ${packs.length - pruned.length} pack(s) older than ${cutoff} (retention 2d)`
+    );
+  }
+
   await fs.mkdir(path.dirname(storePath), { recursive: true });
-  await fs.writeFile(storePath, JSON.stringify(packs, null, 2), 'utf8');
+  await fs.writeFile(storePath, JSON.stringify(pruned, null, 2), 'utf8');
   return pack;
+}
+
+function retentionCutoffDate(days = 2) {
+  const parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: 'Asia/Kolkata',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).formatToParts(new Date());
+  const get = (type) => parts.find((p) => p.type === type)?.value ?? '';
+  const y = parseInt(get('year'), 10);
+  const m = parseInt(get('month'), 10);
+  const d = parseInt(get('day'), 10);
+  const keep = Math.max(1, days);
+  return new Date(Date.UTC(y, m - 1, d - (keep - 1))).toISOString().slice(0, 10);
 }
 
 async function pushRemote(pack) {

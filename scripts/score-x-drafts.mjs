@@ -50,6 +50,15 @@ const STAMP_OPENERS = [
   /^this lands hard/i,
 ];
 
+/** House “smart essay” stamps that made packs rhyme (voice 2026-08-10). */
+const HOUSE_ESSAY_STAMPS = [
+  /\bis the whole argument\b/i,
+  /\bis the part that (actually |really )?(feels|matters|clicked|lands)/i,
+  /\bis doing the whole job\b/i,
+  /\bisn'?t (a |just )?.{0,40}\.\s*it'?s /is,
+  /\bthat'?s not .{0,40}\.\s*that'?s /is,
+];
+
 /** Fake “clever brand” parallel — banned as default reply glue (voice file). */
 const FAKE_CLEVER_SCHOOL = [
   /same fog students hit/i,
@@ -58,6 +67,87 @@ const FAKE_CLEVER_SCHOOL = [
   /train the best cheaters/i,
   /if we only score the win/i,
 ];
+
+/**
+ * Paragraph count for monotony / house-essay checks.
+ * @param {string} body
+ */
+function paragraphCount(body) {
+  return String(body || '')
+    .split(/\n\s*\n/)
+    .filter((p) => p.trim()).length;
+}
+
+/** Em-dash / long dash used as pause (banned in draft bodies). */
+const EM_DASH = /[—―]|–(?=\s)|(?<=\s)–/;
+
+/**
+ * Fake first-person diary for originals (owner shares real personal stories).
+ * Generalized principle/practice is fine; invented last-night scenes are not.
+ */
+const FAKE_PERSONAL_ORIGINAL = [
+  /\blast night i\b/i,
+  /\byesterday i\b/i,
+  /\bthis morning i\b/i,
+  /\bi almost (sent|outsourced|let|wrote|deleted)\b/i,
+  /\bi watched (a |my )/i,
+  /\bmy (younger )?cousin\b/i,
+  /\bteammate'?s doc\b/i,
+  /\bi used to end every week\b/i,
+  /\bi almost outsourced\b/i,
+];
+
+/**
+ * True if draft body contains banned em-dash typography.
+ * @param {string} body
+ */
+export function hasEmDash(body) {
+  return EM_DASH.test(String(body || ''));
+}
+
+/**
+ * True if a sentence-start letter is lowercase (after start or .!? + space).
+ * Allows opening quote before the capital letter.
+ * @param {string} body
+ */
+export function hasBadSentenceCaps(body) {
+  const text = String(body || '').trim();
+  if (!text) return false;
+  // First letter (skip leading quotes)
+  const first = text.replace(/^["'“”‘’]+/, '');
+  if (/^[a-z]/.test(first)) return true;
+  // After sentence enders
+  const re = /([.!?])([ \t\n\r]+)(["'“”‘’]*)([a-z])/g;
+  return re.test(text);
+}
+
+/**
+ * True if original invents a personal diary scene.
+ * @param {string} body
+ */
+export function looksLikeFakePersonalOriginal(body) {
+  const text = String(body || '').trim();
+  if (!text) return false;
+  return FAKE_PERSONAL_ORIGINAL.some((re) => re.test(text));
+}
+
+/**
+ * True if body matches the banned tidy 3-beat house essay.
+ * @param {string} body
+ */
+export function looksLikeHouseEssay(body) {
+  const text = String(body || '').trim();
+  if (!text) return false;
+  const paras = paragraphCount(text);
+  const stampHits = HOUSE_ESSAY_STAMPS.filter((re) => re.test(text)).length;
+  // Classic stamp: 3 short paras + at least one house formula
+  if (paras === 3 && stampHits >= 1 && text.length >= 120 && text.length <= 550) {
+    return true;
+  }
+  // Even without exact 3 paras: double stamp (“whole argument” + antithesis)
+  if (stampHits >= 2 && text.length >= 100) return true;
+  return false;
+}
 
 /**
  * Conversational / second-person energy expected in replies (voice: reply ≠ post).
@@ -160,6 +250,25 @@ export function scorePack(pack) {
     );
   }
 
+  // twin "yeah …" openers on both replies (house pattern)
+  if (replies.length >= 2) {
+    const yeahOpens = replies.filter((d) =>
+      /^yeah\b/i.test(String(d.body || '').trim())
+    );
+    if (yeahOpens.length >= 2) {
+      issues.push(
+        `[error] monotony: ${yeahOpens.length} replies open with "yeah" — break the twin (see gargeya-voice.md house stamp)`
+      );
+    }
+    // twin 3-paragraph essay structure
+    const threePara = replies.filter((d) => paragraphCount(d.body) === 3);
+    if (threePara.length >= 2) {
+      issues.push(
+        `[error] monotony: ${threePara.length} replies are exactly 3 paragraphs — rewrite one with a different form (1 block / 2 lines / longer rant)`
+      );
+    }
+  }
+
   // shapes variety when ≥2 drafts have quality.shape
   const shapes = drafts.map((d) => d.quality?.shape).filter(Boolean);
   if (drafts.length >= 3 && shapes.length >= 2) {
@@ -187,6 +296,18 @@ export function scorePack(pack) {
       }
     }
 
+    // Typography: no em-dash; capitalize sentence starts (voice 2026-08-10 d)
+    if (hasEmDash(body)) {
+      issues.push(
+        `[error] ${id}: em-dash found — rewrite with period/comma/colon/parens (see gargeya-voice.md typography)`
+      );
+    }
+    if (hasBadSentenceCaps(body)) {
+      issues.push(
+        `[error] ${id}: sentence capitalization — capitalize first letter of each sentence (replies/originals should look clean, not all-lowercase chat)`
+      );
+    }
+
     // Reply ≠ post gate (voice + quality docs)
     if (kind === 'reply' || kind === 'quote') {
       if (looksLikeStandalonePost(body)) {
@@ -212,12 +333,22 @@ export function scorePack(pack) {
           `[error] ${id}: stamp opener "lands hard" — rewrite in natural voice (banned house style)`
         );
       }
+      if (looksLikeHouseEssay(body)) {
+        issues.push(
+          `[error] ${id}: house-essay stamp — "whole argument" / 3-para tidy / isn't-it's land (see gargeya-voice.md 2026-08-10). Break form; write one raw opinion.`
+        );
+      }
     }
 
     if (kind === 'short' || kind === 'flagship') {
       if (looksLikeReplyDisguisedAsOriginal(body)) {
         issues.push(
           `[warn] ${id}: original may be reply-shaped only — ensure standalone insight (pillar + soul)`
+        );
+      }
+      if (looksLikeFakePersonalOriginal(body)) {
+        issues.push(
+          `[error] ${id}: fake-personal original — inventing diary/teammate/cousin scenes is banned; keep originals generalized (owner shares real personal stories himself)`
         );
       }
     }

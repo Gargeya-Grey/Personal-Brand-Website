@@ -1,148 +1,141 @@
 {
-  "id": "pack-2026-08-09-t19",
-  "date": "2026-08-09",
-  "title": "1h IST t19 · competence vs tutor mode + CSS not adjectives + don't rush the smart reply",
-  "theme": "Name skills you keep in your hands · fix taste with constraints not vibes · listen before advice",
-  "briefing": "t19 IST. 2 Venn replies + 1 original. Shapes: personal_noticing, under_floorboards, practice_story. Original pillar: values/listening (independent of competence-picking and design skills).",
+  "id": "pack-2026-08-10-t17",
+  "date": "2026-08-10",
+  "title": "1h IST t17 · free tutors vs path · news literacy reps · feedback clocks",
+  "theme": "Access tutors need process visibility · news literacy as practiced pause · match feedback speed to skill",
+  "briefing": "t17: Diamandis free AI tutor equalizer + Rajdeep news-from-noise with teachers. Original independent: fast vs slow feedback clocks. No em-dash; sentence caps; original generalized. Forms uneven.",
   "plannedMinutes": 18,
   "mvpDraftIds": [
-    "r-dhh-competence-tutor",
-    "r-kotetsu-css-skill",
-    "short-dont-rush-smart"
+    "r-diamandis-tutor-path",
+    "r-rajdeep-news-reps",
+    "short-feedback-clock"
   ],
   "signals": [
     {
-      "id": "sig-dhh-competence",
-      "summary": "DHH: AI can rob competence — felt it drain from fingers on skills he should internalize; also most amazing tutor; pick areas of competence, do the work there, pair with agent otherwise",
-      "whyItMatters": "Cognitive honesty + AI use-cases — intentional skill boundaries vs default offloading",
-      "url": "https://x.com/dhh/status/2086426384285487105",
-      "heat": 2,
-      "category": "cognition-ai-practice"
+      "id": "sig-diamandis-tutor",
+      "summary": "Free 24/7 personalized AI tutor in every language would be greatest equalizer in civilization",
+      "whyItMatters": "Access story; process/assessment still decides if learning equalizes",
+      "url": "https://x.com/PeterDiamandis/status/2086762139352498402",
+      "heat": 3,
+      "category": "ai-education-access"
     },
     {
-      "id": "sig-kotetsu-html-skill",
-      "summary": "Claude Code HTML output too ugly for meetings; skill auto-fixes to consulting-quality design; key insight: don't instruct design rules in words — pass finished CSS unchanged so output stops drifting",
-      "whyItMatters": "Builder use-case / efficiency — constraints and artifacts beat vibe prompts for reliable quality",
-      "url": "https://x.com/kotetsu_0321/status/2086400069461487807",
-      "heat": 3,
-      "category": "ai-usecases-skills"
+      "id": "sig-rajdeep-noise",
+      "summary": "500+ teachers: challenge is getting youth to separate news from noise under AI/social screens",
+      "whyItMatters": "Critical literacy as practiced habit, not content dump",
+      "url": "https://x.com/sardesairajdeep/status/2086737265171259575",
+      "heat": 2,
+      "category": "media-literacy"
     }
   ],
-  "skipList": [
-    "t15–t18 sources (Mollick, Craig, Antonio, Mia, Hendrick, Levi, Alibaba, Brendan) — do not recycle",
-    "DHH parent endless-ideas nirvana (mega heat; competence reply is sharper Venn)",
-    "politicalmath Claude Code yes-spam (strong; thinner craft thesis than kotetsu)",
-    "nayakayp bare-minimum AI engineer",
-    "course-slot / Drive spam / Fable clones",
-    "Claims only in DHH parent/sibling thread posts — ground this status only"
-  ],
+  "skipList": [],
   "sessions": [
     {
       "id": "sprint",
       "title": "Fresh replies",
       "maxMinutes": 12,
-      "description": "DHH competence/tutor + kotetsu CSS-as-constraint skill."
+      "description": "Diamandis tutors + Rajdeep news literacy."
     },
     {
       "id": "core",
       "title": "One original",
       "maxMinutes": 6,
-      "description": "Independent listening/values story."
+      "description": "Generalized feedback-clock beat."
     }
   ],
   "drafts": [
     {
-      "id": "r-dhh-competence-tutor",
+      "id": "r-diamandis-tutor-path",
       "kind": "reply",
-      "label": "Reply · competence vs tutor (personal noticing)",
-      "body": "yeah the \"drain out of my fingers\" part is the honest half most people skip.\n\ntutor mode and competence theft ride the same tool. the difference is whether you named the skills you're trying to keep in your hands.\n\npick the few that matter. sweat those. agent the rest without pretending it's the same kind of knowing.",
-      "meta": "https://x.com/dhh/status/2086426384285487105",
+      "label": "Reply · free tutor needs path",
+      "body": "You have me on free 24/7 tutors in every language. I want that world.\n\nWhere I push back a little: equalizer only holds if the tutor does not quietly do the thinking. If school still only grades the polished finish, free help becomes a cleaner shortcut. I'd rather score the messy attempts, not just the final sheet.",
+      "meta": "https://x.com/PeterDiamandis/status/2086762139352498402",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
       "estimatedSeconds": 50,
-      "why": "Grounded in OP: AI robs competence; drain from fingers; amazing tutor; pick competence areas and do work there; pair with agent otherwise. Take: name skills to keep vs same-tool different knowing. Stay in craft/builder world — no school stamp.",
-      "tip": "Do not invent Omarchy/Rails claims or parent-thread 'endless execution' lines. Stay with this status only.",
+      "why": "Grounded in free/24h/native language tutor. Take: equalizer needs process scoring. Love/I/I'd conversational.",
+      "tip": "No invented tutor products; stay on OP equalizer claim + assessment path.",
       "postingWindow": "asap",
-      "targetHandle": "dhh",
+      "targetHandle": "PeterDiamandis",
       "targetReach": "high",
       "quality": {
-        "total": 95,
-        "shape": "personal_noticing",
+        "total": 94,
+        "shape": "warm_push",
         "dimensions": {
           "lengthFit": 12,
-          "clarity": 15,
-          "hook": 15,
-          "funRead": 12,
+          "clarity": 14,
+          "hook": 14,
+          "funRead": 11,
           "relatability": 14,
           "voiceMatch": 14,
-          "humanTexture": 9,
+          "humanTexture": 11,
           "groundingFit": 4
         },
-        "notes": "yeah + OP finger-drain image; tutor/agent/competence from source; take is named skills vs same-tool knowing; conversational; no final-sheet glue.",
-        "attempts": 1
+        "notes": "Caps; no em-dash; You/I contact; process bias; not house antithesis land. Attempt 3 after post-like fails.",
+        "attempts": 3
       }
     },
     {
-      "id": "r-kotetsu-css-skill",
+      "id": "r-rajdeep-news-reps",
       "kind": "reply",
-      "label": "Reply · CSS not adjectives (under floorboards)",
-      "body": "yeah handing finished CSS instead of design adjectives is the whole trick.\n\n\"make it pretty\" is fog. a stylesheet the model can't rewrite mid-output is a real standard.\n\nskills beat vibes when quality has to survive the next chat.",
-      "meta": "https://x.com/kotetsu_0321/status/2086400069461487807",
+      "label": "Reply · news literacy as reps",
+      "body": "You named the hard one: screens connected, world not.\n\nI do not think more content fixes it. News literacy is reps: stop, name the source, ask what would change your mind. Teachers already feel that. We should design practice around that pause, not another feed of current affairs slides.",
+      "meta": "https://x.com/sardesairajdeep/status/2086737265171259575",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 45,
-      "why": "Grounded in OP: ugly Claude Code HTML; skill for meeting-ready design; key point pass finished CSS not design rules in words. Take: constraints beat vibe prompts. Stay in design/tooling world.",
-      "tip": "Do not invent chart types or install paths unless needed. Core claim: CSS-as-constraint not worded design rules.",
+      "estimatedSeconds": 50,
+      "why": "Grounded in news vs noise + AI/social screens + teachers. Take: literacy = practiced pause. Different room from tutor equalizer.",
+      "tip": "No invented conference details beyond OP IIMUN/teachers frame.",
       "postingWindow": "asap",
-      "targetHandle": "kotetsu_0321",
-      "targetReach": "mid",
+      "targetHandle": "sardesairajdeep",
+      "targetReach": "high",
       "quality": {
         "total": 94,
-        "shape": "under_floorboards",
+        "shape": "practice_list",
         "dimensions": {
           "lengthFit": 12,
-          "clarity": 15,
+          "clarity": 14,
           "hook": 14,
           "funRead": 12,
-          "relatability": 13,
+          "relatability": 14,
           "voiceMatch": 14,
           "humanTexture": 10,
           "groundingFit": 4
         },
-        "notes": "yeah + CSS vs adjectives from OP insight; take is standards that survive next chat; different opener from DHH; no school glue.",
+        "notes": "You open vs This open on reply1; caps; no em-dash; concrete pause reps; not twin yeah/3-para.",
         "attempts": 1
       }
     },
     {
-      "id": "short-dont-rush-smart",
+      "id": "short-feedback-clock",
       "kind": "short",
-      "label": "Short · don't rush the smart reply",
-      "body": "A friend sent me a long voice note after a hard week.\n\nI almost replied with a tight little paragraph of advice.\n\nDeleted it. Sent back: \"I'm here. Tell me the part that still hurts.\"\n\nHe talked for another four minutes.\n\nSometimes the rare skill isn't knowing what to say.\nIt's not rushing to be the smartest person in the thread.",
+      "label": "Short · feedback clocks (generalized)",
+      "body": "Fast feedback feels like progress. Sometimes it is.\n\nSome skills need a slower clock: judgment, taste, when to trust a tool. If every loop closes in two seconds, you get fluency without depth. Match the feedback speed to the skill, or you train people to flinch at anything that takes real time.",
       "status": "ready",
       "priority": 2,
       "intent": "authority",
       "session": "core",
-      "estimatedSeconds": 70,
-      "why": "Independent values/listening pillar — not mashup of competence boundaries or CSS skills.",
+      "estimatedSeconds": 45,
+      "why": "Generalized practice/psych: feedback tempo vs skill type. Independent of free-tutor and news-literacy replies.",
       "postingWindow": "anytime",
       "quality": {
-        "total": 95,
-        "shape": "practice_story",
+        "total": 94,
+        "shape": "principle_arc",
         "dimensions": {
           "lengthFit": 12,
           "clarity": 15,
-          "hook": 15,
-          "funRead": 12,
-          "relatability": 15,
+          "hook": 14,
+          "funRead": 11,
+          "relatability": 14,
           "voiceMatch": 14,
-          "humanTexture": 8,
+          "humanTexture": 10,
           "groundingFit": 4
         },
-        "notes": "Independent insight: restraint in reply can be rarer than smart advice. Story hook/scene: voice note + deleted advice + 'part that still hurts'. Finish/like/comment: last line; seeds recognition replies. Not pack collage.",
+        "notes": "Generalized; no diary; no em-dash; caps; independent insight; finish pull on last line.",
         "attempts": 1
       }
     }

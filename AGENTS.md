@@ -43,8 +43,13 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 | `data/x-reply-quality.md` | Score rubric (pass ≥90) |
 | `data/gargeya-voice.md` | Voice + topic Venn + growth |
 | `data/sql/x_content_packs.sql` | Schema |
+| `data/sql/x_content_packs_retain_2d.sql` | Keep only last 2 days (manual Supabase prune) |
 | `data/sql/x_content_packs_wipe.sql` | Full wipe ritual (user runs in Supabase) |
 | `data/x-content-packs.json` etc. | Local mirror / evidence; may lag live DB |
+
+**Done status:** `posted`/`skipped` always survive scout re-ingest and body polish (same draft identity). Draft ids match with or without `pack-…__` prefix.
+
+**Retention:** max **2 calendar days** of packs (auto-prune on load/ingest + local merge).
 
 **Critical UI rule:** draft `meta` for sources must be a **status URL string** (or normalize to one). Object-shaped `{url, note}` broke **Copy & open** (opened compose instead of source). Always use `draftOpenUrl` / `normalizeDraftMeta`.
 
@@ -74,7 +79,11 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 6. Optional: commit pack JSON for GitHub mirror (not required for live To-Do).
 7. User posts from CMS while threads are still hot.
 
-### Wipe packs (clean slate)
+### Prune packs (keep 2 days)
+1. Prefer auto-prune (app + merge). Or run `data/sql/x_content_packs_retain_2d.sql` in Supabase.
+2. Refresh editorial X To-Do.
+
+### Wipe packs (full clean slate — rare)
 1. User runs `data/sql/x_content_packs_wipe.sql` in Supabase.
 2. Confirm empty.
 3. Merge a fresh **2R+1O** pack for the current IST slot.
