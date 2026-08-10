@@ -5,6 +5,7 @@ import {
   Activity,
   AlertTriangle,
   BarChart3,
+  ChevronDown,
   Crosshair,
   Filter,
   Flame,
@@ -26,6 +27,13 @@ type PlaybookItem = {
   severity: 'critical' | 'high' | 'medium' | 'info';
   title: string;
   detail: string;
+};
+
+type SectionNote = {
+  headline: string;
+  howToRead: string;
+  bullets: string[];
+  action?: string;
 };
 
 type PostCard = {
@@ -179,10 +187,74 @@ type SummaryResponse = {
     };
     scatter: ScatterPt[];
     playbook: PlaybookItem[];
+    sectionNotes?: Record<string, SectionNote>;
     followerSeries: { t: string; followers: number }[];
   } | null;
   error?: string | null;
 };
+
+/** Collapsible plain-language diagnosis under every visualization */
+function AnalysisDetails({
+  note,
+  defaultOpen = false,
+  id,
+}: {
+  note?: SectionNote | null;
+  defaultOpen?: boolean;
+  id?: string;
+}) {
+  if (!note) return null;
+  return (
+    <details
+      id={id}
+      className="group mt-3 rounded-xl border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/35 open:bg-[var(--atelier-paper)]/55"
+      open={defaultOpen || undefined}
+    >
+      <summary className="cursor-pointer list-none flex items-center justify-between gap-2 px-3.5 py-2.5 text-xs font-bold text-[var(--atelier-ink)] select-none">
+        <span className="inline-flex items-center gap-2 min-w-0">
+          <MessageSquare className="w-3.5 h-3.5 text-[var(--atelier-gold)] shrink-0" />
+          <span className="truncate">Read analysis · {note.headline}</span>
+        </span>
+        <ChevronDown className="w-4 h-4 text-[var(--atelier-faint)] shrink-0 transition-transform group-open:rotate-180" />
+      </summary>
+      <div className="px-3.5 pb-3.5 pt-0 space-y-3 border-t border-[var(--atelier-line)]/60">
+        <div className="pt-3">
+          <p className="text-[0.65rem] font-bold uppercase tracking-wider text-[var(--atelier-faint)] mb-1">
+            How to read this
+          </p>
+          <p className="text-xs text-[var(--atelier-muted)] leading-relaxed">{note.howToRead}</p>
+        </div>
+        {note.bullets?.length ? (
+          <div>
+            <p className="text-[0.65rem] font-bold uppercase tracking-wider text-[var(--atelier-faint)] mb-1.5">
+              Diagnosis from your data
+            </p>
+            <ul className="space-y-1.5">
+              {note.bullets.map((b, i) => (
+                <li
+                  key={i}
+                  className="text-xs text-[var(--atelier-ink)] leading-relaxed pl-3 border-l-2 border-[var(--atelier-gold)]/50"
+                >
+                  {b}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : null}
+        {note.action ? (
+          <div className="rounded-lg border border-[var(--atelier-gold)]/30 bg-[var(--atelier-gold-soft)]/30 px-3 py-2">
+            <p className="text-[0.65rem] font-bold uppercase tracking-wider text-[var(--atelier-faint)] mb-0.5">
+              What to do
+            </p>
+            <p className="text-xs font-medium text-[var(--atelier-ink)] leading-relaxed">
+              {note.action}
+            </p>
+          </div>
+        ) : null}
+      </div>
+    </details>
+  );
+}
 
 function fmt(n: number | null | undefined, digits = 0) {
   if (n == null || !Number.isFinite(n)) return '—';
@@ -536,6 +608,7 @@ export function XLabClient() {
 
   const summary = data?.summary;
   const kpis = summary?.kpis;
+  const notes = summary?.sectionNotes || {};
   const connected = !!data?.connection?.connected;
   const oauthReady = !!data?.config?.xOAuthConfigured;
 
@@ -724,6 +797,7 @@ export function XLabClient() {
               </div>
             ))}
           </div>
+          <AnalysisDetails note={notes.kpis} defaultOpen={false} />
 
           {tab === 'overview' && (
             <div className="space-y-5">
@@ -747,6 +821,7 @@ export function XLabClient() {
                     </div>
                   ))}
                 </div>
+                <AnalysisDetails note={notes.playbook} />
               </div>
 
               <div className="grid lg:grid-cols-2 gap-4">
@@ -773,10 +848,7 @@ export function XLabClient() {
                       rate={summary?.funnel?.eng_to_reply_rate}
                     />
                   </div>
-                  <p className="text-xs text-[var(--atelier-muted)]">
-                    Imp→eng conversion is the growth choke point. Dead impressions = wasted parent
-                    reach on weak replies.
-                  </p>
+                  <AnalysisDetails note={notes.funnel} />
                 </div>
 
                 {/* Class comparison */}
@@ -803,6 +875,7 @@ export function XLabClient() {
                       </div>
                     ))}
                   </div>
+                  <AnalysisDetails note={notes.contentClass} />
                 </div>
 
                 {/* Scatter */}
@@ -854,6 +927,7 @@ export function XLabClient() {
                       </a>
                     </div>
                   )}
+                  <AnalysisDetails note={notes.scatter} />
                 </div>
 
                 {/* Followers */}
@@ -879,9 +953,7 @@ export function XLabClient() {
                       })}
                     </div>
                   )}
-                  <p className="text-xs text-[var(--atelier-muted)]">
-                    Follower deltas come from snapshots only. Not attributed to a single post.
-                  </p>
+                  <AnalysisDetails note={notes.followers} />
                 </div>
 
                 {/* Length */}
@@ -902,6 +974,7 @@ export function XLabClient() {
                       dimmed={!b.reliable}
                     />
                   ))}
+                  <AnalysisDetails note={notes.lengths} />
                 </div>
               </div>
             </div>
@@ -942,16 +1015,27 @@ export function XLabClient() {
                     <p className="text-sm text-[var(--atelier-muted)]">No replies in range.</p>
                   )}
                 </div>
+                <AnalysisDetails note={notes.replyArchetypes} defaultOpen />
               </div>
               <div className="grid lg:grid-cols-2 gap-4">
-                <PostTable
-                  title="Best replies (conversion-weighted)"
-                  posts={summary?.leaderboards?.bestReplies || []}
-                />
-                <PostTable
-                  title="Dead / weak replies (stop these patterns)"
-                  posts={summary?.leaderboards?.worstReplies || []}
-                />
+                <div>
+                  <PostTable
+                    title="Best replies (conversion-weighted)"
+                    posts={summary?.leaderboards?.bestReplies || []}
+                  />
+                  <div className="px-1">
+                    <AnalysisDetails note={notes.bestReplies} />
+                  </div>
+                </div>
+                <div>
+                  <PostTable
+                    title="Dead / weak replies (stop these patterns)"
+                    posts={summary?.leaderboards?.worstReplies || []}
+                  />
+                  <div className="px-1">
+                    <AnalysisDetails note={notes.worstReplies} />
+                  </div>
+                </div>
               </div>
             </div>
           )}
@@ -984,6 +1068,7 @@ export function XLabClient() {
                         />
                       ))}
                   </div>
+                  <AnalysisDetails note={notes.hours} />
                 </div>
                 <div className="atelier-card p-5 space-y-3">
                   <h2 className="font-headline text-lg font-bold">Day of week (IST)</h2>
@@ -1002,6 +1087,7 @@ export function XLabClient() {
                       dimmed={!d.reliable}
                     />
                   ))}
+                  <AnalysisDetails note={notes.days} />
                 </div>
               </div>
 
@@ -1080,28 +1166,49 @@ export function XLabClient() {
                     ))}
                   </div>
                 </div>
+                <AnalysisDetails note={notes.heatmap} />
               </div>
             </div>
           )}
 
           {tab === 'posts' && (
             <div className="grid lg:grid-cols-2 gap-4">
-              <PostTable
-                title="Reach leaders (log-imp × eng)"
-                posts={summary?.leaderboards?.reach || []}
-              />
-              <PostTable
-                title="Conversion leaders (ER-weighted)"
-                posts={summary?.leaderboards?.conversion || []}
-              />
-              <PostTable
-                title="Best originals"
-                posts={summary?.leaderboards?.bestOriginals || []}
-              />
-              <PostTable
-                title="Best replies"
-                posts={summary?.leaderboards?.bestReplies || []}
-              />
+              <div>
+                <PostTable
+                  title="Reach leaders (log-imp × eng)"
+                  posts={summary?.leaderboards?.reach || []}
+                />
+                <div className="px-1">
+                  <AnalysisDetails note={notes.reachBoard} />
+                </div>
+              </div>
+              <div>
+                <PostTable
+                  title="Conversion leaders (ER-weighted)"
+                  posts={summary?.leaderboards?.conversion || []}
+                />
+                <div className="px-1">
+                  <AnalysisDetails note={notes.conversionBoard} />
+                </div>
+              </div>
+              <div>
+                <PostTable
+                  title="Best originals"
+                  posts={summary?.leaderboards?.bestOriginals || []}
+                />
+                <div className="px-1">
+                  <AnalysisDetails note={notes.bestOriginals} />
+                </div>
+              </div>
+              <div>
+                <PostTable
+                  title="Best replies"
+                  posts={summary?.leaderboards?.bestReplies || []}
+                />
+                <div className="px-1">
+                  <AnalysisDetails note={notes.bestReplies} />
+                </div>
+              </div>
             </div>
           )}
 

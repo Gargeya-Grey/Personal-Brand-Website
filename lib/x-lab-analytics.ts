@@ -693,6 +693,306 @@ export function ruleBasedInsights(
   );
 }
 
+export type SectionNote = {
+  /** Short title under the chart */
+  headline: string;
+  /** How to read this chart (method) */
+  howToRead: string;
+  /** Diagnosis bullets from the actual numbers */
+  bullets: string[];
+  /** What to do next */
+  action?: string;
+};
+
+function fmtN(n: number | null | undefined, d = 1): string {
+  if (n == null || !Number.isFinite(n)) return '—';
+  return d === 0 ? String(Math.round(n)) : n.toFixed(d);
+}
+
+function fmtPct(n: number | null | undefined, d = 1): string {
+  if (n == null || !Number.isFinite(n)) return '—';
+  return `${(n * 100).toFixed(d)}%`;
+}
+
+/** Per-visualization text diagnostics (expandable in UI). */
+export function buildSectionNotes(input: {
+  kpis: ReturnType<typeof buildKpis>;
+  contentClasses: ReturnType<typeof byContentClass>;
+  replyArchetypes: ReturnType<typeof byReplyArchetype>;
+  hours: ReturnType<typeof hourOfDayIst>;
+  days: ReturnType<typeof dayOfWeekIst>;
+  lengths: ReturnType<typeof lengthBuckets>;
+  funnel: ReturnType<typeof funnelMetrics>;
+  pareto: ReturnType<typeof pareto>;
+  boards: ReturnType<typeof leaderboards>;
+  scatter: ReturnType<typeof scatterPoints>;
+  snapshots: AccountSnapshotRow[];
+  range: string;
+}): Record<string, SectionNote> {
+  const {
+    kpis,
+    contentClasses,
+    replyArchetypes,
+    hours,
+    days,
+    lengths,
+    funnel,
+    pareto: par,
+    boards,
+    scatter,
+    snapshots,
+    range,
+  } = input;
+
+  const orig = contentClasses.find((c) => c.content_class === 'original');
+  const rep = contentClasses.find((c) => c.content_class === 'reply');
+  const bestArch = [...replyArchetypes].sort(
+    (a, b) => (b.median_engagement_sum ?? 0) - (a.median_engagement_sum ?? 0)
+  )[0];
+  const worstDeadArch = [...replyArchetypes].sort((a, b) => b.dead_rate - a.dead_rate)[0];
+  const hoursWithN = hours.filter((h) => h.n > 0);
+  const bestHourEng = [...hoursWithN].sort(
+    (a, b) => (b.median_engagement_sum ?? 0) - (a.median_engagement_sum ?? 0)
+  )[0];
+  const bestHourImp = [...hoursWithN].sort(
+    (a, b) => (b.median_impressions ?? 0) - (a.median_impressions ?? 0)
+  )[0];
+  const bestDay = [...days]
+    .filter((d) => d.n > 0)
+    .sort((a, b) => (b.median_engagement_sum ?? 0) - (a.median_engagement_sum ?? 0))[0];
+  const bestLen = [...lengths]
+    .filter((l) => l.n > 0)
+    .sort(
+      (a, b) =>
+        (b.median_engagement_rate ?? b.median_engagement_sum ?? 0) -
+        (a.median_engagement_rate ?? a.median_engagement_sum ?? 0)
+    )[0];
+  const deadScatter = scatter.filter((p) => p.is_dead).length;
+  const highReachLowEng = scatter.filter(
+    (p) => p.x_impressions >= 500 && p.y_engagement <= 2
+  ).length;
+  const highER = scatter.filter((p) => (p.er ?? 0) >= 0.1 && p.x_impressions >= MIN_IMP_FOR_ER);
+
+  const notes: Record<string, SectionNote> = {
+    kpis: {
+      headline: `North-star strip · range ${range}`,
+      howToRead:
+        'Followers come from account snapshots on Refresh (not per-post attribution). Medians resist outliers better than means. Dead rate = zero engagement and low impressions. ER only trusted when impressions clear a floor.',
+      bullets: [
+        `n=${kpis.postsN} posts · ${(kpis.replyShare * 100).toFixed(0)}% replies · ${(kpis.originalShare * 100).toFixed(0)}% originals.`,
+        `Median engagement ${fmtN(kpis.medianEngagementSum)} · median impressions ${fmtN(kpis.medianImpressions, 0)} · median ER ${fmtPct(kpis.medianEngagementRate, 2)}.`,
+        `Dead rate ${fmtPct(kpis.deadRate, 0)} · winner rate ${fmtPct(kpis.winnerRate, 0)} · overall eng/imp ${fmtPct(kpis.overallER, 3)}.`,
+        kpis.followersNow != null
+          ? `Followers now ${kpis.followersNow} (Δ last snap ${kpis.followersDeltaLast ?? '—'}, Δ7d ${kpis.followersDelta7d ?? 'needs more snaps'}).`
+          : 'No follower snapshot yet. Run Refresh after Connect X.',
+      ],
+      action:
+        kpis.replyShare >= 0.75
+          ? 'Diagnosis: reply-heavy sample. Bias the next week toward more originals and fewer low-signal replies.'
+          : 'Keep balancing originals with selective high-signal replies.',
+    },
+    playbook: {
+      headline: 'Automated growth diagnosis',
+      howToRead:
+        'Severity cards are rule-based reads of the same warehouse. Critical/high items are highest leverage. They are associations in this sample, not proven causes.',
+      bullets: [
+        'Scan critical and high first. Those are the choke points (mix, dead replies, funnel leaks).',
+        'Use info cards as context (sample size, coverage) before over-interpreting tiny buckets.',
+        'Playbook updates every time you change the date range or Refresh.',
+      ],
+      action: 'Turn the top 1-2 critical/high cards into a written weekly experiment.',
+    },
+    funnel: {
+      headline: 'Impression to engagement funnel',
+      howToRead:
+        'Left to right: how many posts exist → got impressions → got any engagement → earned a reply-back. Rates under each step are vs the previous step.',
+      bullets: [
+        `${funnel.n} posts → ${funnel.with_impressions} with impressions → ${funnel.with_any_engagement} with any engagement → ${funnel.with_reply_back} with reply-back.`,
+        `Imp→eng rate ${fmtPct(funnel.imp_to_eng_rate, 0)}. Eng→reply-back ${fmtPct(funnel.eng_to_reply_rate, 0)}.`,
+        funnel.imp_to_eng_rate != null && funnel.imp_to_eng_rate < 0.35
+          ? 'Leak is early: many impressions produce zero interaction. Hooks and reply quality are the issue, not only audience size.'
+          : 'Imp→eng is moderate or better in this sample. Still inspect dead replies separately.',
+      ],
+      action:
+        'For growth: improve the first line of replies/originals so impressions do not die at zero eng.',
+    },
+    contentClass: {
+      headline: 'Original vs reply performance',
+      howToRead:
+        'Bars use median engagement sum. Dead rate is the share of posts with no engagement and low impressions. Dim bars = sample too small (n < 5).',
+      bullets: [
+        orig
+          ? `Originals n=${orig.n}: med eng ${fmtN(orig.median_engagement_sum)} · med ER ${fmtPct(orig.median_engagement_rate, 2)} · dead ${fmtPct(orig.dead_rate, 0)}.`
+          : 'No originals in this range.',
+        rep
+          ? `Replies n=${rep.n}: med eng ${fmtN(rep.median_engagement_sum)} · med ER ${fmtPct(rep.median_engagement_rate, 2)} · dead ${fmtPct(rep.dead_rate, 0)}.`
+          : 'No replies in this range.',
+        orig && rep
+          ? (orig.median_engagement_sum ?? 0) > (rep.median_engagement_sum ?? 0)
+            ? 'In this sample originals lead on median engagement. Volume in replies is not buying median performance.'
+            : 'Replies lead or match originals on median eng in this slice. Check if that is a few viral outliers.'
+          : 'Need both classes to compare fairly.',
+      ],
+      action:
+        'Ship more originals like your top conversion posts; restrict replies to additive Venn takes on climbing threads.',
+    },
+    scatter: {
+      headline: 'Reach × conversion map',
+      howToRead:
+        'X = impressions (log scale), Y = engagement sum. Gold = original, dark = reply. Small grey = dead. Bottom-right = high reach low conversion. Top-left = high conversion on smaller reach.',
+      bullets: [
+        `${scatter.length} plotted posts · ${deadScatter} marked dead · ${highReachLowEng} with imp≥500 and eng≤2 (reach without conversion).`,
+        `${highER.length} posts with ER≥10% and enough impressions (conversion plays).`,
+        'A reply with huge impressions but tiny eng is a brand-mismatch or low-signal take on a big account. Do not copy that shape for growth quality.',
+      ],
+      action:
+        'Click outliers and reverse-engineer the text. Prefer conversion plays for brand; use reach plays only when the take is on-brand.',
+    },
+    followers: {
+      headline: 'Follower trajectory from snapshots',
+      howToRead:
+        'Each bar is one Refresh snapshot of followers_count. You cannot get historical followers from a single API call. Curve quality = Refresh cadence.',
+      bullets: [
+        `${snapshots.length} snapshot(s) stored.`,
+        snapshots.length < 3
+          ? 'Too few points to read trend. Refresh daily for a week before trusting slope.'
+          : `Latest ${snapshots[snapshots.length - 1]?.followers_count ?? '—'} vs first ${snapshots[0]?.followers_count ?? '—'}.`,
+        'Never attribute a one-day follower move to a single reply without more snapshots and external context.',
+      ],
+      action: 'Refresh once daily at a fixed time to build a clean series.',
+    },
+    lengths: {
+      headline: 'Length buckets (body after @handles)',
+      howToRead:
+        'Micro ≤80, short 81-160, medium 161-280, long 281+. Bars favor median ER when present, else median eng. High dead rate in a bucket means that length is failing often.',
+      bullets: lengths.map(
+        (l) =>
+          `${l.label}: n=${l.n}, med eng ${fmtN(l.median_engagement_sum)}, med ER ${fmtPct(l.median_engagement_rate, 2)}, dead ${fmtPct(l.dead_rate, 0)}${l.reliable ? '' : ' (low n)'}`
+      ),
+      action: bestLen
+        ? `Lean into ${bestLen.label} when writing replies/originals this week (best signal in sample).`
+        : 'Need more posts to prefer a length.',
+    },
+    replyArchetypes: {
+      headline: 'Reply archetype diagnosis',
+      howToRead:
+        'Heuristic classes from text: additive_take, question, agreement_only, story_or_scene, off_topic, other. Red-tinted bars call out toxic patterns (off-topic / agreement-only) when dead rates are high.',
+      bullets: [
+        bestArch
+          ? `Best med eng archetype: ${bestArch.archetype} (n=${bestArch.n}, med eng ${fmtN(bestArch.median_engagement_sum)}, dead ${fmtPct(bestArch.dead_rate, 0)}).`
+          : 'No reply archetypes yet.',
+        worstDeadArch
+          ? `Highest dead rate: ${worstDeadArch.archetype} (n=${worstDeadArch.n}, dead ${fmtPct(worstDeadArch.dead_rate, 0)}).`
+          : '',
+        'Off-topic and empty agreement burn time and make medians look worse than your real craft.',
+      ].filter(Boolean),
+      action:
+        'Only ship additive_take (and occasional sharp question) on Venn threads. Ban off-topic and pure agreement.',
+    },
+    bestReplies: {
+      headline: 'Best replies (conversion-weighted)',
+      howToRead:
+        'Sorted by conversion score (ER weighted by log impressions when ER is reliable). These are patterns to clone in structure, not to copy word-for-word.',
+      bullets: [
+        boards.bestReplies[0]
+          ? `Top reply: ${boards.bestReplies[0].engagement_sum} eng · ${fmtN(boards.bestReplies[0].impression_count, 0)} imp · ER ${fmtPct(boards.bestReplies[0].engagement_rate, 2)} · ${boards.bestReplies[0].archetype || boards.bestReplies[0].content_class}.`
+          : 'No replies ranked yet.',
+        `Showing ${boards.bestReplies.length} rows. Read previews for additive opinions, not empty praise.`,
+      ],
+      action: 'Write a one-line checklist from the top 3: opener, take, length.',
+    },
+    worstReplies: {
+      headline: 'Weak / dead replies',
+      howToRead:
+        'Zero engagement or dead definition. These are anti-patterns: off-Venn, low effort, or wrong room.',
+      bullets: [
+        `${boards.worstReplies.length} weak replies listed.`,
+        boards.worstReplies[0]
+          ? `Example: “${(boards.worstReplies[0].text_preview || '').slice(0, 80)}…”`
+          : 'No dead replies in this filter (good).',
+        'If a reply needs the parent account to carry it and still gets 0 eng, skip that room next time.',
+      ],
+      action: 'Add these shapes to a personal blocklist in the scout playbook.',
+    },
+    hours: {
+      headline: 'Hour of day (IST)',
+      howToRead:
+        'Median engagement by hour in Asia/Kolkata. Dim = n < 5. High volume hours with low med eng mean you are spraying, not converting.',
+      bullets: [
+        bestHourEng
+          ? `Best med eng hour: ${String(bestHourEng.hour).padStart(2, '0')}:00 (n=${bestHourEng.n}, med eng ${fmtN(bestHourEng.median_engagement_sum)}, med imp ${fmtN(bestHourEng.median_impressions, 0)}).`
+          : 'No hourly data.',
+        bestHourImp
+          ? `Best med impressions hour: ${String(bestHourImp.hour).padStart(2, '0')}:00 (n=${bestHourImp.n}).`
+          : '',
+        'Scout window 11-22 IST is for fresh reply heat. Originals can sit outside that if conversion is strong.',
+      ].filter(Boolean),
+      action: bestHourEng
+        ? `Test concentrating high-effort replies around ${String(bestHourEng.hour).padStart(2, '0')}:00 IST for one week.`
+        : 'Collect more timed posts.',
+    },
+    days: {
+      headline: 'Day of week (IST)',
+      howToRead: 'Median engagement by weekday. Use with hour heatmap; day alone is coarse.',
+      bullets: [
+        bestDay
+          ? `Strongest day in sample: ${bestDay.label} (n=${bestDay.n}, med eng ${fmtN(bestDay.median_engagement_sum)}).`
+          : 'No day data.',
+        'Weekend vs weekday differences need more weeks of Refresh before you rewrite the calendar.',
+      ],
+      action: 'Do not overfit one strong day until n is stable across multiple weeks.',
+    },
+    heatmap: {
+      headline: 'Hour × day heatmap (IST)',
+      howToRead:
+        'Each cell is median engagement or median impressions for that hour and weekday. Toggle metric above the chart. Dim cells = very small n. Empty = no posts.',
+      bullets: [
+        'Look for bands (same hour across days) more than single bright cells.',
+        'A bright impressions cell with dull engagement means you got distribution without a take that lands.',
+        'Align scout slots (11-22 IST) with cells that show both volume and engagement, not volume alone.',
+      ],
+      action: 'Pick 2-3 hour blocks for deliberate posting/replying and ignore vanity hours.',
+    },
+    reachBoard: {
+      headline: 'Reach leaders',
+      howToRead:
+        'Score ≈ log(impressions) × log(1+engagement). Favors posts that got distribution. High reach + low eng is still a warning.',
+      bullets: [
+        boards.reach[0]
+          ? `#1 reach: ${fmtN(boards.reach[0].impression_count, 0)} imp · ${boards.reach[0].engagement_sum} eng · ${boards.reach[0].content_class}.`
+          : 'Empty.',
+        'Use this list to study which parent rooms open distribution, not as a quality ranking alone.',
+      ],
+      action: 'Note parent account types on the top 5 reach posts for scout targeting.',
+    },
+    conversionBoard: {
+      headline: 'Conversion leaders',
+      howToRead:
+        'ER-weighted when impressions are sufficient. These are the posts that turn attention into interaction most efficiently.',
+      bullets: [
+        boards.conversion[0]
+          ? `#1 conversion: ER ${fmtPct(boards.conversion[0].engagement_rate, 2)} · ${boards.conversion[0].engagement_sum} eng · ${fmtN(boards.conversion[0].impression_count, 0)} imp.`
+          : 'Empty.',
+        'Prefer cloning conversion structure for brand growth; reach without ER does not teach judgment.',
+      ],
+      action: 'Save the top 5 conversion texts as style anchors (structure only).',
+    },
+    bestOriginals: {
+      headline: 'Best originals',
+      howToRead: 'Owned posts only, conversion-sorted. This is your brand asset ranking.',
+      bullets: [
+        boards.bestOriginals.length
+          ? `${boards.bestOriginals.length} originals ranked. Top eng ${boards.bestOriginals[0]?.engagement_sum ?? '—'}, ER ${fmtPct(boards.bestOriginals[0]?.engagement_rate, 2)}.`
+          : 'No originals in range. That is a growth problem if replies dominate.',
+        'Originals that teach process/judgment tend to hold ER better than vague takes in small samples.',
+      ],
+      action: 'Cadence: at least one original per day in the winning shape.',
+    },
+  };
+
+  return notes;
+}
+
 export function buildSummaryPayload(
   posts: LabPostRow[],
   snapshots: AccountSnapshotRow[],
@@ -720,6 +1020,20 @@ export function buildSummaryPayload(
     funnel,
     par
   );
+  const sectionNotes = buildSectionNotes({
+    kpis,
+    contentClasses,
+    replyArchetypes,
+    hours,
+    days,
+    lengths,
+    funnel,
+    pareto: par,
+    boards,
+    scatter,
+    snapshots,
+    range,
+  });
 
   return {
     range,
@@ -728,7 +1042,7 @@ export function buildSummaryPayload(
       'ER only trusted when impressions ≥ ' + MIN_IMP_FOR_ER + '.',
       'Buckets with small n are marked unreliable.',
       'Reach ≠ conversion: track both axes.',
-      'Associations only — not causal follower attribution.',
+      'Associations only, not causal follower attribution.',
     ],
     kpis,
     contentClasses,
@@ -742,6 +1056,7 @@ export function buildSummaryPayload(
     leaderboards: boards,
     scatter,
     playbook,
+    sectionNotes,
     insights: playbook.map((p) => `[${p.severity}] ${p.title}: ${p.detail}`),
     topPosts: boards.conversion,
     followerSeries: snapshots
