@@ -928,7 +928,6 @@ export function EditorialClient({
                   Shape essays with quiet control — AI for scaffolding, you for the voice.
                 </p>
                 <div className="flex flex-wrap items-center gap-2 pt-1">
-                  <WorkspaceSwitch active="blog" />
                   <span className="atelier-chip !py-1.5 !px-3.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
                     {publishedCount} live
