@@ -458,13 +458,18 @@ export function applyOperatorNotes(
   }
 
   const purposeHint = notes.replace(/\s+/g, ' ').trim();
-  if (purposeHint.length >= 12 && (!next.businessPurpose || next.businessPurpose.length < 8)) {
-    next.businessPurpose = purposeHint.slice(0, 220);
-    overrides.push('businessPurpose');
-  } else if (purposeHint.length >= 12) {
-    const existing = next.notes || '';
-    if (!existing.toLowerCase().includes(purposeHint.slice(0, 40).toLowerCase())) {
-      next.notes = [existing, `Operator: ${purposeHint}`].filter(Boolean).join('\n').slice(0, 1800);
+  const paymentOnlyNote =
+    /^(used\s+)?(idfc|wow|upi|visa|mastercard|card)(\s+\w+){0,5}$/i.test(purposeHint) ||
+    purposeHint.length < 12;
+  if (!paymentOnlyNote) {
+    if (!next.businessPurpose || next.businessPurpose.length < 8) {
+      next.businessPurpose = purposeHint.slice(0, 220);
+      overrides.push('businessPurpose');
+    } else {
+      const existing = next.notes || '';
+      if (!existing.toLowerCase().includes(purposeHint.slice(0, 40).toLowerCase())) {
+        next.notes = [existing, purposeHint].filter(Boolean).join('\n').slice(0, 1800);
+      }
     }
   }
 

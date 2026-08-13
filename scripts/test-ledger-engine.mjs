@@ -86,6 +86,12 @@ assert.equal(signals.vendor, 'Grok xAI');
 assert.equal(signals.amounts[0], 700);
 assert.equal(signals.hasInr, true);
 assert.ok(collectInvoiceNumbers(receipt).some((value) => /BJWTF8LV/i.test(value)));
+assert.equal(
+  collectInvoiceNumbers(receipt).find((value) => /BJWTF8LV/i.test(value)),
+  'BJWTF8LV 0001'
+);
+assert.ok(!collectInvoiceNumbers(receipt).some((value) => /receipt nu/i.test(value)));
+assert.equal(signals.picks.invoiceNumber, 'BJWTF8LV 0001');
 assert.equal(guessVendor('support@x.ai SuperGrok'), 'Grok xAI');
 assert.ok(collectAmounts('Total ₹1,847.50').includes(1847.5));
 

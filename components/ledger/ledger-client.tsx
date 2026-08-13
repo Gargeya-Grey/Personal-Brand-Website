@@ -65,7 +65,7 @@ function FieldLabel({
             : '';
 
   return (
-    <div className="flex items-center justify-between gap-2 mb-1.5">
+    <div className="flex items-center justify-between gap-2">
       <label className="atelier-label mb-0" title={hint} htmlFor={htmlFor} id={htmlFor ? `${htmlFor}-label` : undefined}>
         {label}
       </label>
@@ -544,7 +544,7 @@ export function LedgerClient({
       </p>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <section className="lg:col-span-5 space-y-4" aria-label="Invoice intake">
+        <section className="lg:col-span-5 ledger-stack" aria-label="Invoice intake">
           <div
             {...getRootProps()}
             className={`atelier-card-lg cursor-pointer border-dashed px-6 py-10 text-center transition ${
@@ -559,8 +559,8 @@ export function LedgerClient({
             </p>
           </div>
 
-          <div>
-            <label className="atelier-label">Your notes (trusted)</label>
+          <div className="ledger-field">
+            <label className="atelier-label" htmlFor="operator-notes">Your notes (trusted)</label>
             <textarea
               id="operator-notes"
               value={extraDetails}
@@ -628,7 +628,7 @@ export function LedgerClient({
             {isExtracting ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3 text-[var(--atelier-muted)]">
                 <Loader2 className="w-7 h-7 animate-spin text-[var(--atelier-gold)]" />
-                <p>Fusing document text with your notes…</p>
+                <p>Extracting, then a second pass checks every field against the invoice…</p>
               </div>
             ) : !extracted ? (
               <div className="flex flex-col items-center justify-center py-24 px-8 text-center text-[var(--atelier-muted)]">
@@ -686,8 +686,8 @@ export function LedgerClient({
                     </ul>
                   )}
 
-                  <div className="space-y-4">
-                    <div>
+                  <div className="ledger-stack">
+                    <div className="ledger-field">
                       <FieldLabel htmlFor="transactionName" label="Transaction name" hint="Vendor / purpose — period" confidence={flags.transactionName} />
                       <input
                         required
@@ -698,7 +698,7 @@ export function LedgerClient({
                         className="atelier-input"
                       />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Business purpose" hint="One sentence for a CA" confidence={flags.businessPurpose} />
                       <input
                         name="businessPurpose"
@@ -707,13 +707,13 @@ export function LedgerClient({
                         className="atelier-input"
                       />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Notes" hint="FX, splits, extra context" confidence={flags.notes} />
                       <textarea
                         name="notes"
                         value={extracted.notes || ''}
                         onChange={(event) => updateField('notes', event.target.value)}
-                        className="atelier-input min-h-[88px] h-auto py-3"
+                        className="atelier-input"
                       />
                     </div>
                   </div>
@@ -731,8 +731,8 @@ export function LedgerClient({
                   </label>
 
                   {extracted.isSubscription && (
-                    <div className="space-y-3 rounded-2xl border border-[var(--atelier-line)] p-4">
-                      <div>
+                    <div className="ledger-stack rounded-2xl border border-[var(--atelier-line)] p-5">
+                      <div className="ledger-field">
                         <FieldLabel label="Billing cycle" hint="Monthly creates one Notion row per selected month" />
                         <LedgerSelect
                           name="subscriptionFrequency"
@@ -809,24 +809,24 @@ export function LedgerClient({
                     </div>
                   )}
 
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div>
+                  <div className="ledger-stack-grid sm:grid-cols-2">
+                    <div className="ledger-field">
                       <FieldLabel htmlFor="type" label="Type" hint="Direction of funds" confidence={flags.type} />
                       <LedgerSelect name="type" value={extracted.type} options={Types} onChange={updateField} labelledBy="type-label" />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Category" hint="P&L bucket" confidence={flags.category} />
                       <LedgerSelect name="category" value={extracted.category} options={Categories} onChange={updateField} />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Tax class" hint="Deductibility" confidence={flags.taxClass} />
                       <LedgerSelect name="taxClass" value={extracted.taxClass} options={TaxClasses} onChange={updateField} />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Deal type" hint="Commercial shape" confidence={flags.dealType} />
                       <LedgerSelect name="dealType" value={extracted.dealType} options={DealTypes} onChange={updateField} />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel htmlFor="amount" label="Amount INR" hint="Bank debit in rupees" confidence={flags.amount} />
                       <AmountStepper
                         name="amount"
@@ -837,11 +837,11 @@ export function LedgerClient({
                         }
                       />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Payment" hint="How it left the account" confidence={flags.paymentMode} />
                       <LedgerSelect name="paymentMode" value={extracted.paymentMode} options={PaymentModes} onChange={updateField} />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Net" hint="Ex-GST" confidence={flags.netAmount} />
                       <AmountStepper
                         name="netAmount"
@@ -852,7 +852,7 @@ export function LedgerClient({
                         }
                       />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="GST" hint="Tax component" confidence={flags.gstAmount} />
                       <AmountStepper
                         name="gstAmount"
@@ -863,7 +863,7 @@ export function LedgerClient({
                         }
                       />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Vendor" hint="Legal billing name" confidence={flags.vendor} />
                       <input
                         value={extracted.vendor || ''}
@@ -871,7 +871,7 @@ export function LedgerClient({
                         className="atelier-input"
                       />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel label="Invoice #" hint="Vendor invoice id" confidence={flags.invoiceNumber} />
                       <input
                         value={extracted.invoiceNumber || ''}
@@ -879,7 +879,7 @@ export function LedgerClient({
                         className="atelier-input font-mono"
                       />
                     </div>
-                    <div>
+                    <div className="ledger-field">
                       <FieldLabel htmlFor="date" label="Date" hint="Invoice date" confidence={flags.date} />
                       <input
                         type="date"
@@ -890,8 +890,8 @@ export function LedgerClient({
                         className="atelier-input"
                       />
                     </div>
-                    <div className="grid grid-cols-2 gap-2">
-                      <div>
+                    <div className="ledger-stack-grid grid-cols-2">
+                      <div className="ledger-field">
                         <FieldLabel label="FY" hint="Indian FY" confidence={flags.financialYear} />
                         <LedgerSelect
                           name="financialYear"
@@ -900,7 +900,7 @@ export function LedgerClient({
                           onChange={updateField}
                         />
                       </div>
-                      <div>
+                      <div className="ledger-field">
                         <FieldLabel label="Month" hint="Calendar month" confidence={flags.month} />
                         <LedgerSelect name="month" value={extracted.month} options={[...Months]} onChange={updateField} />
                       </div>

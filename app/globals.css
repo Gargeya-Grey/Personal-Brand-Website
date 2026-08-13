@@ -975,6 +975,33 @@ canvas {
   color: var(--atelier-faint);
 }
 
+/* Ledger forms: one rhythm for every label + control pair */
+.ledger-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+.ledger-stack-grid {
+  display: grid;
+  gap: 1.25rem;
+}
+.ledger-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 0;
+}
+.ledger-field .atelier-label {
+  margin-bottom: 0;
+}
+.ledger-field textarea.atelier-input {
+  height: auto;
+  min-height: 5.5rem;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  line-height: 1.45;
+}
+
 .atelier-btn {
   display: inline-flex;
   align-items: center;

@@ -138,18 +138,34 @@ export function collectAmounts(text: string): number[] {
   return [...amounts].sort((a, b) => b - a);
 }
 
+const INVOICE_STOP = /^(receipt|date|paid|invoice|number|no|nos|total|amount|bill|to|from|page|qty|description)$/i;
+
+/** Keep invoice/receipt ids; drop following labels like "Receipt number". */
+export function cleanInvoiceNumber(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const tokens = raw.replace(/\s+/g, ' ').trim().split(' ');
+  const kept: string[] = [];
+  for (const token of tokens) {
+    if (INVOICE_STOP.test(token)) break;
+    if (!/^[A-Z0-9][A-Z0-9\-\/]*$/i.test(token)) break;
+    kept.push(token);
+  }
+  const value = kept.join(' ').trim();
+  return value.length >= 4 ? value : null;
+}
+
 export function collectInvoiceNumbers(text: string): string[] {
   if (!text) return [];
   const found: string[] = [];
   const patterns = [
-    /invoice\s*(?:number|no\.?|#)\s*[:#-]?\s*([A-Z0-9][A-Z0-9\s\-\/]{3,24})/i,
-    /receipt\s*(?:number|no\.?|#)\s*[:#-]?\s*([A-Z0-9][A-Z0-9\s\-\/]{3,24})/i,
+    /invoice\s*(?:number|no\.?|#)\s*[:#-]?\s*([A-Z0-9][A-Z0-9\-\/]*(?:\s+[A-Z0-9][A-Z0-9\-\/]*){0,2})/i,
+    /receipt\s*(?:number|no\.?|#)\s*[:#-]?\s*([A-Z0-9][A-Z0-9\-\/]*(?:\s+[A-Z0-9][A-Z0-9\-\/]*){0,2})/i,
     /\bINV[-\s]?[A-Z0-9]{4,}\b/i,
   ];
   for (const pattern of patterns) {
     const match = pattern.exec(text);
-    if (match?.[1]) found.push(match[1].replace(/\s+/g, ' ').trim());
-    else if (match?.[0] && !match[1]) found.push(match[0].trim());
+    const cleaned = cleanInvoiceNumber(match?.[1] || match?.[0] || '');
+    if (cleaned) found.push(cleaned);
   }
   return [...new Set(found)];
 }
@@ -231,6 +247,14 @@ export function harvestDocumentSignals(fileText: string, extraDetails: string): 
   const amountFromNotes = labeledAmount(notes) || noteAmounts[0] || null;
   const amountFromDoc = labeledAmount(document) || docAmounts[0] || null;
 
+  const labeledInvoice = (blob: string) => {
+    const match =
+      /invoice\s*(?:number|no\.?|#)\s*[:#-]?\s*([A-Z0-9][A-Z0-9\-\/]*(?:\s+[A-Z0-9][A-Z0-9\-\/]*){0,2})/i.exec(
+        blob
+      );
+    return cleanInvoiceNumber(match?.[1] || '');
+  };
+
   const picks = {
     date: dateFromNotes || dateFromDoc,
     dateReason: dateFromNotes
@@ -250,7 +274,7 @@ export function harvestDocumentSignals(fileText: string, extraDetails: string): 
           : 'none',
     vendor: noteVendor || docVendor,
     vendorReason: noteVendor ? 'operator notes' : docVendor ? 'known merchant or labeled vendor' : 'none',
-    invoiceNumber: invoiceNumbers[0] || null,
+    invoiceNumber: labeledInvoice(notes) || labeledInvoice(document) || invoiceNumbers[0] || null,
   };
 
   const hasInr = /₹|\binr\b|\brs\.?\b/i.test(combined);
@@ -286,15 +310,25 @@ export function formatSignalsForPrompt(signals: HarvestedSignals): string {
 }
 
 /** Harvested labeled facts beat the model. Operator notes already sit in picks. */
-export function applyHarvestLocks<T extends { date?: string; vendor?: string; amount?: number; invoiceNumber?: string; requiresInrConversion?: boolean; transactionName?: string; netAmount?: number; notes?: string }>(
-  entry: T,
-  signals: HarvestedSignals
-): T {
+export function applyHarvestLocks<
+  T extends {
+    date?: string;
+    vendor?: string;
+    amount?: number;
+    invoiceNumber?: string;
+    requiresInrConversion?: boolean;
+    transactionName?: string;
+    netAmount?: number;
+    notes?: string;
+    isSubscription?: boolean;
+    subscriptionFrequency?: string;
+    dealType?: string;
+  },
+>(entry: T, signals: HarvestedSignals): T {
   const next = { ...entry };
-  const applied: string[] = [];
+  const corpus = `${signals.sourcePreview} ${next.transactionName || ''} ${next.notes || ''}`;
 
   if (signals.picks.date) {
-    if (next.date !== signals.picks.date) applied.push(`date locked ${signals.picks.date}`);
     next.date = signals.picks.date;
   } else {
     const parsed = parseFlexibleDate(next.date);
@@ -303,34 +337,40 @@ export function applyHarvestLocks<T extends { date?: string; vendor?: string; am
 
   if (signals.picks.vendor && !next.vendor) {
     next.vendor = signals.picks.vendor;
-    applied.push(`vendor locked ${signals.picks.vendor}`);
   } else if (signals.picks.vendor && next.vendor && next.vendor.toLowerCase() !== signals.picks.vendor.toLowerCase()) {
     const modelLooksWeak = next.vendor.length < 3 || /unknown|n\/a|null/i.test(next.vendor);
-    if (modelLooksWeak) {
-      next.vendor = signals.picks.vendor;
-      applied.push(`vendor locked ${signals.picks.vendor}`);
-    }
+    if (modelLooksWeak) next.vendor = signals.picks.vendor;
   }
 
   if (signals.picks.amount != null && (!next.amount || next.amount <= 0)) {
     next.amount = signals.picks.amount;
     if (!next.netAmount) next.netAmount = signals.picks.amount;
-    applied.push(`amount locked ${signals.picks.amount}`);
   }
 
-  if (signals.picks.invoiceNumber && !next.invoiceNumber) {
-    next.invoiceNumber = signals.picks.invoiceNumber;
-    applied.push(`invoice locked ${signals.picks.invoiceNumber}`);
-  }
+  const modelInvoice = cleanInvoiceNumber(next.invoiceNumber);
+  const harvestedInvoice = cleanInvoiceNumber(signals.picks.invoiceNumber);
+  next.invoiceNumber = modelInvoice || harvestedInvoice || '';
 
   if (signals.hasInr) next.requiresInrConversion = false;
+
+  if (/supergrok|subscription|monthly plan|billed monthly/i.test(corpus)) {
+    next.isSubscription = true;
+    if (!next.subscriptionFrequency || next.subscriptionFrequency === 'One-time') {
+      next.subscriptionFrequency = 'Monthly';
+    }
+    if (next.dealType === 'Internal' || !next.dealType) next.dealType = 'Subscription';
+  }
 
   if ((!next.transactionName || next.transactionName === 'Untitled transaction') && next.vendor) {
     next.transactionName = next.invoiceNumber ? `${next.vendor} – ${next.invoiceNumber}` : next.vendor;
   }
 
-  if (applied.length) {
-    next.notes = [next.notes, `Harvest locks: ${applied.join('; ')}`].filter(Boolean).join('\n');
+  if (next.notes && /harvest locks:/i.test(next.notes)) {
+    next.notes = next.notes
+      .split('\n')
+      .filter((line) => !/harvest locks:/i.test(line))
+      .join('\n')
+      .trim();
   }
 
   return next;

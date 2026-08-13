@@ -112,6 +112,59 @@ Rules:
 const EXTRACT_SYSTEM =
   'You are a careful Indian-startup bookkeeper. Map the full invoice text and the operator notes into one ledger JSON object. Convert every human date to YYYY-MM-DD. Never drop a vendor name that appears in the letterhead. Operator notes override the invoice when they conflict.';
 
+const VERIFY_SYSTEM =
+  'You are a second, independent bookkeeper. Your only job is to check the first extract against the raw invoice text and the operator notes. Correct anything wrong, truncated, or polluted. Do not invent facts. Payment asides like "Used IDFC Wow" are payment flags, never the business purpose.';
+
+function verifyPrompt(fileText: string, extraDetails: string, proposed: LedgerEntry, signals: HarvestedSignals): string {
+  return `Check this proposed ledger row against the sources. Return the FULL corrected JSON.
+
+Rules:
+- invoiceNumber must be only the id (e.g. BJWTF8LV 0001). Never include the words Receipt, Date, Number, Paid.
+- businessPurpose = what was bought and why it is a business cost. NOT the payment method.
+- Operator notes win for payment rail / INR / card. If they only say IDFC/WOW, set idfcWowCard true and write a purpose from the invoice (e.g. SuperGrok subscription for Jul–Aug 2026).
+- notes must not contain "Harvest locks" or engine debug. Put useful FX/split context only.
+- SuperGrok / Slack / Notion / GitHub Copilot style plans → isSubscription true, dealType Subscription, category SaaS Tools unless it is raw API tokens.
+- Mark confidence HIGH only when the value is explicitly in the invoice or operator notes.
+- MEDIUM = reasonable inference. LOW = guess. Prefer to correct the value so it can be HIGH.
+
+<PROPOSED_ROW>
+${JSON.stringify(
+    {
+      transactionName: proposed.transactionName,
+      type: proposed.type,
+      category: proposed.category,
+      amount: proposed.amount,
+      netAmount: proposed.netAmount,
+      gstAmount: proposed.gstAmount,
+      date: proposed.date,
+      paymentMode: proposed.paymentMode,
+      taxClass: proposed.taxClass,
+      dealType: proposed.dealType,
+      vendor: proposed.vendor,
+      invoiceNumber: proposed.invoiceNumber,
+      businessPurpose: proposed.businessPurpose,
+      notes: proposed.notes,
+      idfcWowCard: proposed.idfcWowCard,
+      gstApplicable: proposed.gstApplicable,
+      isSubscription: proposed.isSubscription,
+      subscriptionFrequency: proposed.subscriptionFrequency,
+    },
+    null,
+    2
+  )}
+</PROPOSED_ROW>
+
+${extraDetails ? wrapUntrusted('TRUSTED_OPERATOR_NOTES', extraDetails) : '(No operator notes.)'}
+
+${fileText ? wrapUntrusted('UNTRUSTED_INVOICE_TEXT', fileText) : '(No document text.)'}
+
+<DETERMINISTIC_SIGNALS>
+${formatSignalsForPrompt(signals)}
+</DETERMINISTIC_SIGNALS>
+
+Add verifierNotes: one short sentence on what you changed, or "Confirmed against invoice."`;
+}
+
 function confidenceFromMethod(method: string): ConfidenceLevel {
   if (method.includes('Direct Exact Match') || method.includes('Fuzzy Strip Match') || method.includes('Substring Match')) {
     return 'HIGH';
@@ -251,7 +304,28 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
 
   if (!parsed || typeof parsed !== 'object') parsed = {};
 
-  const data = normalizeStructured(parsed as Record<string, unknown>, fileText, extraDetails, signals);
+  let data = normalizeStructured(parsed as Record<string, unknown>, fileText, extraDetails, signals);
+
+  try {
+    const checked = await completeLedgerModel({
+      provider: input.provider,
+      systemPrompt: VERIFY_SYSTEM,
+      userText: verifyPrompt(fileText, extraDetails, data, signals),
+      jsonFormat: true,
+    });
+    const verified = parseJsonFromModel(checked.text);
+    if (verified && typeof verified === 'object') {
+      data = normalizeStructured(verified as Record<string, unknown>, fileText, extraDetails, signals);
+      const note = clipText((verified as { verifierNotes?: string }).verifierNotes, 400);
+      if (note) {
+        data.chainOfThought = [data.chainOfThought, `--- VERIFIER ---\n${note}`].filter(Boolean).join('\n');
+        data.sourceFusion = `${data.sourceFusion || 'Merged.'} Verifier: ${note}`;
+      }
+    }
+  } catch (error) {
+    console.warn('[ledger-extract] verifier failed; keeping first extract', error);
+  }
+
   const errors: string[] = [];
   if (!data.date || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
     errors.push('Date is missing or not YYYY-MM-DD.');
