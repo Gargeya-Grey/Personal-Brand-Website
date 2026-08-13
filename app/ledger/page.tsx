@@ -25,7 +25,7 @@ export default async function LedgerPage() {
     <div className="atelier-root min-h-screen relative flex flex-col justify-between antialiased">
       <div className="atelier-glow pointer-events-none absolute inset-0 z-0" aria-hidden />
       <Navigation />
-      <main id="page-main" tabIndex={-1} className="relative z-10 pt-24 sm:pt-28 pb-12 sm:pb-16 flex-grow">
+      <main id="page-main" tabIndex={-1} className="relative z-10 pt-24 sm:pt-28 pb-8 sm:pb-10 flex-grow">
         <LedgerClient user={user} initialSettings={settings} />
       </main>
       <Footer />

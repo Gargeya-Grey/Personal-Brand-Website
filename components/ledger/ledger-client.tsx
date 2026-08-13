@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { useDropzone } from 'react-dropzone';
 import {
@@ -76,6 +76,15 @@ function FieldLabel({
   );
 }
 
+function FormSection({ title, children }: { title: string; children: ReactNode }) {
+  return (
+    <section className="rounded-2xl border border-[var(--atelier-line)] bg-[color-mix(in_srgb,var(--atelier-paper)_40%,transparent)] p-4 sm:p-5">
+      <h3 className="atelier-label !mb-4">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
 function AmountStepper({
   name,
   value,
@@ -141,7 +150,7 @@ export function LedgerClient({
   const [reviewNotes, setReviewNotes] = useState<string[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
-  const [showAudit, setShowAudit] = useState(true);
+  const [showAudit, setShowAudit] = useState(false);
   const [selectedMonths, setSelectedMonths] = useState<string[]>([]);
   const [provider, setProvider] = useState<'google' | 'openrouter'>(
     initialSettings.geminiConfigured || !initialSettings.openRouterConfigured ? 'google' : 'openrouter'
@@ -390,17 +399,17 @@ export function LedgerClient({
   const flags = extracted?.confidence_flags || {};
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6">
-      <header className="mb-6 sm:mb-8 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div className="space-y-2 min-w-0">
+    <div className="w-full max-w-[96%] 2xl:max-w-[1700px] mx-auto px-4 sm:px-6 md:px-10">
+      <header className="mb-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+        <div className="space-y-1 min-w-0">
           <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
             Private atelier
           </p>
           <h1 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
             Finance Ledger
           </h1>
-          <p className="text-sm text-[var(--atelier-muted)] max-w-xl leading-relaxed">
-            Drop an invoice, add the extra context only you know, review the fused entry, then write it to your Notion books.
+          <p className="text-sm text-[var(--atelier-muted)] max-w-2xl leading-relaxed">
+            Drop an invoice, add what only you know, review the fused row, save to Notion.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5 sm:justify-end shrink-0">
@@ -466,7 +475,7 @@ export function LedgerClient({
         </div>
       </header>
 
-      <div className="atelier-card mb-6 p-4 sm:p-5">
+      <div className="atelier-card mb-5 px-4 py-3 sm:px-5">
         <button
           type="button"
           onClick={() => setShowSettings((prev) => !prev)}
@@ -543,88 +552,92 @@ export function LedgerClient({
         {statusMessage}
       </p>
 
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <section className="lg:col-span-5 ledger-stack" aria-label="Invoice intake">
-          <div
-            {...getRootProps()}
-            className={`atelier-card-lg cursor-pointer border-dashed px-6 py-10 text-center transition ${
-              isDragActive ? 'border-[var(--atelier-gold)] bg-[var(--atelier-gold-soft)]' : ''
-            }`}
-          >
-            <input {...getInputProps()} />
-            <UploadCloud className="w-8 h-8 mx-auto mb-3 text-[var(--atelier-faint)]" />
-            <p className="font-medium">{isDragActive ? 'Drop the invoice' : 'Drag in a PDF or photo'}</p>
-            <p className="text-xs text-[var(--atelier-faint)] mt-1">
-              PDF, PNG, JPG, WebP · 6 MB max · or paste a screenshot (Ctrl/⌘ V)
-            </p>
-          </div>
+      <div className="grid grid-cols-1 xl:grid-cols-12 gap-6 xl:gap-8 items-start">
+        <section className="xl:col-span-4 xl:sticky xl:top-28" aria-label="Invoice intake">
+          <div className="atelier-card-lg p-4 sm:p-5 ledger-stack">
+            <div
+              {...getRootProps()}
+              className={`rounded-2xl border border-dashed px-5 py-8 text-center transition cursor-pointer ${
+                isDragActive
+                  ? 'border-[var(--atelier-gold)] bg-[var(--atelier-gold-soft)]'
+                  : 'border-[var(--atelier-line)] hover:border-[var(--atelier-gold)]/40'
+              }`}
+            >
+              <input {...getInputProps()} />
+              <UploadCloud className="w-7 h-7 mx-auto mb-2.5 text-[var(--atelier-faint)]" />
+              <p className="font-medium text-sm">{isDragActive ? 'Drop the invoice' : 'Drag in a PDF or photo'}</p>
+              <p className="text-xs text-[var(--atelier-faint)] mt-1">
+                PDF, PNG, JPG, WebP · paste with Ctrl/⌘ V
+              </p>
+            </div>
 
-          <div className="ledger-field">
-            <label className="atelier-label" htmlFor="operator-notes">Your notes (trusted)</label>
-            <textarea
-              id="operator-notes"
-              value={extraDetails}
-              onChange={(event) => setExtraDetails(event.target.value)}
-              placeholder="What the invoice cannot know: bank debit in INR, paid via IDFC WOW, this is the edudojo.ai domain for two years, GST not claimed…"
-              className="atelier-input min-h-[140px] h-auto py-3 resize-y"
-              aria-describedby="operator-notes-hint"
-            />
-            <p id="operator-notes-hint" className="mt-1.5 text-xs text-[var(--atelier-faint)] leading-relaxed">
-              These notes outrank the PDF when they conflict. Ctrl/⌘ + Enter extracts. The document still supplies vendor, invoice number, and printed totals.
-            </p>
-          </div>
+            <div className="ledger-field">
+              <label className="atelier-label" htmlFor="operator-notes">Your notes (trusted)</label>
+              <textarea
+                id="operator-notes"
+                value={extraDetails}
+                onChange={(event) => setExtraDetails(event.target.value)}
+                placeholder="Bank debit in INR, paid via IDFC WOW, this is the edudojo.ai domain…"
+                className="atelier-input min-h-[100px] h-auto py-3 resize-y"
+                aria-describedby="operator-notes-hint"
+              />
+              <p id="operator-notes-hint" className="text-xs text-[var(--atelier-faint)] leading-relaxed">
+                Notes outrank the PDF. Ctrl/⌘ Enter extracts.
+              </p>
+            </div>
 
-          {file && (
-            <div className="atelier-card px-4 py-3 flex items-center justify-between gap-3">
-              <div className="min-w-0">
-                <p className="text-sm font-medium truncate">{file.name}</p>
-                <p className="text-xs text-[var(--atelier-faint)]">{(file.size / 1024).toFixed(1)} KB</p>
+            {file && (
+              <div className="flex items-center justify-between gap-3 rounded-2xl border border-[var(--atelier-line)] px-3.5 py-2.5">
+                <div className="min-w-0">
+                  <p className="text-sm font-medium truncate">{file.name}</p>
+                  <p className="text-xs text-[var(--atelier-faint)]">{(file.size / 1024).toFixed(1)} KB</p>
+                </div>
+                <button
+                  type="button"
+                  className="atelier-icon-btn"
+                  onClick={() => {
+                    setFile(null);
+                    setPreviewUrl((prev) => {
+                      if (prev) URL.revokeObjectURL(prev);
+                      return null;
+                    });
+                  }}
+                  aria-label="Remove file"
+                >
+                  <X className="w-4 h-4" />
+                </button>
               </div>
-              <button
-                type="button"
-                className="atelier-icon-btn"
-                onClick={() => {
-                  setFile(null);
-                  setPreviewUrl((prev) => {
-                    if (prev) URL.revokeObjectURL(prev);
-                    return null;
-                  });
-                }}
-                aria-label="Remove file"
-              >
-                <X className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+            )}
 
-          {error && !extracted && (
-            <div className="flex gap-2 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300" role="alert">
-              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
-              {error}
-            </div>
-          )}
+            {error && !extracted && (
+              <div className="flex gap-2 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300" role="alert">
+                <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+                {error}
+              </div>
+            )}
 
-          <button
-            type="button"
-            onClick={handleExtract}
-            disabled={isExtracting || (!file && !extraDetails.trim())}
-            className="atelier-btn atelier-btn-primary w-full justify-center py-3"
-          >
-            {isExtracting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
-            {isExtracting ? 'Reading invoice + notes…' : 'Extract with notes'}
-          </button>
+            <button
+              type="button"
+              onClick={handleExtract}
+              disabled={isExtracting || (!file && !extraDetails.trim())}
+              className="atelier-btn atelier-btn-primary w-full justify-center py-3"
+            >
+              {isExtracting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+              {isExtracting ? 'Reading invoice + notes…' : 'Extract with notes'}
+            </button>
 
-          {previewUrl && file && !fileLooksLikePdf(file) && (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={previewUrl} alt="Invoice preview" className="atelier-card w-full h-auto max-h-[480px] object-contain p-3" />
-          )}
-          {previewUrl && file && fileLooksLikePdf(file) && (
-            <iframe title="Invoice PDF" src={previewUrl} className="atelier-card w-full h-[480px] bg-[var(--atelier-paper)]" />
-          )}
+            {previewUrl && file && !fileLooksLikePdf(file) && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={previewUrl} alt="Invoice preview" className="w-full h-auto max-h-[220px] object-contain rounded-2xl border border-[var(--atelier-line)] p-2" />
+            )}
+            {previewUrl && file && fileLooksLikePdf(file) && (
+              <iframe title="Invoice PDF" src={previewUrl} className="w-full h-[220px] rounded-2xl border border-[var(--atelier-line)] bg-[var(--atelier-paper)]" />
+            )}
+          </div>
         </section>
 
-        <section className="lg:col-span-7" aria-label="Ledger review">
-          <div className="atelier-card-lg min-h-[520px] overflow-hidden">
+        <section className="xl:col-span-8" aria-label="Ledger review">
+          <div className="atelier-card-lg min-h-[420px] overflow-hidden">
             {isExtracting ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3 text-[var(--atelier-muted)]">
                 <Loader2 className="w-7 h-7 animate-spin text-[var(--atelier-gold)]" />
@@ -654,7 +667,7 @@ export function LedgerClient({
                   </button>
                 </div>
 
-                <div className="p-5 space-y-5">
+                <div className="p-5 sm:p-6 space-y-4">
                   {error && (
                     <div className="flex gap-2 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300">
                       <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -673,10 +686,9 @@ export function LedgerClient({
                     </div>
                   )}
                   {(fusion || extracted.operatorOverrides?.length) && (
-                    <div className="rounded-2xl border border-[var(--atelier-line)] bg-[var(--atelier-gold-soft)] px-4 py-3 text-sm leading-relaxed">
-                      <p className="font-semibold mb-1">How notes and the document were fused</p>
-                      <p>{fusion || extracted.sourceFusion}</p>
-                    </div>
+                    <p className="text-sm text-[var(--atelier-muted)] leading-relaxed px-0.5">
+                      {fusion || extracted.sourceFusion}
+                    </p>
                   )}
                   {reviewNotes.length > 0 && (
                     <ul className="text-sm text-amber-800 dark:text-amber-200 list-disc pl-5 space-y-1">
@@ -686,211 +698,228 @@ export function LedgerClient({
                     </ul>
                   )}
 
-                  <div className="ledger-stack">
-                    <div className="ledger-field">
-                      <FieldLabel htmlFor="transactionName" label="Transaction name" hint="Vendor / purpose — period" confidence={flags.transactionName} />
-                      <input
-                        required
-                        id="transactionName"
-                        name="transactionName"
-                        value={extracted.transactionName || ''}
-                        onChange={(event) => updateField('transactionName', event.target.value)}
-                        className="atelier-input"
-                      />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Business purpose" hint="One sentence for a CA" confidence={flags.businessPurpose} />
-                      <input
-                        name="businessPurpose"
-                        value={extracted.businessPurpose || ''}
-                        onChange={(event) => updateField('businessPurpose', event.target.value)}
-                        className="atelier-input"
-                      />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Notes" hint="FX, splits, extra context" confidence={flags.notes} />
-                      <textarea
-                        name="notes"
-                        value={extracted.notes || ''}
-                        onChange={(event) => updateField('notes', event.target.value)}
-                        className="atelier-input"
-                      />
-                    </div>
-                  </div>
-
-                  <label className="flex items-center gap-2 text-sm font-semibold cursor-pointer">
-                    <input
-                      type="checkbox"
-                      checked={!!extracted.isSubscription}
-                      onChange={(event) => {
-                        updateField('isSubscription', event.target.checked);
-                        if (event.target.checked) updateField('dealType', 'Subscription');
-                      }}
-                    />
-                    Recurring subscription
-                  </label>
-
-                  {extracted.isSubscription && (
-                    <div className="ledger-stack rounded-2xl border border-[var(--atelier-line)] p-5">
+                  <FormSection title="What happened">
+                    <div className="ledger-stack-grid xl:grid-cols-2">
                       <div className="ledger-field">
-                        <FieldLabel label="Billing cycle" hint="Monthly creates one Notion row per selected month" />
-                        <LedgerSelect
-                          name="subscriptionFrequency"
-                          value={extracted.subscriptionFrequency || 'Monthly'}
-                          options={['Monthly', 'Yearly', 'One-time']}
-                          onChange={updateField}
+                        <FieldLabel htmlFor="transactionName" label="Transaction name" hint="Vendor / purpose — period" confidence={flags.transactionName} />
+                        <input
+                          required
+                          id="transactionName"
+                          name="transactionName"
+                          value={extracted.transactionName || ''}
+                          onChange={(event) => updateField('transactionName', event.target.value)}
+                          className="atelier-input"
                         />
                       </div>
-                      {extracted.subscriptionFrequency === 'Monthly' && (
-                        <>
-                          <div className="flex justify-between text-[10px] uppercase tracking-widest text-[var(--atelier-faint)]">
-                            <span>Months this FY</span>
-                            <span className="space-x-2">
-                              <button type="button" onClick={() => setSelectedMonths([...Months])}>
-                                All 12
-                              </button>
-                              <button
-                                type="button"
-                                onClick={() => {
-                                  const idx = Months.indexOf(extracted.month as (typeof Months)[number]);
-                                  setSelectedMonths(idx >= 0 ? Months.slice(0, idx + 1) : [extracted.month]);
-                                }}
-                              >
-                                Up to {extracted.month}
-                              </button>
-                              <button type="button" onClick={() => setSelectedMonths([])}>
-                                Clear
-                              </button>
-                            </span>
-                          </div>
-                          <div className="grid grid-cols-4 sm:grid-cols-6 gap-1.5">
-                            {Months.map((month) => {
-                              const on = selectedMonths.includes(month);
-                              return (
-                                <button
-                                  key={month}
-                                  type="button"
-                                  onClick={() =>
-                                    setSelectedMonths((prev) =>
-                                      prev.includes(month) ? prev.filter((item) => item !== month) : [...prev, month]
-                                    )
-                                  }
-                                  className={`rounded-xl border px-2 py-2 text-xs ${
-                                    on
-                                      ? 'border-[var(--atelier-gold)] bg-[var(--atelier-gold-soft)]'
-                                      : 'border-transparent text-[var(--atelier-faint)]'
-                                  }`}
-                                >
-                                  {month.slice(0, 3)}
+                      <div className="ledger-field">
+                        <FieldLabel label="Business purpose" hint="One sentence for a CA" confidence={flags.businessPurpose} />
+                        <input
+                          name="businessPurpose"
+                          value={extracted.businessPurpose || ''}
+                          onChange={(event) => updateField('businessPurpose', event.target.value)}
+                          className="atelier-input"
+                        />
+                      </div>
+                      <div className="ledger-field xl:col-span-2">
+                        <FieldLabel label="Notes" hint="FX, splits, extra context" confidence={flags.notes} />
+                        <textarea
+                          name="notes"
+                          value={extracted.notes || ''}
+                          onChange={(event) => updateField('notes', event.target.value)}
+                          className="atelier-input"
+                        />
+                      </div>
+                    </div>
+                    <label className="mt-4 flex items-center gap-2 text-sm font-medium cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={!!extracted.isSubscription}
+                        onChange={(event) => {
+                          updateField('isSubscription', event.target.checked);
+                          if (event.target.checked) updateField('dealType', 'Subscription');
+                        }}
+                      />
+                      Recurring subscription
+                    </label>
+                    {extracted.isSubscription && (
+                      <div className="mt-4 ledger-stack">
+                        <div className="ledger-field max-w-xs">
+                          <FieldLabel label="Billing cycle" hint="Monthly creates one Notion row per selected month" />
+                          <LedgerSelect
+                            name="subscriptionFrequency"
+                            value={extracted.subscriptionFrequency || 'Monthly'}
+                            options={['Monthly', 'Yearly', 'One-time']}
+                            onChange={updateField}
+                          />
+                        </div>
+                        {extracted.subscriptionFrequency === 'Monthly' && (
+                          <>
+                            <div className="flex justify-between text-[10px] uppercase tracking-widest text-[var(--atelier-faint)]">
+                              <span>Months this FY</span>
+                              <span className="space-x-2">
+                                <button type="button" onClick={() => setSelectedMonths([...Months])}>
+                                  All 12
                                 </button>
-                              );
-                            })}
-                          </div>
-                          <div className="space-y-1 text-xs font-mono text-[var(--atelier-muted)] max-h-32 overflow-y-auto">
-                            {selectedMonths.map((month) => {
-                              const row = generateEntryForMonth(extracted, month);
-                              return (
-                                <div key={month} className="flex justify-between gap-2">
-                                  <span className="truncate">{row.transactionName}</span>
-                                  <span>
-                                    {row.date} · ₹{Number(row.amount || 0).toFixed(2)}
-                                  </span>
-                                </div>
-                              );
-                            })}
-                          </div>
-                          {truncationWarning && (
-                            <p className="text-xs text-amber-700 dark:text-amber-300">
-                              Billing day {originalDay} does not exist in some months, so those dates clamp to the last valid day.
-                            </p>
-                          )}
-                        </>
-                      )}
-                    </div>
-                  )}
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const idx = Months.indexOf(extracted.month as (typeof Months)[number]);
+                                    setSelectedMonths(idx >= 0 ? Months.slice(0, idx + 1) : [extracted.month]);
+                                  }}
+                                >
+                                  Up to {extracted.month}
+                                </button>
+                                <button type="button" onClick={() => setSelectedMonths([])}>
+                                  Clear
+                                </button>
+                              </span>
+                            </div>
+                            <div className="grid grid-cols-6 xl:grid-cols-12 gap-1.5">
+                              {Months.map((month) => {
+                                const on = selectedMonths.includes(month);
+                                return (
+                                  <button
+                                    key={month}
+                                    type="button"
+                                    onClick={() =>
+                                      setSelectedMonths((prev) =>
+                                        prev.includes(month) ? prev.filter((item) => item !== month) : [...prev, month]
+                                      )
+                                    }
+                                    className={`rounded-xl border px-2 py-2 text-xs ${
+                                      on
+                                        ? 'border-[var(--atelier-gold)] bg-[var(--atelier-gold-soft)]'
+                                        : 'border-[var(--atelier-line)] text-[var(--atelier-faint)]'
+                                    }`}
+                                  >
+                                    {month.slice(0, 3)}
+                                  </button>
+                                );
+                              })}
+                            </div>
+                            {truncationWarning && (
+                              <p className="text-xs text-amber-700 dark:text-amber-300">
+                                Billing day {originalDay} does not exist in some months, so those dates clamp to the last valid day.
+                              </p>
+                            )}
+                          </>
+                        )}
+                      </div>
+                    )}
+                  </FormSection>
 
-                  <div className="ledger-stack-grid sm:grid-cols-2">
-                    <div className="ledger-field">
-                      <FieldLabel htmlFor="type" label="Type" hint="Direction of funds" confidence={flags.type} />
-                      <LedgerSelect name="type" value={extracted.type} options={Types} onChange={updateField} labelledBy="type-label" />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Category" hint="P&L bucket" confidence={flags.category} />
-                      <LedgerSelect name="category" value={extracted.category} options={Categories} onChange={updateField} />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Tax class" hint="Deductibility" confidence={flags.taxClass} />
-                      <LedgerSelect name="taxClass" value={extracted.taxClass} options={TaxClasses} onChange={updateField} />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Deal type" hint="Commercial shape" confidence={flags.dealType} />
-                      <LedgerSelect name="dealType" value={extracted.dealType} options={DealTypes} onChange={updateField} />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel htmlFor="amount" label="Amount INR" hint="Bank debit in rupees" confidence={flags.amount} />
-                      <AmountStepper
-                        name="amount"
-                        value={extracted.amount}
-                        onChange={(name, value) => updateField(name, Number(value) || 0)}
-                        onAdjust={(name, delta) =>
-                          updateField(name, Math.max(0, Number(((extracted[name] || 0) + delta).toFixed(2))))
-                        }
-                      />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Payment" hint="How it left the account" confidence={flags.paymentMode} />
-                      <LedgerSelect name="paymentMode" value={extracted.paymentMode} options={PaymentModes} onChange={updateField} />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Net" hint="Ex-GST" confidence={flags.netAmount} />
-                      <AmountStepper
-                        name="netAmount"
-                        value={extracted.netAmount}
-                        onChange={(name, value) => updateField(name, Number(value) || 0)}
-                        onAdjust={(name, delta) =>
-                          updateField(name, Math.max(0, Number(((extracted[name] || 0) + delta).toFixed(2))))
-                        }
-                      />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="GST" hint="Tax component" confidence={flags.gstAmount} />
-                      <AmountStepper
-                        name="gstAmount"
-                        value={extracted.gstAmount}
-                        onChange={(name, value) => updateField(name, Number(value) || 0)}
-                        onAdjust={(name, delta) =>
-                          updateField(name, Math.max(0, Number(((extracted[name] || 0) + delta).toFixed(2))))
-                        }
-                      />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Vendor" hint="Legal billing name" confidence={flags.vendor} />
-                      <input
-                        value={extracted.vendor || ''}
-                        onChange={(event) => updateField('vendor', event.target.value)}
-                        className="atelier-input"
-                      />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel label="Invoice #" hint="Vendor invoice id" confidence={flags.invoiceNumber} />
-                      <input
-                        value={extracted.invoiceNumber || ''}
-                        onChange={(event) => updateField('invoiceNumber', event.target.value)}
-                        className="atelier-input font-mono"
-                      />
-                    </div>
-                    <div className="ledger-field">
-                      <FieldLabel htmlFor="date" label="Date" hint="Invoice date" confidence={flags.date} />
-                      <input
-                        type="date"
-                        id="date"
-                        required
-                        value={extracted.date || ''}
-                        onChange={(event) => updateField('date', event.target.value)}
-                        className="atelier-input"
-                      />
-                    </div>
-                    <div className="ledger-stack-grid grid-cols-2">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <FormSection title="Money">
+                      <div className="ledger-stack-grid sm:grid-cols-2">
+                        <div className="ledger-field">
+                          <FieldLabel htmlFor="amount" label="Amount INR" hint="Bank debit in rupees" confidence={flags.amount} />
+                          <AmountStepper
+                            name="amount"
+                            value={extracted.amount}
+                            onChange={(name, value) => updateField(name, Number(value) || 0)}
+                            onAdjust={(name, delta) =>
+                              updateField(name, Math.max(0, Number(((extracted[name] || 0) + delta).toFixed(2))))
+                            }
+                          />
+                        </div>
+                        <div className="ledger-field">
+                          <FieldLabel label="Payment" hint="How it left the account" confidence={flags.paymentMode} />
+                          <LedgerSelect name="paymentMode" value={extracted.paymentMode} options={PaymentModes} onChange={updateField} />
+                        </div>
+                        <div className="ledger-field">
+                          <FieldLabel label="Net" hint="Ex-GST" confidence={flags.netAmount} />
+                          <AmountStepper
+                            name="netAmount"
+                            value={extracted.netAmount}
+                            onChange={(name, value) => updateField(name, Number(value) || 0)}
+                            onAdjust={(name, delta) =>
+                              updateField(name, Math.max(0, Number(((extracted[name] || 0) + delta).toFixed(2))))
+                            }
+                          />
+                        </div>
+                        <div className="ledger-field">
+                          <FieldLabel label="GST" hint="Tax component" confidence={flags.gstAmount} />
+                          <AmountStepper
+                            name="gstAmount"
+                            value={extracted.gstAmount}
+                            onChange={(name, value) => updateField(name, Number(value) || 0)}
+                            onAdjust={(name, delta) =>
+                              updateField(name, Math.max(0, Number(((extracted[name] || 0) + delta).toFixed(2))))
+                            }
+                          />
+                        </div>
+                      </div>
+                      <div className="mt-4 flex flex-wrap gap-5 text-sm">
+                        <label className="inline-flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!extracted.idfcWowCard}
+                            onChange={(event) => updateField('idfcWowCard', event.target.checked)}
+                          />
+                          IDFC WOW card
+                        </label>
+                        <label className="inline-flex items-center gap-2 cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={!!extracted.gstApplicable}
+                            onChange={(event) => updateField('gstApplicable', event.target.checked)}
+                          />
+                          GST applicable
+                        </label>
+                      </div>
+                    </FormSection>
+
+                    <FormSection title="Books">
+                      <div className="ledger-stack-grid sm:grid-cols-2">
+                        <div className="ledger-field">
+                          <FieldLabel htmlFor="type" label="Type" hint="Direction of funds" confidence={flags.type} />
+                          <LedgerSelect name="type" value={extracted.type} options={Types} onChange={updateField} labelledBy="type-label" />
+                        </div>
+                        <div className="ledger-field">
+                          <FieldLabel label="Category" hint="P&L bucket" confidence={flags.category} />
+                          <LedgerSelect name="category" value={extracted.category} options={Categories} onChange={updateField} />
+                        </div>
+                        <div className="ledger-field">
+                          <FieldLabel label="Tax class" hint="Deductibility" confidence={flags.taxClass} />
+                          <LedgerSelect name="taxClass" value={extracted.taxClass} options={TaxClasses} onChange={updateField} />
+                        </div>
+                        <div className="ledger-field">
+                          <FieldLabel label="Deal type" hint="Commercial shape" confidence={flags.dealType} />
+                          <LedgerSelect name="dealType" value={extracted.dealType} options={DealTypes} onChange={updateField} />
+                        </div>
+                      </div>
+                    </FormSection>
+                  </div>
+
+                  <FormSection title="Who and when">
+                    <div className="ledger-stack-grid sm:grid-cols-2 xl:grid-cols-6">
+                      <div className="ledger-field xl:col-span-2">
+                        <FieldLabel label="Vendor" hint="Legal billing name" confidence={flags.vendor} />
+                        <input
+                          value={extracted.vendor || ''}
+                          onChange={(event) => updateField('vendor', event.target.value)}
+                          className="atelier-input"
+                        />
+                      </div>
+                      <div className="ledger-field">
+                        <FieldLabel label="Invoice #" hint="Vendor invoice id" confidence={flags.invoiceNumber} />
+                        <input
+                          value={extracted.invoiceNumber || ''}
+                          onChange={(event) => updateField('invoiceNumber', event.target.value)}
+                          className="atelier-input font-mono"
+                        />
+                      </div>
+                      <div className="ledger-field">
+                        <FieldLabel htmlFor="date" label="Date" hint="Invoice date" confidence={flags.date} />
+                        <input
+                          type="date"
+                          id="date"
+                          required
+                          value={extracted.date || ''}
+                          onChange={(event) => updateField('date', event.target.value)}
+                          className="atelier-input"
+                        />
+                      </div>
                       <div className="ledger-field">
                         <FieldLabel label="FY" hint="Indian FY" confidence={flags.financialYear} />
                         <LedgerSelect
@@ -905,26 +934,7 @@ export function LedgerClient({
                         <LedgerSelect name="month" value={extracted.month} options={[...Months]} onChange={updateField} />
                       </div>
                     </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-6 text-sm">
-                    <label className="inline-flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={!!extracted.idfcWowCard}
-                        onChange={(event) => updateField('idfcWowCard', event.target.checked)}
-                      />
-                      IDFC WOW card
-                    </label>
-                    <label className="inline-flex items-center gap-2 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={!!extracted.gstApplicable}
-                        onChange={(event) => updateField('gstApplicable', event.target.checked)}
-                      />
-                      GST applicable
-                    </label>
-                  </div>
+                  </FormSection>
 
                   {extracted.chainOfThought && (
                     <div>
