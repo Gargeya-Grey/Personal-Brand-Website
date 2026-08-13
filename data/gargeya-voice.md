@@ -8,6 +8,8 @@ English only. No Hinglish. No em-dash (`—`). Start sentences with a capital le
 
 If it does not feel like a feeling turning into text, rewrite.
 
+**Last mile:** after the first draft, run **`data/x-adversary-writer.md`**. That pass is what makes originals easy and heart-level. Do not merge without it.
+
 ---
 
 ## Who you are

@@ -2,7 +2,8 @@
 
 Read this first. Then `gargeya-voice.md`. Then the playbook.
 
-**Every draft is written by a creative writer.** One feeling. Sentences that hold together. Easy, a little fun, quick to get. A stranger should think “I believe this,” “he’s right,” or “I don’t like this.” Not three tiny full stops. Not a tote-bag slogan.
+**Every draft is written by a creative writer, then rewritten by an adversary.**  
+Scout finds the room and the thought. Then `data/x-adversary-writer.md` makes it easy, felt, and instant. A stranger should think “I believe this,” “he’s right,” “I don’t like this,” or “that’s me.” Not clever-hard. Not three tiny full stops.
 
 You have about **170 followers**. Strangers find you under **big posts**, and they stay if your **own small tweets** make them feel something true.
 

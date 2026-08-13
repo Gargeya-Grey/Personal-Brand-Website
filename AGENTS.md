@@ -53,7 +53,8 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 | `scripts/validate-x-pack.mjs` | Validate pack + evidence + **quality ≥90** |
 | `scripts/score-x-drafts.mjs` | Quality gate (dimensions, monotony, sludge) |
 | `scripts/merge-x-pack.mjs` | Merge local JSON → remote (IST 2h-aware ids) |
-| `data/x-scout-playbook.md` | Scout SOPs: two sittings, 2 replies + 2 small tweets, creative-writer law |
+| `data/x-scout-playbook.md` | Scout SOPs: two sittings, 2 replies + 2 small tweets, then adversary rewrite |
+| `data/x-adversary-writer.md` | Last-mile creative writer: easy, felt, relatable, instant tap |
 | `data/x-weekly-strategy.md` | Active weekly growth plan (rooms, theme, skip list, profile actions) |
 | `data/x-reply-quality.md` | Score rubric (pass ≥90) |
 | `data/gargeya-voice.md` | Voice + topic Venn + growth |
@@ -92,9 +93,10 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 1. Only pack if IST hour is **10–11** or **18–19**; else skip.
 2. Pack id → `t11` morning or `t19` evening.
 3. Read **voice first** (creative writer) + weekly strategy + playbook.
-4. **2 replies + 2 small own tweets** (two personality parts). Education max 1 in the pack. Score each ≥90 including **flow + click**.
-5. Validate → merge/ingest.
-6. He posts at **11:30** and **19:00 IST**. Skip leftovers.
+4. **2 replies + 2 small own tweets** (two personality parts). Education max 1 in the pack.
+5. **Adversary creative writer** (`data/x-adversary-writer.md`) rewrites for easy / felt / instant tap. Attach `quality.adversary`. Score ≥90.
+6. Validate → merge/ingest.
+7. He posts at **11:30** and **19:00 IST**. Skip leftovers.
 
 ### Prune packs (keep 2 days)
 1. Prefer auto-prune (app + merge). Or run `data/sql/x_content_packs_retain_2d.sql` in Supabase.
@@ -114,6 +116,6 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - Interval 2h, but **skip unless IST hour is 10–11 or 18–19**. Two packs/day for the two sittings.
 
 ## Session state (durable)
-- Voice: **creative writer**. One feeling, sentences that hold together, easy/fun, a click (agree / he’s right / I don’t like this). Ban choppy telegram and tote-bag slogans.
+- Voice: **creative writer** + mandatory **adversary last pass** (`data/x-adversary-writer.md`) so originals are easy, heart-level, instantly tapable.
 - He posts **4 replies + 3 small own-tweets/day** in two sittings (11:30 and 19:00 IST). Education max 2/day.
 - Do not invent claims; grounding still non-negotiable.

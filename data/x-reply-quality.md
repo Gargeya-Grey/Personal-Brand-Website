@@ -13,11 +13,12 @@ This is an **agentic loop** (draft → score → rewrite until ≥90 or abandon)
 
 ```
 source fetch (grounding)
-    → draft body (creative writer: one feeling, flow, click test)
-    → score vs rubric (all dimensions)
-    → if total < 90: rewrite (max 3 attempts) or pick new source
-    → if total ≥ 90: attach quality{} on draft
-    → validate-x-pack (enforces score + structural floors)
+    → first draft (strategy + room + part of him)
+    → ADVERSARY creative writer (data/x-adversary-writer.md)
+         rewrite for easy / felt / relatable / instant tap
+         attach quality.adversary { passed, click, change }
+    → score vs rubric (all dimensions) ≥ 90
+    → validate-x-pack (enforces score + adversary block + choppy/slogan floors)
     → merge-x-pack
 ```
 
@@ -53,7 +54,8 @@ Scouts **must** write the score honestly. Inflating scores is a system failure �
 5. Would this work as his original with zero edits? → fail reply shape.  
 6. Read out loud: robotic / corporate / **fake clever** / **templated**? → rewrite.  
 6b. Writer-tweet? `The X is the Y part.` / a lone `Fine.` → rewrite.  
-6c. Choppy telegram? Three short full-stop sentences that do not hold together → glue them. One feeling. Easy. A click (I believe this / he's right / I don't like this).  
+6c. Choppy telegram? Three short full-stop sentences that do not hold together → glue them.  
+6d. Did the **adversary writer** run? `quality.adversary` present, `passed: true`, a real `click`, and a `change` note? If the line is still clever-hard, they did not do the job.  
 7. Did you force **school / final sheet / grade / cheaters** under a non-education post? → rewrite.  
 8. Could someone guess this was “draft 1 of a system”? → rewrite until it sounds like a one-off thought.  
 9. Any **em-dash (`—`)**? → remove/rewrite.  

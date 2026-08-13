@@ -28,6 +28,15 @@ export interface XDraftQualityDimensions {
   groundingFit: number;
 }
 
+export interface XDraftAdversary {
+  /** Must be true after the last-mile creative rewrite */
+  passed: boolean;
+  /** Stranger reaction the line is built for */
+  click: 'i believe this' | "he's right" | "i don't like this" | "that's me";
+  /** What the adversary changed, or "kept: already landed" */
+  change: string;
+}
+
 export interface XDraftQuality {
   /** 0–100; must be ≥ 90 to ship */
   total: number;
@@ -38,6 +47,8 @@ export interface XDraftQuality {
   notes: string;
   /** Rewrite attempts before pass */
   attempts?: number;
+  /** Required last pass: adversary creative writer */
+  adversary?: XDraftAdversary;
 }
 
 export const QUALITY_PASS_SCORE = 90;
@@ -317,6 +328,20 @@ function sanitizeQuality(raw: unknown): XDraftQuality | undefined {
       ? q.total
       : Object.values(dimensions).reduce((a, b) => a + b, 0);
   const notes = typeof q.notes === 'string' ? q.notes : '';
+  const advRaw = (q as { adversary?: unknown }).adversary;
+  let adversary: XDraftAdversary | undefined;
+  if (advRaw && typeof advRaw === 'object') {
+    const a = advRaw as Record<string, unknown>;
+    const click = typeof a.click === 'string' ? a.click.trim() : '';
+    const change = typeof a.change === 'string' ? a.change.trim() : '';
+    if (click && change) {
+      adversary = {
+        passed: a.passed === true,
+        click: click as XDraftAdversary['click'],
+        change,
+      };
+    }
+  }
   return {
     total,
     shape: typeof q.shape === 'string' ? q.shape : undefined,
@@ -324,6 +349,7 @@ function sanitizeQuality(raw: unknown): XDraftQuality | undefined {
     notes,
     attempts:
       typeof q.attempts === 'number' && Number.isFinite(q.attempts) ? q.attempts : undefined,
+    adversary,
   };
 }
 

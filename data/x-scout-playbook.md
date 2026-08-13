@@ -1,6 +1,7 @@
 # X scout playbook (2h IST loop)
 
 Read **`data/gargeya-voice.md` first** (you are Gargeya, a **creative writer**).  
+Then **`data/x-adversary-writer.md`** (last-mile rewrite before merge).  
 Then **`data/x-weekly-strategy.md`** (how many, when, which parts of him).  
 This file is mechanics: slots, rooms, grounding, merge.
 
@@ -171,9 +172,10 @@ Both replies should be `hyper` | `viral` | `high` when possible; one `mid` OK if
 3. `createRunPackId()`.  
 4. Search large climbing rooms: AI comfort, psych, care, ethics, plus some AI news.  
 5. Keep **2 reply targets**. Education-coded at most 1.  
-6. Draft **2 replies** as a creative writer (flow + click test) → ≥90.  
-7. Draft **2 small own tweets**, two different parts, flowing not chopped, feel-good or comforting → ≥90.  
-8. Validate → merge.
+6. Draft **2 replies** (strategy + grounding + first pass).  
+7. Draft **2 small own tweets**, two different parts.  
+8. **ADVERSARY PASS (mandatory):** put on the hat in `data/x-adversary-writer.md`. Rewrite every draft so a stranger feels something in one second. Especially originals. Attach `quality.adversary` on each. Then score ≥90.  
+9. Validate → merge. Do **not** validate before the adversary rewrite.
 
 ## Pack shape checklist
 - replies: **2**  
@@ -184,9 +186,10 @@ Both replies should be `hyper` | `viral` | `high` when possible; one `mid` OK if
 - skipList: stale, mixed-source, tickers, politics, follow-me, empty hype  
 
 ## Output
-1. `data/x-pack-today.json`  
-2. `node scripts/validate-x-pack.mjs data/x-pack-today.json`  
-3. `node scripts/merge-x-pack.mjs data/x-pack-today.json`  
+1. First drafts in `data/x-pack-today.json`  
+2. Adversary rewrite (see `data/x-adversary-writer.md`) — same file, better bodies + `quality.adversary`  
+3. `node scripts/validate-x-pack.mjs data/x-pack-today.json`  
+4. `node scripts/merge-x-pack.mjs data/x-pack-today.json`  
 
 ## Chat status
 pack id · 2 replies + 2 small tweets · **parts used** · first lines · scores · cloud

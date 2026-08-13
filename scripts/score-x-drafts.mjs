@@ -446,6 +446,39 @@ export function scorePack(pack) {
       issues.push(`[error] ${id}: quality.notes required (why it passed)`);
     }
 
+    const adv = q.adversary;
+    const clicks = new Set([
+      'i believe this',
+      "he's right",
+      'he’s right',
+      "i don't like this",
+      'i don’t like this',
+      "that's me",
+      'that’s me',
+    ]);
+    if (!adv || typeof adv !== 'object') {
+      issues.push(
+        `[error] ${id}: quality.adversary required — run the adversary creative writer last pass (data/x-adversary-writer.md)`
+      );
+    } else {
+      if (adv.passed !== true) {
+        issues.push(`[error] ${id}: quality.adversary.passed must be true`);
+      }
+      const click = String(adv.click || '')
+        .trim()
+        .toLowerCase();
+      if (!clicks.has(click)) {
+        issues.push(
+          `[error] ${id}: quality.adversary.click must be one of: i believe this | he's right | i don't like this | that's me`
+        );
+      }
+      if (!adv.change || typeof adv.change !== 'string' || !String(adv.change).trim()) {
+        issues.push(
+          `[error] ${id}: quality.adversary.change required (what you rewrote, or "kept: already landed")`
+        );
+      }
+    }
+
     if (total < PASS) {
       issues.push(
         `[error] ${id}: quality.total=${total} < ${PASS} — rewrite or drop (see x-reply-quality.md)`

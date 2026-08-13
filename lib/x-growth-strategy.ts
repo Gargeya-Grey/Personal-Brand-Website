@@ -116,6 +116,7 @@ export const WEEK_OWN = [
 ] as const;
 
 export const WRITE_RULES = [
+  { good: 'Adversary pass: easy, felt, instant tap.', bad: 'Clever-hard first draft shipped as-is.' },
   { good: 'One feeling, sentences that hold together.', bad: 'Three tiny full stops. No current.' },
   { good: 'Easy, a little fun, they want to stay.', bad: 'The insult is the loud part. Fine.' },
   { good: 'They think: I believe this / he is right / I do not like this.', bad: 'Okay, next.' },
