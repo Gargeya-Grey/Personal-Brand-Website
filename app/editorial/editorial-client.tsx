@@ -18,7 +18,7 @@ import {
   Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
   Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2, ListTodo, BookOpen,
-  BarChart3,
+  BarChart3, Landmark,
 } from 'lucide-react';
 import type { Article, ArticleLite } from '@/lib/blog-service';
 import { avatarForSession, type UserSession } from '@/lib/auth';
@@ -246,8 +246,8 @@ const ArticleCard = memo(function ArticleCard({
 
 const WORKSPACE_KEY = 'editorial_workspace';
 
-function WorkspaceSwitch({ active }: { active: 'blog' | 'x' | 'lab' }) {
-  const tab = (id: 'blog' | 'x' | 'lab', href: string, label: string, Icon: typeof BookOpen) => (
+function WorkspaceSwitch({ active }: { active: 'blog' | 'x' | 'lab' | 'ledger' }) {
+  const tab = (id: 'blog' | 'x' | 'lab' | 'ledger', href: string, label: string, Icon: typeof BookOpen) => (
     <Link
       href={href}
       role="tab"
@@ -272,6 +272,7 @@ function WorkspaceSwitch({ active }: { active: 'blog' | 'x' | 'lab' }) {
       {tab('blog', '/editorial', 'Blog', BookOpen)}
       {tab('x', '/editorial?workspace=x', 'X To-Do', ListTodo)}
       {tab('lab', '/editorial?workspace=lab', 'X Lab', BarChart3)}
+      {tab('ledger', '/ledger', 'Ledger', Landmark)}
     </div>
   );
 }

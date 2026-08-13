@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, BookOpen, AtSign } from 'lucide-react';
+import { Menu, X, BookOpen, AtSign, Landmark } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useState, useEffect, useRef, type ReactNode } from 'react';
@@ -19,7 +19,10 @@ type NavLink = {
 
 function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
   const pathname = usePathname();
-  const isAtelier = pathname.startsWith('/editorial') || pathname.startsWith('/login');
+  const isAtelier =
+    pathname.startsWith('/editorial') ||
+    pathname.startsWith('/ledger') ||
+    pathname.startsWith('/login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   /** Optional full-bleed dark hero — only active when #home-hero exists */
   const [overDarkHero, setOverDarkHero] = useState(false);
@@ -41,6 +44,13 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           path: '/editorial?workspace=x',
           key: 'x',
           icon: <AtSign className="h-3.5 w-3.5" strokeWidth={2.25} />,
+        },
+        {
+          name: 'Ledger',
+          shortName: 'Books',
+          path: '/ledger',
+          key: 'ledger',
+          icon: <Landmark className="h-3.5 w-3.5" strokeWidth={2.25} />,
         },
         { name: 'Public site', shortName: 'Public', path: '/', key: 'public' },
       ]
@@ -167,8 +177,9 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
   const isLinkActive = (link: NavLink) => {
     if (isAtelier) {
+      if (link.key === 'ledger') return pathname.startsWith('/ledger');
       if (link.key === 'x') return pathname.startsWith('/editorial') && onX;
-      if (link.key === 'blog') return pathname.startsWith('/editorial') && !onX;
+      if (link.key === 'blog') return pathname.startsWith('/editorial') && !onX && !pathname.startsWith('/ledger');
       return pathname === link.path;
     }
     return (

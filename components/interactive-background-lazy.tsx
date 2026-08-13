@@ -10,6 +10,12 @@ const InteractiveBackground = dynamic(
 
 export function InteractiveBackgroundLazy() {
   const pathname = usePathname();
-  if (pathname?.startsWith('/editorial') || pathname?.startsWith('/login')) return null;
+  if (
+    pathname?.startsWith('/editorial') ||
+    pathname?.startsWith('/ledger') ||
+    pathname?.startsWith('/login')
+  ) {
+    return null;
+  }
   return <InteractiveBackground />;
 }

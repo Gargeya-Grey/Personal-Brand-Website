@@ -26,6 +26,9 @@ export default async function EditorialPage({
 
   const params = await searchParams;
   const ws = params.workspace;
+  if (ws === 'ledger' || ws === 'finance' || ws === 'books') {
+    redirect('/ledger');
+  }
   const initialWorkspace: 'blog' | 'x' | 'lab' =
     ws === 'x' || ws === 'todo' || ws === 'x-todo'
       ? 'x'

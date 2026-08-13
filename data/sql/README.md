@@ -45,4 +45,20 @@ node scripts/merge-x-pack.mjs data/x-pack-today.json
 
 Current scout shape: **2 replies + 1 original**, every **1h IST** (11–22).
 
+## Finance Ledger (Notion invoice extractor)
+
+| File | Purpose |
+| :--- | :--- |
+| `ledger_settings.sql` | Per-user encrypted Notion token + database ID |
+
+### Setup
+
+1. Run `ledger_settings.sql` in Supabase SQL Editor.
+2. Confirm `X_TOKEN_ENCRYPTION_KEY` is set (same key used by X Lab).
+3. Set `GEMINI_API_KEY` (default extractor). Optional OpenRouter: `OPENROUTER_API_KEY` + `LEDGER_OPENROUTER_MODEL`.
+4. Optional env fallback (single-user): `NOTION_API_KEY`, `NOTION_DATABASE_ID`.
+5. Sign in at `/ledger`, paste your Notion integration token + database ID, Save & test.
+
+Tokens never go in git. The public site cannot reach `/ledger` or `/api/ledger/*`.
+
 These scripts do **not** delete blog articles or other tables.

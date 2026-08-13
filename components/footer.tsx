@@ -23,7 +23,7 @@ function AtelierFooter() {
             Private atelier
           </p>
           <p className="text-sm text-[var(--atelier-muted)] max-w-sm leading-relaxed">
-            Editorial CMS & X To-Do — warm workspace chrome, separate from the public site.
+            Editorial CMS, X To-Do, and Finance Ledger — private workspace chrome, separate from the public site.
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-x-6 gap-y-2 text-sm font-medium text-[var(--atelier-muted)]">
@@ -38,6 +38,9 @@ function AtelierFooter() {
             className="hover:text-[var(--atelier-gold)] transition-colors"
           >
             X To-Do
+          </Link>
+          <Link href="/ledger" className="hover:text-[var(--atelier-gold)] transition-colors">
+            Ledger
           </Link>
           <Link
             href="/api/auth/logout"
@@ -480,7 +483,10 @@ function PublicFooter() {
 
 export function Footer() {
   const pathname = usePathname();
-  const isAtelier = pathname.startsWith('/editorial') || pathname.startsWith('/login');
+  const isAtelier =
+    pathname.startsWith('/editorial') ||
+    pathname.startsWith('/ledger') ||
+    pathname.startsWith('/login');
 
   return isAtelier ? <AtelierFooter /> : <PublicFooter />;
 }

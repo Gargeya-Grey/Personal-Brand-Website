@@ -26,8 +26,13 @@ export async function proxy(request: NextRequest) {
   const sessionCookie = request.cookies.get('auth_session');
   const { user, reason } = await inspectSession(sessionCookie?.value);
 
-  // Editorial UI — Google OAuth session + allowlisted email only
-  if (pathname === '/editorial' || pathname.startsWith('/editorial/')) {
+  // Private atelier — Google OAuth session + allowlisted email only
+  if (
+    pathname === '/editorial' ||
+    pathname.startsWith('/editorial/') ||
+    pathname === '/ledger' ||
+    pathname.startsWith('/ledger/')
+  ) {
     if (!user) {
       const loginUrl = new URL('/login', request.url);
       const callback = pathname + (request.nextUrl.search || '');
@@ -67,8 +72,18 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  if (pathname.startsWith('/api/ledger')) {
+    if (!user) {
+      return unauthorizedJson('Unauthorized: valid allowlisted session required', reason);
+    }
+  }
+
   const res = NextResponse.next();
-  if (pathname.startsWith('/editorial') || pathname.startsWith('/api/')) {
+  if (
+    pathname.startsWith('/editorial') ||
+    pathname.startsWith('/ledger') ||
+    pathname.startsWith('/api/')
+  ) {
     res.headers.set('Cache-Control', 'private, no-store');
   }
   return res;
@@ -78,6 +93,8 @@ export const config = {
   matcher: [
     '/editorial',
     '/editorial/:path*',
+    '/ledger',
+    '/ledger/:path*',
     '/api/blog',
     '/api/blog/:path*',
     '/api/ai',
@@ -86,5 +103,7 @@ export const config = {
     '/api/x-content/:path*',
     '/api/x-lab',
     '/api/x-lab/:path*',
+    '/api/ledger',
+    '/api/ledger/:path*',
   ],
 };

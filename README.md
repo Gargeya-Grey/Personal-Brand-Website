@@ -44,6 +44,7 @@ This index guides AI assistants directly to the files responsible for each subsy
 | [data/articles.json](file:///w:/Personal-Brand-Website/data/articles.json) | **Blog Posts Database** | Flat-File JSON | Contains serialized data schema for all published and draft articles. |
 | [app/api/ai/fill/route.ts](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) | **AI CMS Assistant API** | OpenRouter API | Handles markdown metadata parsing and cover photo generation via Grok. |
 | [lib/auth.ts](file:///w:/Personal-Brand-Website/lib/auth.ts) | **Auth Engine** | Web Crypto API JWT | signs/verifies user sessions. Google OAuth callbacks and allowed email checks. |
+| [app/ledger](file:///w:/Personal-Brand-Website/app/ledger) | **Finance Ledger** | Notion + AI | Private invoice extractor at `/ledger`. Setup: [data/ledger-setup.md](data/ledger-setup.md). |
 | [app/api/auth/mock-login/route.ts](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts) | **Dev Mode Auth Bypass** | JWT Mock Signature | Disabled in production. Allows one-click CMS access during local development. |
 
 ---
