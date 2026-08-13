@@ -29,12 +29,14 @@ export default async function EditorialPage({
   if (ws === 'ledger' || ws === 'finance' || ws === 'books') {
     redirect('/ledger');
   }
-  const initialWorkspace: 'blog' | 'x' | 'lab' =
+  const initialWorkspace: 'blog' | 'x' | 'lab' | 'strategy' =
     ws === 'x' || ws === 'todo' || ws === 'x-todo'
       ? 'x'
       : ws === 'lab' || ws === 'x-lab' || ws === 'analytics'
         ? 'lab'
-        : 'blog';
+        : ws === 'strategy' || ws === 'growth' || ws === 'growth-strategy'
+          ? 'strategy'
+          : 'blog';
 
   // Skip blog list I/O when opening X workspaces — major latency win
   const articles =

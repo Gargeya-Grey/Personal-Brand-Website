@@ -18,7 +18,7 @@ import {
   Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
   Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2, ListTodo, BookOpen,
-  BarChart3,
+  BarChart3, Compass,
 } from 'lucide-react';
 import type { Article, ArticleLite } from '@/lib/blog-service';
 import { avatarForSession, type UserSession } from '@/lib/auth';
@@ -45,6 +45,18 @@ const XLabClient = dynamic(() => import('./x-lab-client').then((m) => m.XLabClie
     </div>
   ),
 });
+const XGrowthStrategy = dynamic(
+  () => import('./x-growth-strategy').then((m) => m.XGrowthStrategy),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
+        <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
+        <p className="text-sm">Loading strategy…</p>
+      </div>
+    ),
+  }
+);
 const MarkdownPreview = dynamic(
   () => import('@/components/editor/markdown-preview').then((m) => m.MarkdownPreview),
   { ssr: false, loading: () => <p className="text-sm text-[var(--atelier-faint)] italic">Loading preview…</p> }
@@ -98,7 +110,7 @@ interface EditorialClientProps {
   initialArticles: ArticleLite[];
   user: UserSession;
   /** From server searchParams — never sync URL during render/mount via history API */
-  initialWorkspace?: 'blog' | 'x' | 'lab';
+  initialWorkspace?: 'blog' | 'x' | 'lab' | 'strategy';
 }
 
 function IllustrationThumb({
@@ -246,8 +258,10 @@ const ArticleCard = memo(function ArticleCard({
 
 const WORKSPACE_KEY = 'editorial_workspace';
 
-function WorkspaceSwitch({ active }: { active: 'x' | 'lab' }) {
-  const tab = (id: 'x' | 'lab', href: string, label: string, Icon: typeof BookOpen) => (
+type XWorkspace = 'x' | 'lab' | 'strategy';
+
+function WorkspaceSwitch({ active }: { active: XWorkspace }) {
+  const tab = (id: XWorkspace, href: string, label: ReactNode, Icon: typeof BookOpen) => (
     <Link
       href={href}
       role="tab"
@@ -271,6 +285,15 @@ function WorkspaceSwitch({ active }: { active: 'x' | 'lab' }) {
     >
       {tab('x', '/editorial?workspace=x', 'X To-Do', ListTodo)}
       {tab('lab', '/editorial?workspace=lab', 'X Lab', BarChart3)}
+      {tab(
+        'strategy',
+        '/editorial?workspace=strategy',
+        <>
+          <span className="sm:hidden">Strategy</span>
+          <span className="hidden sm:inline">Growth Strategy</span>
+        </>,
+        Compass
+      )}
     </div>
   );
 }
@@ -449,6 +472,30 @@ export function EditorialClient({
       /* ignore */
     }
   }, [workspace]);
+
+  // Client nav from X/Lab/Strategy → Blog reuses this component. Server skips the
+  // article query on X workspaces, so state would stay [] until a hard refresh.
+  useEffect(() => {
+    if (initialArticles.length > 0) {
+      setArticles(initialArticles);
+    }
+  }, [initialArticles]);
+
+  useEffect(() => {
+    if (workspace !== 'blog' || articles.length > 0) return;
+    let cancelled = false;
+    fetch('/api/blog?includeAll=true', { cache: 'no-store' })
+      .then((response) => (response.ok ? response.json() : Promise.reject()))
+      .then((list) => {
+        if (!cancelled && Array.isArray(list)) setArticles(list);
+      })
+      .catch(() => {
+        /* keep empty; hard refresh still works */
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [workspace, articles.length]);
 
   const triggerImageUpload = () => {
     (document.getElementById('local-cover-upload') as HTMLInputElement | null)?.click();
@@ -826,7 +873,7 @@ export function EditorialClient({
           ? 'max-w-[96%] 2xl:max-w-[1700px]'
           : workspace === 'x'
             ? 'max-w-5xl'
-            : workspace === 'lab'
+            : workspace === 'lab' || workspace === 'strategy'
               ? 'max-w-6xl'
               : 'max-w-6xl'
       }`}
@@ -864,24 +911,34 @@ export function EditorialClient({
       </AnimatePresence>
 
       {/* Hero — full for blog CMS; compact for X To-Do so the queue has room */}
-      <header className={workspace === 'x' || workspace === 'lab' ? 'mb-6 sm:mb-8' : 'mb-10 sm:mb-12'}>
-        {workspace === 'x' || workspace === 'lab' ? (
+      <header className={workspace === 'x' || workspace === 'lab' || workspace === 'strategy' ? 'mb-6 sm:mb-8' : 'mb-10 sm:mb-12'}>
+        {workspace === 'x' || workspace === 'lab' || workspace === 'strategy' ? (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
             <div className="space-y-2 min-w-0">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
                 Private atelier
               </p>
               <h1 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
-                {workspace === 'lab' ? 'X Lab' : 'X To-Do'}
+                {workspace === 'lab'
+                  ? 'X Lab'
+                  : workspace === 'strategy'
+                    ? 'Growth Strategy'
+                    : 'X To-Do'}
               </h1>
               <p className="text-sm text-[var(--atelier-muted)] max-w-md leading-relaxed">
                 {workspace === 'lab'
                   ? 'Growth analytics from X API snapshots. Refresh, explore, ask the AI analyst.'
-                  : 'Focus queue for scout packs. Reply, post, mark done. Switch workspaces anytime.'}
+                  : workspace === 'strategy'
+                    ? 'What to post, when to sit down, and how to sound like yourself.'
+                    : 'Focus queue for scout packs. Reply, post, mark done. Switch workspaces anytime.'}
               </p>
             </div>
             <div className="flex flex-wrap items-center gap-2.5 sm:justify-end shrink-0">
-              <WorkspaceSwitch active={workspace === 'lab' ? 'lab' : 'x'} />
+              <WorkspaceSwitch
+                active={
+                  workspace === 'lab' ? 'lab' : workspace === 'strategy' ? 'strategy' : 'x'
+                }
+              />
               <div className="inline-flex items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] overflow-hidden shadow-[var(--atelier-shadow-sm)]">
                 <div className="flex items-center gap-2 pl-1.5 pr-2.5 py-1.5">
                   {/* eslint-disable-next-line @next/next/no-img-element */}
@@ -993,6 +1050,10 @@ export function EditorialClient({
       ) : workspace === 'lab' && !editingArticle ? (
         <XStudioErrorBoundary>
           <XLabClient />
+        </XStudioErrorBoundary>
+      ) : workspace === 'strategy' && !editingArticle ? (
+        <XStudioErrorBoundary>
+          <XGrowthStrategy />
         </XStudioErrorBoundary>
       ) : (
       <AnimatePresence mode="wait">

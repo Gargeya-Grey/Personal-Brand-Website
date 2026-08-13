@@ -179,7 +179,10 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     workspaceParam === 'x-todo' ||
     workspaceParam === 'lab' ||
     workspaceParam === 'x-lab' ||
-    workspaceParam === 'analytics';
+    workspaceParam === 'analytics' ||
+    workspaceParam === 'strategy' ||
+    workspaceParam === 'growth' ||
+    workspaceParam === 'growth-strategy';
 
   const isLinkActive = (link: NavLink) => {
     if (isAtelier) {
