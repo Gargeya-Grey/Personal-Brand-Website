@@ -132,31 +132,28 @@ export interface XContentPack {
 export const DEFAULT_SESSIONS: XSessionBlock[] = [
   {
     id: 'sprint',
-    title: 'Fresh replies',
-    maxMinutes: 12,
-    description:
-      '1h cadence: two highest-heat, still-climbing posts. Reply while the room is alive.',
+    title: 'Two replies',
+    maxMinutes: 10,
+    description: 'Two real comments on big climbing rooms. Education at most once.',
   },
   {
     id: 'core',
-    title: 'One original',
+    title: 'Two small tweets',
     maxMinutes: 10,
     description:
-      'Exactly one short (or rare mini-flagship). Consistent daily presence — not a pile of originals per slot.',
+      'Two short own-posts from different parts of him (psych, care, optimism, AI comfort, etc.).',
   },
   {
     id: 'bonus',
-    title: 'Bonus QT',
+    title: 'Rare quote',
     maxMinutes: 5,
-    description: 'Usually skip on 1h packs — only if a third hot source is too good to miss.',
+    description: 'Skip by default. May replace one own-tweet on a mega still-hot post.',
   },
 ];
 
-/** Scout runs every 1h, 11:00–22:00 Asia/Kolkata (slots t11…t22). */
+/** Two sitting packs a day: morning t11, evening t19 (Asia/Kolkata). */
 export const SCOUT_TIMEZONE = 'Asia/Kolkata';
-export const SCOUT_IST_SLOTS = [
-  11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-] as const;
+export const SCOUT_IST_SLOTS = [11, 19] as const;
 
 export function defaultEstimatedSeconds(kind: XDraftKind): number {
   switch (kind) {
@@ -445,9 +442,9 @@ export function isScoutWindowOpen(now: Date = new Date()): boolean {
 }
 
 /**
- * One pack per scout run — 1h slots in Asia/Kolkata (t11 … t22).
- * Up to twelve queues per IST calendar day; never overwrites an earlier slot.
- * Legacy packs may still use even-only hours or t00/t06/t12/t18 (old cadences).
+ * One pack per sitting — morning t11, evening t19 (Asia/Kolkata).
+ * The loop may wake more often; it only writes a pack near those two times.
+ * Legacy t13/t15/t17/t21 or UTC t00/t06/t12/t18 packs may still exist.
  */
 export function createRunPackId(now: Date = new Date()): string {
   const { date, slotHour } = scoutIstSlot(now);
@@ -489,18 +486,26 @@ export function formatPackRunLabel(pack: {
 }
 
 /**
- * Derive MVP ids: explicit list, else full mini-pack queue (2 replies + 1 original).
- * 1h cadence packs are small — MVP is the whole run, not “replies only forever.”
+ * Derive MVP ids: explicit list, else full mini-pack queue.
+ * Two sittings: 2 replies + 2 small own tweets.
  */
 export function resolveMvpIds(pack: XContentPack): string[] {
   if (pack.mvpDraftIds?.length) return pack.mvpDraftIds;
   const ready = sortDraftsForExecution(pack.drafts.filter((d) => d.status === 'ready'));
-  // Prefer replies first, then one original/short/flagship, then optional QT — cap 3
-  const replies = ready.filter((d) => d.kind === 'reply').slice(0, 2);
+  // Prefer conversion long-forms first (priority 1 / growth tip), then other replies, then original
+  const replies = ready.filter((d) => d.kind === 'reply');
+  const conversion = replies.filter(
+    (d) =>
+      d.intent === 'growth' &&
+      ((d.estimatedSeconds ?? 0) >= 150 ||
+        /conversion|long.?form|profile|follow/i.test(`${d.why || ''} ${d.tip || ''} ${d.label || ''}`))
+  );
+  const otherReplies = replies.filter((d) => !conversion.some((c) => c.id === d.id));
+  const orderedReplies = [...conversion.slice(0, 2), ...otherReplies.slice(0, 1)];
   const original = ready.find((d) => d.kind === 'short' || d.kind === 'flagship');
   const quote = ready.find((d) => d.kind === 'quote');
-  const ids = [...replies.map((d) => d.id)];
+  const ids = [...orderedReplies.map((d) => d.id)];
   if (original) ids.push(original.id);
-  else if (quote && ids.length < 3) ids.push(quote.id);
-  return ids.slice(0, 3);
+  else if (quote && ids.length < 4) ids.push(quote.id);
+  return ids.slice(0, 4);
 }

@@ -1,6 +1,6 @@
 /**
  * Validate a pack for scout bugs (meta shape, reply URLs, optional evidence map)
- * + quality gate (score ≥ 90) via score-x-drafts.mjs / data/x-reply-quality.md
+ * + quality gate (score ≥ 90, creative-writer flow) via score-x-drafts.mjs
  *
  * Usage:
  *   node scripts/validate-x-pack.mjs data/x-pack-today.json

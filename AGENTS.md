@@ -9,11 +9,11 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ## Owner goals (product)
 - Genuine **X growth** toward ~10k followers in ~3 months.
-- **2h IST scout cadence**: every **2 hours from 11:00–21:00 IST** (slots t11,t13…t21); pack shape **2 conversion long-form + 1 short + 1 original**; rooms and theme from **`data/x-weekly-strategy.md`**.
+- Scout may wake every 2h but **only writes a pack near the two sittings** (t11 morning, t19 evening). Pack: 2 replies + 2 small tweets. Education max 2/day. See `data/x-weekly-strategy.md`.
 - High **voice fidelity** (`data/gargeya-voice.md`): replies = **personal additive takes** (not echo/paraphrase bots); originals = **cross-domain stories** with hook, attachment, finish/like/comment pull; anti-monotony; pillars AI ed / use cases / access / efficiency / psych / ethics / positivity.
 - Source **grounding** for replies (one draft ↔ one real post).
 - **Quality gate:** every draft ≥ **90** (`data/x-reply-quality.md`); originals also pass bookmark/RT/soul tests; **replies auto-fail if post-like** (`score-x-drafts.mjs` conversational markers).
-- **Topic Venn (not school-only):** social/learning/educational psychology + cognitive behavior + student-centric methods + AI-in-education + process assessment; **open-source AI as access + extreme efficiency** for all. Full map in `gargeya-voice.md` / scout heat queries in `x-scout-playbook.md`.
+- **Whole person, not school-only:** self-awareness, psychology, sales/care, optimism, ethics, philosophy, empathy, AI-job comfort; **education max 2 posts/day**. See `gargeya-voice.md` + `x-weekly-strategy.md`.
 - Laptop **Grok scout** → merge/ingest → **production Supabase** so live To-Do updates without waiting on git.
 - Blog CMS quality + perf (ISR/SSR, image priority, lazy canvas background).
 
@@ -27,7 +27,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ### Auth / CMS
 - Google OAuth + JWT session cookie; allowed email gate in `lib/auth.ts`.
-- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`).
+- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`) + **Growth Strategy** (`x-growth-strategy.tsx`, `?workspace=strategy`). Live copy lives in `lib/x-growth-strategy.ts`.
 - **Finance Ledger** `/ledger` — invoice extract → review → Notion. Same allowlist. Setup: `data/ledger-setup.md`.
 
 ### Finance ledger
@@ -46,14 +46,14 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### X content system
 | Piece | Role |
 | :--- | :--- |
-| `lib/x-content-model.ts` | Pack shape, **IST 2h ids** (`createRunPackId` / `scoutIstSlot` / `isScoutWindowOpen`), sanitize, draft URL helpers, `resolveMvpIds` (2 conversion + 1 short + 1O), sessions |
+| `lib/x-content-model.ts` | Pack ids t11/t19, sanitize, `resolveMvpIds` (2 replies + 2 small tweets) |
 | `lib/x-content-service.ts` | Hydrate packs, meta normalization, Supabase row ↔ pack |
 | `lib/x-source-grounding.ts` | Grounding rules / helpers |
 | `app/api/x-content/*` | Read + ingest (`X_SCOUT_SECRET`) |
 | `scripts/validate-x-pack.mjs` | Validate pack + evidence + **quality ≥90** |
 | `scripts/score-x-drafts.mjs` | Quality gate (dimensions, monotony, sludge) |
 | `scripts/merge-x-pack.mjs` | Merge local JSON → remote (IST 2h-aware ids) |
-| `data/x-scout-playbook.md` | Scout SOPs: 2h IST, 2 conversion + 1 short + 1O, grounding, heat gates |
+| `data/x-scout-playbook.md` | Scout SOPs: two sittings, 2 replies + 2 small tweets, creative-writer law |
 | `data/x-weekly-strategy.md` | Active weekly growth plan (rooms, theme, skip list, profile actions) |
 | `data/x-reply-quality.md` | Score rubric (pass ≥90) |
 | `data/gargeya-voice.md` | Voice + topic Venn + growth |
@@ -88,14 +88,13 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ## Common Workflows
 
-### X scout → live To-Do (2h IST)
-1. Only during **11:00–22:59 IST**; else skip.
-2. Pack id via `createRunPackId()` → `pack-…-t11` / `t13` / … / `t21`.
-3. Scout per `data/x-weekly-strategy.md` + playbook + voice (theme, heat gates, skip list).
-4. **2 conversion long-form + 1 short + 1 original** (today’s weekly theme); fetch each reply source first; **score each ≥90**.
-5. Validate (grounding + quality) → `merge-x-pack` / ingest with secret → Supabase.
-6. Optional: commit pack JSON for GitHub mirror (not required for live To-Do).
-7. User posts from CMS while threads are still hot (long-forms first for profile traffic).
+### X scout → live To-Do (two sittings)
+1. Only pack if IST hour is **10–11** or **18–19**; else skip.
+2. Pack id → `t11` morning or `t19` evening.
+3. Read **voice first** (creative writer) + weekly strategy + playbook.
+4. **2 replies + 2 small own tweets** (two personality parts). Education max 1 in the pack. Score each ≥90 including **flow + click**.
+5. Validate → merge/ingest.
+6. He posts at **11:30** and **19:00 IST**. Skip leftovers.
 
 ### Prune packs (keep 2 days)
 1. Prefer auto-prune (app + merge). Or run `data/sql/x_content_packs_retain_2d.sql` in Supabase.
@@ -104,7 +103,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### Wipe packs (full clean slate — rare)
 1. User runs `data/sql/x_content_packs_wipe.sql` in Supabase.
 2. Confirm empty.
-3. Merge a fresh **2 conversion + 1 short + 1O** pack for the current IST slot.
+3. Merge a fresh **2 replies + 2 small tweets** pack for the current sitting.
 
 ### Public-safe git
 - Commit code, playbooks, SQL, non-secret data.
@@ -112,9 +111,9 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - Uncommitted scout JSON + logo tweaks after a run are normal; live site uses Supabase.
 
 ### Durable scout schedule
-- Prefer **2h** interval. Read `data/x-weekly-strategy.md` then `gargeya-voice.md`. Human posts only **11:30 and 19:00 IST**. Default = reply. Quote+short-different-reply at most once/day on huge posts.
+- Interval 2h, but **skip unless IST hour is 10–11 or 18–19**. Two packs/day for the two sittings.
 
 ## Session state (durable)
-- Voice rewrite 2026-08-13: talk like Gargeya, no recap-then-lecture, no strategy-doc words in drafts.
-- He posts **6 replies + 1 original/day** in two sittings. Scout may prepare more; he skips leftovers.
+- Voice: **creative writer**. One feeling, sentences that hold together, easy/fun, a click (agree / he’s right / I don’t like this). Ban choppy telegram and tote-bag slogans.
+- He posts **4 replies + 3 small own-tweets/day** in two sittings (11:30 and 19:00 IST). Education max 2/day.
 - Do not invent claims; grounding still non-negotiable.

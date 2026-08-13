@@ -2,7 +2,7 @@
 
 Companion to `data/gargeya-voice.md` + `data/x-scout-playbook.md`.
 
-**Purpose:** Only ship drafts that feel **brilliant and human** — not “good enough AI.”  
+**Purpose:** Only ship drafts that feel like a **creative writer** — one feeling, sentences that hold together, easy and a little fun, a click in the reader’s head. Not “good enough AI.” Not a telegram of punches.  
 Every **reply**, **quote**, and **original** in a pack must be scored **0–100**. **Pass bar: total ≥ 90.** Below 90 → rewrite or drop the candidate. Never merge a failing draft.
 
 This is an **agentic loop** (draft → score → rewrite until ≥90 or abandon), not a one-shot generate.
@@ -13,7 +13,7 @@ This is an **agentic loop** (draft → score → rewrite until ≥90 or abandon)
 
 ```
 source fetch (grounding)
-    → draft body (gut opinion first — no shape palette)
+    → draft body (creative writer: one feeling, flow, click test)
     → score vs rubric (all dimensions)
     → if total < 90: rewrite (max 3 attempts) or pick new source
     → if total ≥ 90: attach quality{} on draft
@@ -21,7 +21,7 @@ source fetch (grounding)
     → merge-x-pack
 ```
 
-Scouts **must** write the score honestly. Inflating scores is a system failure — structural heuristics in `scripts/score-x-drafts.mjs` will still fail sludge, monotony, **post-like replies**, **twin 3-para essays**, banned house stamps, and empty hooks.
+Scouts **must** write the score honestly. Inflating scores is a system failure — `scripts/score-x-drafts.mjs` still fails sludge, monotony, **post-like replies**, **choppy telegram**, **writer-tweet slogans**, twin essays, house stamps, and empty hooks.
 
 ---
 
@@ -47,21 +47,30 @@ Scouts **must** write the score honestly. Inflating scores is a system failure �
 
 ### Agent self-check (replies)
 1. Is there a **take OP did not already say**? If no → rewrite.  
-2. Does it still sound like you’re **in their thread** (not a blog dump)?  
-3. Would this work as his original with zero edits? → fail reply shape.  
-4. Read out loud: robotic / corporate / **fake clever** / **templated**? → rewrite.  
-5. Did you force **school / final sheet / grade / cheaters** under a non-education post? → rewrite.  
-6. Could someone guess this was “draft 1 of a system”? → rewrite until it sounds like a one-off thought.  
-7. Do both replies share paragraph count + landing style? → break one into a different form (1 block, 2 lines, longer rant, softer open).  
-8. Would a stranger say “these always sound the same”? → rewrite until unpredictable.  
+2. Does the **first paragraph retell their post**? If yes → delete it and start from the feeling.  
+3. Does it sound proud of being smart (“I would score this as…”, “the skill hiding in…”)? → rewrite like a person.  
+4. Does it still sound like you’re **in their thread** (not a blog dump)?  
+5. Would this work as his original with zero edits? → fail reply shape.  
+6. Read out loud: robotic / corporate / **fake clever** / **templated**? → rewrite.  
+6b. Writer-tweet? `The X is the Y part.` / a lone `Fine.` → rewrite.  
+6c. Choppy telegram? Three short full-stop sentences that do not hold together → glue them. One feeling. Easy. A click (I believe this / he's right / I don't like this).  
+7. Did you force **school / final sheet / grade / cheaters** under a non-education post? → rewrite.  
+8. Could someone guess this was “draft 1 of a system”? → rewrite until it sounds like a one-off thought.  
 9. Any **em-dash (`—`)**? → remove/rewrite.  
-10. Does every sentence start with a **capital letter**? If not → fix (replies and originals).
+10. Does every sentence start with a **capital letter**? If not → fix.
 
 ### Originals self-check
 1. Independent of today’s replies?  
-2. **Generalized** (no invented “Last night I / my teammate / my cousin” diary)? Real personal stories are owner-only.  
-3. No em-dash; sentence caps.  
-4. Would he post this without feeling like the scout fabricated his life?
+2. One of **his parts** from the weekly file (not random, not a third education)?  
+3. **Creative writer:** flow + click test. Not chopped punches.  
+4. **Generalized** (no invented diary)? Real personal stories are owner-only.  
+5. No em-dash; sentence caps.  
+6. Would he post this without cringing?
+
+### Strategy self-check (every draft)
+1. Creative writer: one feeling, flow, click test? If chopped or cold → rewrite.  
+2. Does it belong to one of his parts (psych, care, positivity, AI comfort, ethics, etc.)? Education only if the day’s cap allows.  
+3. Big room for replies. No follow-beg. No scatter (tickers, politics, empty hype).
 
 ---
 
@@ -74,10 +83,10 @@ Score each dimension, then **sum**. Do not average then multiply — use the poi
 | **lengthFit** | 12 | Right size for the room. Micro when a nod is enough; short when a take is enough; long only if the source earns it. Not a wall of text for a thin post. Not a one-word “nice” on a deep thesis. |
 | **clarity** | 15 | One clear idea. Easy to parse once. No fog, no stacked abstractions, no “as an AI / in today’s landscape.” |
 | **hook** | 15 | First line earns the next. Stops the scroll in a thread. Not a throat-clear (“I think it’s interesting that…”). **Replies:** hook is reactive (responds to OP), not a cold headline. |
-| **funRead** | 12 | Pleasant to read — rhythm, surprise, light wit, or a clean punch. “Fun” ≠ forced jokes. Serious can score high if it’s vivid and sharp. |
-| **relatability** | 15 | Feels like a person who gets the room. Concrete, lived, “yeah that’s real.” Not abstract essay-speak. **Replies:** in *their* room. |
-| **voiceMatch** | 15 | Sounds like @GargeyaS (voice file). **Replies must sound like replies** (conversational, second-person). Standalone thesis voice → low score. |
-| **humanTexture** | 12 | Warmth, bluntness, emotion, dry humor, small imperfection. Not sterile parallel AI prose. |
+| **funRead** | 12 | Easy, a little fun, they want to stay. Rhythm that holds together. Not three chopped punches. Not forced jokes. |
+| **relatability** | 15 | Inclusive. A stranger can see themselves. “Yeah that’s me.” Not abstract essay-speak. **Replies:** in *their* room. |
+| **voiceMatch** | 15 | Sounds like @GargeyaS the **creative writer** (voice file). Flow + feeling. Replies still sound like replies. |
+| **humanTexture** | 12 | Emotion coming out as text. Warmth, bluntness, small imperfection. Not sterile parallel AI prose. |
 | **groundingFit** | 4 | Reply/QT: only claims supportable from the source. Original: no fake citations. |
 
 **Total = sum of the eight.** Cap each at its max. **Pass if total ≥ 90** *and* structural floors pass (including reply≠post).

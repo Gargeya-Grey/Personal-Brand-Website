@@ -1,6 +1,7 @@
 /**
  * Quality gate for X packs (pass ≥ 90).
- * Rubric: data/x-reply-quality.md
+ * Rubric: data/x-reply-quality.md + creative-writer law in data/gargeya-voice.md
+ * Fails choppy telegram, tote-bag slogans, recap-lecture stamps, post-like replies.
  *
  * Usage:
  *   node scripts/score-x-drafts.mjs data/x-pack-today.json
@@ -39,6 +40,14 @@ const SLUDGE = [
   /delve into/i,
   /it'?s important to note/i,
   /in conclusion,/i,
+  /the part i keep coming back to/i,
+  /i would not score this as/i,
+  /i would score (this|whether|that)/i,
+  /the skill hiding in (your|this)/i,
+  /that is a better lesson than/i,
+  /recoverable judgment/i,
+  /process trail/i,
+  /identity signal/i,
 ];
 
 const STAMP_OPENERS = [
@@ -48,6 +57,8 @@ const STAMP_OPENERS = [
   /^haha this lands hard/i,
   /^yeah this lands clean/i,
   /^this lands hard/i,
+  /^this got me\b/i,
+  /^haha this got me\b/i,
 ];
 
 /** House “smart essay” stamps that made packs rhyme (voice 2026-08-10). */
@@ -57,6 +68,11 @@ const HOUSE_ESSAY_STAMPS = [
   /\bis doing the whole job\b/i,
   /\bisn'?t (a |just )?.{0,40}\.\s*it'?s /is,
   /\bthat'?s not .{0,40}\.\s*that'?s /is,
+  /that sequence is the part/i,
+  /when drafts are (free|cheap)/i,
+  /\bthe \w{3,14} is the (loud|real|hard|cheap|quiet|whole|rare|human|easy|true) (part|bit)\b/i,
+  /^the \w{3,14} is the \w{3,14} (part|bit)\b/im,
+  /i'?m more stuck on the \w+ bit/i,
 ];
 
 /** Fake “clever brand” parallel — banned as default reply glue (voice file). */
@@ -135,6 +151,30 @@ export function looksLikeFakePersonalOriginal(body) {
  * True if body matches the banned tidy 3-beat house essay.
  * @param {string} body
  */
+/**
+ * True if the body is a stack of tiny disconnected punches (no creative flow).
+ * @param {string} body
+ */
+export function looksChoppyTelegram(body) {
+  const text = String(body || '').replace(/\n+/g, ' ').trim();
+  if (!text) return false;
+  const sentences = text.split(/(?<=[.!?])\s+/).filter((s) => s.trim().length > 1);
+  if (sentences.length < 3) return false;
+  let run = 0;
+  let maxRun = 0;
+  for (const s of sentences) {
+    const words = s.trim().split(/\s+/).filter(Boolean).length;
+    const hasGlue = /\b(and|but|because|so|which|that|when|if|like|while|then)\b/i.test(s);
+    if (words > 0 && words <= 14 && !hasGlue) {
+      run += 1;
+      if (run > maxRun) maxRun = run;
+    } else {
+      run = 0;
+    }
+  }
+  return maxRun >= 3;
+}
+
 export function looksLikeHouseEssay(body) {
   const text = String(body || '').trim();
   if (!text) return false;
@@ -296,6 +336,20 @@ export function scorePack(pack) {
       }
     }
 
+    if (
+      /^the \w{3,14} is the \w{3,14} (part|bit)\b/i.test(body) ||
+      /^\s*fine\.\s*$/im.test(body)
+    ) {
+      issues.push(
+        `[error] ${id}: writer-tweet voice — "The X is the Y part" / lone "Fine." Rewrite like a person (see gargeya-voice.md)`
+      );
+    }
+    if (looksChoppyTelegram(body)) {
+      issues.push(
+        `[error] ${id}: choppy telegram — three+ short unconnected sentences. Write like a creative writer: one feeling, sentences that hold together (gargeya-voice.md)`
+      );
+    }
+
     // Typography: no em-dash; capitalize sentence starts (voice 2026-08-10 d)
     if (hasEmDash(body)) {
       issues.push(
@@ -408,9 +462,19 @@ export function scorePack(pack) {
     if (chars < 15 && (d.kind === 'reply' || d.kind === 'short')) {
       issues.push(`[warn] ${id}: extremely short body (${chars} chars) — is hook enough?`);
     }
-    if ((d.kind === 'reply' || d.kind === 'quote') && (paras > 4 || chars > 900)) {
+    // Conversion long-form replies may run longer (profile traffic) but stay thread-readable.
+    const conversionLong =
+      (d.kind === 'reply' || d.kind === 'quote') &&
+      (String(q.shape || '').includes('conversion') ||
+        /conversion|long.?form|profile.?click|follow.?traffic/i.test(String(q.notes || '')) ||
+        /conversion|long.?form|profile|follow/i.test(`${d.why || ''} ${d.tip || ''} ${d.label || ''}`) ||
+        (d.estimatedSeconds ?? 0) >= 150);
+    const maxParas = conversionLong ? 6 : 4;
+    const maxCharsSoft = conversionLong ? 1400 : 900;
+    const maxCharsHard = conversionLong ? 1800 : 1100;
+    if ((d.kind === 'reply' || d.kind === 'quote') && (paras > maxParas || chars > maxCharsSoft)) {
       const msg = `[error] ${id}: reply wall — ${paras} paras / ${chars} chars (reply should be readable in thread; cut to conversational length, see gargeya-voice.md Length guidance)`;
-      if (paras > 5 || chars > 1100) issues.push(msg);
+      if (paras > maxParas + 1 || chars > maxCharsHard) issues.push(msg);
       else issues.push(msg.replace('[error]', '[warn]'));
     }
 

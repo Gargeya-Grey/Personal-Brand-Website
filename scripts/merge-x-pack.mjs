@@ -46,8 +46,8 @@ function today() {
   return new Date().toISOString().slice(0, 10);
 }
 
-/** Active 1h slots Asia/Kolkata (11–22). Legacy even-only / t00/t06/t12/t18 still accepted as ids. */
-const SCOUT_IST_SLOTS = [11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22];
+/** Two sitting packs: morning 11, evening 19. Legacy extra slots still accepted as ids. */
+const SCOUT_IST_SLOTS = [11, 19];
 
 function istParts(now = new Date()) {
   const parts = new Intl.DateTimeFormat('en-CA', {

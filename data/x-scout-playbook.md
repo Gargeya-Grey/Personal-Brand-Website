@@ -1,76 +1,95 @@
-# X scout playbook (1h IST loop)
+# X scout playbook (2h IST loop)
 
-Companion to `data/gargeya-voice.md`. Scouts must follow both.
+Read **`data/gargeya-voice.md` first** (you are Gargeya, a **creative writer**).  
+Then **`data/x-weekly-strategy.md`** (how many, when, which parts of him).  
+This file is mechanics: slots, rooms, grounding, merge.
+
+**Writing law:** one feeling, sentences that hold together, easy and a little fun, a click (`I believe this` / `he’s right` / `I don’t like this`).  
+**Instant rewrite:** recap-then-lecture, tote-bag slogans, or three tiny full-stop punches with no current.
 
 ## Cadence (hard rule)
 
 | | |
 |--|--|
 | **Timezone** | **Asia/Kolkata (IST)** |
-| **Window** | **11:00 → 22:59 IST** (last scout slot **22:00**) |
-| **Interval** | **Every 1 hour** |
-| **Slots (IST)** | `11, 12, 13, …, 22` → **up to 12 packs/day** |
-| **Off hours** | Do **not** merge a new pack outside the window (sleep / deep work). If a job fires early/late, **skip** (no empty pack). |
+| **Window** | **11:00 → 22:59 IST** |
+| **He sits** | **11:30** and **19:00 IST** only |
+| **When to write a pack** | Only if IST hour is **10–11** (morning pack) or **18–19** (evening pack) |
+| **Slots** | `t11` (morning) and `t19` (evening). **Two packs/day.** |
+| **If the job wakes at another hour** | One line: `not a sitting — skip`. Do **not** merge. |
 
 ### Pack id
 ```
 pack-YYYY-MM-DD-tHH
 ```
 - `YYYY-MM-DD` and `HH` are **IST** (not UTC).  
-- `HH` ∈ `11`–`22` (hourly)  
-- Use `createRunPackId()` / merge script `runPackId()` — both snap to the current IST hour slot.  
-- Legacy ids (even-only 2h slots, or UTC `t00`/`t06`/`t12`/`t18`) may still exist; do not reuse them for new runs.
+- `HH` is **11** (morning) or **19** (evening)  
+- Use `createRunPackId()` / merge script `runPackId()` — both snap to the current IST 2h slot.  
+- Legacy hourly ids (`t12`/`t14`/…) or UTC `t00`/`t06`/`t12`/`t18` may still exist; do not reuse them for new runs.
 
-### Why 1h
-Replies must land while the **source post is still climbing**. Hourly keeps heat fresher than 2h or 12h backlogs.
+### Why the loop still wakes, but only writes twice
+He only posts twice. Extra packs were drafts nobody used. The job may wake on a 2h clock so it can land **just before** 11:30 and 19:00. If it is not packing hour, it exits. Fresh threads, no pile.
 
 ---
 
 ## Pack shape (every run — hard rule)
 
+Read **`data/x-weekly-strategy.md`** for this week’s theme, heat gates, and skip list.
+
 | Type | Count | Notes |
 |------|--------|--------|
-| **Replies** | **exactly 2** | Most relevant + hottest **fresh** posts in the Venn |
-| **Original** | **exactly 1** | **Independent brand post** — soul + informative, NOT a mashup of the two replies. Usually 4–10 lines / 2–4 beats. See voice file **ORIGINALS**. |
-| **Quote** | **0** (default) | Skip on 1h packs unless a third source is exceptional — then QT **instead of** the original, not in addition |
+| **Replies** | **exactly 2** | Big climbing rooms. Different moods. Education-coded **at most 1**. |
+| **Small own tweets** | **exactly 2** | Different personality parts. 2–5 lines. People should feel a bit better. Education **at most 1**, and **0** if a reply is already education. |
+| **Quote** | **0** (default) | May replace one own-tweet on a mega still-hot post. |
 
-**Per day (if all 12 slots posted):** ~**24 replies + 12 originals** — quality gate still ≥90; skip a slot rather than ship mediocre.
+**Total drafts per pack:** **4**.  
+He posts only at **11:30** and **19:00 IST**. Newest first.
 
-- **mvpDraftIds:** all three draft ids (full mini-queue).  
-- **plannedMinutes:** ~15–25 total.  
-- **Do not** ship 8–10 reply piles anymore.  
-- **Do not** skip the original by default — consistency of *his* voice in the feed matters on this cadence. If stuck, one short thesis line still counts.
+- **mvpDraftIds:** all four.  
+- **plannedMinutes:** ~15–22.  
+- **Education cap:** max **2 education items in the whole calendar day** across packs he will actually post.
 
-### Selection quality (the whole point)
-1. Prefer sources from the **last ~1–4 hours** (still moving).  
-2. Heat still matters: high likes/views on large accounts, but **fresh + Venn fit beats old mega-viral**.  
-3. Two replies = two *different* posts (never two drafts on the same status).  
-4. **Original is NOT derived from the two replies.** Pick a pillar (AI education, use cases, access, efficiency, psych/cognition, ethics/values, positivity-with-spine) **before** or **apart from** drafting replies. Standalone insight with soul — bookmark/RT/comment test in voice file.
+### Replies (big rooms, creative writer)
+
+Job: a stranger in a hot thread feels something and thinks **“I believe this / he’s right / I don’t like this.”** Then they may open the profile.
+
+| Rule | Detail |
+|------|--------|
+| **Sources** | Prefer **≥20k views or ≥200 likes or ≥50k-follower author**, still climbing (last ~6h). Honest hook or **drop**. Two **different** status URLs. |
+| **Length** | As long as the feeling needs. Usually one flowing block or two. Not 3–5 carved paragraphs. Not a telegram of punches. |
+| **Write** | Creative writer. One current. Easy. Inclusive. No recap, no tote-bag line, no lecture. |
+| **Still a reply** | Under their roof. **No** “follow me”, **no** link spam, **no** product dump. |
+| **Differentiation** | Two replies = two moods. |
+
+### Selection quality
+1. Prefer last **~1–6 hours**, still moving.  
+2. Fresh + human hook beats old mega-viral with nothing to say.  
+3. Two replies = two different posts.  
+4. Own tweets are not mashups. Two different parts of him. People should feel a bit better.
 
 ---
 
-## Topic Venn (rooms to hunt)
+## Rooms to hunt (whole person)
 
-Full diagram in `data/gargeya-voice.md`. Short form:
+He is not a school account. Hunt **all** of these. Education is a **small** slice.
 
-| Circle | Hunt for |
-|--------|----------|
-| **A Mind/psych** | social / learning / educational psychology, cognitive behavior, metacognition, offloading |
-| **B Education practice** | student-centric methods, process-based assessment, thinking path vs final score |
-| **C AI systems (purposeful)** | AI-in-education, open-source access, efficiency (speed×cost×quality), honest evals/agents |
+| Part | Hunt for |
+|------|----------|
+| Self-awareness | noticing yourself, honesty, slowing down |
+| Psychology | fear, freeze, people-pleasing, habit, why we do things (plain language) |
+| Care / sales | customers, service, trust, respect, hospitality done honestly |
+| Optimism / positivity | hope without lying; people feel a bit better about themselves |
+| Empathy | fear, grief, kindness, being seen |
+| Ethics / values / philosophy | promises, fairness, what a good life is |
+| AI comfort | jobs, “will I be replaced”, the world flipping, staying human |
+| Education | how people think, practice, assessment — **at most 2 posts/day** |
 
-**Priority:** center (AI × learning/cognition × access) → overlaps → open-source as accessibility → edge model news only with a real Venn hook.
+Big AI news is fine **if** the reply is comfort, care, ethics, or a human take — not another “process vs final sheet” essay.
 
-### Content lanes (one angle per reply)
-1. Learning / educational / social psych  
-2. Cognitive behavior + AI  
-3. Student-centric + process assessment  
-4. Open efficient AI for access  
-5. AI systems honesty (when thinking is at stake)  
-6. Values: self-awareness, critical thinking, decision-making  
-7. Builder curiosity + evidence asks  
+### Content lanes (one per draft)
+self-awareness · psychology · care · optimism · positivity · ethics · philosophy · empathy · ai-comfort · education (rare)
 
-Not product spam. One angle per draft, grounded in **that** source only.
+Tag `quality.shape` or `label` with the lane. Two originals in one pack = **two different lanes**.
 
 ### Voice (anti-pattern - mandatory)
 Read `data/gargeya-voice.md` first. Humans do **not** reply in patterns.
@@ -146,31 +165,28 @@ Both replies should be `hyper` | `viral` | `high` when possible; one `mid` OK if
 
 ---
 
-## Research workflow (per 1h run)
-1. Confirm IST slot open (`isScoutWindowOpen` / hour 11–21). Else **exit**.  
-2. `createRunPackId()` → id for this slot.  
-3. Search heat + **recency** across the Venn.  
-4. Fetch candidates; keep top **2 reply targets**.  
-5. Draft **2 grounded replies** (voice file) → **score each ≥90** or rewrite.  
-6. **Original (strict):** choose an independent pillar idea from voice idea bank — **do not theme it off the two replies**. Write as a **storyteller**: cohesive arc (hook → middle → turn → land), easy language, relatable scene, pull to finish the whole post. Soul + teaching + emotion → standalone / **finish** / bookmark tests → **score ≥90**. If pack summary, slogan stack, or cold abstraction → delete and rewrite.  
-7. Varied shapes + quality{} on every draft (`quality.notes` for originals must name the independent insight).  
-8. `validate-x-pack` (grounding + quality) → merge/ingest.  
-9. Chat status ≤8 lines including **scores** + original pillar.
+## Research workflow (per 2h run)
+1. Confirm IST hour is **10–11** or **18–19**. Else **exit** (`not a sitting — skip`).  
+2. Read weekly strategy (which **parts of him** today).  
+3. `createRunPackId()`.  
+4. Search large climbing rooms: AI comfort, psych, care, ethics, plus some AI news.  
+5. Keep **2 reply targets**. Education-coded at most 1.  
+6. Draft **2 replies** as a creative writer (flow + click test) → ≥90.  
+7. Draft **2 small own tweets**, two different parts, flowing not chopped, feel-good or comforting → ≥90.  
+8. Validate → merge.
 
 ## Pack shape checklist
-- signals: 2–4 verified urls (the reply targets + optional context)  
-- **replies: 2**  
-- **originals: 1** (short preferred)  
+- replies: **2**  
+- small originals: **2** (two lanes)  
+- education items in pack: **0 or 1**  
 - quote: 0 default  
-- mvpDraftIds: **all three**  
-- skipList: stale threads, mixed-source claims, off-Venn pure hype, oversized reply piles  
+- mvpDraftIds: all four  
+- skipList: stale, mixed-source, tickers, politics, follow-me, empty hype  
 
 ## Output
 1. `data/x-pack-today.json`  
-2. `node scripts/validate-x-pack.mjs data/x-pack-today.json` [+ evidence]  
+2. `node scripts/validate-x-pack.mjs data/x-pack-today.json`  
 3. `node scripts/merge-x-pack.mjs data/x-pack-today.json`  
 
-## Chat status (≤8 lines)
-pack id · **2 replies / 1 original** · IST slot · heat · grounding: pass · **quality: 92/94/91** · local/remote  
-
-If shape is wrong or any quality **&lt; 90**, **cut/rewrite** before merge.
+## Chat status
+pack id · 2 replies + 2 small tweets · **parts used** · first lines · scores · cloud
