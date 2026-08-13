@@ -1,8 +1,16 @@
 /**
- * Calendar + notes fusion checks (mirrors lib/ledger-engine.ts).
+ * Calendar + harvest checks.
  * Run: npm run test:ledger
  */
 import assert from 'node:assert/strict';
+import {
+  applyHarvestLocks,
+  collectAmounts,
+  collectInvoiceNumbers,
+  guessVendor,
+  harvestDocumentSignals,
+  parseFlexibleDate,
+} from '../lib/ledger-parse.ts';
 
 function indianFyFromDate(isoDate) {
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec((isoDate || '').trim());
@@ -41,38 +49,60 @@ function dateForFyMonth(targetMonth, originalDay, fyStartYear) {
   };
 }
 
-function parseInrFromOperatorNotes(notes) {
-  const patterns = [
-    /(?:inr|rs\.?|₹)\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i,
-    /(?:bank|charged|deducted|paid|actual)\s*(?:amount|as)?\s*(?:is|=|:)?\s*(?:inr|rs\.?|₹)?\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i,
-  ];
-  for (const pattern of patterns) {
-    const match = pattern.exec(notes.trim());
-    if (!match) continue;
-    const amount = Number(String(match[1]).replace(/,/g, ''));
-    if (!Number.isNaN(amount) && amount > 0) return amount;
-  }
-  return null;
-}
-
-// Indian FY
 assert.deepEqual(indianFyFromDate('2026-04-01'), { financialYear: 'FY 2026-27', month: 'April' });
 assert.deepEqual(indianFyFromDate('2026-03-31'), { financialYear: 'FY 2025-26', month: 'March' });
 assert.equal(indianFyFromDate('bad'), null);
 
-// Leap / 31st clamp
 const feb = dateForFyMonth('February', 31, 2026);
 assert.equal(feb.date, '2027-02-28');
 assert.equal(feb.truncated, true);
-const june = dateForFyMonth('June', 31, 2026);
-assert.equal(june.date, '2026-06-30');
-const april = dateForFyMonth('April', 15, 2026);
-assert.equal(april.date, '2026-04-15');
-assert.equal(april.truncated, false);
+assert.equal(dateForFyMonth('June', 31, 2026).date, '2026-06-30');
+assert.equal(dateForFyMonth('April', 15, 2026).date, '2026-04-15');
 
-// Operator INR wins
-assert.equal(parseInrFromOperatorNotes('Bank shows INR 1,847 charged on IDFC WOW'), 1847);
-assert.equal(parseInrFromOperatorNotes('₹20.50 from UPI'), 20.5);
-assert.equal(parseInrFromOperatorNotes('no money mentioned'), null);
+assert.equal(parseFlexibleDate('July 20, 2026'), '2026-07-20');
+assert.equal(parseFlexibleDate('Jul 20 2026'), '2026-07-20');
+assert.equal(parseFlexibleDate('20 July 2026'), '2026-07-20');
+assert.equal(parseFlexibleDate('2026-07-20'), '2026-07-20');
+assert.equal(parseFlexibleDate('20/07/2026'), '2026-07-20');
+
+const receipt = `
+Receipt
+Invoice number BJWTF8LV 0001
+Receipt number 2726 6648
+Date paid July 20, 2026
+Grok xAI
+1450 Page Mill Road
+Bill to Gargeya
+₹700.00 paid on July 20, 2026
+SuperGrok
+Jul 20 Aug 20, 2026
+Amount paid ₹700.00
+Visa - 0542
+`;
+
+const signals = harvestDocumentSignals(receipt, 'Paid on IDFC WOW. Keep SuperGrok.');
+assert.equal(signals.dates.includes('2026-07-20'), true);
+assert.equal(signals.vendor, 'Grok xAI');
+assert.equal(signals.amounts[0], 700);
+assert.equal(signals.hasInr, true);
+assert.ok(collectInvoiceNumbers(receipt).some((value) => /BJWTF8LV/i.test(value)));
+assert.equal(guessVendor('support@x.ai SuperGrok'), 'Grok xAI');
+assert.ok(collectAmounts('Total ₹1,847.50').includes(1847.5));
+
+const notesWin = harvestDocumentSignals(receipt, 'Bank debit INR 1847 on 21 July 2026');
+assert.equal(notesWin.dates[0], '2026-07-21');
+assert.equal(notesWin.picks.date, '2026-07-21');
+assert.equal(signals.complete, true);
+assert.equal(signals.picks.date, '2026-07-20');
+assert.equal(signals.picks.amount, 700);
+assert.match(signals.picks.dateReason, /labeled date/i);
+
+const locked = applyHarvestLocks(
+  { date: '', vendor: '', amount: 0, transactionName: 'Untitled transaction' },
+  signals
+);
+assert.equal(locked.date, '2026-07-20');
+assert.equal(locked.vendor, 'Grok xAI');
+assert.equal(locked.amount, 700);
 
 console.log('ledger engine checks passed');

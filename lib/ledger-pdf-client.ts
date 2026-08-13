@@ -11,12 +11,30 @@ export async function extractPdfText(file: File, maxPages = 6): Promise<string> 
   for (let i = 1; i <= pages; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const line = content.items
-      .map((item) => ('str' in item ? item.str : ''))
-      .join(' ')
-      .replace(/\s+/g, ' ')
-      .trim();
-    if (line) chunks.push(`--- Page ${i} ---\n${line}`);
+    const rows = new Map<number, Array<{ x: number; str: string }>>();
+    for (const item of content.items) {
+      if (!item || typeof item !== 'object' || !('str' in item)) continue;
+      const str = String((item as { str?: string }).str || '');
+      if (!str.trim()) continue;
+      const transform = (item as { transform?: number[] }).transform || [];
+      const y = Math.round((transform[5] ?? 0) / 4) * 4;
+      const x = transform[4] ?? 0;
+      const row = rows.get(y) || [];
+      row.push({ x, str });
+      rows.set(y, row);
+    }
+    const lines = [...rows.entries()]
+      .sort((a, b) => b[0] - a[0])
+      .map(([, cells]) =>
+        cells
+          .sort((a, b) => a.x - b.x)
+          .map((cell) => cell.str)
+          .join(' ')
+          .replace(/\s+/g, ' ')
+          .trim()
+      )
+      .filter(Boolean);
+    if (lines.length) chunks.push(`--- Page ${i} ---\n${lines.join('\n')}`);
   }
 
   return chunks.join('\n\n');

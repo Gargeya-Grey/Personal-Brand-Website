@@ -1,6 +1,6 @@
 'use client';
 
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import { useDropzone } from 'react-dropzone';
 import {
@@ -28,9 +28,10 @@ import {
   financialYearOptions,
   type LedgerEntry,
 } from '@/lib/ledger-schema';
-import { generateEntryForMonth, monthNeedsTruncation, parseFyStartYear } from '@/lib/ledger-engine';
+import { generateEntryForMonth, indianFyFromDate, monthNeedsTruncation, parseFyStartYear } from '@/lib/ledger-engine';
 import type { LedgerSettingsPublic } from '@/lib/ledger-types';
 import { extractPdfText, fileLooksLikePdf, renderPdfPreviewImage } from '@/lib/ledger-pdf-client';
+import { harvestDocumentSignals } from '@/lib/ledger-parse';
 import { LedgerSelect } from '@/components/ledger/ledger-select';
 
 type ExtractResponse = {
@@ -45,10 +46,12 @@ function FieldLabel({
   label,
   hint,
   confidence,
+  htmlFor,
 }: {
   label: string;
   hint: string;
   confidence?: string;
+  htmlFor?: string;
 }) {
   const tone =
     confidence === 'HIGH'
@@ -63,7 +66,7 @@ function FieldLabel({
 
   return (
     <div className="flex items-center justify-between gap-2 mb-1.5">
-      <label className="atelier-label mb-0" title={hint}>
+      <label className="atelier-label mb-0" title={hint} htmlFor={htmlFor} id={htmlFor ? `${htmlFor}-label` : undefined}>
         {label}
       </label>
       {confidence && (
@@ -94,6 +97,8 @@ function AmountStepper({
         value={Number.isFinite(value) ? value : 0}
         onChange={(event) => onChange(name, event.target.value)}
         className="atelier-input pr-28 font-mono"
+        id={name}
+        aria-labelledby={`${name}-label`}
       />
       <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5 text-[10px] font-mono text-[var(--atelier-faint)]">
         {[-10, -1, 1, 10].map((delta) => (
@@ -101,6 +106,7 @@ function AmountStepper({
             key={delta}
             type="button"
             onClick={() => onAdjust(name, delta)}
+            aria-label={`${delta > 0 ? 'Increase' : 'Decrease'} ${name} by ${Math.abs(delta)}`}
             className="px-1.5 py-0.5 rounded hover:bg-[var(--atelier-paper)] hover:text-[var(--atelier-gold)]"
           >
             {delta > 0 ? `+${delta}` : delta}
@@ -140,6 +146,8 @@ export function LedgerClient({
   const [provider, setProvider] = useState<'google' | 'openrouter'>(
     initialSettings.geminiConfigured || !initialSettings.openRouterConfigured ? 'google' : 'openrouter'
   );
+  const [statusMessage, setStatusMessage] = useState('');
+  const reviewHeadingRef = useRef<HTMLHeadingElement>(null);
 
   const fyOptions = useMemo(() => financialYearOptions(), []);
 
@@ -177,7 +185,34 @@ export function LedgerClient({
   });
 
   const updateField = (name: string, value: string | boolean | number) => {
-    setExtracted((prev) => (prev ? { ...prev, [name]: value } : prev));
+    setExtracted((prev) => {
+      if (!prev) return prev;
+      const next = { ...prev, [name]: value };
+      if (name === 'date' && typeof value === 'string') {
+        const fy = indianFyFromDate(value);
+        if (fy) {
+          next.financialYear = fy.financialYear;
+          next.month = fy.month;
+        }
+      }
+      return next;
+    });
+  };
+
+  const resetInvoice = () => {
+    setFile(null);
+    setExtracted(null);
+    setExtraDetails('');
+    setFusion(null);
+    setReviewNotes([]);
+    setError(null);
+    setSuccess(null);
+    setSelectedMonths([]);
+    setPreviewUrl((prev) => {
+      if (prev) URL.revokeObjectURL(prev);
+      return null;
+    });
+    setStatusMessage('Ready for the next invoice.');
   };
 
   const handleExtract = async () => {
@@ -205,9 +240,12 @@ export function LedgerClient({
           } catch (pdfError) {
             console.warn('PDF text extract failed', pdfError);
           }
-          if (fileText.replace(/\s/g, '').length < 40) {
+          const harvest = harvestDocumentSignals(fileText, extraDetails);
+          const textTooThin = fileText.replace(/\s/g, '').length < 40;
+          if (textTooThin || !harvest.complete) {
             const preview = await renderPdfPreviewImage(file);
             if (preview) filePayload = { data: preview.dataUrl, mimeType: preview.mimeType };
+            else if (!textTooThin) filePayload = null;
           } else {
             filePayload = null;
           }
@@ -231,8 +269,15 @@ export function LedgerClient({
       setFusion(payload.fusion || payload.data.sourceFusion || null);
       setReviewNotes(payload.validation_errors || []);
       setSelectedMonths(payload.data.month ? [payload.data.month] : []);
+      setStatusMessage(
+        payload.validation_errors?.length
+          ? `Extracted with ${payload.validation_errors.length} fields to review.`
+          : `Extracted ${payload.data.vendor || 'entry'} for ${payload.data.date || 'review'}.`
+      );
+      window.requestAnimationFrame(() => reviewHeadingRef.current?.focus());
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Extraction failed');
+      setStatusMessage('Extraction failed.');
     } finally {
       setIsExtracting(false);
     }
@@ -260,12 +305,42 @@ export function LedgerClient({
       if (!response.ok) throw new Error(data.error || 'Save failed');
       const count = Array.isArray(payload) ? payload.length : 1;
       setSuccess(`Saved ${count} ${count === 1 ? 'row' : 'rows'} to Notion.`);
+      setStatusMessage(`Saved ${count} ${count === 1 ? 'row' : 'rows'} to Notion.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Save failed');
     } finally {
       setIsSaving(false);
     }
   };
+
+  useEffect(() => {
+    function onPaste(event: ClipboardEvent) {
+      const items = event.clipboardData?.items;
+      if (!items) return;
+      for (const item of Array.from(items)) {
+        if (!item.type.startsWith('image/')) continue;
+        const blob = item.getAsFile();
+        if (!blob) continue;
+        event.preventDefault();
+        onDrop([new File([blob], `pasted-receipt-${Date.now()}.png`, { type: blob.type })]);
+        setStatusMessage('Pasted screenshot attached.');
+        return;
+      }
+    }
+    window.addEventListener('paste', onPaste);
+    return () => window.removeEventListener('paste', onPaste);
+  }, [onDrop]);
+
+  useEffect(() => {
+    function onKey(event: KeyboardEvent) {
+      if (!(event.metaKey || event.ctrlKey) || event.key !== 'Enter') return;
+      if (isExtracting || (!file && !extraDetails.trim())) return;
+      event.preventDefault();
+      void handleExtract();
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  });
 
   const saveSettings = async () => {
     setSettingsBusy(true);
@@ -329,10 +404,15 @@ export function LedgerClient({
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2.5 sm:justify-end shrink-0">
-          <div className="inline-flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 shadow-[var(--atelier-shadow-sm)]">
+          <div
+            className="inline-flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 shadow-[var(--atelier-shadow-sm)]"
+            role="group"
+            aria-label="Extraction model"
+          >
             <button
               type="button"
               onClick={() => setProvider('google')}
+              aria-pressed={provider === 'google'}
               className={`px-3 py-1.5 text-xs font-bold rounded-full transition-colors ${
                 provider === 'google'
                   ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
@@ -344,6 +424,7 @@ export function LedgerClient({
             <button
               type="button"
               onClick={() => setProvider('openrouter')}
+              aria-pressed={provider === 'openrouter'}
               disabled={!settings.openRouterConfigured}
               title={
                 settings.openRouterModel
@@ -376,6 +457,7 @@ export function LedgerClient({
             <Link
               href="/api/auth/logout"
               title="Sign out"
+              aria-label="Sign out"
               className="inline-flex h-9 w-9 items-center justify-center border-l border-[var(--atelier-line)] text-[var(--atelier-faint)] hover:text-red-600"
             >
               <LogOut className="w-3.5 h-3.5" />
@@ -388,6 +470,7 @@ export function LedgerClient({
         <button
           type="button"
           onClick={() => setShowSettings((prev) => !prev)}
+          aria-expanded={showSettings}
           className="w-full flex items-center justify-between text-left"
         >
           <span className="inline-flex items-center gap-2 text-sm font-semibold">
@@ -456,8 +539,12 @@ export function LedgerClient({
         )}
       </div>
 
+      <p className="sr-only" role="status" aria-live="polite">
+        {statusMessage}
+      </p>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        <section className="lg:col-span-5 space-y-4">
+        <section className="lg:col-span-5 space-y-4" aria-label="Invoice intake">
           <div
             {...getRootProps()}
             className={`atelier-card-lg cursor-pointer border-dashed px-6 py-10 text-center transition ${
@@ -467,19 +554,23 @@ export function LedgerClient({
             <input {...getInputProps()} />
             <UploadCloud className="w-8 h-8 mx-auto mb-3 text-[var(--atelier-faint)]" />
             <p className="font-medium">{isDragActive ? 'Drop the invoice' : 'Drag in a PDF or photo'}</p>
-            <p className="text-xs text-[var(--atelier-faint)] mt-1">PDF, PNG, JPG, WebP · 6 MB max</p>
+            <p className="text-xs text-[var(--atelier-faint)] mt-1">
+              PDF, PNG, JPG, WebP · 6 MB max · or paste a screenshot (Ctrl/⌘ V)
+            </p>
           </div>
 
           <div>
             <label className="atelier-label">Your notes (trusted)</label>
             <textarea
+              id="operator-notes"
               value={extraDetails}
               onChange={(event) => setExtraDetails(event.target.value)}
               placeholder="What the invoice cannot know: bank debit in INR, paid via IDFC WOW, this is the edudojo.ai domain for two years, GST not claimed…"
               className="atelier-input min-h-[140px] h-auto py-3 resize-y"
+              aria-describedby="operator-notes-hint"
             />
-            <p className="mt-1.5 text-xs text-[var(--atelier-faint)] leading-relaxed">
-              These notes outrank the PDF when they conflict. The document still supplies vendor, invoice number, and printed totals.
+            <p id="operator-notes-hint" className="mt-1.5 text-xs text-[var(--atelier-faint)] leading-relaxed">
+              These notes outrank the PDF when they conflict. Ctrl/⌘ + Enter extracts. The document still supplies vendor, invoice number, and printed totals.
             </p>
           </div>
 
@@ -506,6 +597,13 @@ export function LedgerClient({
             </div>
           )}
 
+          {error && !extracted && (
+            <div className="flex gap-2 rounded-2xl border border-red-400/30 bg-red-500/10 px-4 py-3 text-sm text-red-700 dark:text-red-300" role="alert">
+              <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
+              {error}
+            </div>
+          )}
+
           <button
             type="button"
             onClick={handleExtract}
@@ -525,7 +623,7 @@ export function LedgerClient({
           )}
         </section>
 
-        <section className="lg:col-span-7">
+        <section className="lg:col-span-7" aria-label="Ledger review">
           <div className="atelier-card-lg min-h-[520px] overflow-hidden">
             {isExtracting ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3 text-[var(--atelier-muted)]">
@@ -541,7 +639,9 @@ export function LedgerClient({
               <form onSubmit={handleSave} className="flex flex-col">
                 <div className="flex items-center justify-between gap-3 px-5 py-4 border-b border-[var(--atelier-line)]">
                   <div>
-                    <h2 className="text-sm font-semibold">Review before Notion</h2>
+                    <h2 ref={reviewHeadingRef} tabIndex={-1} className="text-sm font-semibold outline-none">
+                      Review before Notion
+                    </h2>
                     <p className="text-xs text-[var(--atelier-faint)]">Low-confidence fields are flagged. Edit anything.</p>
                   </div>
                   <button type="submit" disabled={isSaving || !settings.configured} className="atelier-btn atelier-btn-gold">
@@ -562,9 +662,14 @@ export function LedgerClient({
                     </div>
                   )}
                   {success && (
-                    <div className="flex gap-2 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-200">
-                      <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
-                      {success}
+                    <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-emerald-400/30 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-800 dark:text-emerald-200">
+                      <span className="inline-flex gap-2">
+                        <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
+                        {success}
+                      </span>
+                      <button type="button" onClick={resetInvoice} className="atelier-btn atelier-btn-ghost !py-1.5 !px-3">
+                        Log another
+                      </button>
                     </div>
                   )}
                   {(fusion || extracted.operatorOverrides?.length) && (
@@ -583,9 +688,10 @@ export function LedgerClient({
 
                   <div className="space-y-4">
                     <div>
-                      <FieldLabel label="Transaction name" hint="Vendor / purpose — period" confidence={flags.transactionName} />
+                      <FieldLabel htmlFor="transactionName" label="Transaction name" hint="Vendor / purpose — period" confidence={flags.transactionName} />
                       <input
                         required
+                        id="transactionName"
                         name="transactionName"
                         value={extracted.transactionName || ''}
                         onChange={(event) => updateField('transactionName', event.target.value)}
@@ -705,8 +811,8 @@ export function LedgerClient({
 
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div>
-                      <FieldLabel label="Type" hint="Direction of funds" confidence={flags.type} />
-                      <LedgerSelect name="type" value={extracted.type} options={Types} onChange={updateField} />
+                      <FieldLabel htmlFor="type" label="Type" hint="Direction of funds" confidence={flags.type} />
+                      <LedgerSelect name="type" value={extracted.type} options={Types} onChange={updateField} labelledBy="type-label" />
                     </div>
                     <div>
                       <FieldLabel label="Category" hint="P&L bucket" confidence={flags.category} />
@@ -721,7 +827,7 @@ export function LedgerClient({
                       <LedgerSelect name="dealType" value={extracted.dealType} options={DealTypes} onChange={updateField} />
                     </div>
                     <div>
-                      <FieldLabel label="Amount INR" hint="Bank debit in rupees" confidence={flags.amount} />
+                      <FieldLabel htmlFor="amount" label="Amount INR" hint="Bank debit in rupees" confidence={flags.amount} />
                       <AmountStepper
                         name="amount"
                         value={extracted.amount}
@@ -774,9 +880,10 @@ export function LedgerClient({
                       />
                     </div>
                     <div>
-                      <FieldLabel label="Date" hint="Invoice date" confidence={flags.date} />
+                      <FieldLabel htmlFor="date" label="Date" hint="Invoice date" confidence={flags.date} />
                       <input
                         type="date"
+                        id="date"
                         required
                         value={extracted.date || ''}
                         onChange={(event) => updateField('date', event.target.value)}

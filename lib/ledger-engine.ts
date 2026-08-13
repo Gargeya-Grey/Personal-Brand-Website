@@ -159,14 +159,22 @@ function fallbackContextScan(
       return { resolved: 'Hosting & Cloud', method: 'Context Heuristics (Host/Cloud)' };
     }
     if (
+      context.includes('supergrok') ||
+      context.includes('chatgpt plus') ||
+      context.includes('github copilot') ||
+      context.includes('grok xai') ||
+      context.includes('x.ai')
+    ) {
+      return { resolved: 'SaaS Tools', method: 'Context Heuristics (AI subscription SaaS)' };
+    }
+    if (
       context.includes('openai') ||
       context.includes('anthropic') ||
       context.includes('gemini') ||
       context.includes('api credits') ||
       context.includes('claude') ||
       context.includes('deepseek') ||
-      context.includes('gpt-') ||
-      context.includes('grok')
+      context.includes('gpt-')
     ) {
       return { resolved: 'AI / API Credits', method: 'Context Heuristics (AI Credits)' };
     }

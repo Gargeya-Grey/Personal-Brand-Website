@@ -9,6 +9,7 @@ type LedgerSelectProps = {
   options: readonly string[] | string[];
   onChange: (name: string, value: string) => void;
   placeholder?: string;
+  labelledBy?: string;
 };
 
 export function LedgerSelect({
@@ -17,6 +18,7 @@ export function LedgerSelect({
   options,
   onChange,
   placeholder = 'Select…',
+  labelledBy,
 }: LedgerSelectProps) {
   const [open, setOpen] = useState(false);
   const rootRef = useRef<HTMLDivElement>(null);
@@ -27,8 +29,15 @@ export function LedgerSelect({
         setOpen(false);
       }
     }
+    function onKey(event: KeyboardEvent) {
+      if (event.key === 'Escape') setOpen(false);
+    }
     document.addEventListener('mousedown', onPointer);
-    return () => document.removeEventListener('mousedown', onPointer);
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('mousedown', onPointer);
+      document.removeEventListener('keydown', onKey);
+    };
   }, []);
 
   return (
@@ -37,6 +46,8 @@ export function LedgerSelect({
         type="button"
         aria-haspopup="listbox"
         aria-expanded={open}
+        aria-labelledby={labelledBy}
+        aria-label={labelledBy ? undefined : name}
         onClick={() => setOpen((prev) => !prev)}
         className="atelier-input flex items-center justify-between text-left"
       >

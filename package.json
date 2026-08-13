@@ -8,7 +8,7 @@
     "start": "next start",
     "lint": "eslint .",
     "clean": "next clean",
-    "test:ledger": "node scripts/test-ledger-engine.mjs"
+    "test:ledger": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/test-ledger-engine.mjs"
   },
   "dependencies": {
     "@fontsource/stack-sans-notch": "^5.3.0",

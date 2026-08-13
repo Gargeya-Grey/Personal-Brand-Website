@@ -108,6 +108,36 @@ function contentFromGemini(data: unknown): string {
   return text;
 }
 
+const LEDGER_RESPONSE_SCHEMA = {
+  type: 'OBJECT',
+  properties: {
+    chainOfThought: { type: 'STRING' },
+    transactionName: { type: 'STRING' },
+    type: { type: 'STRING' },
+    category: { type: 'STRING' },
+    amount: { type: 'NUMBER', nullable: true },
+    netAmount: { type: 'NUMBER', nullable: true },
+    gstAmount: { type: 'NUMBER', nullable: true },
+    date: { type: 'STRING' },
+    paymentMode: { type: 'STRING' },
+    taxClass: { type: 'STRING' },
+    dealType: { type: 'STRING' },
+    vendor: { type: 'STRING' },
+    customer: { type: 'STRING', nullable: true },
+    invoiceNumber: { type: 'STRING' },
+    businessPurpose: { type: 'STRING' },
+    idfcWowCard: { type: 'BOOLEAN', nullable: true },
+    gstApplicable: { type: 'BOOLEAN', nullable: true },
+    financialYear: { type: 'STRING' },
+    month: { type: 'STRING' },
+    notes: { type: 'STRING' },
+    requiresInrConversion: { type: 'BOOLEAN', nullable: true },
+    isSubscription: { type: 'BOOLEAN', nullable: true },
+    subscriptionFrequency: { type: 'STRING', nullable: true },
+  },
+  required: ['transactionName', 'type', 'category', 'date', 'vendor'],
+};
+
 async function callGemini(opts: {
   systemPrompt: string;
   userText: string;
@@ -132,15 +162,23 @@ async function callGemini(opts: {
     system_instruction: { parts: [{ text: opts.systemPrompt }] },
     contents: [{ role: 'user', parts }],
     generationConfig: {
-      temperature: 0.1,
-      ...(opts.jsonFormat ? { responseMimeType: 'application/json' } : {}),
+      temperature: 0,
+      ...(opts.jsonFormat
+        ? {
+            responseMimeType: 'application/json',
+            responseSchema: LEDGER_RESPONSE_SCHEMA,
+          }
+        : {}),
     },
   };
 
   let lastError: Error | null = null;
-  for (const model of geminiModels()) {
+  const models = geminiModels();
+  for (let modelIndex = 0; modelIndex < models.length; modelIndex++) {
+    const model = models[modelIndex]!;
+    const attempts = modelIndex === 0 ? 2 : 1;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
         const response = await fetch(url, {
           method: 'POST',
@@ -164,8 +202,8 @@ async function callGemini(opts: {
             response.status === 503 ||
             response.status === 504 ||
             /unavailable|overloaded|resource exhausted|high demand/i.test(message);
-          if (transient && attempt < 3) {
-            await sleep(2 ** attempt * 500);
+          if (transient && attempt < attempts) {
+            await sleep(2 ** attempt * 400);
             continue;
           }
           lastError = new Error(message);
@@ -180,7 +218,7 @@ async function callGemini(opts: {
         return text;
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
-        if (attempt < 3) await sleep(2 ** attempt * 500);
+        if (attempt < attempts) await sleep(2 ** attempt * 400);
       }
     }
   }
