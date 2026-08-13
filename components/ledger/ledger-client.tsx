@@ -5,13 +5,10 @@ import Link from 'next/link';
 import { useDropzone } from 'react-dropzone';
 import {
   AlertCircle,
-  BookOpen,
   CheckCircle2,
   ChevronDown,
   ChevronUp,
   FileText,
-  Landmark,
-  ListTodo,
   Loader2,
   LogOut,
   Receipt,
@@ -110,30 +107,6 @@ function AmountStepper({
           </button>
         ))}
       </div>
-    </div>
-  );
-}
-
-function WorkspaceSwitch() {
-  const tab = (href: string, label: string, Icon: typeof BookOpen, active: boolean) => (
-    <Link
-      href={href}
-      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-colors ${
-        active
-          ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-          : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-      }`}
-    >
-      <Icon className="w-3.5 h-3.5" />
-      {label}
-    </Link>
-  );
-
-  return (
-    <div className="inline-flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 shadow-[var(--atelier-shadow-sm)]">
-      {tab('/editorial', 'Blog', BookOpen, false)}
-      {tab('/editorial?workspace=x', 'X To-Do', ListTodo, false)}
-      {tab('/ledger', 'Ledger', Landmark, true)}
     </div>
   );
 }
@@ -386,7 +359,6 @@ export function LedgerClient({
               OpenRouter
             </button>
           </div>
-          <WorkspaceSwitch />
           <div className="inline-flex items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] overflow-hidden shadow-[var(--atelier-shadow-sm)]">
             <div className="flex items-center gap-2 pl-1.5 pr-2.5 py-1.5">
               {/* eslint-disable-next-line @next/next/no-img-element */}

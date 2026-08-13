@@ -173,7 +173,13 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     ? 'border-transparent text-white/70 hover:bg-white/5'
     : 'border-transparent text-slate-600 hover:bg-slate-50 dark:text-white/70 dark:hover:bg-white/5';
 
-  const onX = workspaceParam === 'x' || workspaceParam === 'todo' || workspaceParam === 'x-todo';
+  const onX =
+    workspaceParam === 'x' ||
+    workspaceParam === 'todo' ||
+    workspaceParam === 'x-todo' ||
+    workspaceParam === 'lab' ||
+    workspaceParam === 'x-lab' ||
+    workspaceParam === 'analytics';
 
   const isLinkActive = (link: NavLink) => {
     if (isAtelier) {
@@ -210,7 +216,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           <BrandMark
             size={32}
             priority
-            variant={isAtelier ? 'onLight' : 'auto'}
+            variant="auto"
             onDarkChrome={forceDarkNav}
             className="h-8 w-8 shrink-0 transition-transform duration-300 group-hover:scale-105"
           />
