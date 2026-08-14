@@ -40,22 +40,27 @@ If they would only think “okay, next,” you failed. Rewrite.
 ## How to rewrite
 
 - Keep the **same idea** and the **same facts** (replies stay grounded).
-- Drop the clever phrase. Say it the way you’d tell a friend.
+- Drop the clever phrase. Keep the warmth.
 - One current. Sentences hold hands.
-- Shorter if shorter is clearer. Longer only if the feeling needs it.
-- No lecture. No tote-bag slogan. No chopped telegram.
+- Do **not** cut courage, hunger, resilience, or “spirit of learning” to sound cooler or shorter.
+- Shorter only if the feeling is already there and extra words are clever. Longer if he is inspired.
+- No lecture. No tote-bag slogan. No chopped telegram. No cold “I don’t care about X” clip of a warm thought.
 
-**Fail (we shipped this):**
+**Fail (clever-hard, we shipped this):**
 
-> You freeze, then you call yourself lazy, and those two words are not even friends. Freeze is usually you trying not to look stupid, and once you name that, you can take a smaller next step instead of punishing yourself for a whole night.
+> You freeze, then you call yourself lazy, and those two words are not even friends…
 
-Clever. Hard. Nobody’s chest moves.
+**Also fail (too cold, we shipped this on a NEET post):**
 
-**Pass:**
+> I don't care about the age fight on your post. He sat with past papers after work for two years, failed the exam once, and still took it again. That is the student I want more of.
 
-> You know that moment you freeze and then call yourself lazy? You’re probably just scared of looking stupid. Name that, and the next step can be small.
+**Pass (owner voice on that same post):**
 
-Same thought. Easier. They can tap “that’s me.”
+> Forget the age debate. What truly inspires me is the spirit of learning - sitting with past papers after a full day of work for two years, facing failure once and still finding the courage to try again.
+>
+> That resilience, that hunger to learn and grow despite every obstacle, is the real value. That is the kind of student we need more of.
+
+If your rewrite is colder than the first draft, you failed. Put the warmth back.
 
 ---
 
@@ -84,3 +89,4 @@ Without this block, the pack **fails** the quality gate.
 - Turn it into a school essay
 - Ask people to follow
 - Keep a line because it sounds smart
+- Make a warm education reply colder or shorter so it “scores”

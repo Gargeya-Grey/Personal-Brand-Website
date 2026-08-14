@@ -1,16 +1,16 @@
 /** Live growth plan shown at /editorial?workspace=strategy. Edit here as the week changes. */
 
-export const GROWTH_STRATEGY_UPDATED = '13 Aug 2026';
+export const GROWTH_STRATEGY_UPDATED = '14 Aug 2026';
 
 export const GROWTH_HONEST = {
   title: 'Yes. With three watches.',
-  body: 'Two sittings, reply first, education as a slice, and writing like a creative writer: one feeling, sentences that hold together, easy enough that people stay and click (I believe this / he is right / I do not like this). Watch leftovers, and review on Sunday.',
+  body: 'Two sittings. Replies are education, assessment, and battling cognitive offloading: visible and opinionated. Own tweets are the rest of you. Writing like a creative writer: one feeling, sentences that hold together, easy enough that people stay and click. Watch leftovers, and review on Sunday.',
 };
 
 export const DAILY_COUNTS = [
-  { n: '3', label: 'Small tweets', hint: 'Your profile. Make people feel something true.' },
-  { n: '4', label: 'Replies', hint: 'Big rooms only. This is how strangers find you.' },
-  { n: '2', label: 'Education max', hint: 'School talk is a slice. Not the whole plate.' },
+  { n: '3', label: 'Small tweets', hint: 'The rest of you. Profile they land on.' },
+  { n: '4', label: 'Replies', hint: 'Education / assessment / offloading only. Big rooms.' },
+  { n: '0', label: 'Nonsense replies', hint: 'No sports-admin. No evening-shift honesty.' },
   { n: '7', label: 'Posts total', hint: 'Not 20. Sit twice. Then stop.' },
 ] as const;
 
@@ -20,7 +20,7 @@ export const SITTINGS = [
     name: 'Morning sitting',
     time: '11:30–12:30 IST',
     why: 'India late morning. Europe waking up.',
-    do: ['2 replies on the newest big rooms', '1 small tweet (not education if you already used it)'],
+    do: ['2 replies on education / assessment / offloading rooms', '1 small tweet from the rest of you'],
     minutes: 15,
   },
   {
@@ -28,7 +28,7 @@ export const SITTINGS = [
     name: 'Evening sitting',
     time: '19:00–20:30 IST',
     why: 'Your best window. India evening. US morning starting.',
-    do: ['2 replies, biggest rooms first', '2 small tweets from two different parts of you'],
+    do: ['2 replies, biggest on-thesis rooms first', '2 small tweets from two different non-school parts of you'],
     minutes: 20,
   },
 ] as const;
@@ -98,6 +98,13 @@ export const PERSONALITY = [
     example: 'If a tool can do the easy version of your job, the human part is still the human part.',
   },
   {
+    id: 'access',
+    name: 'Access',
+    feel: 'Glad. Inclusive. Brave.',
+    believe: 'You love open models. People should take the same weights and improve them. Cyber defense on an open model helps people safeguard themselves, instead of relying on closed labs that slip their sandboxes. Open + cyber is good, never scary.',
+    example: 'If cyber defense lives in an open model, more of us can actually protect ourselves.',
+  },
+  {
     id: 'education',
     name: 'Education',
     feel: 'Rare. Sharp.',
@@ -131,15 +138,15 @@ export const REPLY_OR_QUOTE = {
 };
 
 export const ENTER_ROOMS = [
-  'Big, fresh posts still getting likes',
-  'AI jobs and fear threads',
-  'Psychology, work, customer stories, kindness',
-  'Builder rooms where a human take fits',
+  'Big, fresh posts about school, exams, assessment, students',
+  'Cognitive offloading: AI doing the homework, the deck, the first thought',
+  'How people think and whether they sat with the work',
+  'Pretty answers with no path',
 ];
 
 export const SKIP_ROOMS = [
   'Tiny or dead threads',
-  'Politics and stocks',
+  'Politics, stocks, sports-admin, evening-shift honesty',
   'Empty hype and follow-begs',
   'Anything you would not say out loud',
 ];

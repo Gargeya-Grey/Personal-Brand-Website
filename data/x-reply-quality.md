@@ -37,7 +37,7 @@ Scouts **must** write the score honestly. Inflating scores is a system failure �
 
 ### How to score replies for this
 
-- **voiceMatch / relatability / humanTexture** = conversational + **opinionated** (a real take, not a mirror).  
+- **voiceMatch / relatability / humanTexture** = conversational + **opinionated** + **earnest**. For education replies, the owner bar is inspired (spirit of learning, courage, hunger), not a cold clip.  
 - Paraphrase of OP’s best line with “so true” → **cap voiceMatch ≤ 7**, **funRead ≤ 6** until rewritten.  
 - Polished standalone thesis with no “you/yeah/this” room energy → **cap voiceMatch ≤ 8**, **humanTexture ≤ 6**.  
 - Prefer: whatever he actually thinks — raw, polite, biased, passionate — over any shape menu.  
@@ -56,7 +56,9 @@ Scouts **must** write the score honestly. Inflating scores is a system failure �
 6b. Writer-tweet? `The X is the Y part.` / a lone `Fine.` → rewrite.  
 6c. Choppy telegram? Three short full-stop sentences that do not hold together → glue them.  
 6d. Did the **adversary writer** run? `quality.adversary` present, `passed: true`, a real `click`, and a `change` note? If the line is still clever-hard, they did not do the job.  
-7. Did you force **school / final sheet / grade / cheaters** under a non-education post? → rewrite.  
+7. Is this reply **not** about education, assessment, cognitive development, or offloading? → **hard fail.** Drop the room. Do not write a sweet life comment.  
+7b. Did you force **school slogans** under a non-education post? You should not be under that post.  
+7c. We shipped `Yeah go do your evening shift` at 94. That is a persona fail, not a pass.  
 8. Could someone guess this was “draft 1 of a system”? → rewrite until it sounds like a one-off thought.  
 9. Any **em-dash (`—`)**? → remove/rewrite.  
 10. Does every sentence start with a **capital letter**? If not → fix.
@@ -71,8 +73,8 @@ Scouts **must** write the score honestly. Inflating scores is a system failure �
 
 ### Strategy self-check (every draft)
 1. Creative writer: one feeling, flow, click test? If chopped or cold → rewrite.  
-2. Does it belong to one of his parts (psych, care, positivity, AI comfort, ethics, etc.)? Education only if the day’s cap allows.  
-3. Big room for replies. No follow-beg. No scatter (tickers, politics, empty hype).
+2. **Reply?** Must be education / assessment / cognitive / offloading. **Original?** One of the other parts.  
+3. Big **on-thesis** room for replies. No sports-admin. No follow-beg. No scatter.
 
 ---
 

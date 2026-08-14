@@ -190,14 +190,36 @@ export function looksLikeHouseEssay(body) {
 }
 
 /**
+ * Replies must sit in education / assessment / cognitive offloading.
+ * A sweet comment on an evening shift or football admin is a persona fail
+ * even if it is clear, warm, and ≥90 on other dimensions.
+ */
+const REPLY_THESIS =
+  /\b(student|students|school|schools|homework|exam|exams|assessment|assess|tutor|tutoring|cognitive|offload|offloaded|offloading|metacognition|learning|education|educator|classroom|teacher|teachers|studied|studying|study\b|past papers|neet|curriculum|cheating|cheat|drafts?|thinking)\b/i;
+
+const NONSENSE_REPLY_ROOM =
+  /\b(evening shift|live (thread|updates)|go do your|football|kick-?off|full[- ]time)\b/i;
+
+/**
+ * True if a reply is not about education / assessment / offloading.
+ * @param {string} body
+ */
+export function looksOffThesisReply(body) {
+  const text = String(body || '').trim();
+  if (!text) return false;
+  if (NONSENSE_REPLY_ROOM.test(text)) return true;
+  return !REPLY_THESIS.test(text);
+}
+
+/**
  * Conversational / second-person energy expected in replies (voice: reply ≠ post).
  * Avoid bare "this"/"that" — they appear in formal posts ("that's what…").
  */
 const REPLY_MARKERS =
-  /\b(you|your|you'?re|you'?ve|yeah|yep|yup|haha|hehe|lol|lmao|btw|huh|thanks|thank you|love this|this lands|this tracks|this clicked|this is so true|this really|this framing|you'?re right|i get you|fair point|same here|opened my eyes|for me —|for me -|genuinely helpful)\b/i;
+  /\b(you|your|you'?re|you'?ve|yeah|yep|yup|haha|hehe|lol|lmao|btw|huh|thanks|thank you|love this|this lands|this tracks|this clicked|this is so true|this really|this framing|you'?re right|i get you|fair point|same here|opened my eyes|for me —|for me -|genuinely helpful|inspires me|spirit of learning|kind of student|hunger to learn|forget the)\b/i;
 
 const REPLY_OPENERS =
-  /^(yeah|yep|yup|haha|lol|btw|oh|wow|damn|true|fair|exactly|love this|you |you'?re |thanks )/i;
+  /^(yeah|yep|yup|haha|lol|btw|oh|wow|damn|true|fair|exactly|love this|you |you'?re |thanks |forget )/i;
 
 /** Formal standalone openers that smell like an original post, not a reply. */
 const POST_LIKE_OPENERS =
@@ -364,6 +386,11 @@ export function scorePack(pack) {
 
     // Reply ≠ post gate (voice + quality docs)
     if (kind === 'reply' || kind === 'quote') {
+      if (looksOffThesisReply(body)) {
+        issues.push(
+          `[error] ${id}: off-thesis reply — replies must be education / assessment / cognitive development / offloading (gargeya-voice.md). Do not spend a reply on sports, shifts, or generic life.`
+        );
+      }
       if (looksLikeStandalonePost(body)) {
         issues.push(
           `[error] ${id}: post-like reply — rewrite to sound conversational/second-person (see voice Reply vs original; x-reply-quality.md). Body should fail if it works as a standalone post.`

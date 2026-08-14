@@ -39,8 +39,8 @@ Read **`data/x-weekly-strategy.md`** for this week’s theme, heat gates, and sk
 
 | Type | Count | Notes |
 |------|--------|--------|
-| **Replies** | **exactly 2** | Big climbing rooms. Different moods. Education-coded **at most 1**. |
-| **Small own tweets** | **exactly 2** | Different personality parts. 2–5 lines. People should feel a bit better. Education **at most 1**, and **0** if a reply is already education. |
+| **Replies** | **exactly 2** | Big climbing rooms about **education, assessment, cognitive development, or offloading**. Different moods. Both are this center. |
+| **Small own tweets** | **exactly 2** | Different **non-school** personality parts. 2–5 lines. People should feel a bit better. Education **0** unless both reply rooms failed. |
 | **Quote** | **0** (default) | May replace one own-tweet on a mega still-hot post. |
 
 **Total drafts per pack:** **4**.  
@@ -48,11 +48,11 @@ He posts only at **11:30** and **19:00 IST**. Newest first.
 
 - **mvpDraftIds:** all four.  
 - **plannedMinutes:** ~15–22.  
-- **Education cap:** max **2 education items in the whole calendar day** across packs he will actually post.
+- **Education lives in replies.** Originals are the other parts of him. Do not “save” education for later and spend replies on sports.
 
 ### Replies (big rooms, creative writer)
 
-Job: a stranger in a hot thread feels something and thinks **“I believe this / he’s right / I don’t like this.”** Then they may open the profile.
+Job: a stranger in a **learning / assessment / offloading** thread feels something and thinks **“I believe this / he’s right / I don’t like this.”** Then they may open the profile. If the room is football, a live thread, or an evening shift, **you already failed selection.**
 
 | Rule | Detail |
 |------|--------|
@@ -70,25 +70,31 @@ Job: a stranger in a hot thread feels something and thinks **“I believe this /
 
 ---
 
-## Rooms to hunt (whole person)
+## Rooms to hunt
 
-He is not a school account. Hunt **all** of these. Education is a **small** slice.
+### Replies (this is the search)
 
-| Part | Hunt for |
-|------|----------|
-| Self-awareness | noticing yourself, honesty, slowing down |
-| Psychology | fear, freeze, people-pleasing, habit, why we do things (plain language) |
-| Care / sales | customers, service, trust, respect, hospitality done honestly |
-| Optimism / positivity | hope without lying; people feel a bit better about themselves |
-| Empathy | fear, grief, kindness, being seen |
-| Ethics / values / philosophy | promises, fairness, what a good life is |
-| AI comfort | jobs, “will I be replaced”, the world flipping, staying human |
-| Education | how people think, practice, assessment — **at most 2 posts/day** |
+Hunt **only** these. Heat still matters. Nonsense virality does not.
 
-Big AI news is fine **if** the reply is comfort, care, ethics, or a human take — not another “process vs final sheet” essay.
+| Center | Hunt for |
+|--------|----------|
+| Education | how people think, practice, sitting with the work |
+| Assessment | exams, grades, pretty final pages, what we actually measure |
+| Cognitive development | kids / students building a mind, not collecting answers |
+| Cognitive offloading | AI doing the homework, the deck, the first thought; fight that |
+| Human | a person still has to sit with it |
 
-### Content lanes (one per draft)
-self-awareness · psychology · care · optimism · positivity · ethics · philosophy · empathy · ai-comfort · education (rare)
+Use the heat queries below. If you cannot find two real rooms, **one mid education room beats one viral sports admin.**
+
+### Own tweets (not the search for replies)
+
+self-awareness · psychology · care · optimism · positivity · ethics · philosophy · empathy · ai-comfort · access
+
+**Open + cyber defense is good** on an access original, or on a reply only if the post is about open models and thinking/safety. Do not write the “I don’t like cyber skills next to open weights” take.
+
+### Content lanes
+**Replies:** education · assessment · cognitive · offloading  
+**Originals:** self-awareness · psychology · care · optimism · positivity · ethics · philosophy · empathy · ai-comfort · access
 
 Tag `quality.shape` or `label` with the lane. Two originals in one pack = **two different lanes**.
 
@@ -170,17 +176,17 @@ Both replies should be `hyper` | `viral` | `high` when possible; one `mid` OK if
 1. Confirm IST hour is **10–11** or **18–19**. Else **exit** (`not a sitting — skip`).  
 2. Read weekly strategy (which **parts of him** today).  
 3. `createRunPackId()`.  
-4. Search large climbing rooms: AI comfort, psych, care, ethics, plus some AI news.  
-5. Keep **2 reply targets**. Education-coded at most 1.  
-6. Draft **2 replies** (strategy + grounding + first pass).  
-7. Draft **2 small own tweets**, two different parts.  
+4. Search large climbing rooms with the **education / assessment / offloading** queries. Not sports. Not evening shifts. Not celebrity.  
+5. Keep **2 reply targets** in that center. Different rooms, different moods.  
+6. Draft **2 replies** (opinionated, grounded, first pass).  
+7. Draft **2 small own tweets**, two different **non-school** parts.  
 8. **ADVERSARY PASS (mandatory):** put on the hat in `data/x-adversary-writer.md`. Rewrite every draft so a stranger feels something in one second. Especially originals. Attach `quality.adversary` on each. Then score ≥90.  
 9. Validate → merge. Do **not** validate before the adversary rewrite.
 
 ## Pack shape checklist
-- replies: **2**  
-- small originals: **2** (two lanes)  
-- education items in pack: **0 or 1**  
+- replies: **2**, both education / assessment / offloading  
+- small originals: **2** (two non-school lanes)  
+- education originals: **0** default  
 - quote: 0 default  
 - mvpDraftIds: all four  
 - skipList: stale, mixed-source, tickers, politics, follow-me, empty hype  
