@@ -69,19 +69,10 @@ function shiftDateString(date, dayDelta) {
   return new Date(Date.UTC(y, m - 1, d + dayDelta)).toISOString().slice(0, 10);
 }
 
-/** pack-YYYY-MM-DD-tHH — HH is IST scout slot (11,13,…21) */
+/** pack-YYYY-MM-DD-tHH — t11 before 15:00 IST, t19 from 15:00 */
 function runPackId(now = new Date()) {
-  let { date, hour } = istParts(now);
-  let slotHour;
-  if (hour < 11) {
-    date = shiftDateString(date, -1);
-    slotHour = 21;
-  } else {
-    slotHour = SCOUT_IST_SLOTS[0];
-    for (const s of SCOUT_IST_SLOTS) {
-      if (hour >= s) slotHour = s;
-    }
-  }
+  const { date, hour } = istParts(now);
+  const slotHour = hour < 15 ? 11 : 19;
   return `pack-${date}-t${String(slotHour).padStart(2, '0')}`;
 }
 

@@ -445,20 +445,14 @@ function shiftDateString(date: string, dayDelta: number): string {
 }
 
 /**
- * Map a moment to the active IST scout slot hour (11,13,15,17,19,21).
- * Before 11:00 IST → previous day's 21:00 slot.
- * After 21:59 IST → same day's 21:00 slot.
+ * Map a moment to the active IST sitting pack.
+ * Before 15:00 IST → t11 (morning To-Do).
+ * From 15:00 IST → t19 (evening To-Do).
  */
 export function scoutIstSlot(now: Date = new Date()): { date: string; slotHour: number } {
   const { date, hour } = istParts(now);
-  if (hour < SCOUT_IST_SLOTS[0]) {
-    return { date: shiftDateString(date, -1), slotHour: SCOUT_IST_SLOTS[SCOUT_IST_SLOTS.length - 1] };
-  }
-  let slotHour: number = SCOUT_IST_SLOTS[0];
-  for (const s of SCOUT_IST_SLOTS) {
-    if (hour >= s) slotHour = s;
-  }
-  return { date, slotHour };
+  if (hour < 15) return { date, slotHour: 11 };
+  return { date, slotHour: 19 };
 }
 
 /** True during the human posting day 11:00–22:59 IST (scout window). */
@@ -468,8 +462,8 @@ export function isScoutWindowOpen(now: Date = new Date()): boolean {
 }
 
 /**
- * One pack per sitting — morning t11, evening t19 (Asia/Kolkata).
- * The loop may wake more often; it only writes a pack near those two times.
+ * One pack per sitting window — morning t11, evening t19 (Asia/Kolkata).
+ * The 4h loop always writes; he picks what to post.
  * Legacy t13/t15/t17/t21 or UTC t00/t06/t12/t18 packs may still exist.
  */
 export function createRunPackId(now: Date = new Date()): string {

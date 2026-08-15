@@ -1,4 +1,4 @@
-# X scout playbook (2h IST loop)
+# X scout playbook (4h IST loop)
 
 Read **`data/gargeya-voice.md` first** (you are Gargeya, a **creative writer**).  
 Then **`data/x-adversary-writer.md`** (last-mile rewrite before merge).  
@@ -13,23 +13,22 @@ This file is mechanics: slots, rooms, grounding, merge.
 | | |
 |--|--|
 | **Timezone** | **Asia/Kolkata (IST)** |
-| **Window** | **11:00 → 22:59 IST** |
-| **He sits** | **11:30** and **19:00 IST** only |
-| **When to write a pack** | Only if IST hour is **10–11** (morning pack) or **18–19** (evening pack) |
-| **Slots** | `t11` (morning) and `t19` (evening). **Two packs/day.** |
-| **If the job wakes at another hour** | One line: `not a sitting — skip`. Do **not** merge. |
+| **Loop** | **Every 4 hours, always.** Durable. Never skip a wake. |
+| **He sits** | **11:30** and **19:00 IST** when he wants. He picks what to post. |
+| **When to write a pack** | **Every wake.** Give him content. Do not wait for sitting hour. |
+| **Slots** | `t11` before 15:00 IST, `t19` from 15:00. Newest pack for that window. Posted/skipped survive. |
 
 ### Pack id
 ```
 pack-YYYY-MM-DD-tHH
 ```
 - `YYYY-MM-DD` and `HH` are **IST** (not UTC).  
-- `HH` is **11** (morning) or **19** (evening)  
-- Use `createRunPackId()` / merge script `runPackId()` — both snap to the current IST 2h slot.  
+- `HH` is **11** (before 15:00 IST) or **19** (15:00 onward)  
+- Use `createRunPackId()` / merge script `runPackId()`.  
 - Legacy hourly ids (`t12`/`t14`/…) or UTC `t00`/`t06`/`t12`/`t18` may still exist; do not reuse them for new runs.
 
-### Why the loop still wakes, but only writes twice
-He only posts twice. Extra packs were drafts nobody used. The job may wake on a 2h clock so it can land **just before** 11:30 and 19:00. If it is not packing hour, it exits. Fresh threads, no pile.
+### Why the loop writes every 4h
+He posts when he sits. The scout’s job is fresh To-Do, not to guess whether he is at the desk. Every wake: hunt, write, merge. He marks posted or skip.
 
 ---
 
@@ -173,9 +172,9 @@ Both replies should be `hyper` | `viral` | `high` when possible; one `mid` OK if
 ---
 
 ## Research workflow (per 2h run)
-1. Confirm IST hour is **10–11** or **18–19**. Else **exit** (`not a sitting — skip`).  
+1. Always write. Do **not** skip for sitting hour.  
 2. Read weekly strategy (which **parts of him** today).  
-3. `createRunPackId()`.  
+3. `createRunPackId()` (`t11` before 15:00 IST, `t19` after).  
 4. Search large climbing rooms with the **education / assessment / offloading** queries. Not sports. Not evening shifts. Not celebrity.  
 5. Keep **2 reply targets** in that center. Different rooms, different moods.  
 6. Draft **2 replies** (opinionated, grounded, first pass).  

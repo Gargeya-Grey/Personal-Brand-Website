@@ -9,7 +9,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ## Owner goals (product)
 - Genuine **X growth** toward ~10k followers in ~3 months.
-- Scout may wake every 2h but **only writes a pack near the two sittings** (t11 morning, t19 evening). Pack: 2 replies + 2 small tweets. **Replies = education / assessment / cognitive offloading only.** Own tweets = the other parts of him. See `data/x-weekly-strategy.md`.
+- Scout wakes **every 4h and always writes** a pack (t11 before 15:00 IST, t19 after). He sits at 11:30 and 19:00 and **picks** what to post. **Replies = education / assessment / cognitive offloading only.** Own tweets = the other parts of him. See `data/x-weekly-strategy.md`.
 - High **voice fidelity** (`data/gargeya-voice.md`): replies = **opinionated takes under education/assessment/offloading posts** (not sports-admin, not echo bots); originals = whole-person small tweets (psych, care, optimism, access, etc.).
 - Source **grounding** for replies (one draft ↔ one real post).
 - **Quality gate:** every draft ≥ **90** (`data/x-reply-quality.md`); originals also pass bookmark/RT/soul tests; **replies auto-fail if post-like** (`score-x-drafts.mjs` conversational markers).
@@ -90,13 +90,13 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ## Common Workflows
 
 ### X scout → live To-Do (two sittings)
-1. Only pack if IST hour is **10–11** or **18–19**; else skip.
-2. Pack id → `t11` morning or `t19` evening.
+1. Always pack. Do not skip for sitting hour.
+2. Pack id → `t11` before 15:00 IST, `t19` from 15:00.
 3. Read **voice first** (creative writer) + weekly strategy + playbook.
 4. **2 replies** (education / assessment / offloading rooms only, opinionated) + **2 small own tweets** (two non-school personality parts).
 5. **Adversary creative writer** (`data/x-adversary-writer.md`) rewrites for easy / felt / instant tap. Attach `quality.adversary`. Score ≥90.
 6. Validate → merge/ingest.
-7. He posts at **11:30** and **19:00 IST**. Skip leftovers.
+7. He posts at **11:30** and **19:00 IST** if he wants. He picks. Skip leftovers.
 
 ### Prune packs (keep 2 days)
 1. Prefer auto-prune (app + merge). Or run `data/sql/x_content_packs_retain_2d.sql` in Supabase.
@@ -113,9 +113,9 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - Uncommitted scout JSON + logo tweaks after a run are normal; live site uses Supabase.
 
 ### Durable scout schedule
-- Interval 2h, but **skip unless IST hour is 10–11 or 18–19**. Two packs/day for the two sittings.
+- Interval **4h**, durable, **always writes**. He curates in the two sittings.
 
 ## Session state (durable)
 - Voice: **creative writer** + mandatory **adversary last pass** (`data/x-adversary-writer.md`) so originals are easy, heart-level, instantly tapable.
-- He posts **4 replies + 3 small own-tweets/day** in two sittings (11:30 and 19:00 IST). Replies are the education/assessment/offloading center. Own tweets are the rest of him.
+- Scout writes **every 4h, durable, no sitting skip.** He posts **4 replies + 3 small own-tweets/day** when he sits (11:30 and 19:00 IST) and picks what to use. Replies are the education/assessment/offloading center. Own tweets are the rest of him.
 - Do not invent claims; grounding still non-negotiable.

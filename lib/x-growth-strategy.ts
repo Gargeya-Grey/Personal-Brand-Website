@@ -4,7 +4,7 @@ export const GROWTH_STRATEGY_UPDATED = '14 Aug 2026';
 
 export const GROWTH_HONEST = {
   title: 'Yes. With three watches.',
-  body: 'Two sittings. Replies are education, assessment, and battling cognitive offloading: visible and opinionated. Own tweets are the rest of you. Writing like a creative writer: one feeling, sentences that hold together, easy enough that people stay and click. Watch leftovers, and review on Sunday.',
+  body: 'Scout writes every 4 hours. You sit twice and pick. Replies are education, assessment, and battling cognitive offloading: visible and opinionated. Own tweets are the rest of you. Writing like a creative writer: one feeling, sentences that hold together, easy enough that people stay and click.',
 };
 
 export const DAILY_COUNTS = [

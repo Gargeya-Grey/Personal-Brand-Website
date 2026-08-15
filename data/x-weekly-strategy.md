@@ -88,14 +88,14 @@ Do **not** force school onto football. Do **not** pick football. Skip the room.
 
 ---
 
-## What the scout prepares (twice a day)
+## What the scout prepares (every 4 hours)
 
-It may *wake* every 2 hours. **It only writes a pack before you sit:**
+The loop **always writes**. You sit at **11:30** and **19:00** if you want. You pick what to post.
 
-- around **10:50–11:30** → morning To-Do (`t11`)
-- around **18:50–19:30** → evening To-Do (`t19`)
+- before **15:00 IST** → morning To-Do (`t11`)
+- from **15:00 IST** → evening To-Do (`t19`)
 
-Any other wake: skip. No extra piles.
+Newest pack for that window. Skip or post is yours.
 
 Each pack, exactly **4 drafts**:
 
@@ -108,7 +108,7 @@ Label each original with the part (`self-awareness`, `psychology`, `care`, `opti
 
 If an original is education, rewrite it unless both replies failed to find a room.
 
-You only post at **11:30** and **19:00**. Newest first. Skip leftovers.
+You post when you sit. Newest first. Skip what you do not want.
 
 ---
 
