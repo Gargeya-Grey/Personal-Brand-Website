@@ -98,6 +98,13 @@
 
   --shadow-ambient: var(--color-elevation-shadow);
   --radius-soft: 1.5rem;
+
+  /* Hover / UI motion — cubic ease-out (settles, no snap) */
+  --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --default-transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  --default-transition-duration: 280ms;
 }
 
 html {
@@ -105,6 +112,50 @@ html {
   text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a,
+  [role="link"] {
+    transition:
+      color 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      background-color 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      border-color 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      box-shadow 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      opacity 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      filter 180ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  button,
+  summary,
+  [role="button"] {
+    transition:
+      color 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      background-color 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      border-color 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      box-shadow 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      opacity 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      filter 180ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      transform 160ms cubic-bezier(0.23, 1, 0.32, 1);
+  }
+  button.article-expand {
+    transition:
+      transform 180ms cubic-bezier(0.23, 1, 0.32, 1),
+      color 180ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  a,
+  button,
+  summary,
+  [role="button"],
+  [role="link"] {
+    transition-duration: 0.01ms;
+  }
+
+  a.board-card:active {
+    transform: none;
+  }
 }
 
 body {
@@ -170,6 +221,25 @@ canvas {
     border-color 0.35s ease,
     box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.3s ease;
+}
+
+/* Pressable essay cards (blog Links). Hover stays still; click answers the hand. */
+a.board-card {
+  transform-origin: center;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a.board-card {
+    transition:
+      border-color 0.35s ease,
+      box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
+      background-color 0.3s ease,
+      transform 160ms var(--ease-out);
+  }
+
+  a.board-card:active {
+    transform: scale(0.97);
+  }
 }
 
 .board-card:hover {
@@ -956,6 +1026,58 @@ canvas {
 .md-source-textarea::selection {
   background: color-mix(in srgb, var(--atelier-gold) 28%, transparent);
   color: transparent;
+}
+
+/*
+ * Longform reading — charcoal ink, not stamp-black / OLED-white.
+ * Headings one step darker than body so the eye can land.
+ */
+.article-prose {
+  text-rendering: optimizeLegibility;
+  width: 100%;
+  max-width: none;
+}
+.article-prose a {
+  overflow-wrap: anywhere;
+}
+.article-prose p,
+.article-prose li,
+.article-takeaway {
+  text-align: start;
+}
+
+/* TOC: pin inline size so a long heading cannot shove the rail left. */
+.article-toc {
+  box-sizing: border-box;
+}
+.article-toc-link,
+.article-toc-link[aria-current="location"] {
+  font-weight: 400;
+}
+
+.article-table-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--color-text-primary) 22%, transparent) transparent;
+}
+.article-table-scroll::-webkit-scrollbar {
+  height: 5px;
+  width: 5px;
+}
+.article-table-scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+.article-table-scroll::-webkit-scrollbar-thumb {
+  background: color-mix(in srgb, var(--color-text-primary) 18%, transparent);
+  border-radius: 999px;
+}
+.article-table-scroll::-webkit-scrollbar-thumb:hover {
+  background: color-mix(in srgb, var(--color-text-primary) 32%, transparent);
+}
+.dark .article-table-scroll {
+  scrollbar-color: rgba(241, 245, 249, 0.22) transparent;
+}
+.dark .article-table-scroll::-webkit-scrollbar-thumb {
+  background: rgba(241, 245, 249, 0.2);
 }
 
 .atelier-input {

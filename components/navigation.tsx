@@ -26,6 +26,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   /** Optional full-bleed dark hero — only active when #home-hero exists */
   const [overDarkHero, setOverDarkHero] = useState(false);
+  const [readingNavHidden, setReadingNavHidden] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
@@ -88,6 +89,33 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
       window.removeEventListener('resize', update);
     };
   }, [pathname, isAtelier]);
+
+  const isReadingArticle = !isAtelier && pathname.startsWith('/blog/');
+
+  useEffect(() => {
+    if (!isReadingArticle) {
+      setReadingNavHidden(false);
+      return;
+    }
+    let lastY = window.scrollY;
+    const onScroll = () => {
+      const y = window.scrollY;
+      const goingDown = y > lastY + 6;
+      const goingUp = y < lastY - 6;
+      if (goingDown || goingUp) lastY = y;
+      if (mobileMenuOpen) {
+        setReadingNavHidden(false);
+        return;
+      }
+      setReadingNavHidden((prev) => {
+        if (y < 120 || goingUp) return false;
+        if (goingDown) return true;
+        return prev;
+      });
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => window.removeEventListener('scroll', onScroll);
+  }, [isReadingArticle, mobileMenuOpen]);
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
@@ -204,9 +232,9 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
   return (
     <div
-      className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center ${
+      className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center transition-transform duration-300 ease-out ${
         isAtelier ? 'atelier-chrome' : ''
-      }`}
+      } ${readingNavHidden && !mobileMenuOpen ? '-translate-y-[120%]' : 'translate-y-0'}`}
     >
       <nav
         className={`pointer-events-auto isolate flex w-full max-w-5xl items-center justify-between gap-2 rounded-full border px-3 py-2.5 transition-[background-color,border-color,box-shadow,color] duration-300 sm:px-4 sm:py-3 ${navShell}`}

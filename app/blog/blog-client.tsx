@@ -216,7 +216,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
           {/* Metrics Tiles Grid */}
           <section className="mb-12 grid grid-cols-1 gap-4 sm:mb-16 sm:grid-cols-3 sm:gap-6">
             {insights.map((stat, i) => (
-              <div key={i} className="board-card group flex h-32 flex-col justify-between rounded-2xl p-6 transition-transform duration-300 hover:-translate-y-1">
+              <div key={i} className="board-card group flex h-32 flex-col justify-between rounded-2xl p-6">
                 <div className="flex justify-between items-start">
                   <span className="text-2xl md:text-3xl font-headline font-medium text-slate-900 dark:text-white tracking-tight">
                     {stat.value}
@@ -366,7 +366,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                   <Link 
                     href={`/blog/${featuredPost.slug}`}
                     aria-label={`Featured story: ${featuredPost.title}`}
-                    className="board-card group grid grid-cols-1 items-center gap-8 rounded-[2.5rem] p-6 transition-transform duration-300 ease-out hover:-translate-y-1 md:p-8 lg:grid-cols-12"
+                    className="board-card group grid grid-cols-1 items-center gap-8 rounded-[2.5rem] p-6 md:p-8 lg:grid-cols-12"
                   >
                     {/* Left Column detail stack */}
                     <div className="lg:col-span-5 space-y-6">
@@ -450,7 +450,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                       <Link 
                         href={`/blog/${post.slug}`}
                         aria-label={`Read essay: ${post.title}`}
-                        className="board-card group flex h-full flex-col justify-between rounded-[2rem] p-5 transition-transform duration-300 ease-out hover:-translate-y-1"
+                        className="board-card group flex h-full flex-col justify-between rounded-[2rem] p-5"
                       >
                         <div className="space-y-5">
                           

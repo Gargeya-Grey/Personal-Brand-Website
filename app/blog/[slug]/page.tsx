@@ -3,7 +3,9 @@ import { notFound } from 'next/navigation';
 import {
   getArticleBySlug,
   getArticles,
+  getPublishedArticlesLite,
   isArticlePublished,
+  type Article,
 } from '@/lib/blog-service';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
@@ -98,13 +100,33 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   };
 }
 
+function pickRelated(current: Article, all: Awaited<ReturnType<typeof getPublishedArticlesLite>>) {
+  return all
+    .filter((a) => {
+      const s = (a.status || 'published').toString().trim().toLowerCase();
+      return a.slug !== current.slug && (s === 'published' || s === '');
+    })
+    .map((a) => ({
+      a,
+      overlap: a.categories.filter((c) => current.categories.includes(c)).length,
+    }))
+    .sort((x, y) => y.overlap - x.overlap)
+    .slice(0, 2)
+    .map(({ a }) => ({ slug: a.slug, title: a.title, readTime: a.readTime }));
+}
+
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const [article, listing] = await Promise.all([
+    getArticleBySlug(slug),
+    getPublishedArticlesLite(),
+  ]);
 
   if (!isArticlePublished(article) || !article) {
     notFound();
   }
+
+  const related = pickRelated(article, listing);
 
   const jsonLd = getBlogPostingJsonLd({
     title: article.title,
@@ -118,7 +140,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   });
 
   return (
-    <div className="min-h-screen bg-surface text-primary antialiased relative selection:bg-[#D4FF00] selection:text-black flex flex-col justify-between">
+    <div className="min-h-screen bg-surface text-primary relative selection:bg-emerald-500/20 selection:text-inherit flex flex-col justify-between">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
@@ -129,9 +151,9 @@ export default async function BlogPostPage({ params }: PageProps) {
       <main
         id="page-main"
         tabIndex={-1}
-        className="relative z-10 flex-grow pb-20 pt-28 sm:pb-24 sm:pt-36 lg:pb-32 lg:pt-44"
+        className="relative z-10 flex-grow pb-24 pt-28 sm:pt-32 lg:pt-36"
       >
-        <ArticleClient article={article} />
+        <ArticleClient article={article} related={related} />
       </main>
 
       <Footer />
