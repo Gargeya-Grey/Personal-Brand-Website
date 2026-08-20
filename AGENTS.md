@@ -8,12 +8,13 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - See `README.md` and `package.json` for general template notes and npm scripts.
 
 ## Owner goals (product)
-- Genuine **X growth** toward ~10k followers in ~3 months.
-- Scout wakes **every 4h and always writes** a pack (t11 before 15:00 IST, t19 after). He sits at 11:30 and 19:00 and **picks** what to post. **Replies = education / assessment / cognitive offloading only.** Own tweets = the other parts of him. See `data/x-weekly-strategy.md`.
-- High **voice fidelity** (`data/gargeya-voice.md`): replies = **opinionated takes under education/assessment/offloading posts** (not sports-admin, not echo bots); originals = whole-person small tweets (psych, care, optimism, access, etc.).
+- Genuine **X growth** toward ~10k in ~3 months (stretch; views first). Locked 90-day merge: replies carry think/learn/judge/offload; own tweets are the rest of him. Two sittings, then stop. No 15–25 reply grind, no 3–5 on-thesis originals, no connect-farm.
+- Scout wakes **every 4h and always writes** a pack (t11 before 15:00 IST, t19 after). He sits at 11:30 and 19:00 and **picks** what to post.
+- **Write brief:** `data/gargeya-voice.md` only. Short. He edits that. No numeric scores. He picks what to post.
+- **Gate:** `scripts/score-x-drafts.mjs` is a tiny mechanical check (source URL, em-dash, punch-stack, sports/shift, invented ranking). Not a 90-point rubric.
+- **Replies** = education / assessment / cognitive offloading only. **Own tweets** = the other parts of him.
 - Source **grounding** for replies (one draft ↔ one real post).
-- **Quality gate:** every draft ≥ **90** (`data/x-reply-quality.md`); originals also pass bookmark/RT/soul tests; **replies auto-fail if post-like** (`score-x-drafts.mjs` conversational markers).
-- **Split:** replies are the education weapon; own tweets are the whole person. Never spend a reply on sports / evening-shift / celebrity nonsense. See `gargeya-voice.md` + `x-weekly-strategy.md`.
+- Strategy dashboard: `lib/x-growth-strategy.ts` (he reads it; scout does not).
 - Laptop **Grok scout** → merge/ingest → **production Supabase** so live To-Do updates without waiting on git.
 - Blog CMS quality + perf (ISR/SSR, image priority, lazy canvas background).
 
@@ -27,7 +28,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ### Auth / CMS
 - Google OAuth + JWT session cookie; allowed email gate in `lib/auth.ts`.
-- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`) + **Growth Strategy** (`x-growth-strategy.tsx`, `?workspace=strategy`). Live copy lives in `lib/x-growth-strategy.ts`.
+- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`) + **Growth Strategy** (`x-growth-strategy.tsx`, `?workspace=strategy`). Scout brief is `data/gargeya-voice.md`. The strategy page is a dashboard, not the brief.
 - **Finance Ledger** `/ledger` — invoice extract → review → Notion. Same allowlist. Setup: `data/ledger-setup.md`.
 
 ### Finance ledger
@@ -50,14 +51,10 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 | `lib/x-content-service.ts` | Hydrate packs, meta normalization, Supabase row ↔ pack |
 | `lib/x-source-grounding.ts` | Grounding rules / helpers |
 | `app/api/x-content/*` | Read + ingest (`X_SCOUT_SECRET`) |
-| `scripts/validate-x-pack.mjs` | Validate pack + evidence + **quality ≥90** |
+| `scripts/validate-x-pack.mjs` | Validate pack + evidence + mechanical gate |
 | `scripts/score-x-drafts.mjs` | Quality gate (dimensions, monotony, sludge) |
 | `scripts/merge-x-pack.mjs` | Merge local JSON → remote (IST 2h-aware ids) |
-| `data/x-scout-playbook.md` | Scout SOPs: two sittings, 2 replies + 2 small tweets, then adversary rewrite |
-| `data/x-adversary-writer.md` | Last-mile creative writer: easy, felt, relatable, instant tap |
-| `data/x-weekly-strategy.md` | Active weekly growth plan (rooms, theme, skip list, profile actions) |
-| `data/x-reply-quality.md` | Score rubric (pass ≥90) |
-| `data/gargeya-voice.md` | Voice + topic Venn + growth |
+| `data/gargeya-voice.md` | Only scout brief. Owner edits this. |
 | `lib/x-lab-service.ts` / `x-api.ts` / `x-lab-analytics.ts` | X Lab OAuth + warehouse + analytics |
 | `app/api/x-lab/*` | Lab refresh / summary / posts / chat / OAuth |
 | `data/sql/x_lab.sql` | X Lab warehouse schema |
@@ -92,11 +89,10 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### X scout → live To-Do (two sittings)
 1. Always pack. Do not skip for sitting hour.
 2. Pack id → `t11` before 15:00 IST, `t19` from 15:00.
-3. Read **voice first** (creative writer) + weekly strategy + playbook.
-4. **2 replies** (education / assessment / offloading rooms only, opinionated) + **2 small own tweets** (two non-school personality parts).
-5. **Adversary creative writer** (`data/x-adversary-writer.md`) rewrites for easy / felt / instant tap. Attach `quality.adversary`. Score ≥90.
-6. Validate → merge/ingest.
-7. He posts at **11:30** and **19:00 IST** if he wants. He picks. Skip leftovers.
+3. Read **only** `data/gargeya-voice.md`. Write like a person. No scores.
+4. **2 replies** + **2 small own tweets** when the rooms are real.
+5. Validate (mechanical) → merge/ingest.
+6. He posts at **11:30** and **19:00 IST** if he wants. He picks.
 
 ### Prune packs (keep 2 days)
 1. Prefer auto-prune (app + merge). Or run `data/sql/x_content_packs_retain_2d.sql` in Supabase.
@@ -116,6 +112,5 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - Interval **4h**, durable, **always writes**. He curates in the two sittings.
 
 ## Session state (durable)
-- Voice: **creative writer** + mandatory **adversary last pass** (`data/x-adversary-writer.md`) so originals are easy, heart-level, instantly tapable.
-- Scout writes **every 4h, durable, no sitting skip.** He posts **4 replies + 3 small own-tweets/day** when he sits (11:30 and 19:00 IST) and picks what to use. Replies are the education/assessment/offloading center. Own tweets are the rest of him.
+- Brief is **`data/gargeya-voice.md` only**. No scores. Loop every 4h. He picks at 11:30 and 19:00 IST.
 - Do not invent claims; grounding still non-negotiable.

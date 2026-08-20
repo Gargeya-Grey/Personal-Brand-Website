@@ -16,53 +16,27 @@ export type XSessionId = 'sprint' | 'core' | 'bonus';
 
 export type XPostingWindow = 'morning' | 'midday' | 'evening' | 'anytime';
 
-/** Per-draft quality gate — see data/x-reply-quality.md. Pass if total ≥ 90. */
-export interface XDraftQualityDimensions {
-  lengthFit: number;
-  clarity: number;
-  hook: number;
-  funRead: number;
-  relatability: number;
-  voiceMatch: number;
-  humanTexture: number;
-  groundingFit: number;
-}
+/** Optional leftover from old packs. New drafts do not need this. */
+export type XDraftQualityDimensions = Record<string, number>;
 
 export interface XDraftAdversary {
-  /** Must be true after the last-mile creative rewrite */
-  passed: boolean;
-  /** Stranger reaction the line is built for */
-  click: 'i believe this' | "he's right" | "i don't like this" | "that's me";
-  /** What the adversary changed, or "kept: already landed" */
-  change: string;
+  passed?: boolean;
+  click?: string;
+  change?: string;
 }
 
 export interface XDraftQuality {
-  /** 0–100; must be ≥ 90 to ship */
-  total: number;
-  /** Shape from voice palette (values_jab, blunt, micro, …) */
+  total?: number;
   shape?: string;
-  dimensions: XDraftQualityDimensions;
-  /** Why it passed / what was rewritten */
-  notes: string;
-  /** Rewrite attempts before pass */
+  dimensions?: XDraftQualityDimensions;
+  notes?: string;
   attempts?: number;
-  /** Required last pass: adversary creative writer */
   adversary?: XDraftAdversary;
 }
 
-export const QUALITY_PASS_SCORE = 90;
-
-export const QUALITY_DIMENSION_CAPS: Record<keyof XDraftQualityDimensions, number> = {
-  lengthFit: 12,
-  clarity: 15,
-  hook: 15,
-  funRead: 12,
-  relatability: 15,
-  voiceMatch: 15,
-  humanTexture: 12,
-  groundingFit: 4,
-};
+/** @deprecated Scores are gone. He is the judge. */
+export const QUALITY_PASS_SCORE = 0;
+export const QUALITY_DIMENSION_CAPS: Record<string, number> = {};
 
 export interface XDraftItem {
   id: string;
@@ -95,10 +69,7 @@ export interface XDraftItem {
    * e.g. "viral" | "hyper" | "50k-followers" | "2k-likes" | "mid"
    */
   targetReach?: string;
-  /**
-   * Quality gate (required for new scout packs). total ≥ 90 to pass.
-   * See data/x-reply-quality.md
-   */
+  /** Optional. New packs omit this. Old packs may still have it. */
   quality?: XDraftQuality;
 }
 

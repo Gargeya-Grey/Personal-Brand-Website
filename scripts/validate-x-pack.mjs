@@ -1,6 +1,6 @@
 /**
  * Validate a pack for scout bugs (meta shape, reply URLs, optional evidence map)
- * + quality gate (score ≥ 90, creative-writer flow) via score-x-drafts.mjs
+ * + small mechanical gate via score-x-drafts.mjs (no numeric score)
  *
  * Usage:
  *   node scripts/validate-x-pack.mjs data/x-pack-today.json
@@ -98,7 +98,7 @@ if (!skipQuality) {
   const q = scorePack(pack);
   for (const s of q.scores) {
     console.log(
-      `  quality ${s.pass ? 'PASS' : 'FAIL'} ${s.id}: ${s.total ?? '—'}/100 shape=${s.shape || '—'}`
+      `  gate ${s.pass ? 'OK' : 'FAIL'} ${s.id}`
     );
   }
   for (const i of q.issues) issues.push(i);
@@ -110,7 +110,7 @@ const warns = issues.filter((i) => i.startsWith('[warn]'));
 console.log(`Pack: ${pack.id || packPath}`);
 console.log(`Drafts: ${drafts.length}`);
 if (!issues.length) {
-  console.log('OK — no issues (grounding + quality)');
+  console.log('OK — no issues (grounding + mechanical gate)');
   process.exit(0);
 }
 for (const i of issues) console.log(i);

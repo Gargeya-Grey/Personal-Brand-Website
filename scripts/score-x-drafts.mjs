@@ -1,274 +1,49 @@
 /**
- * Quality gate for X packs (pass ≥ 90).
- * Rubric: data/x-reply-quality.md + creative-writer law in data/gargeya-voice.md
- * Fails choppy telegram, tote-bag slogans, recap-lecture stamps, post-like replies.
+ * Tiny mechanical gate for X packs.
+ * Writing law lives in data/gargeya-voice.md. There is no numeric score.
  *
  * Usage:
  *   node scripts/score-x-drafts.mjs data/x-pack-today.json
- *   node scripts/score-x-drafts.mjs data/x-pack-today.json --require
- *
- * Exit 1 if --require and any draft fails.
- * Can be required from validate-x-pack.mjs
  */
 import fs from 'fs';
 import path from 'path';
 
-export const PASS = 90;
-
-export const CAPS = {
-  lengthFit: 12,
-  clarity: 15,
-  hook: 15,
-  funRead: 12,
-  relatability: 15,
-  voiceMatch: 15,
-  humanTexture: 12,
-  groundingFit: 4,
-};
-
-const SLUDGE = [
-  /here are \d+ takeaways/i,
-  /let'?s dive in/i,
-  /game-?changer/i,
-  /\bunlock\b/i,
-  /\bleverage\b/i,
-  /in today'?s landscape/i,
-  /double down/i,
-  /at the end of the day/i,
-  /hot take\s*🔥/i,
-  /as an ai\b/i,
-  /delve into/i,
-  /it'?s important to note/i,
-  /in conclusion,/i,
-  /the part i keep coming back to/i,
-  /i would not score this as/i,
-  /i would score (this|whether|that)/i,
-  /the skill hiding in (your|this)/i,
-  /that is a better lesson than/i,
-  /recoverable judgment/i,
-  /process trail/i,
-  /identity signal/i,
-];
-
-const STAMP_OPENERS = [
-  /^you'?re absolutely right\s*[—–-]/i,
-  /^my take on your question is/i,
-  /^that'?s the actual problem i'?m trying to solve/i,
-  /^haha this lands hard/i,
-  /^yeah this lands clean/i,
-  /^this lands hard/i,
-  /^this got me\b/i,
-  /^haha this got me\b/i,
-];
-
-/** House “smart essay” stamps that made packs rhyme (voice 2026-08-10). */
-const HOUSE_ESSAY_STAMPS = [
-  /\bis the whole argument\b/i,
-  /\bis the part that (actually |really )?(feels|matters|clicked|lands)/i,
-  /\bis doing the whole job\b/i,
-  /\bisn'?t (a |just )?.{0,40}\.\s*it'?s /is,
-  /\bthat'?s not .{0,40}\.\s*that'?s /is,
-  /that sequence is the part/i,
-  /when drafts are (free|cheap)/i,
-  /\bthe \w{3,14} is the (loud|real|hard|cheap|quiet|whole|rare|human|easy|true) (part|bit)\b/i,
-  /^the \w{3,14} is the \w{3,14} (part|bit)\b/im,
-  /i'?m more stuck on the \w+ bit/i,
-];
-
-/** Fake “clever brand” parallel — banned as default reply glue (voice file). */
-const FAKE_CLEVER_SCHOOL = [
-  /same fog students hit/i,
-  /clean final sheet/i,
-  /grade still smiles/i,
-  /train the best cheaters/i,
-  /if we only score the win/i,
-];
-
-/**
- * Paragraph count for monotony / house-essay checks.
- * @param {string} body
- */
-function paragraphCount(body) {
-  return String(body || '')
-    .split(/\n\s*\n/)
-    .filter((p) => p.trim()).length;
-}
-
-/** Em-dash / long dash used as pause (banned in draft bodies). */
 const EM_DASH = /[—―]|–(?=\s)|(?<=\s)–/;
-
-/**
- * Fake first-person diary for originals (owner shares real personal stories).
- * Generalized principle/practice is fine; invented last-night scenes are not.
- */
-const FAKE_PERSONAL_ORIGINAL = [
+const NONSENSE_REPLY =
+  /\b(evening shift|live (thread|updates)|go do your|football|kick-?off|full[- ]time)\b/i;
+const INVENTED_FRAME =
+  /\b(ranking|scoreboard|fight|debate) on your post\b/i;
+const WRITER_TWEET =
+  /^the \w{3,14} is the \w{3,14} (part|bit)\b/i;
+const FAKE_PERSONAL = [
   /\blast night i\b/i,
   /\byesterday i\b/i,
   /\bthis morning i\b/i,
-  /\bi almost (sent|outsourced|let|wrote|deleted)\b/i,
-  /\bi watched (a |my )/i,
   /\bmy (younger )?cousin\b/i,
   /\bteammate'?s doc\b/i,
-  /\bi used to end every week\b/i,
-  /\bi almost outsourced\b/i,
+  /\bmy friend said\b/i,
+  /\ba customer told me\b/i,
 ];
 
 /**
- * True if draft body contains banned em-dash typography.
- * @param {string} body
- */
-export function hasEmDash(body) {
-  return EM_DASH.test(String(body || ''));
-}
-
-/**
- * True if a sentence-start letter is lowercase (after start or .!? + space).
- * Allows opening quote before the capital letter.
- * @param {string} body
- */
-export function hasBadSentenceCaps(body) {
-  const text = String(body || '').trim();
-  if (!text) return false;
-  // First letter (skip leading quotes)
-  const first = text.replace(/^["'“”‘’]+/, '');
-  if (/^[a-z]/.test(first)) return true;
-  // After sentence enders
-  const re = /([.!?])([ \t\n\r]+)(["'“”‘’]*)([a-z])/g;
-  return re.test(text);
-}
-
-/**
- * True if original invents a personal diary scene.
- * @param {string} body
- */
-export function looksLikeFakePersonalOriginal(body) {
-  const text = String(body || '').trim();
-  if (!text) return false;
-  return FAKE_PERSONAL_ORIGINAL.some((re) => re.test(text));
-}
-
-/**
- * True if body matches the banned tidy 3-beat house essay.
- * @param {string} body
- */
-/**
- * True if the body is a stack of tiny disconnected punches (no creative flow).
- * @param {string} body
+ * Whole draft is a punch-stack: three or more sentences, all short.
+ * A long noticing plus a short closing principle is allowed (owner style).
  */
 export function looksChoppyTelegram(body) {
   const text = String(body || '').replace(/\n+/g, ' ').trim();
   if (!text) return false;
   const sentences = text.split(/(?<=[.!?])\s+/).filter((s) => s.trim().length > 1);
   if (sentences.length < 3) return false;
-  let run = 0;
-  let maxRun = 0;
-  for (const s of sentences) {
-    const words = s.trim().split(/\s+/).filter(Boolean).length;
-    const hasGlue = /\b(and|but|because|so|which|that|when|if|like|while|then)\b/i.test(s);
-    if (words > 0 && words <= 14 && !hasGlue) {
-      run += 1;
-      if (run > maxRun) maxRun = run;
-    } else {
-      run = 0;
-    }
-  }
-  return maxRun >= 3;
+  const lengths = sentences.map((s) => s.trim().split(/\s+/).filter(Boolean).length);
+  return lengths.every((n) => n > 0 && n <= 14);
 }
 
-export function looksLikeHouseEssay(body) {
-  const text = String(body || '').trim();
-  if (!text) return false;
-  const paras = paragraphCount(text);
-  const stampHits = HOUSE_ESSAY_STAMPS.filter((re) => re.test(text)).length;
-  // Classic stamp: 3 short paras + at least one house formula
-  if (paras === 3 && stampHits >= 1 && text.length >= 120 && text.length <= 550) {
-    return true;
-  }
-  // Even without exact 3 paras: double stamp (“whole argument” + antithesis)
-  if (stampHits >= 2 && text.length >= 100) return true;
-  return false;
+export function hasEmDash(body) {
+  return EM_DASH.test(String(body || ''));
 }
 
-/**
- * Replies must sit in education / assessment / cognitive offloading.
- * A sweet comment on an evening shift or football admin is a persona fail
- * even if it is clear, warm, and ≥90 on other dimensions.
- */
-const REPLY_THESIS =
-  /\b(student|students|school|schools|homework|exam|exams|assessment|assess|tutor|tutoring|cognitive|offload|offloaded|offloading|metacognition|learning|education|educator|classroom|teacher|teachers|studied|studying|study\b|past papers|neet|curriculum|cheating|cheat|drafts?|thinking)\b/i;
-
-const NONSENSE_REPLY_ROOM =
-  /\b(evening shift|live (thread|updates)|go do your|football|kick-?off|full[- ]time)\b/i;
-
-/**
- * True if a reply is not about education / assessment / offloading.
- * @param {string} body
- */
 export function looksOffThesisReply(body) {
-  const text = String(body || '').trim();
-  if (!text) return false;
-  if (NONSENSE_REPLY_ROOM.test(text)) return true;
-  return !REPLY_THESIS.test(text);
-}
-
-/**
- * Conversational / second-person energy expected in replies (voice: reply ≠ post).
- * Avoid bare "this"/"that" — they appear in formal posts ("that's what…").
- */
-const REPLY_MARKERS =
-  /\b(you|your|you'?re|you'?ve|yeah|yep|yup|haha|hehe|lol|lmao|btw|huh|thanks|thank you|love this|this lands|this tracks|this clicked|this is so true|this really|this framing|you'?re right|i get you|fair point|same here|opened my eyes|for me —|for me -|genuinely helpful|inspires me|spirit of learning|kind of student|hunger to learn|forget the)\b/i;
-
-const REPLY_OPENERS =
-  /^(yeah|yep|yup|haha|lol|btw|oh|wow|damn|true|fair|exactly|love this|you |you'?re |thanks |forget )/i;
-
-/** Formal standalone openers that smell like an original post, not a reply. */
-const POST_LIKE_OPENERS =
-  /^(open weights|ai is |the real |the fastest |when knowledge|access without|if writing|if models|students are |believe it or not|here'?s a quiet|here is a |the boring |outsourcing thinking|sandboxes,|model weights)/i;
-
-/**
- * True if a reply/quote body reads like a standalone post (fails quality gate).
- * Short micros can pass without many markers; longer bodies need reply energy.
- * @param {string} body
- */
-export function looksLikeStandalonePost(body) {
-  const text = String(body || '').trim();
-  if (!text) return false;
-
-  const hasMarkers = REPLY_MARKERS.test(text) || REPLY_OPENERS.test(text);
-  const paragraphs = text.split(/\n\s*\n/).filter((p) => p.trim());
-  const lines = text.split(/\n/).filter((l) => l.trim());
-
-  // Wall of text in a thread reply
-  if (paragraphs.length > 4 || text.length > 900) return true;
-
-  // Long formal thesis with no conversational glue
-  if (text.length >= 140 && !hasMarkers) return true;
-
-  // Medium length + post-like cold open + no markers
-  if (text.length >= 90 && POST_LIKE_OPENERS.test(text) && !hasMarkers) return true;
-
-  // Multi-paragraph essay without any reply markers
-  if (paragraphs.length >= 2 && text.length >= 160 && !hasMarkers) return true;
-
-  // Three+ dense lines, cold open, no reply energy
-  if (lines.length >= 3 && text.length >= 160 && !hasMarkers) return true;
-
-  return false;
-}
-
-/**
- * Soft: original that is only a reply-to-someone with no standalone meat.
- * @param {string} body
- */
-export function looksLikeReplyDisguisedAsOriginal(body) {
-  const text = String(body || '').trim();
-  if (text.length < 40) return false;
-  // Almost only addressing "you" about "this post" without a self-contained claim
-  const onlyReactive =
-    /^(yeah|yep|haha|love this|this is so true|thanks for)/i.test(text) &&
-    text.length < 120 &&
-    !/\b(i |i'?m |we |students |schools |when |if you learn|try this|here'?s )\b/i.test(text);
-  return onlyReactive;
+  return NONSENSE_REPLY.test(String(body || ''));
 }
 
 /**
@@ -280,6 +55,15 @@ export function scorePack(pack) {
   const scores = [];
   const drafts = Array.isArray(pack?.drafts) ? pack.drafts : [];
 
+  const replies = drafts.filter((d) => d.kind === 'reply' || d.kind === 'quote');
+  const originals = drafts.filter((d) => d.kind === 'short' || d.kind === 'flagship');
+  if (replies.length < 1) {
+    issues.push('[error] pack needs at least one reply with a real source');
+  }
+  if (replies.length >= 1 && originals.length < 1) {
+    issues.push('[warn] pack has no own tweet');
+  }
+
   const openers = drafts.map((d) =>
     String(d.body || '')
       .trim()
@@ -287,8 +71,6 @@ export function scorePack(pack) {
       .toLowerCase()
       .replace(/\s+/g, ' ')
   );
-
-  // pack monotony: identical openers
   for (let i = 0; i < openers.length; i++) {
     for (let j = i + 1; j < openers.length; j++) {
       if (openers[i] && openers[i] === openers[j]) {
@@ -299,289 +81,71 @@ export function scorePack(pack) {
     }
   }
 
-  // stamp opener on multiple replies
-  const replies = drafts.filter((d) => d.kind === 'reply' || d.kind === 'quote');
-  let stampCount = 0;
-  for (const d of replies) {
-    const body = String(d.body || '').trim();
-    if (STAMP_OPENERS.some((re) => re.test(body))) stampCount += 1;
-  }
-  if (stampCount >= 2) {
-    issues.push(
-      `[error] monotony: ${stampCount} replies use forbidden stamp openers (see voice anti-monotony)`
-    );
-  }
-
-  // twin "yeah …" openers on both replies (house pattern)
-  if (replies.length >= 2) {
-    const yeahOpens = replies.filter((d) =>
-      /^yeah\b/i.test(String(d.body || '').trim())
-    );
-    if (yeahOpens.length >= 2) {
-      issues.push(
-        `[error] monotony: ${yeahOpens.length} replies open with "yeah" — break the twin (see gargeya-voice.md house stamp)`
-      );
-    }
-    // twin 3-paragraph essay structure
-    const threePara = replies.filter((d) => paragraphCount(d.body) === 3);
-    if (threePara.length >= 2) {
-      issues.push(
-        `[error] monotony: ${threePara.length} replies are exactly 3 paragraphs — rewrite one with a different form (1 block / 2 lines / longer rant)`
-      );
-    }
-  }
-
-  // shapes variety when ≥2 drafts have quality.shape
-  const shapes = drafts.map((d) => d.quality?.shape).filter(Boolean);
-  if (drafts.length >= 3 && shapes.length >= 2) {
-    const unique = new Set(shapes);
-    if (unique.size < 2) {
-      issues.push(`[error] monotony: need ≥2 different quality.shape values in pack`);
-    }
+  if (replies.filter((d) => /^yeah\b/i.test(String(d.body || '').trim())).length >= 2) {
+    issues.push('[error] monotony: both replies open with "yeah"');
   }
 
   for (const d of drafts) {
     const id = d.id || '?';
     const body = typeof d.body === 'string' ? d.body.trim() : '';
-    const q = d.quality;
     const kind = d.kind || 'short';
 
     if (!body) {
       issues.push(`[error] ${id}: empty body`);
-      scores.push({ id, total: 0, pass: false });
+      scores.push({ id, pass: false });
       continue;
     }
-
-    for (const re of SLUDGE) {
-      if (re.test(body)) {
-        issues.push(`[error] ${id}: AI sludge matched ${re}`);
-      }
-    }
-
-    if (
-      /^the \w{3,14} is the \w{3,14} (part|bit)\b/i.test(body) ||
-      /^\s*fine\.\s*$/im.test(body)
-    ) {
-      issues.push(
-        `[error] ${id}: writer-tweet voice — "The X is the Y part" / lone "Fine." Rewrite like a person (see gargeya-voice.md)`
-      );
+    if (hasEmDash(body)) {
+      issues.push(`[error] ${id}: em-dash found`);
     }
     if (looksChoppyTelegram(body)) {
       issues.push(
-        `[error] ${id}: choppy telegram — three+ short unconnected sentences. Write like a creative writer: one feeling, sentences that hold together (gargeya-voice.md)`
+        `[error] ${id}: punch stack — three+ short sentences. Write like a person. One feeling, sentences that hold together (data/gargeya-voice.md)`
       );
     }
-
-    // Typography: no em-dash; capitalize sentence starts (voice 2026-08-10 d)
-    if (hasEmDash(body)) {
-      issues.push(
-        `[error] ${id}: em-dash found — rewrite with period/comma/colon/parens (see gargeya-voice.md typography)`
-      );
+    if (WRITER_TWEET.test(body) || /^\s*fine\.\s*$/im.test(body)) {
+      issues.push(`[error] ${id}: writer-tweet voice — The X is the Y part / lone Fine.`);
     }
-    if (hasBadSentenceCaps(body)) {
-      issues.push(
-        `[error] ${id}: sentence capitalization — capitalize first letter of each sentence (replies/originals should look clean, not all-lowercase chat)`
-      );
-    }
-
-    // Reply ≠ post gate (voice + quality docs)
     if (kind === 'reply' || kind === 'quote') {
       if (looksOffThesisReply(body)) {
         issues.push(
-          `[error] ${id}: off-thesis reply — replies must be education / assessment / cognitive development / offloading (gargeya-voice.md). Do not spend a reply on sports, shifts, or generic life.`
+          `[error] ${id}: sports / evening-shift / live-thread reply — drop the room`
         );
       }
-      if (looksLikeStandalonePost(body)) {
+      if (INVENTED_FRAME.test(body)) {
         issues.push(
-          `[error] ${id}: post-like reply — rewrite to sound conversational/second-person (see voice Reply vs original; x-reply-quality.md). Body should fail if it works as a standalone post.`
-        );
-      }
-      const paras = body.split(/\n\s*\n/).filter((p) => p.trim());
-      if (paras.length > 4) {
-        issues.push(
-          `[error] ${id}: reply wall of text (${paras.length} paragraphs) — cut to ≤4 short beats for a busy thread`
-        );
-      }
-      // Echo OP then slam school/assessment slogan (canonical fake Gargeya)
-      const schoolHits = FAKE_CLEVER_SCHOOL.filter((re) => re.test(body)).length;
-      if (schoolHits >= 2) {
-        issues.push(
-          `[error] ${id}: fake-clever school parallel — restating OP then forcing final-sheet/grade/cheater glue (see gargeya-voice.md forbidden). Stay in the post's world.`
-        );
-      }
-      if (/^haha this lands hard/i.test(body) || /^this lands hard —/i.test(body)) {
-        issues.push(
-          `[error] ${id}: stamp opener "lands hard" — rewrite in natural voice (banned house style)`
-        );
-      }
-      if (looksLikeHouseEssay(body)) {
-        issues.push(
-          `[error] ${id}: house-essay stamp — "whole argument" / 3-para tidy / isn't-it's land (see gargeya-voice.md 2026-08-10). Break form; write one raw opinion.`
+          `[error] ${id}: invented ranking/fight/debate on your post`
         );
       }
     }
-
-    if (kind === 'short' || kind === 'flagship') {
-      if (looksLikeReplyDisguisedAsOriginal(body)) {
-        issues.push(
-          `[warn] ${id}: original may be reply-shaped only — ensure standalone insight (pillar + soul)`
-        );
-      }
-      if (looksLikeFakePersonalOriginal(body)) {
-        issues.push(
-          `[error] ${id}: fake-personal original — inventing diary/teammate/cousin scenes is banned; keep originals generalized (owner shares real personal stories himself)`
-        );
-      }
+    if ((kind === 'short' || kind === 'flagship') && FAKE_PERSONAL.some((re) => re.test(body))) {
+      issues.push(`[error] ${id}: fake-personal original`);
     }
 
-    if (!q || typeof q !== 'object') {
-      issues.push(
-        `[error] ${id}: missing quality{} — score via data/x-reply-quality.md (need total ≥ ${PASS})`
-      );
-      scores.push({ id, total: null, pass: false });
-      continue;
-    }
-
-    const dims = q.dimensions && typeof q.dimensions === 'object' ? q.dimensions : null;
-    if (!dims) {
-      issues.push(`[error] ${id}: quality.dimensions required`);
-      scores.push({ id, total: q.total ?? null, pass: false });
-      continue;
-    }
-
-    let sum = 0;
-    for (const [key, cap] of Object.entries(CAPS)) {
-      const n = dims[key];
-      if (typeof n !== 'number' || !Number.isFinite(n)) {
-        issues.push(`[error] ${id}: quality.dimensions.${key} must be a number`);
-        continue;
-      }
-      if (n < 0 || n > cap) {
-        issues.push(`[error] ${id}: quality.dimensions.${key}=${n} outside 0–${cap}`);
-      }
-      sum += n;
-    }
-
-    const total = typeof q.total === 'number' ? q.total : sum;
-    if (Math.abs(total - sum) > 1) {
-      issues.push(
-        `[error] ${id}: quality.total=${total} does not match dimensions sum=${sum}`
-      );
-    }
-
-    if (!q.notes || typeof q.notes !== 'string' || !q.notes.trim()) {
-      issues.push(`[error] ${id}: quality.notes required (why it passed)`);
-    }
-
-    const adv = q.adversary;
-    const clicks = new Set([
-      'i believe this',
-      "he's right",
-      'he’s right',
-      "i don't like this",
-      'i don’t like this',
-      "that's me",
-      'that’s me',
-    ]);
-    if (!adv || typeof adv !== 'object') {
-      issues.push(
-        `[error] ${id}: quality.adversary required — run the adversary creative writer last pass (data/x-adversary-writer.md)`
-      );
-    } else {
-      if (adv.passed !== true) {
-        issues.push(`[error] ${id}: quality.adversary.passed must be true`);
-      }
-      const click = String(adv.click || '')
-        .trim()
-        .toLowerCase();
-      if (!clicks.has(click)) {
-        issues.push(
-          `[error] ${id}: quality.adversary.click must be one of: i believe this | he's right | i don't like this | that's me`
-        );
-      }
-      if (!adv.change || typeof adv.change !== 'string' || !String(adv.change).trim()) {
-        issues.push(
-          `[error] ${id}: quality.adversary.change required (what you rewrote, or "kept: already landed")`
-        );
-      }
-    }
-
-    if (total < PASS) {
-      issues.push(
-        `[error] ${id}: quality.total=${total} < ${PASS} — rewrite or drop (see x-reply-quality.md)`
-      );
-    }
-
-    const chars = body.length;
-    const paras = body.split(/\n\s*\n/).filter(Boolean).length;
-    if (chars > 900 && (dims.lengthFit ?? 0) >= 10) {
-      issues.push(
-        `[warn] ${id}: body is very long (${chars} chars) but lengthFit is high — double-check fit`
-      );
-    }
-    if (chars < 15 && (d.kind === 'reply' || d.kind === 'short')) {
-      issues.push(`[warn] ${id}: extremely short body (${chars} chars) — is hook enough?`);
-    }
-    // Conversion long-form replies may run longer (profile traffic) but stay thread-readable.
-    const conversionLong =
-      (d.kind === 'reply' || d.kind === 'quote') &&
-      (String(q.shape || '').includes('conversion') ||
-        /conversion|long.?form|profile.?click|follow.?traffic/i.test(String(q.notes || '')) ||
-        /conversion|long.?form|profile|follow/i.test(`${d.why || ''} ${d.tip || ''} ${d.label || ''}`) ||
-        (d.estimatedSeconds ?? 0) >= 150);
-    const maxParas = conversionLong ? 6 : 4;
-    const maxCharsSoft = conversionLong ? 1400 : 900;
-    const maxCharsHard = conversionLong ? 1800 : 1100;
-    if ((d.kind === 'reply' || d.kind === 'quote') && (paras > maxParas || chars > maxCharsSoft)) {
-      const msg = `[error] ${id}: reply wall — ${paras} paras / ${chars} chars (reply should be readable in thread; cut to conversational length, see gargeya-voice.md Length guidance)`;
-      if (paras > maxParas + 1 || chars > maxCharsHard) issues.push(msg);
-      else issues.push(msg.replace('[error]', '[warn]'));
-    }
-
-    scores.push({
-      id,
-      kind: d.kind,
-      total,
-      sum,
-      shape: q.shape || null,
-      pass: total >= PASS,
-      notes: q.notes || '',
-    });
+    scores.push({ id, kind, pass: true, notes: '' });
   }
 
   const errors = issues.filter((i) => i.startsWith('[error]'));
+  for (const s of scores) {
+    if (issues.some((i) => i.startsWith(`[error] ${s.id}:`))) s.pass = false;
+  }
   return { ok: errors.length === 0, issues, scores };
 }
 
-// CLI when run directly
-const packPathArg = process.argv[2];
 const runningAsCli =
   process.argv[1] &&
   /score-x-drafts\.mjs$/i.test(String(process.argv[1]).replace(/\\/g, '/'));
 
 if (runningAsCli) {
-  const packPath = packPathArg || 'data/x-pack-today.json';
+  const packPath = process.argv[2] || 'data/x-pack-today.json';
   const pack = JSON.parse(fs.readFileSync(path.resolve(packPath), 'utf8'));
   const result = scorePack(pack);
-
   console.log(`Pack: ${pack.id || packPath}`);
-  console.log(`Pass bar: ${PASS}`);
-  console.log('Scores:');
+  console.log('Gate: mechanical (no numeric score)');
   for (const s of result.scores) {
-    const mark = s.pass ? 'PASS' : 'FAIL';
-    console.log(
-      `  [${mark}] ${s.id} · ${s.total ?? '—'}/100 · shape=${s.shape || '—'} · ${s.kind || ''}`
-    );
+    console.log(`  [${s.pass ? 'OK' : 'FAIL'}] ${s.id} · ${s.kind || ''}`);
   }
   for (const i of result.issues) console.log(i);
-
-  if (!result.issues.length) {
-    console.log('OK — all drafts meet quality gate');
-  } else {
-    const errors = result.issues.filter((i) => i.startsWith('[error]'));
-    const warns = result.issues.filter((i) => i.startsWith('[warn]'));
-    console.log(`\n${errors.length} error(s), ${warns.length} warning(s)`);
-  }
-
+  if (!result.issues.length) console.log('OK — mechanical gate passed');
   process.exit(result.ok ? 0 : 1);
 }

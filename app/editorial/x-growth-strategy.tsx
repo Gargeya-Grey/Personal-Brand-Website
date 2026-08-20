@@ -20,10 +20,16 @@ import {
   GROWTH_HONEST,
   GROWTH_STRATEGY_UPDATED,
   HOW_TO_FOLLOW,
+  MONTHLY_CHECK,
+  MORNING_CARD,
+  NINETY_DAYS,
   PERSONALITY,
+  PROFILE_POSITION,
   REPLY_OR_QUOTE,
   SITTINGS,
   SKIP_ROOMS,
+  STOP_FOR_NINETY,
+  WEEKLY_CHECK,
   WEEK_OWN,
   WRITE_RULES,
 } from '@/lib/x-growth-strategy';
@@ -67,6 +73,7 @@ function loadTrack(): Track {
 
 const NAV = [
   { id: 'today', label: 'Today' },
+  { id: 'profile', label: 'Profile' },
   { id: 'mix', label: 'Mix' },
   { id: 'write', label: 'Write' },
   { id: 'week', label: 'Week' },
@@ -129,6 +136,11 @@ export function XGrowthStrategy() {
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
               Live plan · updated {GROWTH_STRATEGY_UPDATED}
             </p>
+            <p className="text-sm text-[var(--atelier-muted)]">
+              To change what the scout writes, edit{' '}
+              <code className="text-[var(--atelier-ink)]">data/gargeya-voice.md</code>
+              . There is no score file. You pick what to post.
+            </p>
             <h2 className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--atelier-ink)] leading-[1.08]">
               Borrow big rooms.
               <span className="block text-[var(--atelier-muted)] font-semibold mt-1">
@@ -136,8 +148,8 @@ export function XGrowthStrategy() {
               </span>
             </h2>
             <p className="text-[var(--atelier-muted)] leading-relaxed max-w-xl">
-              At 170 followers, people find you under someone else&apos;s post. They stay if your
-              small tweets make them feel clearer, kinder, or less alone.
+              People find you under someone else&apos;s post. They stay if your small tweets make
+              them feel clearer, kinder, or less alone. Same position for 90 days.
             </p>
           </div>
           <div className="rounded-2xl border border-[var(--atelier-gold)]/25 bg-[var(--atelier-gold-soft)]/50 p-5">
@@ -254,6 +266,53 @@ export function XGrowthStrategy() {
             Open To-Do
           </Link>
         </div>
+
+        <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
+          <SectionHead
+            eyebrow="Morning card"
+            title="Five yeses and the day is done"
+            compact
+          />
+          <ol className="mt-4 space-y-2">
+            {MORNING_CARD.map((line, i) => (
+              <li key={line} className="text-sm text-[var(--atelier-ink)] flex gap-3">
+                <span className="font-headline font-extrabold text-[var(--atelier-gold)] w-4">
+                  {i + 1}
+                </span>
+                {line}
+              </li>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      <section id="profile" className="scroll-mt-36 space-y-5">
+        <SectionHead
+          eyebrow="Once, then leave it"
+          title="What the profile says"
+          sub={PROFILE_POSITION.line}
+        />
+        <div className="grid lg:grid-cols-2 gap-4">
+          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6 space-y-3">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
+              Bio
+            </p>
+            <pre className="whitespace-pre-wrap font-sans text-sm text-[var(--atelier-ink)] leading-relaxed">
+              {PROFILE_POSITION.bio}
+            </pre>
+            <p className="text-sm text-[var(--atelier-muted)]">
+              Name: {PROFILE_POSITION.name}. Link: {PROFILE_POSITION.link}.
+            </p>
+            <p className="text-sm text-[var(--atelier-ink)]">{PROFILE_POSITION.pin}</p>
+          </div>
+          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6 space-y-3">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
+              Photo and split
+            </p>
+            <p className="text-sm text-[var(--atelier-ink)] leading-relaxed">{PROFILE_POSITION.split}</p>
+            <p className="text-sm text-[var(--atelier-muted)] leading-relaxed">{PROFILE_POSITION.photo}</p>
+          </div>
+        </div>
       </section>
 
       <section id="mix" className="scroll-mt-36 space-y-5">
@@ -365,9 +424,9 @@ export function XGrowthStrategy() {
         <SectionHead
           eyebrow="This week"
           title="Three different parts a day"
-          sub="Never three education posts. Scout prepares. You pick at 11:30 and 19:00."
+          sub="Never three education originals. Scout prepares. You pick at 11:30 and 19:00."
         />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
           {WEEK_OWN.map((d) => (
             <article
               key={d.day}
@@ -386,6 +445,45 @@ export function XGrowthStrategy() {
                   </li>
                 ))}
               </ul>
+            </article>
+          ))}
+        </div>
+        <div className="grid md:grid-cols-2 gap-4">
+          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 space-y-3">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
+              Weekly
+            </p>
+            <ul className="space-y-2">
+              {WEEKLY_CHECK.map((w) => (
+                <li key={w.item} className="text-sm text-[var(--atelier-ink)] leading-relaxed">
+                  <span className="font-semibold">{w.item}.</span> {w.done}
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 space-y-3">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
+              Monthly
+            </p>
+            <ul className="space-y-2">
+              {MONTHLY_CHECK.map((m) => (
+                <li key={m.week} className="text-sm text-[var(--atelier-ink)] leading-relaxed">
+                  <span className="font-semibold">{m.week}.</span> {m.do}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+        <div className="grid sm:grid-cols-3 gap-3">
+          {NINETY_DAYS.map((p) => (
+            <article
+              key={p.range}
+              className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4"
+            >
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
+                {p.range}
+              </p>
+              <p className="mt-2 text-sm text-[var(--atelier-ink)] leading-relaxed">{p.job}</p>
             </article>
           ))}
         </div>
@@ -421,9 +519,22 @@ export function XGrowthStrategy() {
             </ul>
           </div>
         </div>
+        <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
+            Stop for 90 days
+          </p>
+          <ul className="mt-3 grid sm:grid-cols-2 gap-2">
+            {STOP_FOR_NINETY.map((line) => (
+              <li key={line} className="text-sm text-[var(--atelier-muted)] leading-relaxed flex gap-2">
+                <Ban className="h-4 w-4 shrink-0 mt-0.5 text-[var(--atelier-faint)]" />
+                {line}
+              </li>
+            ))}
+          </ul>
+        </div>
         <p className="text-xs text-[var(--atelier-faint)] flex items-center gap-2">
           <AlarmClock className="h-3.5 w-3.5" />
-          The loop only writes a pack just before you sit (around 11:00 and 19:00). Other wakes skip.
+          Scout writes every 4 hours. You sit at 11:30 and 19:00 and pick. Skip leftovers.
         </p>
       </section>
     </div>
