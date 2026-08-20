@@ -61,6 +61,17 @@ const MarkdownPreview = dynamic(
   () => import('@/components/editor/markdown-preview').then((m) => m.MarkdownPreview),
   { ssr: false, loading: () => <p className="text-sm text-[var(--atelier-faint)] italic">Loading preview…</p> }
 );
+const MarkdownSourceEditor = dynamic(
+  () => import('@/components/editor/markdown-source-editor').then((m) => m.MarkdownSourceEditor),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-[260px] flex-grow sm:min-h-[360px] text-sm text-[var(--atelier-faint)] italic">
+        Loading editor…
+      </div>
+    ),
+  }
+);
 
 /** Keep blog CMS usable if X To-Do throws — avoid full-page error boundary. */
 class XStudioErrorBoundary extends Component<
@@ -354,11 +365,61 @@ export function EditorialClient({
     const end = textarea.selectionEnd;
     const text = textarea.value;
     const selected = text.substring(start, end);
-    setFormContent(text.substring(0, start) + before + selected + after + text.substring(end));
+
+    const wrappedOutside =
+      start >= before.length &&
+      end + after.length <= text.length &&
+      text.substring(start - before.length, start) === before &&
+      text.substring(end, end + after.length) === after;
+    const wrappedInside =
+      selected.length >= before.length + after.length &&
+      selected.startsWith(before) &&
+      selected.endsWith(after);
+
+    let next: string;
+    let selStart: number;
+    let selEnd: number;
+
+    if (wrappedOutside) {
+      next =
+        text.substring(0, start - before.length) + selected + text.substring(end + after.length);
+      selStart = start - before.length;
+      selEnd = selStart + selected.length;
+    } else if (wrappedInside) {
+      const inner = selected.slice(before.length, selected.length - after.length);
+      next = text.substring(0, start) + inner + text.substring(end);
+      selStart = start;
+      selEnd = start + inner.length;
+    } else {
+      next = text.substring(0, start) + before + selected + after + text.substring(end);
+      selStart = start + before.length;
+      selEnd = selStart + selected.length;
+    }
+
+    setFormContent(next);
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + before.length, start + before.length + selected.length);
+      textarea.setSelectionRange(selStart, selEnd);
     }, 0);
+  };
+
+  const handleEditorFormatKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    const withMod = e.metaKey || e.ctrlKey;
+    if (!withMod || e.altKey) return;
+    const key = e.key.toLowerCase();
+    if (key === 'b') {
+      e.preventDefault();
+      insertMarkdown('**', '**');
+    } else if (key === 'i') {
+      e.preventDefault();
+      insertMarkdown('*', '*');
+    } else if (key === 'k') {
+      e.preventDefault();
+      insertMarkdown('[', '](url)');
+    } else if (key === 'e') {
+      e.preventDefault();
+      insertMarkdown('`', '`');
+    }
   };
 
   /** Insert raw text at the caret (used for images, table templates). */
@@ -1460,11 +1521,11 @@ export function EditorialClient({
                             Write
                           </span>
                           <div className="flex flex-wrap items-center gap-0.5 pl-3 border-l border-[var(--atelier-line)]">
-                            <button type="button" onClick={() => insertMarkdown('**', '**')} className="w-8 h-8 rounded-xl text-xs font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] hover:text-[var(--atelier-ink)]" title="Bold">B</button>
-                            <button type="button" onClick={() => insertMarkdown('*', '*')} className="w-8 h-8 rounded-xl text-xs italic text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Italic">I</button>
-                            <button type="button" onClick={() => insertMarkdown('### ', '')} className="w-8 h-8 rounded-xl text-[0.65rem] font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Heading">H</button>
-                            <button type="button" onClick={() => insertMarkdown('[', '](url)')} className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center" title="Link"><ArrowUpRight className="w-3.5 h-3.5" /></button>
-                            <button type="button" onClick={() => insertMarkdown('`', '`')} className="px-2 h-8 rounded-xl text-[0.65rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Code">code</button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('**', '**')} className="w-8 h-8 rounded-xl text-xs font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] hover:text-[var(--atelier-ink)]" title="Bold (Ctrl+B)">B</button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('*', '*')} className="w-8 h-8 rounded-xl text-xs italic text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Italic (Ctrl+I)">I</button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('### ', '')} className="w-8 h-8 rounded-xl text-[0.65rem] font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Heading">H</button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('[', '](url)')} className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center" title="Link (Ctrl+K)"><ArrowUpRight className="w-3.5 h-3.5" /></button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('`', '`')} className="px-2 h-8 rounded-xl text-[0.65rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Inline code (Ctrl+E)">code</button>
                             <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="px-2 h-8 rounded-xl text-[0.6rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Block">{'{}'}</button>
                             <button
                               type="button"
@@ -1500,17 +1561,16 @@ export function EditorialClient({
                           </p>
                         </div>
                       )}
-                      <textarea
-                        data-atelier-editor
+                      <MarkdownSourceEditor
                         required
                         value={formContent}
-                        onChange={(e) => setFormContent(e.target.value)}
+                        onChange={setFormContent}
+                        onKeyDown={handleEditorFormatKeyDown}
                         onPaste={(e) => void handleEditorPaste(e)}
                         placeholder="# Begin the piece…&#10;&#10;Tip: drag & drop or paste an image, or use the image button in the toolbar."
-                        className="min-h-[260px] w-full flex-grow resize-none border-0 bg-transparent font-mono text-sm leading-relaxed text-[var(--atelier-ink)] placeholder:text-[var(--atelier-faint)] focus:outline-none sm:min-h-[360px]"
                       />
                       <p className="pt-3 text-[0.65rem] text-[var(--atelier-faint)]">
-                        Images: toolbar · drag & drop · paste from clipboard. Tables: toolbar inserts a GFM template.
+                        Write pane styles markdown in place (marks stay visible). Ctrl+B bold · Ctrl+I italic · Ctrl+K link · Ctrl+E code.
                       </p>
                     </div>
                   )}
@@ -1554,7 +1614,7 @@ export function EditorialClient({
                       <div className="space-y-5 text-sm text-[var(--atelier-muted)]">
                         {[
                           { label: 'Headers', code: '# H1\n## H2\n### H3' },
-                          { label: 'Emphasis', code: '**bold** *italic* `code`' },
+                          { label: 'Emphasis', code: '**bold** *italic* `code`\nCtrl+B / Ctrl+I / Ctrl+E' },
                           { label: 'Quote', code: '> blockquote' },
                           { label: 'List', code: '- one\n- two' },
                           { label: 'Code', code: '```\ncode\n```' },

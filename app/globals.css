@@ -946,6 +946,18 @@ canvas {
   box-shadow: var(--atelier-shadow);
 }
 
+/* Markdown write pane: highlight layer + transparent textarea */
+.md-source-highlight {
+  scrollbar-width: none;
+}
+.md-source-highlight::-webkit-scrollbar {
+  display: none;
+}
+.md-source-textarea::selection {
+  background: color-mix(in srgb, var(--atelier-gold) 28%, transparent);
+  color: transparent;
+}
+
 .atelier-input {
   width: 100%;
   height: 3rem;

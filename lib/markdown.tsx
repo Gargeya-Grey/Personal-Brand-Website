@@ -97,7 +97,7 @@ export function parseInlineMarkdown(text: string): React.ReactNode[] {
       );
     } else if (type === 'italic') {
       parts.push(
-        <em key={key} className="italic text-slate-900 dark:text-white font-[450] dark:font-[400]">
+        <em key={key} className="italic text-slate-900 dark:text-white font-medium">
           {content}
         </em>
       );
@@ -264,7 +264,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       elements.push(
         <ol
           key={`ol-${i}`}
-          className="list-decimal pl-6 space-y-2 mb-4 font-body text-slate-700 dark:text-white/80 text-base md:text-lg font-[320] dark:font-[300] leading-relaxed tracking-[0.015em]"
+          className="list-decimal pl-6 space-y-2 mb-4 font-body text-slate-800 dark:text-white/90 text-base md:text-lg font-normal leading-[1.75] tracking-[0.01em]"
         >
           {listItems.map((item, idx) => (
             <li key={idx}>{parseInlineMarkdown(item)}</li>
@@ -282,7 +282,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
         i++;
       }
       elements.push(
-        <ul key={`ul-${i}`} className="list-disc pl-6 space-y-2 mb-4 font-body text-slate-700 dark:text-white/80 text-base md:text-lg font-[320] dark:font-[300] leading-relaxed tracking-[0.015em]">
+        <ul key={`ul-${i}`} className="list-disc pl-6 space-y-2 mb-4 font-body text-slate-800 dark:text-white/90 text-base md:text-lg font-normal leading-[1.75] tracking-[0.01em]">
           {listItems.map((item, idx) => (
             <li key={idx}>{parseInlineMarkdown(item)}</li>
           ))}
@@ -296,7 +296,7 @@ export function renderMarkdown(markdown: string | undefined | null): React.React
       elements.push(
         <p 
           key={`p-${i}`} 
-          className="font-body text-slate-700 dark:text-white/80 leading-relaxed tracking-[0.015em] text-base md:text-lg mb-4 font-[320] dark:font-[300]"
+          className="font-body text-slate-800 dark:text-white/90 leading-[1.75] tracking-[0.01em] text-base md:text-lg mb-4 font-normal"
         >
           {parseInlineMarkdown(line)}
         </p>
@@ -385,7 +385,7 @@ function parseMarkdownTable(
               {headerCells.map((_, cIdx) => (
                 <td
                   key={cIdx}
-                  className={`px-4 py-3 font-body text-slate-700 dark:text-white/80 ${alignClass(cIdx)}`}
+                  className={`px-4 py-3 font-body font-normal text-slate-800 dark:text-white/90 ${alignClass(cIdx)}`}
                 >
                   {parseInlineMarkdown(row[cIdx] ?? '')}
                 </td>
