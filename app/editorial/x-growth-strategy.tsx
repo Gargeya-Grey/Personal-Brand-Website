@@ -15,6 +15,8 @@ import {
   Sunset,
 } from 'lucide-react';
 import {
+  AUDIENCE,
+  CONTENT_MIX,
   DAILY_COUNTS,
   ENTER_ROOMS,
   GROWTH_HONEST,
@@ -23,14 +25,16 @@ import {
   MONTHLY_CHECK,
   MORNING_CARD,
   NINETY_DAYS,
-  PERSONALITY,
+  POST_ACTIONS,
+  POST_SHAPE,
   PROFILE_POSITION,
   REPLY_OR_QUOTE,
   SITTINGS,
   SKIP_ROOMS,
   STOP_FOR_NINETY,
+  THESIS,
+  WEEKLY_CADENCE,
   WEEKLY_CHECK,
-  WEEK_OWN,
   WRITE_RULES,
 } from '@/lib/x-growth-strategy';
 
@@ -40,7 +44,6 @@ type Track = {
   date: string;
   morning: boolean;
   evening: boolean;
-  educationUsed: number;
 };
 
 function istDateKey(now = new Date()) {
@@ -54,7 +57,7 @@ function istDateKey(now = new Date()) {
 
 function loadTrack(): Track {
   const date = istDateKey();
-  const empty: Track = { date, morning: false, evening: false, educationUsed: 0 };
+  const empty: Track = { date, morning: false, evening: false };
   try {
     const raw = localStorage.getItem(TRACK_KEY);
     if (!raw) return empty;
@@ -64,7 +67,6 @@ function loadTrack(): Track {
       date,
       morning: Boolean(parsed.morning),
       evening: Boolean(parsed.evening),
-      educationUsed: Math.min(2, Number(parsed.educationUsed) || 0),
     };
   } catch {
     return empty;
@@ -82,7 +84,7 @@ const NAV = [
 
 export function XGrowthStrategy() {
   const [track, setTrack] = useState<Track>(loadTrack);
-  const [openPart, setOpenPart] = useState<string | null>('ai-comfort');
+  const [openPart, setOpenPart] = useState<string | null>('beliefs');
   const [activeNav, setActiveNav] = useState('today');
 
   useEffect(() => {
@@ -115,7 +117,7 @@ export function XGrowthStrategy() {
 
   const sittingsDone = (track.morning ? 1 : 0) + (track.evening ? 1 : 0);
   const openPersonality = useMemo(
-    () => PERSONALITY.find((p) => p.id === openPart) ?? PERSONALITY[0],
+    () => CONTENT_MIX.find((p) => p.id === openPart) ?? CONTENT_MIX[0],
     [openPart]
   );
 
@@ -142,9 +144,9 @@ export function XGrowthStrategy() {
               . There is no score file. You pick what to post.
             </p>
             <h2 className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--atelier-ink)] leading-[1.08]">
-              Borrow big rooms.
+              Make human capability visible.
               <span className="block text-[var(--atelier-muted)] font-semibold mt-1">
-                Stay a whole person.
+                Broad thesis. Narrow wedge. Specific proof.
               </span>
             </h2>
             <p className="text-[var(--atelier-muted)] leading-relaxed max-w-xl">
@@ -161,6 +163,19 @@ export function XGrowthStrategy() {
           </div>
         </div>
       </div>
+
+      <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+        <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">{THESIS.eyebrow}</p>
+          <p className="mt-3 text-sm text-[var(--atelier-ink)] leading-relaxed">{THESIS.statement}</p>
+          <p className="mt-3 text-sm text-[var(--atelier-muted)] leading-relaxed">{THESIS.mission}</p>
+        </div>
+        <div className="rounded-[1.5rem] border border-[var(--atelier-gold)]/25 bg-[var(--atelier-gold-soft)]/40 p-5 sm:p-6">
+          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">90-day wedge</p>
+          <p className="mt-3 font-headline font-bold text-[var(--atelier-ink)]">{THESIS.principle}</p>
+          <p className="mt-2 text-sm text-[var(--atelier-muted)] leading-relaxed">{THESIS.wedge}</p>
+        </div>
+      </section>
 
       <nav
         className="sticky top-24 z-20 -mx-1 flex gap-1 overflow-x-auto rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/90 p-1 shadow-[var(--atelier-shadow-sm)] backdrop-blur-md"
@@ -242,26 +257,6 @@ export function XGrowthStrategy() {
 
         <div className="flex flex-wrap items-center gap-3">
           <ProgressPill label="Sittings" value={`${sittingsDone}/2`} hot={sittingsDone === 2} />
-          <div className="inline-flex items-center gap-2 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] px-3 py-1.5">
-            <span className="text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--atelier-faint)]">
-              Education used
-            </span>
-            {[0, 1, 2].map((n) => (
-              <button
-                key={n}
-                type="button"
-                onClick={() => setTrack((t) => ({ ...t, educationUsed: n }))}
-                className={`h-7 min-w-7 rounded-full px-2 text-xs font-bold ${
-                  track.educationUsed === n
-                    ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                    : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-                }`}
-              >
-                {n}
-              </button>
-            ))}
-            <span className="text-[0.65rem] text-[var(--atelier-faint)] pr-1">/ 2</span>
-          </div>
           <Link href="/editorial?workspace=x" className="atelier-btn atelier-btn-gold !h-9 !px-4 !text-xs">
             Open To-Do
           </Link>
@@ -304,6 +299,14 @@ export function XGrowthStrategy() {
               Name: {PROFILE_POSITION.name}. Link: {PROFILE_POSITION.link}.
             </p>
             <p className="text-sm text-[var(--atelier-ink)]">{PROFILE_POSITION.pin}</p>
+            <div className="mt-4 rounded-2xl bg-[var(--atelier-paper)]/70 border border-[var(--atelier-line)] p-4">
+              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">Primary audience</p>
+              <ul className="mt-2 space-y-1.5">
+                {AUDIENCE.map((person) => (
+                  <li key={person} className="text-sm text-[var(--atelier-muted)]">{person}</li>
+                ))}
+              </ul>
+            </div>
           </div>
           <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6 space-y-3">
             <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
@@ -351,9 +354,9 @@ export function XGrowthStrategy() {
           </div>
 
           <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
-            <SectionHead eyebrow="The rest of you" title="Tap a part" compact />
+            <SectionHead eyebrow="The original mix" title="Tap a content type" compact />
             <div className="flex flex-wrap gap-1.5 mt-3">
-              {PERSONALITY.map((p) => (
+              {CONTENT_MIX.map((p) => (
                 <button
                   key={p.id}
                   type="button"
@@ -385,10 +388,27 @@ export function XGrowthStrategy() {
 
       <section id="write" className="scroll-mt-36 space-y-5">
         <SectionHead
-          eyebrow="Voice"
-          title="Write like you"
-          sub="If you would not send it in a DM, do not post it."
+          eyebrow="Voice and structure"
+          title="Make the reader do something"
+          sub="A strong post gives people a reason to repost, save, reply, or follow."
         />
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {POST_SHAPE.map((part) => (
+            <article key={part.step} className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4">
+              <p className="font-headline text-2xl font-extrabold text-[var(--atelier-gold)]">{part.step}</p>
+              <p className="font-headline font-bold text-[var(--atelier-ink)] mt-1">{part.title}</p>
+              <p className="text-sm text-[var(--atelier-muted)] mt-1.5 leading-relaxed">{part.text}</p>
+            </article>
+          ))}
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          {POST_ACTIONS.map((item) => (
+            <article key={item.action} className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/70 p-4">
+              <p className="font-headline font-bold text-[var(--atelier-ink)]">{item.action}</p>
+              <p className="text-sm text-[var(--atelier-muted)] mt-1.5 leading-relaxed">{item.reason}</p>
+            </article>
+          ))}
+        </div>
         <div className="grid sm:grid-cols-2 gap-3">
           {WRITE_RULES.map((r) => (
             <div
@@ -423,28 +443,19 @@ export function XGrowthStrategy() {
       <section id="week" className="scroll-mt-36 space-y-5">
         <SectionHead
           eyebrow="This week"
-          title="Three different parts a day"
-          sub="Never three education originals. Scout prepares. You pick at 11:30 and 19:00."
+          title="A sustainable weekly cadence"
+          sub="Consistency comes from one strong original, useful replies, specific Edudojo proof, and a weekly review."
         />
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {WEEK_OWN.map((d) => (
+          {WEEKLY_CADENCE.map((d) => (
             <article
-              key={d.day}
+              key={d.label + d.text}
               className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4"
             >
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-                {d.day}
+                {d.label}
               </p>
-              <ul className="mt-3 space-y-2">
-                {d.parts.map((part) => (
-                  <li
-                    key={part}
-                    className="rounded-xl bg-[var(--atelier-paper)]/80 px-3 py-2 text-sm font-semibold text-[var(--atelier-ink)]"
-                  >
-                    {part}
-                  </li>
-                ))}
-              </ul>
+              <p className="mt-3 text-sm text-[var(--atelier-muted)] leading-relaxed">{d.text}</p>
             </article>
           ))}
         </div>
