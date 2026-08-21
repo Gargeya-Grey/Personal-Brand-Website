@@ -951,28 +951,28 @@ a.board-card {
 .atelier-root {
   /* Light Atelier palette: olive mist */
   --atelier-ink: #3f4a41;
-  --atelier-muted: #778873;
+  --atelier-muted: #687666;
   --atelier-faint: #778873;
-  --atelier-paper: #f1f3e0;
-  --atelier-card: #d2dcb6;
-  --atelier-line: rgba(119, 136, 115, 0.24);
+  --atelier-paper: #d2dcb6;
+  --atelier-card: #f1f3e0;
+  --atelier-line: rgba(119, 136, 115, 0.34);
   --atelier-gold: #778873;
-  --atelier-gold-soft: rgba(161, 188, 152, 0.3);
+  --atelier-gold-soft: rgba(161, 188, 152, 0.26);
   --atelier-violet: #a1bc98;
-  --atelier-contrast: #a1bc98;
+  --atelier-contrast: #e7ecd5;
   --atelier-contrast-border: #778873;
   --atelier-contrast-ink: #3f4a41;
-  --atelier-contrast-muted: #536255;
-  --atelier-contrast-accent: #3f4a41;
+  --atelier-contrast-muted: #687666;
+  --atelier-contrast-accent: #778873;
   --atelier-shadow: 0 24px 64px -28px rgba(119, 136, 115, 0.18), 0 8px 24px -12px rgba(119, 136, 115, 0.1);
   --atelier-shadow-sm: 0 10px 30px -14px rgba(119, 136, 115, 0.14);
   --atelier-radius: 1.75rem;
   --atelier-radius-lg: 2.25rem;
   --atelier-radius-pill: 9999px;
   background:
-    radial-gradient(ellipse 90% 60% at 10% -10%, rgba(161, 188, 152, 0.24), transparent 52%),
-    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(210, 220, 182, 0.45), transparent 48%),
-    linear-gradient(180deg, #f1f3e0 0%, #d2dcb6 100%);
+    radial-gradient(ellipse 90% 60% at 10% -10%, rgba(161, 188, 152, 0.16), transparent 52%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(241, 243, 224, 0.3), transparent 48%),
+    linear-gradient(180deg, #e7ecd5 0%, #d2dcb6 100%);
   color: var(--atelier-ink);
 }
 
@@ -1002,8 +1002,8 @@ a.board-card {
 
 .atelier-glow {
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(161, 188, 152, 0.16) 0%, transparent 40%),
-    radial-gradient(circle at 80% 10%, rgba(119, 136, 115, 0.1) 0%, transparent 35%);
+    radial-gradient(circle at 20% 20%, rgba(161, 188, 152, 0.1) 0%, transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(241, 243, 224, 0.18) 0%, transparent 35%);
 }
 
 .dark .atelier-glow {
@@ -1099,7 +1099,7 @@ a.board-card {
   padding: 0.45rem 0.75rem;
   border: 1px solid var(--atelier-line);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--atelier-paper) 68%, transparent);
+  background: color-mix(in srgb, var(--atelier-card) 76%, transparent);
   color: var(--atelier-muted);
   font-size: 0.68rem;
   font-weight: 750;
@@ -1167,7 +1167,7 @@ a.board-card {
   padding: clamp(1.15rem, 3vw, 1.75rem);
   border: 1px solid color-mix(in srgb, var(--atelier-gold) 42%, var(--atelier-line));
   border-radius: 1.5rem;
-  background: color-mix(in srgb, var(--atelier-paper) 74%, transparent);
+  background: color-mix(in srgb, var(--atelier-card) 74%, transparent);
   backdrop-filter: blur(18px);
 }
 
@@ -1403,7 +1403,7 @@ a.board-card {
   padding: 0.8rem 0.9rem;
   border: 1px solid var(--atelier-line);
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--atelier-paper) 58%, transparent);
+  background: color-mix(in srgb, var(--atelier-card) 68%, transparent);
   color: var(--atelier-muted);
   font-size: 0.78rem;
   line-height: 1.5;
@@ -1502,7 +1502,7 @@ a.board-card {
   padding: 1rem;
   border: 1px solid var(--atelier-line);
   border-radius: 1.2rem;
-  background: color-mix(in srgb, var(--atelier-paper) 68%, transparent);
+  background: color-mix(in srgb, var(--atelier-card) 76%, transparent);
 }
 
 .strategy-flow {
@@ -1523,9 +1523,10 @@ a.board-card {
 .strategy-flow-step:not(:last-child)::after {
   position: absolute;
   right: -0.65rem;
-  top: 1.75rem;
+  top: 2rem;
   width: 1.25rem;
   height: 1px;
+  transform: translateY(-50%);
   background: var(--atelier-gold);
   content: '';
   opacity: 0.55;
@@ -1551,7 +1552,7 @@ a.board-card {
   padding: 0.9rem;
   border: 1px solid var(--atelier-line);
   border-radius: 1rem;
-  background: color-mix(in srgb, var(--atelier-paper) 50%, transparent);
+  background: color-mix(in srgb, var(--atelier-card) 72%, transparent);
 }
 
 .strategy-cadence-row {
