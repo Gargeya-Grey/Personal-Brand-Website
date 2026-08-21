@@ -1,18 +1,24 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import {
   AlarmClock,
+  ArrowRight,
   Ban,
   Check,
   DoorOpen,
   Heart,
+  Lightbulb,
   MessageCircle,
   Quote,
   Sparkles,
   Sun,
   Sunset,
+  Target,
+  Timer,
+  Users,
+  X,
 } from 'lucide-react';
 import {
   AUDIENCE,
@@ -58,11 +64,14 @@ function istDateKey(now = new Date()) {
 function loadTrack(): Track {
   const date = istDateKey();
   const empty: Track = { date, morning: false, evening: false };
+
   try {
     const raw = localStorage.getItem(TRACK_KEY);
     if (!raw) return empty;
+
     const parsed = JSON.parse(raw) as Track;
     if (parsed.date !== date) return empty;
+
     return {
       date,
       morning: Boolean(parsed.morning),
@@ -74,311 +83,354 @@ function loadTrack(): Track {
 }
 
 const NAV = [
-  { id: 'today', label: 'Today' },
-  { id: 'profile', label: 'Profile' },
-  { id: 'mix', label: 'Mix' },
-  { id: 'write', label: 'Write' },
-  { id: 'week', label: 'Week' },
+  { id: 'today', label: 'Start here' },
+  { id: 'profile', label: 'Identity' },
+  { id: 'mix', label: 'Content' },
+  { id: 'write', label: 'Writing' },
+  { id: 'week', label: '90 days' },
   { id: 'rooms', label: 'Rooms' },
 ] as const;
 
 export function XGrowthStrategy() {
   const [track, setTrack] = useState<Track>(loadTrack);
-  const [openPart, setOpenPart] = useState<string | null>('beliefs');
+  const [openPart, setOpenPart] = useState<string>('beliefs');
   const [activeNav, setActiveNav] = useState('today');
 
   useEffect(() => {
     if (!track.date) return;
+
     try {
       localStorage.setItem(TRACK_KEY, JSON.stringify(track));
     } catch {
-      /* ignore */
+      /* Tracking is a convenience, never a blocker. */
     }
   }, [track]);
 
   useEffect(() => {
-    const ids = NAV.map((n) => n.id);
-    const els = ids
-      .map((id) => document.getElementById(id))
-      .filter((el): el is HTMLElement => Boolean(el));
-    if (!els.length) return;
-    const io = new IntersectionObserver(
+    const elements = NAV.map((item) => document.getElementById(item.id)).filter(
+      (element): element is HTMLElement => Boolean(element)
+    );
+
+    if (!elements.length) return;
+
+    const observer = new IntersectionObserver(
       (entries) => {
         const visible = entries
-          .filter((e) => e.isIntersecting)
+          .filter((entry) => entry.isIntersecting)
           .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+
         if (visible?.target.id) setActiveNav(visible.target.id);
       },
-      { rootMargin: '-20% 0px -60% 0px', threshold: [0.2, 0.5] }
+      { rootMargin: '-18% 0px -62% 0px', threshold: [0.2, 0.5] }
     );
-    els.forEach((el) => io.observe(el));
-    return () => io.disconnect();
+
+    elements.forEach((element) => observer.observe(element));
+    return () => observer.disconnect();
   }, []);
 
   const sittingsDone = (track.morning ? 1 : 0) + (track.evening ? 1 : 0);
   const openPersonality = useMemo(
-    () => CONTENT_MIX.find((p) => p.id === openPart) ?? CONTENT_MIX[0],
+    () => CONTENT_MIX.find((part) => part.id === openPart) ?? CONTENT_MIX[0],
     [openPart]
   );
 
   const toggleSitting = (id: 'morning' | 'evening') => {
-    setTrack((t) => ({ ...t, [id]: !t[id] }));
+    setTrack((current) => ({ ...current, [id]: !current[id] }));
   };
 
   return (
-    <div className="space-y-8 sm:space-y-10">
-      <div className="relative overflow-hidden rounded-[1.75rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] shadow-[var(--atelier-shadow-sm)]">
-        <div
-          className="pointer-events-none absolute -right-20 -top-24 h-64 w-64 rounded-full opacity-50"
-          style={{ background: 'radial-gradient(circle, var(--atelier-gold-soft), transparent 68%)' }}
-          aria-hidden
-        />
-        <div className="relative grid gap-6 p-6 sm:p-8 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-          <div className="space-y-4">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
-              Live plan · updated {GROWTH_STRATEGY_UPDATED}
-            </p>
-            <p className="text-sm text-[var(--atelier-muted)]">
-              To change what the scout writes, edit{' '}
-              <code className="text-[var(--atelier-ink)]">data/gargeya-voice.md</code>
-              . There is no score file. You pick what to post.
-            </p>
-            <h2 className="font-headline text-3xl sm:text-4xl font-extrabold tracking-tight text-[var(--atelier-ink)] leading-[1.08]">
-              Make human capability visible.
-              <span className="block text-[var(--atelier-muted)] font-semibold mt-1">
-                Broad thesis. Narrow wedge. Specific proof.
+    <div className="strategy-page space-y-10 sm:space-y-14">
+      <section className="strategy-hero">
+        <div className="strategy-hero-grid">
+          <div className="relative z-10">
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="strategy-badge strategy-badge-live">
+                <span className="strategy-live-dot" />
+                Live operating system
               </span>
-            </h2>
-            <p className="text-[var(--atelier-muted)] leading-relaxed max-w-xl">
-              People find you under someone else&apos;s post. They stay if your small tweets make
-              them feel clearer, kinder, or less alone. Same position for 90 days.
-            </p>
-          </div>
-          <div className="atelier-contrast-panel rounded-2xl border p-5">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--atelier-contrast-accent)] mb-2">
-              Am I happy with this?
-            </p>
-            <p className="font-headline font-bold text-[var(--atelier-contrast-ink)]">{GROWTH_HONEST.title}</p>
-            <p className="text-sm text-[var(--atelier-contrast-muted)] leading-relaxed mt-2">{GROWTH_HONEST.body}</p>
-          </div>
-        </div>
-      </div>
+              <span className="strategy-badge">Updated {GROWTH_STRATEGY_UPDATED}</span>
+            </div>
 
-      <section className="grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
-        <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">{THESIS.eyebrow}</p>
-          <p className="mt-3 text-sm text-[var(--atelier-ink)] leading-relaxed">{THESIS.statement}</p>
-          <p className="mt-3 text-sm text-[var(--atelier-muted)] leading-relaxed">{THESIS.mission}</p>
-        </div>
-        <div className="rounded-[1.5rem] border border-[var(--atelier-gold)]/25 bg-[var(--atelier-gold-soft)]/40 p-5 sm:p-6">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">90-day wedge</p>
-          <p className="mt-3 font-headline font-bold text-[var(--atelier-ink)]">{THESIS.principle}</p>
-          <p className="mt-2 text-sm text-[var(--atelier-muted)] leading-relaxed">{THESIS.wedge}</p>
+            <p className="strategy-kicker mt-8">A 90-day field guide</p>
+            <h2 className="strategy-hero-title mt-3">
+              Become known for
+              <span>one important question.</span>
+            </h2>
+            <p className="strategy-hero-question mt-5">{PROFILE_POSITION.line}</p>
+
+            <div className="mt-7 flex flex-wrap items-center gap-2.5">
+              <Link href="/editorial?workspace=x" className="atelier-btn atelier-btn-gold">
+                Open To-Do <ArrowRight className="h-4 w-4" />
+              </Link>
+              <a href="#today" className="strategy-text-link">
+                Start today <ArrowRight className="h-3.5 w-3.5" />
+              </a>
+            </div>
+          </div>
+
+          <aside className="strategy-hero-aside">
+            <div className="strategy-hero-aside-top">
+              <p className="strategy-kicker">The north star</p>
+              <Target className="h-5 w-5 text-[var(--atelier-gold)]" />
+            </div>
+            <p className="mt-5 text-lg font-semibold leading-relaxed text-[var(--atelier-ink)]">
+              {THESIS.statement}
+            </p>
+            <div className="strategy-hero-rule mt-6">
+              <p className="strategy-kicker">Operating principle</p>
+              <p className="mt-2 font-headline text-xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
+                {THESIS.principle}
+              </p>
+            </div>
+            <div className="mt-6 grid grid-cols-2 gap-2">
+              <HeroStat value="2" label="sittings / day" />
+              <HeroStat value="90" label="days fixed" />
+            </div>
+          </aside>
         </div>
       </section>
 
-      <nav
-        className="sticky top-24 z-20 -mx-1 flex gap-1 overflow-x-auto rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/90 p-1 shadow-[var(--atelier-shadow-sm)] backdrop-blur-md"
-        aria-label="Strategy sections"
-      >
-        {NAV.map((item) => (
-          <a
-            key={item.id}
-            href={`#${item.id}`}
-            className={`shrink-0 rounded-full px-3.5 py-2 text-xs font-bold transition-colors ${
-              activeNav === item.id
-                ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-            }`}
-          >
-            {item.label}
-          </a>
-        ))}
-      </nav>
-
-      <section id="today" className="scroll-mt-36 space-y-5">
-        <SectionHead
-          eyebrow="Do this"
-          title="Today, twice"
-          sub="Check a sitting when you finish. This stays on this device."
-        />
-        <div className="grid sm:grid-cols-2 gap-4">
-          {SITTINGS.map((s) => {
-            const done = s.id === 'morning' ? track.morning : track.evening;
-            const Icon = s.id === 'morning' ? Sun : Sunset;
+      <nav className="strategy-rail" aria-label="Strategy sections">
+        <span className="strategy-rail-label">Guide</span>
+        <div className="flex min-w-max items-center gap-1">
+          {NAV.map((item) => {
+            const active = activeNav === item.id;
             return (
-              <button
-                key={s.id}
-                type="button"
-                onClick={() => toggleSitting(s.id)}
-                className={`text-left rounded-[1.5rem] border p-5 sm:p-6 transition-all ${
-                  done
-                    ? 'border-emerald-500/40 bg-emerald-500/8'
-                    : 'border-[var(--atelier-line)] bg-[var(--atelier-card)] hover:border-[var(--atelier-gold)]/40'
-                }`}
+              <a
+                key={item.id}
+                href={'#' + item.id}
+                aria-current={active ? 'location' : undefined}
+                className={'strategy-rail-link' + (active ? ' is-active' : '')}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex items-center gap-2.5">
-                    <span className="inline-flex h-10 w-10 items-center justify-center rounded-2xl bg-[var(--atelier-gold-soft)] text-[var(--atelier-gold)]">
-                      <Icon className="h-5 w-5" />
-                    </span>
-                    <div>
-                      <p className="font-headline font-bold text-[var(--atelier-ink)]">{s.name}</p>
-                      <p className="text-xs font-bold text-[var(--atelier-gold)]">{s.time}</p>
-                    </div>
-                  </div>
-                  <span
-                    className={`inline-flex h-7 w-7 items-center justify-center rounded-full border ${
-                      done
-                        ? 'border-emerald-500 bg-emerald-500 text-white'
-                        : 'border-[var(--atelier-line)] text-transparent'
-                    }`}
-                    aria-hidden
-                  >
-                    <Check className="h-3.5 w-3.5" />
-                  </span>
-                </div>
-                <p className="mt-4 text-sm text-[var(--atelier-muted)]">{s.why}</p>
-                <ul className="mt-3 space-y-1.5">
-                  {s.do.map((line) => (
-                    <li key={line} className="text-sm text-[var(--atelier-ink)] flex gap-2">
-                      <span className="text-[var(--atelier-gold)] mt-0.5">·</span>
-                      {line}
-                    </li>
-                  ))}
-                </ul>
-                <p className="mt-4 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-faint)]">
-                  About {s.minutes} minutes · tap when done
-                </p>
-              </button>
+                {item.label}
+              </a>
             );
           })}
         </div>
+      </nav>
 
-        <div className="flex flex-wrap items-center gap-3">
-          <ProgressPill label="Sittings" value={`${sittingsDone}/2`} hot={sittingsDone === 2} />
-          <Link href="/editorial?workspace=x" className="atelier-btn atelier-btn-gold !h-9 !px-4 !text-xs">
-            Open To-Do
-          </Link>
-        </div>
-
-        <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
-          <SectionHead
-            eyebrow="Morning card"
-            title="Five yeses and the day is done"
-            compact
-          />
-          <ol className="mt-4 space-y-2">
-            {MORNING_CARD.map((line, i) => (
-              <li key={line} className="text-sm text-[var(--atelier-ink)] flex gap-3">
-                <span className="font-headline font-extrabold text-[var(--atelier-gold)] w-4">
-                  {i + 1}
-                </span>
-                {line}
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
-
-      <section id="profile" className="scroll-mt-36 space-y-5">
-        <SectionHead
-          eyebrow="Once, then leave it"
-          title="What the profile says"
-          sub={PROFILE_POSITION.line}
+      <section id="today" className="strategy-section scroll-mt-36">
+        <SectionIntro
+          number="01"
+          eyebrow="Start here"
+          title="Two sittings. Then leave."
+          sub="The system is designed to fit inside a day, not consume one. Check a sitting when you finish; this progress stays on this device."
         />
-        <div className="grid lg:grid-cols-2 gap-4">
-          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6 space-y-3">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-              Bio
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-[minmax(0,1fr)_18rem]">
+          <div className="grid gap-4 md:grid-cols-2">
+            {SITTINGS.map((sitting, index) => {
+              const done = sitting.id === 'morning' ? track.morning : track.evening;
+              const Icon = sitting.id === 'morning' ? Sun : Sunset;
+
+              return (
+                <button
+                  key={sitting.id}
+                  type="button"
+                  aria-pressed={done}
+                  onClick={() => toggleSitting(sitting.id)}
+                  className={'strategy-sitting' + (done ? ' is-done' : '')}
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <span className="strategy-sitting-index">0{index + 1}</span>
+                    <span className="strategy-sitting-state">
+                      {done ? <Check className="h-3.5 w-3.5" /> : 'Open'}
+                      {done ? 'Done' : ''}
+                    </span>
+                  </div>
+                  <div className="mt-8 flex items-center gap-3">
+                    <span className="strategy-icon-box">
+                      <Icon className="h-5 w-5" />
+                    </span>
+                    <div className="text-left">
+                      <p className="font-headline text-lg font-extrabold tracking-tight text-[var(--atelier-ink)]">
+                        {sitting.name}
+                      </p>
+                      <p className="mt-0.5 text-xs font-bold text-[var(--atelier-gold)]">{sitting.time}</p>
+                    </div>
+                  </div>
+                  <p className="mt-5 text-left text-sm leading-relaxed text-[var(--atelier-muted)]">
+                    {sitting.why}
+                  </p>
+                  <ul className="mt-4 space-y-2 text-left">
+                    {sitting.do.map((line) => (
+                      <li key={line} className="flex gap-2 text-sm leading-relaxed text-[var(--atelier-ink)]">
+                        <span className="mt-1 text-[var(--atelier-gold)]">•</span>
+                        {line}
+                      </li>
+                    ))}
+                  </ul>
+                  <p className="mt-6 flex items-center gap-2 text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-faint)]">
+                    <Timer className="h-3.5 w-3.5" />
+                    {sitting.minutes} minute cap
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+
+          <aside className="strategy-command">
+            <div className="flex items-start justify-between gap-3">
+              <div>
+                <p className="strategy-kicker">Today&apos;s state</p>
+                <p className="mt-2 font-headline text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
+                  {sittingsDone}/2
+                </p>
+              </div>
+              <Sparkles className="h-5 w-5 text-[var(--atelier-gold)]" />
+            </div>
+            <div className="strategy-progress mt-5" aria-label={sittingsDone + ' of 2 sittings complete'}>
+              <span style={{ width: (sittingsDone / 2) * 100 + '%' }} />
+            </div>
+            <p className="mt-5 text-sm leading-relaxed text-[var(--atelier-muted)]">
+              Pick the strongest room. Add something useful. Stop before the feed starts choosing for you.
             </p>
-            <pre className="whitespace-pre-wrap font-sans text-sm text-[var(--atelier-ink)] leading-relaxed">
-              {PROFILE_POSITION.bio}
-            </pre>
-            <p className="text-sm text-[var(--atelier-muted)]">
-              Name: {PROFILE_POSITION.name}. Link: {PROFILE_POSITION.link}.
+            <Link href="/editorial?workspace=x" className="atelier-btn atelier-btn-primary mt-6 w-full">
+              Choose a pack <ArrowRight className="h-4 w-4" />
+            </Link>
+            <div className="strategy-mini-note mt-4">
+              <Timer className="h-4 w-4 shrink-0 text-[var(--atelier-gold)]" />
+              <span>Two short sessions beat one anxious scroll.</span>
+            </div>
+          </aside>
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1.1fr_0.9fr]">
+          <div className="strategy-surface">
+            <SurfaceHeading eyebrow="After the sitting" title="Five quiet checks" icon={<Check className="h-4 w-4" />} />
+            <ol className="mt-5 grid gap-3 sm:grid-cols-2">
+              {MORNING_CARD.map((line, index) => (
+                <li key={line} className="strategy-check-row">
+                  <span>{index + 1}</span>
+                  <p>{line}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+
+          <div className="strategy-surface strategy-surface-accent">
+            <SurfaceHeading eyebrow="The rule" title="Do the work, then leave." icon={<Lightbulb className="h-4 w-4" />} />
+            <p className="mt-4 text-sm leading-relaxed text-[var(--atelier-muted)]">
+              {GROWTH_HONEST.body}
             </p>
-            <p className="text-sm text-[var(--atelier-ink)]">{PROFILE_POSITION.pin}</p>
-            <div className="mt-4 rounded-2xl bg-[var(--atelier-paper)]/70 border border-[var(--atelier-line)] p-4">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">Primary audience</p>
-              <ul className="mt-2 space-y-1.5">
-                {AUDIENCE.map((person) => (
-                  <li key={person} className="text-sm text-[var(--atelier-muted)]">{person}</li>
-                ))}
-              </ul>
+            <div className="strategy-quote mt-5">
+              <p className="text-sm font-semibold leading-relaxed text-[var(--atelier-ink)]">
+                {GROWTH_HONEST.title}
+              </p>
             </div>
           </div>
-          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6 space-y-3">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-              Photo and split
-            </p>
-            <p className="text-sm text-[var(--atelier-ink)] leading-relaxed">{PROFILE_POSITION.split}</p>
-            <p className="text-sm text-[var(--atelier-muted)] leading-relaxed">{PROFILE_POSITION.photo}</p>
+        </div>
+      </section>
+
+      <section id="profile" className="strategy-section scroll-mt-36">
+        <SectionIntro
+          number="02"
+          eyebrow="Identity"
+          title="Make the question easy to remember."
+          sub="The profile is not a second strategy. It is the shortest, clearest doorway into the territory."
+        />
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+          <div className="strategy-profile-card">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <p className="strategy-kicker">The profile line</p>
+                <p className="mt-4 max-w-2xl font-headline text-2xl font-extrabold leading-tight tracking-tight text-[var(--atelier-ink)] sm:text-3xl">
+                  {PROFILE_POSITION.line}
+                </p>
+              </div>
+              <Users className="hidden h-6 w-6 shrink-0 text-[var(--atelier-gold)] sm:block" />
+            </div>
+
+            <div className="mt-8 grid gap-5 border-t border-[var(--atelier-line)] pt-5 sm:grid-cols-2">
+              <div>
+                <p className="strategy-kicker">Bio</p>
+                <div className="mt-3 space-y-1 text-sm leading-relaxed text-[var(--atelier-ink)]">
+                  {PROFILE_POSITION.bio.split('\n').map((line) => (
+                    <p key={line}>{line}</p>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="strategy-kicker">Pinned signal</p>
+                <p className="mt-3 text-sm leading-relaxed text-[var(--atelier-muted)]">{PROFILE_POSITION.pin}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="strategy-surface">
+            <SurfaceHeading eyebrow="Who this is for" title="A narrow audience is a kind one." icon={<Users className="h-4 w-4" />} />
+            <ul className="mt-5 space-y-3">
+              {AUDIENCE.map((person) => (
+                <li key={person} className="flex gap-3 text-sm leading-relaxed text-[var(--atelier-ink)]">
+                  <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-[var(--atelier-gold)]" />
+                  {person}
+                </li>
+              ))}
+            </ul>
+            <div className="strategy-subtle-note mt-6">
+              <p className="strategy-kicker">The split</p>
+              <p className="mt-2 text-sm leading-relaxed text-[var(--atelier-muted)]">{PROFILE_POSITION.split}</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section id="mix" className="scroll-mt-36 space-y-5">
-        <SectionHead eyebrow="The numbers" title="What a day looks like" />
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          {DAILY_COUNTS.map((c) => (
-            <div
-              key={c.label}
-              className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4 sm:p-5"
-            >
-              <p className="font-headline text-4xl font-extrabold text-[var(--atelier-gold)] tracking-tight">
-                {c.n}
-              </p>
-              <p className="font-headline font-bold text-[var(--atelier-ink)] mt-1">{c.label}</p>
-              <p className="text-xs text-[var(--atelier-muted)] mt-1.5 leading-relaxed">{c.hint}</p>
+      <section id="mix" className="strategy-section scroll-mt-36">
+        <SectionIntro
+          number="03"
+          eyebrow="Content system"
+          title="One strong signal, four ways to carry it."
+          sub="The thesis stays fixed. The content type changes the doorway into it."
+        />
+
+        <div className="strategy-metrics mt-6">
+          {DAILY_COUNTS.map((count) => (
+            <div key={count.label} className="strategy-metric">
+              <p className="strategy-metric-number">{count.n}</p>
+              <p className="font-headline font-bold text-[var(--atelier-ink)]">{count.label}</p>
+              <p className="mt-1.5 text-xs leading-relaxed text-[var(--atelier-muted)]">{count.hint}</p>
             </div>
           ))}
         </div>
 
-        <div className="grid lg:grid-cols-[0.9fr_1.1fr] gap-4">
-          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6 space-y-4">
-            <SectionHead eyebrow="Reply or quote" title="Almost always reply" compact />
-            <div className="flex gap-3">
-              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--atelier-gold-soft)] text-[var(--atelier-gold)]">
-                <MessageCircle className="h-5 w-5" />
-              </span>
-              <p className="text-sm text-[var(--atelier-ink)] leading-relaxed">{REPLY_OR_QUOTE.default}</p>
+        <div className="mt-4 grid gap-4 lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="strategy-surface">
+            <SurfaceHeading eyebrow="Reply or quote" title="Almost always reply." icon={<MessageCircle className="h-4 w-4" />} />
+            <div className="mt-5 space-y-5">
+              <SignalRow icon={<MessageCircle className="h-4 w-4" />} text={REPLY_OR_QUOTE.default} />
+              <SignalRow icon={<Quote className="h-4 w-4" />} text={REPLY_OR_QUOTE.once} muted />
             </div>
-            <div className="flex gap-3">
-              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-[var(--atelier-gold-soft)] text-[var(--atelier-gold)]">
-                <Quote className="h-5 w-5" />
-              </span>
-              <p className="text-sm text-[var(--atelier-muted)] leading-relaxed">{REPLY_OR_QUOTE.once}</p>
+            <div className="strategy-warning mt-5">
+              <Ban className="h-4 w-4 shrink-0" />
+              <p>{REPLY_OR_QUOTE.never}</p>
             </div>
-            <p className="text-sm font-semibold text-[var(--atelier-ink)]">{REPLY_OR_QUOTE.never}</p>
           </div>
 
-          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
-            <SectionHead eyebrow="The original mix" title="Tap a content type" compact />
-            <div className="flex flex-wrap gap-1.5 mt-3">
-              {CONTENT_MIX.map((p) => (
-                <button
-                  key={p.id}
-                  type="button"
-                  onClick={() => setOpenPart(p.id)}
-                  className={`rounded-full px-3 py-1.5 text-xs font-bold transition-colors ${
-                    openPart === p.id
-                      ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                      : 'border border-[var(--atelier-line)] text-[var(--atelier-muted)] hover:text-[var(--atelier-ink)]'
-                  }`}
-                >
-                  {p.name}
-                </button>
-              ))}
+          <div className="strategy-surface">
+            <SurfaceHeading eyebrow="The original mix" title="Choose the doorway." icon={<Sparkles className="h-4 w-4" />} />
+            <div className="mt-5 flex flex-wrap gap-2">
+              {CONTENT_MIX.map((part) => {
+                const active = openPart === part.id;
+                return (
+                  <button
+                    key={part.id}
+                    type="button"
+                    aria-pressed={active}
+                    onClick={() => setOpenPart(part.id)}
+                    className={'strategy-filter' + (active ? ' is-active' : '')}
+                  >
+                    {part.name}
+                  </button>
+                );
+              })}
             </div>
-            <div className="mt-4 rounded-2xl bg-[var(--atelier-paper)]/70 border border-[var(--atelier-line)] p-4">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-                {openPersonality.feel}
-              </p>
-              <p className="mt-1.5 text-sm text-[var(--atelier-ink)] leading-relaxed">
+            <div className="strategy-lens mt-5">
+              <p className="strategy-kicker">{openPersonality.feel}</p>
+              <p className="mt-3 text-base font-semibold leading-relaxed text-[var(--atelier-ink)]">
                 {openPersonality.believe}
               </p>
-              <blockquote className="mt-3 text-sm italic text-[var(--atelier-muted)] leading-relaxed border-l-2 border-[var(--atelier-gold)]/50 pl-3">
+              <blockquote className="mt-5 border-l-2 border-[var(--atelier-gold)] pl-4 text-sm italic leading-relaxed text-[var(--atelier-muted)]">
                 {openPersonality.example}
               </blockquote>
             </div>
@@ -386,211 +438,280 @@ export function XGrowthStrategy() {
         </div>
       </section>
 
-      <section id="write" className="scroll-mt-36 space-y-5">
-        <SectionHead
-          eyebrow="Voice and structure"
-          title="Make the reader do something"
-          sub="A strong post gives people a reason to repost, save, reply, or follow."
+      <section id="write" className="strategy-section scroll-mt-36">
+        <SectionIntro
+          number="04"
+          eyebrow="Writing mechanics"
+          title="Give the reader somewhere to go."
+          sub="A good post does not end at the statement. It creates a useful next move."
         />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+
+        <div className="strategy-flow mt-6">
           {POST_SHAPE.map((part) => (
-            <article key={part.step} className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4">
-              <p className="font-headline text-2xl font-extrabold text-[var(--atelier-gold)]">{part.step}</p>
-              <p className="font-headline font-bold text-[var(--atelier-ink)] mt-1">{part.title}</p>
-              <p className="text-sm text-[var(--atelier-muted)] mt-1.5 leading-relaxed">{part.text}</p>
-            </article>
-          ))}
-        </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {POST_ACTIONS.map((item) => (
-            <article key={item.action} className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/70 p-4">
-              <p className="font-headline font-bold text-[var(--atelier-ink)]">{item.action}</p>
-              <p className="text-sm text-[var(--atelier-muted)] mt-1.5 leading-relaxed">{item.reason}</p>
-            </article>
-          ))}
-        </div>
-        <div className="grid sm:grid-cols-2 gap-3">
-          {WRITE_RULES.map((r) => (
-            <div
-              key={r.good}
-              className="grid grid-cols-1 gap-2 rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4"
-            >
-              <p className="text-sm text-emerald-700 dark:text-emerald-400 flex gap-2">
-                <Heart className="h-4 w-4 shrink-0 mt-0.5" />
-                {r.good}
+            <article key={part.step} className="strategy-flow-step">
+              <span className="strategy-flow-number">{part.step}</span>
+              <p className="mt-5 font-headline text-lg font-extrabold tracking-tight text-[var(--atelier-ink)]">
+                {part.title}
               </p>
-              <p className="text-sm text-[var(--atelier-faint)] flex gap-2">
-                <Ban className="h-4 w-4 shrink-0 mt-0.5" />
-                {r.bad}
+              <p className="mt-2 text-sm leading-relaxed text-[var(--atelier-muted)]">{part.text}</p>
+            </article>
+          ))}
+        </div>
+
+        <div className="mt-4 grid gap-4 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="strategy-surface">
+            <SurfaceHeading eyebrow="One clear action" title="What should this post earn?" icon={<Heart className="h-4 w-4" />} />
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {POST_ACTIONS.map((action) => (
+                <div key={action.action} className="strategy-action-card">
+                  <p className="font-headline font-bold text-[var(--atelier-ink)]">{action.action}</p>
+                  <p className="mt-1.5 text-sm leading-relaxed text-[var(--atelier-muted)]">{action.reason}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="strategy-surface strategy-surface-accent">
+            <SurfaceHeading eyebrow="The follow-through" title="Useful beats polished." icon={<ArrowRight className="h-4 w-4" />} />
+            <ol className="mt-5 space-y-3">
+              {HOW_TO_FOLLOW.map((item) => (
+                <li key={item.step} className="flex gap-3">
+                  <span className="strategy-mini-number">{item.step}</span>
+                  <div>
+                    <p className="font-headline text-sm font-bold text-[var(--atelier-ink)]">{item.title}</p>
+                    <p className="mt-1 text-sm leading-relaxed text-[var(--atelier-muted)]">{item.text}</p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-3 sm:grid-cols-2">
+          {WRITE_RULES.map((rule) => (
+            <div key={rule.good} className="strategy-rule-card">
+              <p className="strategy-rule-good">
+                <Heart className="h-4 w-4 shrink-0" />
+                {rule.good}
+              </p>
+              <p className="strategy-rule-bad">
+                <X className="h-4 w-4 shrink-0" />
+                {rule.bad}
               </p>
             </div>
           ))}
         </div>
-        <ol className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
-          {HOW_TO_FOLLOW.map((h) => (
-            <li
-              key={h.step}
-              className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4"
-            >
-              <p className="font-headline text-2xl font-extrabold text-[var(--atelier-gold)]">{h.step}</p>
-              <p className="font-headline font-bold text-[var(--atelier-ink)] mt-1">{h.title}</p>
-              <p className="text-sm text-[var(--atelier-muted)] mt-1.5 leading-relaxed">{h.text}</p>
-            </li>
-          ))}
-        </ol>
       </section>
 
-      <section id="week" className="scroll-mt-36 space-y-5">
-        <SectionHead
-          eyebrow="This week"
-          title="A sustainable weekly cadence"
-          sub="Consistency comes from one strong original, useful replies, specific Edudojo proof, and a weekly review."
+      <section id="week" className="strategy-section scroll-mt-36">
+        <SectionIntro
+          number="05"
+          eyebrow="The 90-day wedge"
+          title="Repeat what people remember."
+          sub="Measure qualified attention, learn which angles travel, and let the thesis compound."
         />
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-          {WEEKLY_CADENCE.map((d) => (
-            <article
-              key={d.label + d.text}
-              className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4"
-            >
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-                {d.label}
+
+        <div className="strategy-timeline mt-6">
+          {NINETY_DAYS.map((phase, index) => (
+            <article key={phase.range} className="strategy-timeline-card">
+              <span className="strategy-timeline-index">0{index + 1}</span>
+              <p className="strategy-kicker mt-6">{phase.range}</p>
+              <p className="mt-3 font-headline text-xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
+                {phase.job}
               </p>
-              <p className="mt-3 text-sm text-[var(--atelier-muted)] leading-relaxed">{d.text}</p>
             </article>
           ))}
         </div>
-        <div className="grid md:grid-cols-2 gap-4">
-          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 space-y-3">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-              Weekly
-            </p>
-            <ul className="space-y-2">
-              {WEEKLY_CHECK.map((w) => (
-                <li key={w.item} className="text-sm text-[var(--atelier-ink)] leading-relaxed">
-                  <span className="font-semibold">{w.item}.</span> {w.done}
-                </li>
+
+        <div className="mt-4 grid gap-4 xl:grid-cols-[1.1fr_0.9fr]">
+          <div className="strategy-surface">
+            <SurfaceHeading eyebrow="Weekly operating rhythm" title="A cadence you can keep." icon={<Timer className="h-4 w-4" />} />
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {WEEKLY_CADENCE.map((item, index) => (
+                <div key={item.label + item.text} className="strategy-cadence-row">
+                  <span className="strategy-mini-number">0{index + 1}</span>
+                  <div>
+                    <p className="strategy-kicker">{item.label}</p>
+                    <p className="mt-1.5 text-sm leading-relaxed text-[var(--atelier-ink)]">{item.text}</p>
+                  </div>
+                </div>
               ))}
-            </ul>
+            </div>
           </div>
-          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 space-y-3">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-              Monthly
-            </p>
-            <ul className="space-y-2">
-              {MONTHLY_CHECK.map((m) => (
-                <li key={m.week} className="text-sm text-[var(--atelier-ink)] leading-relaxed">
-                  <span className="font-semibold">{m.week}.</span> {m.do}
-                </li>
-              ))}
-            </ul>
+
+          <div className="strategy-surface">
+            <SurfaceHeading eyebrow="Review without spiraling" title="Keep the mission fixed." icon={<Target className="h-4 w-4" />} />
+            <div className="mt-5 space-y-4">
+              <ReviewList items={WEEKLY_CHECK} />
+              <div className="strategy-subtle-note">
+                <p className="strategy-kicker">Milestones</p>
+                <div className="mt-3 space-y-3">
+                  {MONTHLY_CHECK.map((item) => (
+                    <p key={item.week} className="text-sm leading-relaxed text-[var(--atelier-muted)]">
+                      <span className="font-semibold text-[var(--atelier-ink)]">{item.week}.</span> {item.do}
+                    </p>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="grid sm:grid-cols-3 gap-3">
-          {NINETY_DAYS.map((p) => (
-            <article
-              key={p.range}
-              className="rounded-[1.35rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-4"
-            >
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-                {p.range}
-              </p>
-              <p className="mt-2 text-sm text-[var(--atelier-ink)] leading-relaxed">{p.job}</p>
-            </article>
-          ))}
         </div>
       </section>
 
-      <section id="rooms" className="scroll-mt-36 space-y-5 pb-6">
-        <SectionHead eyebrow="Where" title="Walk in. Walk past." />
-        <div className="grid sm:grid-cols-2 gap-4">
-          <div className="rounded-[1.5rem] border border-emerald-500/25 bg-emerald-500/5 p-5 sm:p-6">
-            <p className="inline-flex items-center gap-2 font-headline font-bold text-[var(--atelier-ink)]">
-              <DoorOpen className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
-              Enter
-            </p>
-            <ul className="mt-3 space-y-2">
-              {ENTER_ROOMS.map((line) => (
-                <li key={line} className="text-sm text-[var(--atelier-ink)] leading-relaxed">
-                  {line}
+      <section id="rooms" className="strategy-section scroll-mt-36 pb-4">
+        <SectionIntro
+          number="06"
+          eyebrow="Room selection"
+          title="Walk in. Add something. Walk out."
+          sub="Borrow big rooms for discovery, but keep the contribution grounded in your territory."
+        />
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-2">
+          <div className="strategy-room strategy-room-enter">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-headline text-xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
+                Enter
+              </p>
+              <DoorOpen className="h-5 w-5 text-[var(--atelier-gold)]" />
+            </div>
+            <ul className="mt-5 space-y-3">
+              {ENTER_ROOMS.map((room) => (
+                <li key={room} className="flex gap-3 text-sm leading-relaxed text-[var(--atelier-ink)]">
+                  <ArrowRight className="mt-0.5 h-4 w-4 shrink-0 text-[var(--atelier-gold)]" />
+                  {room}
                 </li>
               ))}
             </ul>
           </div>
-          <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
-            <p className="inline-flex items-center gap-2 font-headline font-bold text-[var(--atelier-ink)]">
-              <Ban className="h-4 w-4 text-[var(--atelier-faint)]" />
-              Skip
-            </p>
-            <ul className="mt-3 space-y-2">
-              {SKIP_ROOMS.map((line) => (
-                <li key={line} className="text-sm text-[var(--atelier-muted)] leading-relaxed">
-                  {line}
+
+          <div className="strategy-room strategy-room-skip">
+            <div className="flex items-center justify-between gap-3">
+              <p className="font-headline text-xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
+                Walk past
+              </p>
+              <Ban className="h-5 w-5 text-[var(--atelier-faint)]" />
+            </div>
+            <ul className="mt-5 space-y-3">
+              {SKIP_ROOMS.map((room) => (
+                <li key={room} className="flex gap-3 text-sm leading-relaxed text-[var(--atelier-muted)]">
+                  <X className="mt-0.5 h-4 w-4 shrink-0 text-[var(--atelier-faint)]" />
+                  {room}
                 </li>
               ))}
             </ul>
           </div>
         </div>
-        <div className="rounded-[1.5rem] border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-5 sm:p-6">
-          <p className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-gold)]">
-            Stop for 90 days
-          </p>
-          <ul className="mt-3 grid sm:grid-cols-2 gap-2">
+
+        <div className="strategy-stop-panel mt-4">
+          <div>
+            <p className="strategy-kicker">Stop for 90 days</p>
+            <p className="mt-2 font-headline text-xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
+              Do not let a quiet week rewrite the strategy.
+            </p>
+          </div>
+          <ul className="grid gap-2 sm:grid-cols-2">
             {STOP_FOR_NINETY.map((line) => (
-              <li key={line} className="text-sm text-[var(--atelier-muted)] leading-relaxed flex gap-2">
-                <Ban className="h-4 w-4 shrink-0 mt-0.5 text-[var(--atelier-faint)]" />
+              <li key={line} className="flex gap-2 text-sm leading-relaxed text-[var(--atelier-muted)]">
+                <Ban className="mt-0.5 h-4 w-4 shrink-0 text-[var(--atelier-faint)]" />
                 {line}
               </li>
             ))}
           </ul>
         </div>
-        <p className="text-xs text-[var(--atelier-faint)] flex items-center gap-2">
+
+        <p className="strategy-footer-note mt-5">
           <AlarmClock className="h-3.5 w-3.5" />
-          Scout writes every 4 hours. You sit at 11:30 and 19:00 and pick. Skip leftovers.
+          Scout writes every 4 hours. You sit at 11:30 and 19:00, pick what is worth carrying, and skip leftovers.
         </p>
       </section>
     </div>
   );
 }
 
-function SectionHead({
+function SectionIntro({
+  number,
   eyebrow,
   title,
   sub,
-  compact,
 }: {
+  number: string;
   eyebrow: string;
   title: string;
-  sub?: string;
-  compact?: boolean;
+  sub: string;
 }) {
   return (
-    <div className={compact ? '' : 'space-y-1'}>
-      <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)]">
-        {eyebrow}
-      </p>
-      <h3
-        className={`font-headline font-extrabold tracking-tight text-[var(--atelier-ink)] ${
-          compact ? 'text-xl' : 'text-2xl sm:text-3xl'
-        }`}
-      >
-        {title}
-      </h3>
-      {sub ? <p className="text-sm text-[var(--atelier-muted)] max-w-xl leading-relaxed">{sub}</p> : null}
+    <div className="strategy-section-intro">
+      <span className="strategy-section-number">{number}</span>
+      <div>
+        <p className="strategy-kicker">{eyebrow}</p>
+        <h3 className="mt-2 font-headline text-2xl font-extrabold tracking-tight text-[var(--atelier-ink)] sm:text-3xl">
+          {title}
+        </h3>
+        <p className="mt-2 max-w-2xl text-sm leading-relaxed text-[var(--atelier-muted)]">{sub}</p>
+      </div>
     </div>
   );
 }
 
-function ProgressPill({ label, value, hot }: { label: string; value: string; hot?: boolean }) {
+function SurfaceHeading({
+  eyebrow,
+  title,
+  icon,
+}: {
+  eyebrow: string;
+  title: string;
+  icon: ReactNode;
+}) {
   return (
-    <span
-      className={`inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-xs font-bold ${
-        hot
-          ? 'border-emerald-500/40 bg-emerald-500/10 text-emerald-800 dark:text-emerald-300'
-          : 'border-[var(--atelier-line)] bg-[var(--atelier-card)] text-[var(--atelier-ink)]'
-      }`}
-    >
-      <Sparkles className="h-3.5 w-3.5 text-[var(--atelier-gold)]" />
-      {label} {value}
-    </span>
+    <div className="flex items-start justify-between gap-3">
+      <div>
+        <p className="strategy-kicker">{eyebrow}</p>
+        <p className="mt-2 font-headline text-lg font-extrabold tracking-tight text-[var(--atelier-ink)]">
+          {title}
+        </p>
+      </div>
+      <span className="strategy-heading-icon">{icon}</span>
+    </div>
+  );
+}
+
+function HeroStat({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="strategy-hero-stat">
+      <p className="font-headline text-2xl font-extrabold tracking-tight text-[var(--atelier-ink)]">{value}</p>
+      <p className="mt-0.5 text-[0.65rem] font-bold uppercase tracking-[0.14em] text-[var(--atelier-muted)]">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function SignalRow({ icon, text, muted }: { icon: ReactNode; text: string; muted?: boolean }) {
+  return (
+    <div className="flex gap-3">
+      <span className="strategy-heading-icon shrink-0">{icon}</span>
+      <p className={'text-sm leading-relaxed ' + (muted ? 'text-[var(--atelier-muted)]' : 'text-[var(--atelier-ink)]')}>
+        {text}
+      </p>
+    </div>
+  );
+}
+
+function ReviewList({
+  items,
+}: {
+  items: readonly { item: string; done: string }[];
+}) {
+  return (
+    <ul className="space-y-3">
+      {items.map((review) => (
+        <li key={review.item} className="flex gap-3 text-sm leading-relaxed text-[var(--atelier-muted)]">
+          <Check className="mt-0.5 h-4 w-4 shrink-0 text-[var(--atelier-gold)]" />
+          <span>
+            <strong className="text-[var(--atelier-ink)]">{review.item}.</strong> {review.done}
+          </span>
+        </li>
+      ))}
+    </ul>
   );
 }

@@ -1031,6 +1031,691 @@ a.board-card {
   border-color: var(--atelier-contrast-border);
 }
 
+
+/* Strategy field guide */
+.strategy-page {
+  --strategy-ease: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.strategy-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--atelier-line);
+  border-radius: 2rem;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--atelier-card) 88%, transparent), var(--atelier-paper));
+  box-shadow: var(--atelier-shadow);
+}
+
+.strategy-hero::before {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(to right, color-mix(in srgb, var(--atelier-line) 65%, transparent) 1px, transparent 1px),
+    linear-gradient(to bottom, color-mix(in srgb, var(--atelier-line) 65%, transparent) 1px, transparent 1px);
+  background-size: 3.75rem 3.75rem;
+  content: '';
+  mask-image: linear-gradient(135deg, black 0%, transparent 68%);
+  opacity: 0.4;
+}
+
+.strategy-hero::after {
+  position: absolute;
+  right: -8rem;
+  top: -10rem;
+  z-index: -1;
+  width: 28rem;
+  height: 28rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, var(--atelier-gold-soft), transparent 68%);
+  content: '';
+  opacity: 0.9;
+}
+
+.strategy-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(18rem, 0.85fr);
+  gap: 2rem;
+  align-items: stretch;
+  padding: clamp(1.5rem, 4vw, 3rem);
+}
+
+.strategy-kicker {
+  color: var(--atelier-gold);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.2em;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+
+.strategy-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2rem;
+  padding: 0.45rem 0.75rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--atelier-paper) 68%, transparent);
+  color: var(--atelier-muted);
+  font-size: 0.68rem;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+.strategy-badge-live {
+  border-color: color-mix(in srgb, var(--atelier-gold) 45%, var(--atelier-line));
+  color: var(--atelier-ink);
+}
+
+.strategy-live-dot {
+  width: 0.42rem;
+  height: 0.42rem;
+  border-radius: 999px;
+  background: var(--atelier-gold);
+  box-shadow: 0 0 0 0.25rem color-mix(in srgb, var(--atelier-gold) 16%, transparent);
+}
+
+.strategy-hero-title {
+  max-width: 44rem;
+  color: var(--atelier-ink);
+  font-family: var(--font-headline);
+  font-size: clamp(2.5rem, 6vw, 5.75rem);
+  font-weight: 850;
+  letter-spacing: -0.065em;
+  line-height: 0.95;
+}
+
+.strategy-hero-title span {
+  display: block;
+  color: var(--atelier-muted);
+  font-weight: 650;
+}
+
+.strategy-hero-question {
+  max-width: 38rem;
+  color: var(--atelier-muted);
+  font-size: clamp(1rem, 1.5vw, 1.2rem);
+  line-height: 1.65;
+}
+
+.strategy-text-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  min-height: 2.75rem;
+  padding: 0.6rem 0.2rem;
+  color: var(--atelier-muted);
+  font-size: 0.82rem;
+  font-weight: 750;
+  transition: color 160ms ease-out, transform 160ms ease-out;
+}
+
+.strategy-text-link:hover {
+  color: var(--atelier-ink);
+  transform: translateX(0.15rem);
+}
+
+.strategy-hero-aside {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 20rem;
+  padding: clamp(1.15rem, 3vw, 1.75rem);
+  border: 1px solid color-mix(in srgb, var(--atelier-gold) 42%, var(--atelier-line));
+  border-radius: 1.5rem;
+  background: color-mix(in srgb, var(--atelier-paper) 74%, transparent);
+  backdrop-filter: blur(18px);
+}
+
+.strategy-hero-aside-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.strategy-hero-rule {
+  padding-top: 1rem;
+  border-top: 1px solid var(--atelier-line);
+}
+
+.strategy-hero-stat {
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--atelier-card) 60%, transparent);
+}
+
+.strategy-rail {
+  position: sticky;
+  top: 5.75rem;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  overflow-x: auto;
+  padding: 0.35rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--atelier-paper) 88%, transparent);
+  box-shadow: var(--atelier-shadow-sm);
+  backdrop-filter: blur(18px);
+  scrollbar-width: none;
+}
+
+.strategy-rail::-webkit-scrollbar {
+  display: none;
+}
+
+.strategy-rail-label {
+  padding: 0 0.8rem;
+  color: var(--atelier-faint);
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.strategy-rail-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.3rem;
+  padding: 0.55rem 0.85rem;
+  border-radius: 999px;
+  color: var(--atelier-muted);
+  font-size: 0.73rem;
+  font-weight: 800;
+  white-space: nowrap;
+  transition: background-color 160ms ease-out, color 160ms ease-out, transform 160ms ease-out;
+}
+
+.strategy-rail-link:hover {
+  color: var(--atelier-ink);
+  transform: translateY(-1px);
+}
+
+.strategy-rail-link.is-active {
+  background: var(--atelier-ink);
+  color: var(--atelier-card);
+}
+
+.strategy-section-intro {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-start;
+}
+
+.strategy-section-number {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid color-mix(in srgb, var(--atelier-gold) 45%, var(--atelier-line));
+  border-radius: 0.9rem;
+  background: color-mix(in srgb, var(--atelier-gold-soft) 75%, transparent);
+  color: var(--atelier-gold);
+  font-family: var(--font-headline);
+  font-size: 0.85rem;
+  font-weight: 850;
+}
+
+.strategy-surface,
+.strategy-profile-card,
+.strategy-command,
+.strategy-room,
+.strategy-stop-panel {
+  border: 1px solid var(--atelier-line);
+  border-radius: 1.5rem;
+  background: var(--atelier-card);
+  box-shadow: var(--atelier-shadow-sm);
+}
+
+.strategy-surface,
+.strategy-profile-card,
+.strategy-command,
+.strategy-room {
+  padding: clamp(1.15rem, 2.5vw, 1.6rem);
+}
+
+.strategy-surface-accent {
+  border-color: color-mix(in srgb, var(--atelier-gold) 38%, var(--atelier-line));
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--atelier-gold-soft) 85%, transparent), var(--atelier-card));
+}
+
+.strategy-heading-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border: 1px solid color-mix(in srgb, var(--atelier-gold) 38%, var(--atelier-line));
+  border-radius: 0.7rem;
+  color: var(--atelier-gold);
+}
+
+.strategy-sitting {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  padding: clamp(1.15rem, 2.5vw, 1.6rem);
+  border: 1px solid var(--atelier-line);
+  border-radius: 1.5rem;
+  background: var(--atelier-card);
+  box-shadow: var(--atelier-shadow-sm);
+  text-align: left;
+  transition: transform 180ms var(--strategy-ease), border-color 180ms ease-out, box-shadow 180ms ease-out;
+}
+
+.strategy-sitting::after {
+  position: absolute;
+  right: -3rem;
+  top: -3rem;
+  width: 10rem;
+  height: 10rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, var(--atelier-gold-soft), transparent 68%);
+  content: '';
+  opacity: 0;
+  transition: opacity 180ms ease-out;
+}
+
+.strategy-sitting.is-done {
+  border-color: color-mix(in srgb, var(--atelier-gold) 55%, var(--atelier-line));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--atelier-gold-soft) 86%, transparent), var(--atelier-card));
+}
+
+.strategy-sitting.is-done::after {
+  opacity: 1;
+}
+
+.strategy-sitting-index {
+  position: relative;
+  z-index: 1;
+  color: var(--atelier-gold);
+  font-family: var(--font-headline);
+  font-size: 0.82rem;
+  font-weight: 850;
+}
+
+.strategy-sitting-state {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  color: var(--atelier-faint);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.strategy-sitting.is-done .strategy-sitting-state {
+  color: var(--atelier-gold);
+}
+
+.strategy-icon-box {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  border-radius: 1rem;
+  background: var(--atelier-gold-soft);
+  color: var(--atelier-gold);
+}
+
+.strategy-command {
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--atelier-contrast) 92%, transparent), var(--atelier-paper));
+  border-color: color-mix(in srgb, var(--atelier-contrast-border) 62%, var(--atelier-line));
+}
+
+.strategy-progress {
+  height: 0.45rem;
+  overflow: hidden;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--atelier-ink) 12%, transparent);
+}
+
+.strategy-progress span {
+  display: block;
+  height: 100%;
+  min-width: 0.45rem;
+  border-radius: inherit;
+  background: var(--atelier-gold);
+  transition: width 220ms var(--strategy-ease);
+}
+
+.strategy-mini-note,
+.strategy-subtle-note,
+.strategy-quote {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--atelier-paper) 58%, transparent);
+  color: var(--atelier-muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+.strategy-check-row {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  color: var(--atelier-ink);
+  font-size: 0.85rem;
+  line-height: 1.45;
+}
+
+.strategy-check-row span,
+.strategy-mini-number {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  width: 1.55rem;
+  height: 1.55rem;
+  border-radius: 0.55rem;
+  background: var(--atelier-gold-soft);
+  color: var(--atelier-gold);
+  font-size: 0.68rem;
+  font-weight: 850;
+}
+
+.strategy-profile-card {
+  background:
+    radial-gradient(circle at 100% 0%, var(--atelier-gold-soft), transparent 34%),
+    var(--atelier-card);
+}
+
+.strategy-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.strategy-metric {
+  min-width: 0;
+  padding: 1rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 1.2rem;
+  background: color-mix(in srgb, var(--atelier-card) 80%, var(--atelier-paper));
+}
+
+.strategy-metric-number {
+  color: var(--atelier-gold);
+  font-family: var(--font-headline);
+  font-size: clamp(1.8rem, 4vw, 2.8rem);
+  font-weight: 850;
+  letter-spacing: -0.06em;
+  line-height: 1;
+}
+
+.strategy-warning {
+  display: flex;
+  gap: 0.6rem;
+  align-items: flex-start;
+  padding: 0.85rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--atelier-gold) 34%, var(--atelier-line));
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--atelier-gold-soft) 60%, transparent);
+  color: var(--atelier-muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+}
+
+.strategy-filter {
+  min-height: 2.35rem;
+  padding: 0.55rem 0.9rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 999px;
+  color: var(--atelier-muted);
+  font-size: 0.75rem;
+  font-weight: 800;
+  transition: background-color 160ms ease-out, color 160ms ease-out, border-color 160ms ease-out, transform 160ms ease-out;
+}
+
+.strategy-filter:hover {
+  border-color: color-mix(in srgb, var(--atelier-gold) 55%, var(--atelier-line));
+  color: var(--atelier-ink);
+  transform: translateY(-1px);
+}
+
+.strategy-filter.is-active {
+  border-color: var(--atelier-ink);
+  background: var(--atelier-ink);
+  color: var(--atelier-card);
+}
+
+.strategy-lens {
+  padding: 1rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 1.2rem;
+  background: color-mix(in srgb, var(--atelier-paper) 68%, transparent);
+}
+
+.strategy-flow {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.strategy-flow-step {
+  position: relative;
+  min-height: 10.5rem;
+  padding: 1rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 1.25rem;
+  background: var(--atelier-card);
+}
+
+.strategy-flow-step:not(:last-child)::after {
+  position: absolute;
+  right: -0.65rem;
+  top: 1.75rem;
+  width: 1.25rem;
+  height: 1px;
+  background: var(--atelier-gold);
+  content: '';
+  opacity: 0.55;
+}
+
+.strategy-flow-number,
+.strategy-timeline-index {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 0.7rem;
+  background: var(--atelier-gold);
+  color: var(--atelier-paper);
+  font-family: var(--font-headline);
+  font-size: 0.8rem;
+  font-weight: 850;
+}
+
+.strategy-action-card,
+.strategy-cadence-row {
+  padding: 0.9rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--atelier-paper) 50%, transparent);
+}
+
+.strategy-cadence-row {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+}
+
+.strategy-rule-card {
+  display: grid;
+  gap: 0.6rem;
+  padding: 1rem;
+  border: 1px solid var(--atelier-line);
+  border-radius: 1.15rem;
+  background: var(--atelier-card);
+}
+
+.strategy-rule-good,
+.strategy-rule-bad {
+  display: flex;
+  gap: 0.55rem;
+  align-items: flex-start;
+  font-size: 0.82rem;
+  line-height: 1.5;
+}
+
+.strategy-rule-good {
+  color: var(--atelier-ink);
+}
+
+.strategy-rule-good svg {
+  color: var(--atelier-gold);
+}
+
+.strategy-rule-bad {
+  color: var(--atelier-faint);
+}
+
+.strategy-timeline {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.strategy-timeline-card {
+  position: relative;
+  min-height: 12rem;
+  overflow: hidden;
+  padding: 1rem;
+  border: 1px solid color-mix(in srgb, var(--atelier-gold) 34%, var(--atelier-line));
+  border-radius: 1.35rem;
+  background:
+    linear-gradient(155deg, color-mix(in srgb, var(--atelier-gold-soft) 78%, transparent), var(--atelier-card));
+}
+
+.strategy-timeline-card::after {
+  position: absolute;
+  right: -2.5rem;
+  bottom: -3rem;
+  width: 9rem;
+  height: 9rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, var(--atelier-gold-soft), transparent 68%);
+  content: '';
+}
+
+.strategy-room-enter {
+  border-color: color-mix(in srgb, var(--atelier-gold) 48%, var(--atelier-line));
+  background: linear-gradient(145deg, color-mix(in srgb, var(--atelier-gold-soft) 82%, transparent), var(--atelier-card));
+}
+
+.strategy-room-skip {
+  background: color-mix(in srgb, var(--atelier-card) 82%, var(--atelier-paper));
+}
+
+.strategy-stop-panel {
+  display: grid;
+  grid-template-columns: minmax(12rem, 0.75fr) minmax(0, 1.25fr);
+  gap: 1.5rem;
+  padding: clamp(1.15rem, 2.5vw, 1.6rem);
+  border-color: color-mix(in srgb, var(--atelier-gold) 38%, var(--atelier-line));
+  background: color-mix(in srgb, var(--atelier-gold-soft) 55%, var(--atelier-card));
+}
+
+.strategy-footer-note {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--atelier-faint);
+  font-size: 0.75rem;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .strategy-sitting:hover {
+    border-color: color-mix(in srgb, var(--atelier-gold) 65%, var(--atelier-line));
+    box-shadow: var(--atelier-shadow);
+    transform: translateY(-2px);
+  }
+
+  .strategy-sitting:hover::after {
+    opacity: 1;
+  }
+}
+
+@media (max-width: 1023px) {
+  .strategy-hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .strategy-hero-aside {
+    min-height: auto;
+  }
+
+  .strategy-flow-step:not(:last-child)::after {
+    display: none;
+  }
+
+  .strategy-stop-panel {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 767px) {
+  .strategy-rail {
+    top: 4.5rem;
+  }
+
+  .strategy-rail-label {
+    display: none;
+  }
+
+  .strategy-metrics {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .strategy-flow,
+  .strategy-timeline {
+    grid-template-columns: 1fr;
+  }
+
+  .strategy-flow-step {
+    min-height: auto;
+  }
+}
+
+@media (max-width: 479px) {
+  .strategy-hero-grid {
+    padding: 1.15rem;
+  }
+
+  .strategy-metrics {
+    gap: 0.5rem;
+  }
+
+  .strategy-metric {
+    padding: 0.85rem;
+  }
+
+  .strategy-hero-title {
+    font-size: 2.8rem;
+  }
+}
+
+
 /* Markdown write pane: highlight layer + transparent textarea */
 .md-source-highlight {
   scrollbar-width: none;
