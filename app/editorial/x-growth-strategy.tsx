@@ -154,12 +154,12 @@ export function XGrowthStrategy() {
               them feel clearer, kinder, or less alone. Same position for 90 days.
             </p>
           </div>
-          <div className="rounded-2xl border border-[var(--atelier-gold)]/25 bg-[var(--atelier-gold-soft)]/50 p-5">
-            <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--atelier-gold)] mb-2">
+          <div className="atelier-contrast-panel rounded-2xl border p-5">
+            <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--atelier-contrast-accent)] mb-2">
               Am I happy with this?
             </p>
-            <p className="font-headline font-bold text-[var(--atelier-ink)]">{GROWTH_HONEST.title}</p>
-            <p className="text-sm text-[var(--atelier-muted)] leading-relaxed mt-2">{GROWTH_HONEST.body}</p>
+            <p className="font-headline font-bold text-[var(--atelier-contrast-ink)]">{GROWTH_HONEST.title}</p>
+            <p className="text-sm text-[var(--atelier-contrast-muted)] leading-relaxed mt-2">{GROWTH_HONEST.body}</p>
           </div>
         </div>
       </div>

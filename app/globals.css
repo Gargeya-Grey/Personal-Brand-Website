@@ -959,6 +959,11 @@ a.board-card {
   --atelier-gold: #778873;
   --atelier-gold-soft: rgba(161, 188, 152, 0.3);
   --atelier-violet: #a1bc98;
+  --atelier-contrast: #a1bc98;
+  --atelier-contrast-border: #778873;
+  --atelier-contrast-ink: #3f4a41;
+  --atelier-contrast-muted: #536255;
+  --atelier-contrast-accent: #3f4a41;
   --atelier-shadow: 0 24px 64px -28px rgba(119, 136, 115, 0.18), 0 8px 24px -12px rgba(119, 136, 115, 0.1);
   --atelier-shadow-sm: 0 10px 30px -14px rgba(119, 136, 115, 0.14);
   --atelier-radius: 1.75rem;
@@ -982,6 +987,11 @@ a.board-card {
   --atelier-gold: #00adb5;
   --atelier-gold-soft: rgba(0, 173, 181, 0.18);
   --atelier-violet: #00adb5;
+  --atelier-contrast: #222831;
+  --atelier-contrast-border: #00adb5;
+  --atelier-contrast-ink: #eeeeee;
+  --atelier-contrast-muted: #c8cdd2;
+  --atelier-contrast-accent: #00adb5;
   --atelier-shadow: 0 28px 70px -24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(238, 238, 238, 0.05);
   --atelier-shadow-sm: 0 12px 36px -16px rgba(0, 0, 0, 0.45);
   background:
@@ -1014,6 +1024,11 @@ a.board-card {
   border: 1px solid var(--atelier-line);
   border-radius: var(--atelier-radius-lg);
   box-shadow: var(--atelier-shadow);
+}
+
+.atelier-contrast-panel {
+  background: var(--atelier-contrast);
+  border-color: var(--atelier-contrast-border);
 }
 
 /* Markdown write pane: highlight layer + transparent textarea */
