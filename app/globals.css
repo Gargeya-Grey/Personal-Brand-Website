@@ -972,12 +972,12 @@ a.board-card {
 }
 
 .dark .atelier-root {
-  /* Dark: brand navy floor + quiet stone neutrals + mint accent */
+  /* Dark: graphite surfaces + sage neutrals + mint accent */
   --atelier-ink: #f1f5f9;
-  --atelier-muted: #b3a9c1;
-  --atelier-faint: #887b95;
-  --atelier-paper: #14151f;
-  --atelier-card: #1b1828;
+  --atelier-muted: #a7b0ad;
+  --atelier-faint: #7d8985;
+  --atelier-paper: #121a1b;
+  --atelier-card: #1a2022;
   --atelier-line: rgba(255, 255, 255, 0.1);
   --atelier-gold: #34d399;
   --atelier-gold-soft: rgba(52, 211, 153, 0.12);
