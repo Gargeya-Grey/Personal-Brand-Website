@@ -949,57 +949,57 @@ a.board-card {
  */
 
 .atelier-root {
-  /* Light: cool paper + pedagogical navy (same family as public site) */
-  --atelier-ink: #0f172a;
-  --atelier-muted: #475569;
-  --atelier-faint: #64748b;
-  --atelier-paper: #f7faf9;
-  --atelier-card: #ffffff;
-  --atelier-line: rgba(15, 23, 42, 0.1);
-  --atelier-gold: #059669; /* brand accent — emerald */
-  --atelier-gold-soft: rgba(5, 150, 105, 0.12);
-  --atelier-violet: #0d9488; /* brand companion — teal */
-  --atelier-shadow: 0 24px 64px -28px rgba(15, 23, 42, 0.12), 0 8px 24px -12px rgba(15, 23, 42, 0.06);
-  --atelier-shadow-sm: 0 10px 30px -14px rgba(15, 23, 42, 0.1);
+  /* Light Atelier palette: olive mist */
+  --atelier-ink: #3f4a41;
+  --atelier-muted: #778873;
+  --atelier-faint: #778873;
+  --atelier-paper: #f1f3e0;
+  --atelier-card: #d2dcb6;
+  --atelier-line: rgba(119, 136, 115, 0.24);
+  --atelier-gold: #778873;
+  --atelier-gold-soft: rgba(161, 188, 152, 0.3);
+  --atelier-violet: #a1bc98;
+  --atelier-shadow: 0 24px 64px -28px rgba(119, 136, 115, 0.18), 0 8px 24px -12px rgba(119, 136, 115, 0.1);
+  --atelier-shadow-sm: 0 10px 30px -14px rgba(119, 136, 115, 0.14);
   --atelier-radius: 1.75rem;
   --atelier-radius-lg: 2.25rem;
   --atelier-radius-pill: 9999px;
   background:
-    radial-gradient(ellipse 90% 60% at 10% -10%, rgba(5, 150, 105, 0.1), transparent 52%),
-    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(13, 148, 136, 0.07), transparent 48%),
-    linear-gradient(180deg, #f8fbfa 0%, #f3f7f6 48%, #eef3f2 100%);
+    radial-gradient(ellipse 90% 60% at 10% -10%, rgba(161, 188, 152, 0.24), transparent 52%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(210, 220, 182, 0.45), transparent 48%),
+    linear-gradient(180deg, #f1f3e0 0%, #d2dcb6 100%);
   color: var(--atelier-ink);
 }
 
 .dark .atelier-root {
-  /* Dark: graphite surfaces + sage neutrals + mint accent */
-  --atelier-ink: #f1f5f9;
-  --atelier-muted: #a7b0ad;
-  --atelier-faint: #7d8985;
-  --atelier-paper: #121a1b;
-  --atelier-card: #1a2022;
-  --atelier-line: rgba(255, 255, 255, 0.1);
-  --atelier-gold: #34d399;
-  --atelier-gold-soft: rgba(52, 211, 153, 0.12);
-  --atelier-violet: #2dd4bf;
-  --atelier-shadow: 0 28px 70px -24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
+  /* Dark Atelier palette: graphite, cyan, and soft white */
+  --atelier-ink: #eeeeee;
+  --atelier-muted: #c8cdd2;
+  --atelier-faint: #aeb6bd;
+  --atelier-paper: #222831;
+  --atelier-card: #393e46;
+  --atelier-line: rgba(238, 238, 238, 0.14);
+  --atelier-gold: #00adb5;
+  --atelier-gold-soft: rgba(0, 173, 181, 0.18);
+  --atelier-violet: #00adb5;
+  --atelier-shadow: 0 28px 70px -24px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(238, 238, 238, 0.05);
   --atelier-shadow-sm: 0 12px 36px -16px rgba(0, 0, 0, 0.45);
   background:
-    radial-gradient(ellipse 80% 50% at 15% -5%, rgba(52, 211, 153, 0.09), transparent 52%),
-    radial-gradient(ellipse 60% 40% at 100% 10%, rgba(45, 212, 191, 0.08), transparent 48%),
-    linear-gradient(180deg, #0a101c 0%, #0b1220 50%, #0d1424 100%);
+    radial-gradient(ellipse 80% 50% at 15% -5%, rgba(0, 173, 181, 0.1), transparent 52%),
+    radial-gradient(ellipse 60% 40% at 100% 10%, rgba(238, 238, 238, 0.04), transparent 48%),
+    linear-gradient(180deg, #222831 0%, #222831 100%);
 }
 
 .atelier-glow {
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(5, 150, 105, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 80% 10%, rgba(13, 148, 136, 0.06) 0%, transparent 35%);
+    radial-gradient(circle at 20% 20%, rgba(161, 188, 152, 0.16) 0%, transparent 40%),
+    radial-gradient(circle at 80% 10%, rgba(119, 136, 115, 0.1) 0%, transparent 35%);
 }
 
 .dark .atelier-glow {
   background-image:
-    radial-gradient(circle at 20% 15%, rgba(52, 211, 153, 0.08) 0%, transparent 40%),
-    radial-gradient(circle at 85% 5%, rgba(45, 212, 191, 0.07) 0%, transparent 35%);
+    radial-gradient(circle at 20% 15%, rgba(0, 173, 181, 0.09) 0%, transparent 40%),
+    radial-gradient(circle at 85% 5%, rgba(238, 238, 238, 0.04) 0%, transparent 35%);
 }
 
 .atelier-card {
@@ -1158,28 +1158,29 @@ a.board-card {
 }
 
 .atelier-btn-primary {
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  color: #f8fafc;
-  box-shadow: 0 12px 28px -12px rgba(15, 23, 42, 0.4);
+  background: linear-gradient(135deg, #778873 0%, #3f4a41 100%);
+  color: #f1f3e0;
+  box-shadow: 0 12px 28px -12px rgba(119, 136, 115, 0.4);
 }
 
 .dark .atelier-btn-primary {
-  background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-  color: #0f172a;
-  box-shadow: 0 12px 32px -14px rgba(241, 245, 249, 0.2);
+  background: linear-gradient(135deg, #eeeeee 0%, #eeeeee 100%);
+  color: #222831;
+  box-shadow: 0 12px 32px -14px rgba(238, 238, 238, 0.2);
 }
 
 .atelier-btn-gold {
-  /* Brand accent CTA — emerald */
-  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
-  color: #ecfdf5;
-  box-shadow: 0 12px 28px -10px rgba(5, 150, 105, 0.4);
+  /* Supplied light palette accent CTA */
+  background: linear-gradient(135deg, #a1bc98 0%, #778873 100%);
+  color: #f1f3e0;
+  box-shadow: 0 12px 28px -10px rgba(119, 136, 115, 0.4);
 }
 
 .dark .atelier-btn-gold {
-  background: linear-gradient(135deg, #6ee7b7 0%, #34d399 50%, #10b981 100%);
-  color: #022c22;
-  box-shadow: 0 12px 28px -10px rgba(52, 211, 153, 0.35);
+  /* Supplied dark palette accent CTA */
+  background: linear-gradient(135deg, #00adb5 0%, #00adb5 100%);
+  color: #222831;
+  box-shadow: 0 12px 28px -10px rgba(0, 173, 181, 0.35);
 }
 
 .atelier-btn-ghost {
@@ -1193,16 +1194,17 @@ a.board-card {
 }
 
 .atelier-btn-violet {
-  /* Companion teal CTA */
-  background: linear-gradient(135deg, #14b8a6 0%, #0d9488 55%, #0f766e 100%);
-  color: #f0fdfa;
-  box-shadow: 0 12px 28px -12px rgba(13, 148, 136, 0.45);
+  /* Supplied light palette companion CTA */
+  background: linear-gradient(135deg, #d2dcb6 0%, #a1bc98 100%);
+  color: #3f4a41;
+  box-shadow: 0 12px 28px -12px rgba(119, 136, 115, 0.35);
 }
 
 .dark .atelier-btn-violet {
-  background: linear-gradient(135deg, #5eead4 0%, #2dd4bf 55%, #14b8a6 100%);
-  color: #042f2e;
-  box-shadow: 0 12px 28px -12px rgba(45, 212, 191, 0.35);
+  /* Supplied dark palette companion CTA */
+  background: linear-gradient(135deg, #00adb5 0%, #00adb5 100%);
+  color: #222831;
+  box-shadow: 0 12px 28px -12px rgba(0, 173, 181, 0.35);
 }
 
 .atelier-chip {
