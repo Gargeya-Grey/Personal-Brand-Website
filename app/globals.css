@@ -2276,7 +2276,7 @@ a.board-card {
   border-color: var(--article-divider);
 }
 
-.article-writing-pane textarea {
+.article-writing-pane textarea:not(.md-source-textarea) {
   min-height: 24rem;
   color: var(--atelier-ink);
   caret-color: var(--atelier-gold);
@@ -2287,7 +2287,7 @@ a.board-card {
   transition: background-color 160ms ease, box-shadow 160ms ease;
 }
 
-.article-writing-pane textarea:focus {
+.article-writing-pane textarea:not(.md-source-textarea):focus {
   background: color-mix(in srgb, var(--atelier-card) 70%, transparent);
   box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--atelier-gold) 18%, transparent);
 }
@@ -2340,7 +2340,7 @@ a.board-card {
     padding: 1.25rem !important;
   }
 
-  .article-writing-pane textarea {
+  .article-writing-pane textarea:not(.md-source-textarea) {
     min-height: 20rem;
   }
 }
