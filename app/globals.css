@@ -2082,3 +2082,265 @@ a.board-card {
   white-space: normal;
 }
 
+
+
+/* Article workbench */
+.article-workbench {
+  --article-surface: color-mix(in srgb, var(--atelier-card) 94%, transparent);
+  --article-surface-raised: color-mix(in srgb, var(--atelier-contrast) 78%, var(--atelier-card));
+  --article-field: color-mix(in srgb, var(--atelier-paper) 20%, var(--atelier-card));
+  --article-field-hover: color-mix(in srgb, var(--atelier-paper) 32%, var(--atelier-card));
+  --article-divider: color-mix(in srgb, var(--atelier-line) 82%, transparent);
+}
+
+.article-command-bar {
+  border-color: color-mix(in srgb, var(--atelier-line) 84%, transparent);
+  background: color-mix(in srgb, var(--atelier-card) 90%, transparent) !important;
+  box-shadow:
+    0 18px 42px -28px color-mix(in srgb, var(--atelier-ink) 34%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 22%, transparent);
+}
+
+.article-command-bar > button:first-child {
+  min-height: 2.5rem;
+  padding-inline: 0.65rem;
+  letter-spacing: -0.01em;
+}
+
+.article-command-bar .atelier-chip {
+  min-height: 2.25rem;
+  border-color: color-mix(in srgb, var(--atelier-gold) 22%, var(--atelier-line));
+  background: color-mix(in srgb, var(--atelier-gold-soft) 52%, transparent);
+  color: var(--atelier-muted);
+}
+
+.article-command-bar .atelier-btn {
+  box-shadow: none;
+}
+
+.article-command-bar .atelier-btn-primary {
+  min-width: 6.25rem;
+}
+
+.article-command-bar [class*="rounded-full"][class*="border"] {
+  background: color-mix(in srgb, var(--atelier-paper) 28%, var(--atelier-card));
+  border-color: var(--article-divider);
+}
+
+.article-command-bar [class*="rounded-full"][class*="border"] button {
+  min-height: 2rem;
+}
+
+.article-command-bar [class*="rounded-full"][class*="border"] button[class*="bg-[var(--atelier-ink)]"] {
+  box-shadow: 0 4px 12px -8px color-mix(in srgb, var(--atelier-ink) 70%, transparent);
+}
+
+.article-workbench-form {
+  display: grid;
+  gap: 1.25rem;
+}
+
+.article-metadata-panel {
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(135deg, color-mix(in srgb, var(--atelier-card) 98%, transparent), color-mix(in srgb, var(--atelier-contrast) 34%, var(--atelier-card)));
+  border-color: color-mix(in srgb, var(--atelier-line) 88%, transparent);
+  box-shadow:
+    0 26px 60px -42px color-mix(in srgb, var(--atelier-ink) 45%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 16%, transparent);
+}
+
+.article-metadata-panel::before {
+  content: "";
+  position: absolute;
+  inset: 0 0 auto;
+  height: 0.2rem;
+  background: linear-gradient(90deg, var(--atelier-gold), color-mix(in srgb, var(--atelier-violet) 72%, transparent), transparent 74%);
+  opacity: 0.8;
+  pointer-events: none;
+}
+
+.article-metadata-panel > div:first-child {
+  position: relative;
+  z-index: 1;
+  align-items: flex-start;
+  border-color: var(--article-divider);
+}
+
+.article-metadata-panel > div:first-child h2 {
+  font-size: clamp(1.45rem, 2vw, 2rem);
+  letter-spacing: -0.035em;
+}
+
+.article-metadata-panel > div:first-child p {
+  font-size: 0.64rem;
+  letter-spacing: 0.24em;
+}
+
+.article-metadata-panel .atelier-label {
+  margin-bottom: 0.55rem;
+  color: var(--atelier-faint);
+  font-size: 0.63rem;
+  letter-spacing: 0.19em;
+}
+
+.article-metadata-panel .atelier-input,
+.article-metadata-panel select,
+.article-metadata-panel textarea {
+  background: var(--article-field);
+  border-color: color-mix(in srgb, var(--atelier-line) 94%, transparent);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, white 10%, transparent);
+  transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+}
+
+.article-metadata-panel .atelier-input:hover,
+.article-metadata-panel select:hover,
+.article-metadata-panel textarea:hover {
+  background: var(--article-field-hover);
+}
+
+.article-metadata-panel .atelier-input:focus,
+.article-metadata-panel select:focus,
+.article-metadata-panel textarea:focus {
+  background: color-mix(in srgb, var(--atelier-card) 92%, var(--atelier-paper));
+  border-color: color-mix(in srgb, var(--atelier-gold) 58%, var(--atelier-line));
+  box-shadow:
+    0 0 0 3px color-mix(in srgb, var(--atelier-gold) 12%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 14%, transparent);
+}
+
+.article-metadata-panel .atelier-input.font-headline {
+  font-size: 1rem;
+  letter-spacing: -0.018em;
+}
+
+.article-metadata-panel > .grid {
+  position: relative;
+}
+
+.article-metadata-panel > .grid + .grid {
+  padding-top: 0.1rem;
+}
+
+.article-metadata-panel .atelier-chip {
+  background: color-mix(in srgb, var(--atelier-paper) 18%, var(--atelier-card));
+  border-color: var(--article-divider);
+  color: var(--atelier-muted);
+  transition: background-color 160ms ease, border-color 160ms ease, color 160ms ease;
+}
+
+.article-metadata-panel .atelier-chip:hover {
+  background: color-mix(in srgb, var(--atelier-gold-soft) 70%, var(--atelier-card));
+  color: var(--atelier-ink);
+}
+
+.article-metadata-panel label.flex.items-center {
+  background: var(--article-field);
+  border-color: var(--article-divider);
+}
+
+.article-metadata-panel label.flex.items-center:hover {
+  background: var(--article-field-hover);
+}
+
+.article-metadata-panel [class*="bg-[color-mix(in_srgb,var(--atelier-violet)"] {
+  background: color-mix(in srgb, var(--atelier-violet) 9%, var(--atelier-card)) !important;
+  border-color: color-mix(in srgb, var(--atelier-violet) 28%, var(--atelier-line)) !important;
+}
+
+.article-editor-canvas {
+  isolation: isolate;
+}
+
+.article-writing-pane,
+.article-preview-pane {
+  border-color: color-mix(in srgb, var(--atelier-line) 88%, transparent);
+  box-shadow:
+    0 24px 54px -42px color-mix(in srgb, var(--atelier-ink) 45%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 14%, transparent);
+}
+
+.article-writing-pane {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--atelier-card) 100%, transparent), color-mix(in srgb, var(--atelier-contrast) 28%, var(--atelier-card)));
+}
+
+.article-preview-pane {
+  background:
+    linear-gradient(145deg, color-mix(in srgb, var(--atelier-paper) 28%, var(--atelier-card)), color-mix(in srgb, var(--atelier-card) 96%, transparent)) !important;
+}
+
+.article-writing-pane > div:first-of-type,
+.article-preview-pane > div:first-child {
+  border-color: var(--article-divider);
+}
+
+.article-writing-pane textarea {
+  min-height: 24rem;
+  color: var(--atelier-ink);
+  caret-color: var(--atelier-gold);
+  background: color-mix(in srgb, var(--atelier-card) 38%, transparent);
+  border-radius: 1.1rem;
+  padding: 1rem 1.1rem;
+  line-height: 1.75;
+  transition: background-color 160ms ease, box-shadow 160ms ease;
+}
+
+.article-writing-pane textarea:focus {
+  background: color-mix(in srgb, var(--atelier-card) 70%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--atelier-gold) 18%, transparent);
+}
+
+.article-writing-pane button:not(.atelier-btn):hover {
+  color: var(--atelier-ink);
+  background: color-mix(in srgb, var(--atelier-gold-soft) 72%, transparent);
+}
+
+.article-preview-pane > div:last-child {
+  scrollbar-color: color-mix(in srgb, var(--atelier-gold) 48%, transparent) transparent;
+}
+
+.article-format-panel {
+  background:
+    linear-gradient(160deg, color-mix(in srgb, var(--atelier-card) 98%, transparent), color-mix(in srgb, var(--atelier-contrast) 50%, var(--atelier-card)));
+  border-color: color-mix(in srgb, var(--atelier-gold) 24%, var(--atelier-line));
+  box-shadow: -22px 0 48px -36px color-mix(in srgb, var(--atelier-ink) 55%, transparent);
+}
+
+.article-format-panel pre {
+  background: color-mix(in srgb, var(--atelier-paper) 24%, var(--atelier-card)) !important;
+  border-color: var(--article-divider);
+  color: var(--atelier-muted);
+}
+
+@media (max-width: 767px) {
+  .article-command-bar {
+    top: 0.75rem;
+  }
+
+  .article-command-bar > div {
+    width: 100%;
+  }
+
+  .article-command-bar > div:last-child {
+    justify-content: stretch;
+  }
+
+  .article-command-bar > div:last-child > * {
+    flex: 1 1 auto;
+  }
+
+  .article-command-bar > div:last-child > [class*="rounded-full"][class*="border"] {
+    order: -1;
+    flex: 1 0 100%;
+  }
+
+  .article-metadata-panel {
+    padding: 1.25rem !important;
+  }
+
+  .article-writing-pane textarea {
+    min-height: 20rem;
+  }
+}

@@ -1125,11 +1125,11 @@ export function EditorialClient({
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -12 }}
             transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="space-y-6"
+            className="article-workbench space-y-6"
           >
             {/* Sticky command bar */}
             <div className="sticky top-24 z-30">
-              <div className="atelier-card-lg p-3 sm:p-3.5 flex flex-col xl:flex-row xl:items-center justify-between gap-3 backdrop-blur-xl bg-[color-mix(in_srgb,var(--atelier-card)_92%,transparent)]">
+              <div className="article-command-bar atelier-card-lg p-3 sm:p-3.5 flex flex-col xl:flex-row xl:items-center justify-between gap-3 backdrop-blur-xl bg-[color-mix(in_srgb,var(--atelier-card)_92%,transparent)]">
                 <button
                   type="button"
                   onClick={() => setEditingArticle(null)}
@@ -1190,9 +1190,9 @@ export function EditorialClient({
               </div>
             </div>
 
-            <form onSubmit={handleSave} className="space-y-6">
+            <form onSubmit={handleSave} className="article-workbench-form space-y-6">
               {sidebarOpen && (
-                <div className="atelier-card-lg p-6 sm:p-8 space-y-8">
+                <div className="article-metadata-panel atelier-card-lg p-6 sm:p-8 space-y-8">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[var(--atelier-line)]">
                     <div>
                       <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)] mb-1">
@@ -1483,7 +1483,7 @@ export function EditorialClient({
               )}
 
               {/* Editor canvas */}
-              <div className="relative">
+              <div className="article-editor-canvas relative">
                 <div
                   className={`grid gap-5 min-h-[520px] ${
                     editorLayoutMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'
@@ -1491,7 +1491,7 @@ export function EditorialClient({
                 >
                   {(editorLayoutMode === 'split' || editorLayoutMode === 'write') && (
                     <div
-                      className={`atelier-card-lg relative flex min-h-[360px] flex-col p-5 transition-shadow focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6 ${
+                      className={`article-writing-pane atelier-card-lg relative flex min-h-[360px] flex-col p-5 transition-shadow focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6 ${
                         editorDragOver ? 'ring-2 ring-[var(--atelier-gold)]/40 bg-[var(--atelier-gold-soft)]/20' : ''
                       }`}
                       onDragEnter={(e) => {
@@ -1576,7 +1576,7 @@ export function EditorialClient({
                   )}
 
                   {(editorLayoutMode === 'split' || editorLayoutMode === 'preview') && (
-                    <div className="atelier-card-lg flex min-h-[360px] flex-col bg-[color-mix(in_srgb,var(--atelier-paper)_55%,var(--atelier-card))] p-5 sm:min-h-[480px] sm:p-6">
+                    <div className="article-preview-pane atelier-card-lg flex min-h-[360px] flex-col bg-[color-mix(in_srgb,var(--atelier-paper)_55%,var(--atelier-card))] p-5 sm:min-h-[480px] sm:p-6">
                       <div className="flex items-center gap-2 pb-4 mb-4 border-b border-[var(--atelier-line)]">
                         <Eye className="w-4 h-4 text-[var(--atelier-gold)]" />
                         <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
@@ -1601,7 +1601,7 @@ export function EditorialClient({
                       animate={{ x: 0, opacity: 1 }}
                       exit={{ x: '100%', opacity: 0 }}
                       transition={{ type: 'tween', duration: 0.3 }}
-                      className="absolute right-0 top-0 bottom-0 w-[min(100%,20rem)] atelier-card-lg p-6 z-30 overflow-y-auto"
+                      className="article-format-panel absolute right-0 top-0 bottom-0 w-[min(100%,20rem)] atelier-card-lg p-6 z-30 overflow-y-auto"
                     >
                       <div className="flex items-center justify-between mb-6">
                         <span className="font-headline font-bold flex items-center gap-2 text-[var(--atelier-ink)]">
