@@ -112,11 +112,6 @@ class XStudioErrorBoundary extends Component<
   }
 }
 
-const ILLUSTRATIONS_LIST = [
-  'diagram1', 'diagram2', 'diagram3', 'diagram4',
-  'diagram5', 'diagram6', 'diagram7', 'diagram8',
-] as const;
-
 interface EditorialClientProps {
   initialArticles: ArticleLite[];
   user: UserSession;
@@ -330,7 +325,6 @@ export function EditorialClient({
   const [formSlug, setFormSlug] = useState('');
   const [formExcerpt, setFormExcerpt] = useState('');
   const [formCategories, setFormCategories] = useState<string[]>([]);
-  const [formIllustration, setFormIllustration] = useState<Article['illustrationType']>('diagram1');
   const [formTakeaways, setFormTakeaways] = useState<string[]>(['']);
   const [formContent, setFormContent] = useState('');
   const formReadTime = `${Math.ceil(formContent.trim().split(/\s+/).filter(Boolean).length / 200) || 1} min read`;
@@ -582,7 +576,6 @@ export function EditorialClient({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to upload image.');
       setFormCoverImage(data.url);
-      setFormIllustration('cover');
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'Upload failed');
     } finally {
@@ -604,7 +597,6 @@ export function EditorialClient({
       const imgData = await r.json();
       if (imgData.success && imgData.url) {
         setFormCoverImage(imgData.url);
-        setFormIllustration('cover');
       } else {
         throw new Error(imgData.error || 'Grok did not return an image URL.');
       }
@@ -638,7 +630,6 @@ export function EditorialClient({
       if (meta.excerpt) setFormExcerpt(meta.excerpt);
       if (Array.isArray(meta.categories)) setFormCategories(meta.categories);
       if (Array.isArray(meta.takeaways)) setFormTakeaways(meta.takeaways.filter(Boolean));
-      if (meta.illustrationType) setFormIllustration(meta.illustrationType);
       if (data.imagePrompt) {
         setGeneratedImagePrompt(data.imagePrompt);
         if (autoGenerateCoverImage) {
@@ -677,7 +668,6 @@ export function EditorialClient({
           excerpt: formExcerpt,
           categories: formCategories,
           readTime: formReadTime,
-          illustrationType: formIllustration,
           takeaways: formTakeaways,
           content: formContent,
           featured: formFeatured,
@@ -693,7 +683,7 @@ export function EditorialClient({
     }, 5000);
     return () => clearInterval(interval);
   }, [
-    formTitle, formSlug, formExcerpt, formCategories, formReadTime, formIllustration,
+    formTitle, formSlug, formExcerpt, formCategories, formReadTime,
     formTakeaways, formContent, formFeatured, formStatus, formCoverImage, editingArticle,
   ]);
 
@@ -717,7 +707,6 @@ export function EditorialClient({
       setFormSlug(d.slug || '');
       setFormExcerpt(d.excerpt || '');
       setFormCategories(d.categories || ['Engineering']);
-      setFormIllustration(d.illustrationType || 'diagram1');
       setFormTakeaways(d.takeaways?.length > 0 ? d.takeaways : ['']);
       setFormContent(d.content || '');
       setFormFeatured(!!d.featured);
@@ -762,7 +751,6 @@ export function EditorialClient({
     setFormSlug('');
     setFormExcerpt('');
     setFormCategories(['Engineering']);
-    setFormIllustration('diagram1');
     setFormTakeaways(['']);
     setFormContent('');
     setFormFeatured(false);
@@ -777,7 +765,6 @@ export function EditorialClient({
     setFormSlug(lite.slug);
     setFormExcerpt(lite.excerpt);
     setFormCategories(lite.categories);
-    setFormIllustration(lite.illustrationType);
     setFormFeatured(!!lite.featured);
     setFormStatus(lite.status || 'published');
     setFormCoverImage(lite.coverImage || '');
@@ -792,7 +779,6 @@ export function EditorialClient({
       setFormSlug(full.slug);
       setFormExcerpt(full.excerpt);
       setFormCategories(full.categories);
-      setFormIllustration(full.illustrationType);
       setFormTakeaways(full.takeaways.length > 0 ? full.takeaways : ['']);
       setFormContent(full.content);
       setFormFeatured(!!full.featured);
@@ -851,7 +837,7 @@ export function EditorialClient({
         excerpt: formExcerpt,
         categories: formCategories.length > 0 ? formCategories : ['Engineering'],
         readTime: formReadTime,
-        illustrationType: formIllustration,
+        illustrationType: "cover",
         takeaways: formTakeaways.filter((t) => t.trim() !== ''),
         content: formContent,
         featured: formFeatured,
@@ -1192,8 +1178,8 @@ export function EditorialClient({
 
             <form onSubmit={handleSave} className="article-workbench-form space-y-6">
               {sidebarOpen && (
-                <div className="article-metadata-panel atelier-card-lg p-6 sm:p-8 space-y-8">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-[var(--atelier-line)]">
+                <div className="article-metadata-panel atelier-card-lg p-6 sm:p-8">
+                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-[var(--atelier-line)]">
                     <div>
                       <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)] mb-1">
                         Curation
@@ -1242,129 +1228,138 @@ export function EditorialClient({
                     </div>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                    <div className="md:col-span-6">
-                      <label className="atelier-label">Title *</label>
-                      <input
-                        className="atelier-input font-headline font-semibold text-base !h-12"
-                        value={formTitle}
-                        onChange={(e) => handleTitleChange(e.target.value)}
-                        placeholder="A title with quiet authority"
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-4">
-                      <label className="atelier-label">Slug</label>
-                      <input
-                        className="atelier-input font-mono text-xs !h-12"
-                        value={formSlug}
-                        onChange={(e) => setFormSlug(e.target.value)}
-                        required
-                      />
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="atelier-label">Status</label>
-                      <div className="flex h-12 p-1 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50">
-                        {(['draft', 'published'] as const).map((s) => (
-                          <button
-                            key={s}
-                            type="button"
-                            onClick={() => setFormStatus(s)}
-                            className={`flex-1 rounded-[0.75rem] text-[0.7rem] font-bold capitalize transition-all ${
-                              formStatus === s
-                                ? s === 'draft'
-                                  ? 'bg-amber-500/15 text-amber-800 dark:text-amber-200'
-                                  : 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200'
-                                : 'text-[var(--atelier-faint)]'
-                            }`}
-                          >
-                            {s}
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                    <div className="md:col-span-4">
-                      <label className="atelier-label">Excerpt</label>
-                      <input
-                        className="atelier-input"
-                        value={formExcerpt}
-                        onChange={(e) => setFormExcerpt(e.target.value)}
-                        placeholder="One elegant sentence…"
-                      />
-                    </div>
-                    <div className="md:col-span-4">
-                      <label className="atelier-label">
-                        Cover URL
-                        {isGeneratingImage && (
-                          <span className="ml-2 normal-case tracking-normal text-[var(--atelier-violet)]">
-                            Grok rendering…
-                          </span>
-                        )}
-                      </label>
-                      <div className="flex gap-2">
-                        <input
-                          className="atelier-input flex-1 min-w-0"
-                          value={formCoverImage}
-                          onChange={(e) => setFormCoverImage(e.target.value)}
-                          placeholder="https://… or upload"
-                        />
-                        <button
-                          type="button"
-                          onClick={triggerImageUpload}
-                          disabled={isUploadingImage}
-                          className="atelier-icon-btn !w-12 !h-12 !rounded-[1rem] shrink-0"
-                          title="Upload"
-                        >
-                          {isUploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
-                        </button>
-                        <input id="local-cover-upload" type="file" accept="image/*" className="hidden" onChange={handleLocalImageUpload} />
-                      </div>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="atelier-label">Diagram</label>
-                      <div className="flex gap-2">
-                        <select
-                          value={formIllustration}
-                          onChange={(e) => setFormIllustration(e.target.value as Article['illustrationType'])}
-                          className="atelier-input flex-1 !px-3 text-xs"
-                        >
-                          {ILLUSTRATIONS_LIST.map((ill) => (
-                            <option key={ill} value={ill}>
-                              {ill}
-                            </option>
-                          ))}
-                          <option value="cover">cover</option>
-                        </select>
-                        <div className="w-12 h-12 rounded-[1rem] border border-[var(--atelier-line)] overflow-hidden shrink-0 bg-[var(--atelier-paper)]">
-                          <IllustrationThumb
-                            type={formIllustration}
-                            coverImage={formCoverImage}
-                            onPreview={(type, url) => setPreviewItem({ type, url })}
+                  <div className="mt-7 space-y-6">
+                    <section className="article-meta-section">
+                      <header className="article-meta-section__head">
+                        <span className="article-meta-section__index">1</span>
+                        <h3 className="article-meta-section__title">Identity</h3>
+                      </header>
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                        <div className="md:col-span-12">
+                          <label className="atelier-label">Title *</label>
+                          <input
+                            className="atelier-input font-headline font-semibold text-base !h-12"
+                            value={formTitle}
+                            onChange={(e) => handleTitleChange(e.target.value)}
+                            placeholder="A title with quiet authority"
+                            required
                           />
                         </div>
+                        <div className="md:col-span-6">
+                          <label className="atelier-label">Slug</label>
+                          <input
+                            className="atelier-input font-mono text-xs !h-12"
+                            value={formSlug}
+                            onChange={(e) => setFormSlug(e.target.value)}
+                            required
+                          />
+                        </div>
+                        <div className="md:col-span-3">
+                          <label className="atelier-label">Status</label>
+                          <div className="flex h-12 p-1 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50">
+                            {(['draft', 'published'] as const).map((s) => (
+                              <button
+                                key={s}
+                                type="button"
+                                onClick={() => setFormStatus(s)}
+                                className={`flex-1 rounded-[0.75rem] text-[0.7rem] font-bold capitalize transition-all ${
+                                  formStatus === s
+                                    ? s === 'draft'
+                                      ? 'bg-amber-500/15 text-amber-800 dark:text-amber-200'
+                                      : 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200'
+                                    : 'text-[var(--atelier-faint)]'
+                                }`}
+                              >
+                                {s}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="md:col-span-3">
+                          <label className="atelier-label">Feature</label>
+                          <label className="flex items-center gap-2.5 h-12 px-3.5 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={formFeatured}
+                              onChange={(e) => setFormFeatured(e.target.checked)}
+                              className="w-4 h-4 accent-[var(--atelier-gold)] rounded"
+                            />
+                            <Star className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />
+                            <span className="text-xs font-bold text-[var(--atelier-ink)]">Home</span>
+                          </label>
+                        </div>
                       </div>
-                    </div>
-                    <div className="md:col-span-2">
-                      <label className="atelier-label">Feature</label>
-                      <label className="flex items-center gap-2.5 h-12 px-3.5 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={formFeatured}
-                          onChange={(e) => setFormFeatured(e.target.checked)}
-                          className="w-4 h-4 accent-[var(--atelier-gold)] rounded"
-                        />
-                        <Star className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />
-                        <span className="text-xs font-bold text-[var(--atelier-ink)]">Home</span>
-                      </label>
-                    </div>
-                  </div>
+                    </section>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div>
-                      <label className="atelier-label">Categories</label>
+                    <section className="article-meta-section">
+                      <header className="article-meta-section__head">
+                        <span className="article-meta-section__index">2</span>
+                        <h3 className="article-meta-section__title">Summary &amp; Display</h3>
+                      </header>
+                      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
+                        <div className="md:col-span-12">
+                          <label className="atelier-label">Excerpt</label>
+                          <input
+                            className="atelier-input"
+                            value={formExcerpt}
+                            onChange={(e) => setFormExcerpt(e.target.value)}
+                            placeholder="One elegant sentence…"
+                          />
+                        </div>
+                        <div className="md:col-span-12">
+                          <label className="atelier-label">
+                            Cover URL
+                            {isGeneratingImage && (
+                              <span className="ml-2 normal-case tracking-normal text-[var(--atelier-violet)]">
+                                Grok rendering…
+                              </span>
+                            )}
+                          </label>
+                          <div className="flex gap-2">
+                            <input
+                              className="atelier-input flex-1 min-w-0"
+                              value={formCoverImage}
+                              onChange={(e) => setFormCoverImage(e.target.value)}
+                              placeholder="https://… or upload"
+                            />
+                            <button
+                              type="button"
+                              onClick={triggerImageUpload}
+                              disabled={isUploadingImage}
+                              className="atelier-icon-btn !w-12 !h-12 !rounded-[1rem] shrink-0"
+                              title="Upload"
+                            >
+                              {isUploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                            </button>
+                            {formCoverImage && (
+                              <button
+                                type="button"
+                                onClick={() => setPreviewItem({ type: 'cover', url: formCoverImage })}
+                                className="relative w-12 h-12 rounded-[1rem] border border-[var(--atelier-line)] overflow-hidden shrink-0 bg-[var(--atelier-paper)] group"
+                                title="Preview cover"
+                              >
+                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                <img
+                                  src={formCoverImage}
+                                  alt="Cover preview"
+                                  className="object-cover w-full h-full"
+                                />
+                                <span className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity text-white">
+                                  <Maximize2 className="w-3.5 h-3.5" />
+                                </span>
+                              </button>
+                            )}
+                            <input id="local-cover-upload" type="file" accept="image/*" className="hidden" onChange={handleLocalImageUpload} />
+                          </div>
+                        </div>
+                      </div>
+                    </section>
+
+                    <section className="article-meta-section">
+                      <header className="article-meta-section__head">
+                        <span className="article-meta-section__index">3</span>
+                        <h3 className="article-meta-section__title">Taxonomy</h3>
+                      </header>
                       <div className="flex flex-wrap gap-2">
                         {CATEGORIES_LIST.map((cat) => {
                           const active = formCategories.includes(cat);
@@ -1373,6 +1368,7 @@ export function EditorialClient({
                               key={cat}
                               type="button"
                               onClick={() => toggleCategory(cat)}
+                              data-active={active}
                               className={`atelier-chip transition-all ${
                                 active
                                   ? '!bg-[var(--atelier-gold-soft)] !border-[var(--atelier-gold)]/40 !text-[var(--atelier-ink)]'
@@ -1411,30 +1407,32 @@ export function EditorialClient({
                           </button>
                         </div>
                       </div>
-                    </div>
-                    <div>
-                      <div className="flex items-center justify-between mb-2">
-                        <label className="atelier-label !mb-0">Key takeaways</label>
-                        <button type="button" onClick={addTakeawayField} className="text-xs font-bold text-[var(--atelier-gold)] inline-flex items-center gap-1">
+                    </section>
+
+                    <section className="article-meta-section">
+                      <header className="article-meta-section__head">
+                        <span className="article-meta-section__index">4</span>
+                        <h3 className="article-meta-section__title">Key takeaways</h3>
+                        <button type="button" onClick={addTakeawayField} className="article-meta-section__action">
                           <Plus className="w-3 h-3" /> Add
                         </button>
-                      </div>
-                      <div className="space-y-2 max-h-40 overflow-y-auto pr-1">
+                      </header>
+                      <div className="space-y-2">
                         {formTakeaways.map((t, i) => (
                           <div key={i} className="flex gap-2">
                             <input
-                              className="atelier-input !h-10 text-sm"
+                              className="atelier-input !h-11 text-sm"
                               value={t}
                               onChange={(e) => updateTakeaway(i, e.target.value)}
                               placeholder="A crisp learning point…"
                             />
-                            <button type="button" onClick={() => removeTakeawayField(i)} className="atelier-icon-btn !w-10 !h-10 shrink-0">
+                            <button type="button" onClick={() => removeTakeawayField(i)} className="atelier-icon-btn !w-11 !h-11 shrink-0">
                               <X className="w-3.5 h-3.5" />
                             </button>
                           </div>
                         ))}
                       </div>
-                    </div>
+                    </section>
                   </div>
 
                   {generatedImagePrompt && (

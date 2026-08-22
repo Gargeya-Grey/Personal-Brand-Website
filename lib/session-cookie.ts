@@ -22,10 +22,14 @@ function apexFromHostname(hostname: string): string | undefined {
 
 /**
  * Cookie Domain without a leading dot (Next/Browsers treat sgargeya.com as covering www).
- * Priority: COOKIE_DOMAIN → APP_URL → request host.
+ * Priority: localhost/loopback first (no cookie domain), then COOKIE_DOMAIN → APP_URL → request host.
  */
 export function resolveCookieDomain(requestUrl?: URL | string | null): string | undefined {
   const explicit = process.env.COOKIE_DOMAIN?.trim().replace(/^['"]|['"]$/g, '');
+  const host = requestUrl ? (typeof requestUrl === 'string' ? new URL(requestUrl).hostname : requestUrl.hostname) : '';
+  if (!host || host === 'localhost' || host.endsWith('.localhost') || host === '127.0.0.1' || host === '::1') {
+    return undefined;
+  }
   if (explicit) {
     const cleaned = explicit.replace(/^\./, '').replace(/^www\./, '').trim();
     return cleaned || undefined;
