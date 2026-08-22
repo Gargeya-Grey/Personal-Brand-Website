@@ -970,9 +970,9 @@ a.board-card {
   --atelier-radius-lg: 2.25rem;
   --atelier-radius-pill: 9999px;
   background:
-    radial-gradient(ellipse 90% 60% at 10% -10%, rgba(161, 188, 152, 0.16), transparent 52%),
-    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(241, 243, 224, 0.3), transparent 48%),
-    linear-gradient(180deg, #e7ecd5 0%, #d2dcb6 100%);
+    radial-gradient(ellipse 90% 60% at 10% -10%, rgba(119, 136, 115, 0.2), transparent 52%),
+    radial-gradient(ellipse 70% 50% at 100% 0%, rgba(183, 200, 152, 0.42), transparent 48%),
+    linear-gradient(180deg, #cfdcb0 0%, #b7c898 100%);
   color: var(--atelier-ink);
 }
 
@@ -2144,13 +2144,22 @@ a.board-card {
   position: relative;
   overflow: hidden;
   background:
-    linear-gradient(135deg, color-mix(in srgb, var(--atelier-card) 98%, transparent), color-mix(in srgb, var(--atelier-contrast) 34%, var(--atelier-card)));
+    linear-gradient(135deg, #fbfcf6 0%, #f3f6e8 58%, #edf2e0 100%);
   border-color: color-mix(in srgb, var(--atelier-line) 88%, transparent);
   box-shadow:
     0 26px 60px -42px color-mix(in srgb, var(--atelier-ink) 45%, transparent),
     inset 0 1px 0 color-mix(in srgb, white 16%, transparent);
 }
 
+
+.dark .article-metadata-panel {
+  background: linear-gradient(135deg, var(--atelier-card) 98%, color-mix(in srgb, var(--atelier-contrast) 34%, var(--atelier-card)));
+  border-color: color-mix(in srgb, var(--atelier-line) 62%, transparent);
+  box-shadow:
+    0 30px 70px -40px color-mix(in srgb, var(--atelier-ink) 30%, transparent),
+    0 2px 0 color-mix(in srgb, white 70%, transparent),
+    inset 0 1px 0 color-mix(in srgb, white 30%, transparent);
+}
 .article-metadata-panel::before {
   content: "";
   position: absolute;
@@ -2178,6 +2187,80 @@ a.board-card {
   letter-spacing: 0.24em;
 }
 
+.article-meta-section {
+  position: relative;
+  padding: 1.5rem;
+  border: 1px solid color-mix(in srgb, var(--atelier-line) 82%, transparent);
+  border-radius: 1.25rem;
+  background: color-mix(in srgb, var(--atelier-card) 62%, transparent);
+  transition: border-color 160ms ease, background 160ms ease;
+}
+
+.article-meta-section:hover {
+  border-color: color-mix(in srgb, var(--atelier-gold) 34%, var(--atelier-line));
+  background: color-mix(in srgb, var(--atelier-card) 72%, transparent);
+}
+
+.article-meta-section__head {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  margin-bottom: 1rem;
+}
+
+.article-meta-section__index {
+  display: inline-grid;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  border-radius: 0.5rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--atelier-card);
+  background: color-mix(in srgb, var(--atelier-gold) 88%, var(--atelier-ink));
+  box-shadow: 0 2px 6px -2px color-mix(in srgb, var(--atelier-ink) 32%, transparent);
+}
+
+.article-meta-section__title {
+  font-family: var(--font-headline);
+  font-size: 0.92rem;
+  font-weight: 700;
+  letter-spacing: -0.015em;
+  color: var(--atelier-ink);
+}
+
+.article-meta-section__action {
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.75rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--atelier-gold);
+  background: color-mix(in srgb, var(--atelier-gold-soft) 60%, transparent);
+  border: 1px solid color-mix(in srgb, var(--atelier-gold) 30%, var(--atelier-line));
+  transition: background-color 160ms ease, border-color 160ms ease;
+}
+
+.article-meta-section__action:hover {
+  background: color-mix(in srgb, var(--atelier-gold-soft) 82%, var(--atelier-card));
+  border-color: color-mix(in srgb, var(--atelier-gold) 48%, var(--atelier-line));
+}
+
+/* Selected / active states: make the active choice unmistakable */
+.article-metadata-panel .atelier-chip[data-active="true"],
+.article-metadata-panel button.atelier-chip.active {
+  background: color-mix(in srgb, var(--atelier-gold) 24%, var(--atelier-card)) !important;
+  border-color: color-mix(in srgb, var(--atelier-gold) 68%, var(--atelier-line)) !important;
+  color: var(--atelier-ink) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--atelier-gold) 14%, transparent);
+}
+
+.article-meta-section__index {
+  box-shadow: 0 0 0 2px var(--atelier-card), 0 0 0 4px color-mix(in srgb, var(--atelier-gold) 30%, transparent);
+}
 .article-metadata-panel .atelier-label {
   margin-bottom: 0.55rem;
   color: var(--atelier-faint);
@@ -2262,11 +2345,19 @@ a.board-card {
 }
 
 .article-writing-pane {
+  background: linear-gradient(145deg, #fbfcf6 0%, #f3f6e8 60%, #edf2e0 100%) !important;
+}
+
+.dark .article-writing-pane {
   background:
-    linear-gradient(145deg, color-mix(in srgb, var(--atelier-card) 100%, transparent), color-mix(in srgb, var(--atelier-contrast) 28%, var(--atelier-card)));
+    linear-gradient(145deg, color-mix(in srgb, var(--atelier-card) 100%, transparent), color-mix(in srgb, var(--atelier-contrast) 28%, var(--atelier-card))) !important;
 }
 
 .article-preview-pane {
+  background: linear-gradient(145deg, #fbfcf6 0%, #f3f6e8 60%, #edf2e0 100%) !important;
+}
+
+.dark .article-preview-pane {
   background:
     linear-gradient(145deg, color-mix(in srgb, var(--atelier-paper) 28%, var(--atelier-card)), color-mix(in srgb, var(--atelier-card) 96%, transparent)) !important;
 }
