@@ -114,16 +114,16 @@ export interface XContentPack {
 export const DEFAULT_SESSIONS: XSessionBlock[] = [
   {
     id: 'sprint',
-    title: 'Two replies',
-    maxMinutes: 10,
-    description: 'Two real comments on big climbing rooms. Education at most once.',
+    title: 'Replies in big rooms',
+    maxMinutes: 20,
+    description: 'Morning 2 replies, evening 3. Borrow large rooms; stay in territory.',
   },
   {
     id: 'core',
-    title: 'Two small tweets',
-    maxMinutes: 10,
+    title: 'One original',
+    maxMinutes: 15,
     description:
-      'Two short own-posts from different parts of him (psych, care, optimism, AI comfort, etc.).',
+      'One strong belief, example, framework, or build note. Hold it if it is weak.',
   },
   {
     id: 'bonus',
@@ -477,13 +477,14 @@ export function formatPackRunLabel(pack: {
 }
 
 /**
- * Derive MVP ids: explicit list, else full mini-pack queue.
- * Two sittings: 2 replies + 2 small own tweets.
+ * Derive MVP ids: explicit list, else sitting queue.
+ * Morning: up to 2 replies + 1 original. Evening: up to 3 replies + 1 original.
  */
 export function resolveMvpIds(pack: XContentPack): string[] {
   if (pack.mvpDraftIds?.length) return pack.mvpDraftIds;
   const ready = sortDraftsForExecution(pack.drafts.filter((d) => d.status === 'ready'));
-  // Prefer conversion long-forms first (priority 1 / growth tip), then other replies, then original
+  const slot = Number((pack.id.match(/-t(\d{2})$/) || [])[1] || 11);
+  const replyCap = slot >= 15 ? 3 : 2;
   const replies = ready.filter((d) => d.kind === 'reply');
   const conversion = replies.filter(
     (d) =>
@@ -492,11 +493,11 @@ export function resolveMvpIds(pack: XContentPack): string[] {
         /conversion|long.?form|profile|follow/i.test(`${d.why || ''} ${d.tip || ''} ${d.label || ''}`))
   );
   const otherReplies = replies.filter((d) => !conversion.some((c) => c.id === d.id));
-  const orderedReplies = [...conversion.slice(0, 2), ...otherReplies.slice(0, 1)];
+  const orderedReplies = [...conversion, ...otherReplies].slice(0, replyCap);
   const original = ready.find((d) => d.kind === 'short' || d.kind === 'flagship');
   const quote = ready.find((d) => d.kind === 'quote');
   const ids = [...orderedReplies.map((d) => d.id)];
   if (original) ids.push(original.id);
-  else if (quote && ids.length < 4) ids.push(quote.id);
-  return ids.slice(0, 4);
+  else if (quote) ids.push(quote.id);
+  return ids.slice(0, replyCap + 1);
 }

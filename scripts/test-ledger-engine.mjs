@@ -111,4 +111,24 @@ assert.equal(locked.date, '2026-07-20');
 assert.equal(locked.vendor, 'Grok xAI');
 assert.equal(locked.amount, 700);
 
+const NOTE_INR_PATTERNS = [
+  /(?:inr|rs\.?|₹)\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i,
+  /([0-9][0-9,]*(?:\.\d{1,2})?)\s*(?:inr|rs\.?|₹)/i,
+  /(?:bank|charged|deducted|paid|actual|debit)\s*(?:amount|as)?\s*(?:is|=|:)?\s*(?:inr|rs\.?|₹)?\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i,
+];
+
+function parseInr(text) {
+  for (const pattern of NOTE_INR_PATTERNS) {
+    const match = pattern.exec(text);
+    if (!match) continue;
+    const amount = Number(String(match[1]).replace(/,/g, ''));
+    if (!Number.isNaN(amount) && amount > 0) return amount;
+  }
+  return null;
+}
+
+assert.equal(parseInr('1032.62 INR with IDFC WOW'), 1032.62);
+assert.equal(parseInr('INR 1032.62'), 1032.62);
+assert.equal(parseInr('Bank debit 1847.50'), 1847.5);
+
 console.log('ledger engine checks passed');

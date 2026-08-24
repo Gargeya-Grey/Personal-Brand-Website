@@ -10,7 +10,7 @@ import {
   Types,
   type LedgerEntry,
   type SubscriptionFrequency,
-} from './ledger-schema';
+} from '@/lib/ledger-schema';
 
 export function stripEnum(value: string): string {
   return value.toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -391,7 +391,8 @@ export function smartMapValue(
 
 const NOTE_INR_PATTERNS = [
   /(?:inr|rs\.?|₹)\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i,
-  /(?:bank|charged|deducted|paid|actual)\s*(?:amount|as)?\s*(?:is|=|:)?\s*(?:inr|rs\.?|₹)?\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i,
+  /([0-9][0-9,]*(?:\.\d{1,2})?)\s*(?:inr|rs\.?|₹)/i,
+  /(?:bank|charged|deducted|paid|actual|debit)\s*(?:amount|as)?\s*(?:is|=|:)?\s*(?:inr|rs\.?|₹)?\s*([0-9][0-9,]*(?:\.\d{1,2})?)/i,
 ];
 
 export function parseInrFromOperatorNotes(notes: string): number | null {
@@ -424,20 +425,11 @@ export function applyOperatorNotes(
     next.amount = inr;
     if (next.gstAmount && next.gstAmount > 0 && next.gstAmount < inr) {
       next.netAmount = Number((inr - next.gstAmount).toFixed(2));
-    } else if (!next.netAmount) {
+    } else if (!next.netAmount || next.netAmount === 0 || next.netAmount === entry.amount) {
       next.netAmount = inr;
     }
     next.requiresInrConversion = false;
     overrides.push('amount');
-  }
-
-  const pay = smartMapValue(undefined, PaymentModes, notes, 'paymentMode');
-  if (
-    pay.method !== 'Default Payment Mode' &&
-    pay.resolved !== next.paymentMode
-  ) {
-    next.paymentMode = pay.resolved;
-    overrides.push('paymentMode');
   }
 
   if (lower.includes('idfc') || lower.includes('wow')) {
@@ -452,44 +444,16 @@ export function applyOperatorNotes(
     overrides.push('gstApplicable');
   }
 
-  if (lower.includes('not gst') || lower.includes('no gst') || lower.includes('gst not')) {
+  if (lower.includes('not gst') || lower.includes('no gst') || lower.includes('gst not') || lower.includes('0 gst') || lower.includes('zero gst')) {
     next.gstApplicable = false;
     overrides.push('gstApplicable');
-  }
-
-  const purposeHint = notes.replace(/\s+/g, ' ').trim();
-  const paymentOnlyNote =
-    /^(used\s+)?(idfc|wow|upi|visa|mastercard|card)(\s+\w+){0,5}$/i.test(purposeHint) ||
-    purposeHint.length < 12;
-  if (!paymentOnlyNote) {
-    if (!next.businessPurpose || next.businessPurpose.length < 8) {
-      next.businessPurpose = purposeHint.slice(0, 220);
-      overrides.push('businessPurpose');
-    } else {
-      const existing = next.notes || '';
-      if (!existing.toLowerCase().includes(purposeHint.slice(0, 40).toLowerCase())) {
-        next.notes = [existing, purposeHint].filter(Boolean).join('\n').slice(0, 1800);
-      }
-    }
-  }
-
-  const typeHint = smartMapValue(undefined, Types, notes, 'type');
-  if (typeHint.method.startsWith('Context Keyword') && typeHint.resolved !== next.type) {
-    next.type = typeHint.resolved;
-    overrides.push('type');
-  }
-
-  const catHint = smartMapValue(undefined, Categories, notes, 'category');
-  if (catHint.method.includes('Heuristics') && catHint.resolved !== next.category) {
-    next.category = catHint.resolved;
-    overrides.push('category');
   }
 
   next.operatorOverrides = [...new Set(overrides)];
   const fusion =
     overrides.length > 0
-      ? `Operator notes took priority for: ${overrides.join(', ')}. Invoice/OCR supplied the remaining merchant facts.`
-      : 'Operator notes were read as extra context. They did not override structured fields; they stay in Notes.';
+      ? `Operator notes took priority for: ${overrides.join(', ')}. Invoice/document supplied merchant facts, business purpose, and line items.`
+      : 'Operator notes were read as additional context.';
 
   return { entry: next, overrides: next.operatorOverrides, fusion };
 }

@@ -1,143 +1,132 @@
 {
-  "id": "pack-2026-08-10-t17",
-  "date": "2026-08-10",
-  "title": "1h IST t17 · free tutors vs path · news literacy reps · feedback clocks",
-  "theme": "Access tutors need process visibility · news literacy as practiced pause · match feedback speed to skill",
-  "briefing": "t17: Diamandis free AI tutor equalizer + Rajdeep news-from-noise with teachers. Original independent: fast vs slow feedback clocks. No em-dash; sentence caps; original generalized. Forms uneven.",
-  "plannedMinutes": 18,
+  "id": "pack-2026-08-24-t19",
+  "date": "2026-08-24",
+  "title": "t19 · analog Core, judgment vs taste, AI CVs",
+  "theme": "Three rooms: campus ban, cognition, hiring documents. One original on analog hours that still grade polish.",
+  "briefing": "Evening 3 replies + 1 original. Skip politics, skip homework-chart retell, skip Hinglish rooms.",
+  "plannedMinutes": 25,
   "mvpDraftIds": [
-    "r-diamandis-tutor-path",
-    "r-rajdeep-news-reps",
-    "short-feedback-clock"
+    "r-chicago-analog-core",
+    "r-itai-judgment",
+    "r-alabi-cv",
+    "o-analog-not-enough"
   ],
   "signals": [
     {
-      "id": "sig-diamandis-tutor",
-      "summary": "Free 24/7 personalized AI tutor in every language would be greatest equalizer in civilization",
-      "whyItMatters": "Access story; process/assessment still decides if learning equalizes",
-      "url": "https://x.com/PeterDiamandis/status/2086762139352498402",
-      "heat": 3,
-      "category": "ai-education-access"
+      "id": "sig-chicago-analog",
+      "summary": "UChicago social science Core goes analog: restrict classroom tech, ban AI-assisted writing and grading for students and professors.",
+      "whyItMatters": "Huge education room. Path: analog class does not fix take-home scoring.",
+      "url": "https://x.com/ChicagoMaroon/status/2091550613247013200",
+      "heat": 5,
+      "category": "educators"
     },
     {
-      "id": "sig-rajdeep-noise",
-      "summary": "500+ teachers: challenge is getting youth to separate news from noise under AI/social screens",
-      "whyItMatters": "Critical literacy as practiced habit, not content dump",
-      "url": "https://x.com/sardesairajdeep/status/2086737265171259575",
-      "heat": 2,
-      "category": "media-literacy"
+      "id": "sig-itai-judgment",
+      "summary": "Skeptical that humans stay relevant for judgment and taste after AI takes reasoning and correctness. No neat division.",
+      "whyItMatters": "Cognition room. Stay on judgment, not a classroom lecture.",
+      "url": "https://x.com/itaisher/status/2091535974983422259",
+      "heat": 3,
+      "category": "ai-builders"
+    },
+    {
+      "id": "sig-alabi-cv",
+      "summary": "Stop feeling guilty using AI on CV and interview prep if you are not making things up.",
+      "whyItMatters": "Hiring still ranks documents a model can finish.",
+      "url": "https://x.com/the_Lawrenz/status/2091880496842133867",
+      "heat": 3,
+      "category": "hiring-proxies"
     }
   ],
-  "skipList": [],
+  "skipList": [
+    "McMahon / Rapid Response politics",
+    "Pakistani campus protest",
+    "Interview golden-response spam"
+  ],
   "sessions": [
     {
       "id": "sprint",
-      "title": "Fresh replies",
-      "maxMinutes": 12,
-      "description": "Diamandis tutors + Rajdeep news literacy."
+      "title": "Replies in big rooms",
+      "maxMinutes": 20,
+      "description": "Campus analog, judgment, CVs."
     },
     {
       "id": "core",
       "title": "One original",
-      "maxMinutes": 6,
-      "description": "Generalized feedback-clock beat."
+      "maxMinutes": 15,
+      "description": "Analog hour still fails if the grade is polish."
     }
   ],
   "drafts": [
     {
-      "id": "r-diamandis-tutor-path",
+      "id": "r-chicago-analog-core",
       "kind": "reply",
-      "label": "Reply · free tutor needs path",
-      "body": "You have me on free 24/7 tutors in every language. I want that world.\n\nWhere I push back a little: equalizer only holds if the tutor does not quietly do the thinking. If school still only grades the polished finish, free help becomes a cleaner shortcut. I'd rather score the messy attempts, not just the final sheet.",
-      "meta": "https://x.com/PeterDiamandis/status/2086762139352498402",
+      "label": "Reply · UChicago analog Core",
+      "body": "I get why they want the room analog. A Core class is one of the last places a person is asked to sit with an idea without a tool finishing the sentence.\n\nThe ban on AI writing and grading only protects the hour inside the room. If the papers and take-homes still reward a clean final file, students will do the thinking with help later and the analog class becomes a performance. Keep the phones out if you want, but score the messy trail: the first attempt, the question they could not answer yet, a short defense in person. Otherwise we spent a lot of courage on a classroom rule and left the actual evidence of learning unchanged.",
+      "meta": "https://x.com/ChicagoMaroon/status/2091550613247013200",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 50,
-      "why": "Grounded in free/24h/native language tutor. Take: equalizer needs process scoring. Love/I/I'd conversational.",
-      "tip": "No invented tutor products; stay on OP equalizer claim + assessment path.",
-      "postingWindow": "asap",
-      "targetHandle": "PeterDiamandis",
-      "targetReach": "high",
-      "quality": {
-        "total": 94,
-        "shape": "warm_push",
-        "dimensions": {
-          "lengthFit": 12,
-          "clarity": 14,
-          "hook": 14,
-          "funRead": 11,
-          "relatability": 14,
-          "voiceMatch": 14,
-          "humanTexture": 11,
-          "groundingFit": 4
-        },
-        "notes": "Caps; no em-dash; You/I contact; process bias; not house antithesis land. Attempt 3 after post-like fails.",
-        "attempts": 3
-      }
+      "estimatedSeconds": 90,
+      "why": "440k-view education room. Do not retell the policy. Add what the ban does not score.",
+      "tip": "Reply on the Maroon post, not a quote pile-on. Do not mention Anthropic. OP did not.",
+      "postingWindow": "evening",
+      "targetHandle": "ChicagoMaroon",
+      "targetReach": "440k-views"
     },
     {
-      "id": "r-rajdeep-news-reps",
+      "id": "r-itai-judgment",
       "kind": "reply",
-      "label": "Reply · news literacy as reps",
-      "body": "You named the hard one: screens connected, world not.\n\nI do not think more content fixes it. News literacy is reps: stop, name the source, ask what would change your mind. Teachers already feel that. We should design practice around that pause, not another feed of current affairs slides.",
-      "meta": "https://x.com/sardesairajdeep/status/2086737265171259575",
+      "label": "Reply · judgment is not leftover",
+      "body": "I keep hearing the same split and I do not trust it either. Judgment is not a leftover organ that survives after reasoning is automated. It is reasoning under incomplete information, with a cost if you are wrong about what matters.\n\nIf we tell people their job is taste, they will outsource the hard part and keep the vibe. The work is to make the call visible: what you weighed, what you discarded, what you would still defend tomorrow. Taste with no trail is just a mood. And moods are easy to fake.",
+      "meta": "https://x.com/itaisher/status/2091535974983422259",
       "status": "ready",
       "priority": 1,
       "intent": "growth",
       "session": "sprint",
-      "estimatedSeconds": 50,
-      "why": "Grounded in news vs noise + AI/social screens + teachers. Take: literacy = practiced pause. Different room from tutor equalizer.",
-      "tip": "No invented conference details beyond OP IIMUN/teachers frame.",
-      "postingWindow": "asap",
-      "targetHandle": "sardesairajdeep",
-      "targetReach": "high",
-      "quality": {
-        "total": 94,
-        "shape": "practice_list",
-        "dimensions": {
-          "lengthFit": 12,
-          "clarity": 14,
-          "hook": 14,
-          "funRead": 12,
-          "relatability": 14,
-          "voiceMatch": 14,
-          "humanTexture": 10,
-          "groundingFit": 4
-        },
-        "notes": "You open vs This open on reply1; caps; no em-dash; concrete pause reps; not twin yeah/3-para.",
-        "attempts": 1
-      }
+      "estimatedSeconds": 90,
+      "why": "Stay on his claim. No homework sermon.",
+      "tip": "Talk to Itai about judgment and taste, not students.",
+      "postingWindow": "evening",
+      "targetHandle": "itaisher",
+      "targetReach": "18k-views"
     },
     {
-      "id": "short-feedback-clock",
+      "id": "r-alabi-cv",
+      "kind": "reply",
+      "label": "Reply · AI CVs",
+      "body": "The guilt is pointed at the wrong person. If companies rank a PDF, of course people will use a tool to make the PDF look like every other shortlisted PDF. Not lying is the floor, not the skill.\n\nThe leak is that hiring still treats the document as proof of capability. A model can finish that document. Ask for a work sample they have to walk through, including a choice they would change. Until that is the filter, AI on the CV is just people answering the test we actually set.",
+      "meta": "https://x.com/the_Lawrenz/status/2091880496842133867",
+      "status": "ready",
+      "priority": 2,
+      "intent": "growth",
+      "session": "sprint",
+      "estimatedSeconds": 80,
+      "why": "Hiring-proxy room. Path is a work sample, not shame.",
+      "tip": "Do not scold job seekers. Aim at the ranking of documents.",
+      "postingWindow": "evening",
+      "targetHandle": "the_Lawrenz",
+      "targetReach": "mid"
+    },
+    {
+      "id": "o-analog-not-enough",
       "kind": "short",
-      "label": "Short · feedback clocks (generalized)",
-      "body": "Fast feedback feels like progress. Sometimes it is.\n\nSome skills need a slower clock: judgment, taste, when to trust a tool. If every loop closes in two seconds, you get fluency without depth. Match the feedback speed to the skill, or you train people to flinch at anything that takes real time.",
+      "label": "Original · analog is not the grade",
+      "body": "An analog hour is a gift. Phones out, sitting with the hard part, no tool finishing the sentence for you.\n\nIt still fails if the grade only sees the polished file later. People will protect the hour and then outsource the evidence. If you care about capability, the analog has to continue into what you score: the first attempt, the stuck question, the reason they changed their mind.\n\nWould your last grade still hold if the clean version was taken away?",
+      "meta": "",
       "status": "ready",
       "priority": 2,
       "intent": "authority",
       "session": "core",
-      "estimatedSeconds": 45,
-      "why": "Generalized practice/psych: feedback tempo vs skill type. Independent of free-tutor and news-literacy replies.",
-      "postingWindow": "anytime",
-      "quality": {
-        "total": 94,
-        "shape": "principle_arc",
-        "dimensions": {
-          "lengthFit": 12,
-          "clarity": 15,
-          "hook": 14,
-          "funRead": 11,
-          "relatability": 14,
-          "voiceMatch": 14,
-          "humanTexture": 10,
-          "groundingFit": 4
-        },
-        "notes": "Generalized; no diary; no em-dash; caps; independent insight; finish pull on last line.",
-        "attempts": 1
-      }
+      "estimatedSeconds": 90,
+      "why": "Belief plus a specific question. Adjacent to the UChicago room, not a retell of it.",
+      "tip": "If the Chicago reply already says this, skip the original. Do not post both if they feel like twins.",
+      "postingWindow": "evening"
     }
-  ]
+  ],
+  "schedule": [
+    "Evening sitting. Replies in three rooms. Hold original if it twins the Chicago reply."
+  ],
+  "createdAt": "2026-08-24T14:30:00.000Z",
+  "updatedAt": "2026-08-24T14:30:00.000Z"
 }

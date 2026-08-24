@@ -60,8 +60,11 @@ export function scorePack(pack) {
   if (replies.length < 1) {
     issues.push('[error] pack needs at least one reply with a real source');
   }
+  if (replies.length < 2) {
+    issues.push('[warn] sitting packs usually want 2 morning or 3 evening replies in different big rooms');
+  }
   if (replies.length >= 1 && originals.length < 1) {
-    issues.push('[warn] pack has no own tweet');
+    issues.push('[warn] pack has no own tweet (ok on evening if morning already left the day’s original)');
   }
 
   const openers = drafts.map((d) =>

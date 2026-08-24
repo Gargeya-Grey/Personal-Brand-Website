@@ -414,6 +414,21 @@ export function LedgerClient({
         </div>
         <div className="flex flex-wrap items-center gap-2.5 sm:justify-end shrink-0">
           <div
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/70 text-xs font-mono text-[var(--atelier-muted)] shadow-[var(--atelier-shadow-sm)]"
+            title={`Active ${provider === 'google' ? 'GEMINI_MODEL' : 'LEDGER_OPENROUTER_MODEL'} environment variable`}
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0" />
+            <span className="text-[var(--atelier-faint)] text-[10px] uppercase tracking-wider font-sans font-medium">
+              Model:
+            </span>
+            <span className="text-[var(--atelier-ink)] font-bold truncate max-w-[14rem]">
+              {provider === 'google'
+                ? settings.geminiModel || 'gemini-flash-latest'
+                : settings.openRouterModel || 'OpenRouter model unset'}
+            </span>
+          </div>
+
+          <div
             className="inline-flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 shadow-[var(--atelier-shadow-sm)]"
             role="group"
             aria-label="Extraction model"
@@ -641,7 +656,7 @@ export function LedgerClient({
             {isExtracting ? (
               <div className="flex flex-col items-center justify-center py-24 gap-3 text-[var(--atelier-muted)]">
                 <Loader2 className="w-7 h-7 animate-spin text-[var(--atelier-gold)]" />
-                <p>Extracting, then a second pass checks every field against the invoice…</p>
+                <p>Extracting and structuring ledger facts from invoice &amp; notes…</p>
               </div>
             ) : !extracted ? (
               <div className="flex flex-col items-center justify-center py-24 px-8 text-center text-[var(--atelier-muted)]">

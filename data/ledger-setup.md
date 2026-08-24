@@ -26,8 +26,8 @@ Gemini is the default, same as the old app. OpenRouter is a toggle on `/ledger`.
 | Env | Notes |
 | :--- | :--- |
 | `GEMINI_API_KEY` | Default extractor. Required unless you only use OpenRouter. |
-| `GEMINI_MODEL` | Optional. Defaults to `gemini-3.6-flash`. |
-| `GEMINI_MODEL_FALLBACK` | Optional. Defaults to `gemini-3.5-flash-lite`. |
+| `GEMINI_MODEL` | Optional. Defaults to `gemini-flash-latest`. |
+| `GEMINI_MODEL_FALLBACK` | Optional. Defaults to `gemini-flash-latest`. |
 | `OPENROUTER_API_KEY` | Needed to use the OpenRouter toggle. |
 | `LEDGER_OPENROUTER_MODEL` | **The OpenRouter model name.** Change this in `.env` and restart. |
 

@@ -43,7 +43,7 @@ node scripts/merge-x-pack.mjs data/x-pack-today.json
 
 4. Refresh https://www.sgargeya.com/editorial?workspace=x
 
-Current scout shape: **2 replies + 1 original**, every **1h IST** (11–22).
+Current scout shape: **t11 = 2 replies + 1 original**, **t19 = 3 replies** (+ original if morning did not leave one). Scout every **4h**. He sits 11:30 and 19:00 IST.
 
 ## Finance Ledger (Notion invoice extractor)
 

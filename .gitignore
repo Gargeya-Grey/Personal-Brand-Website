@@ -8,6 +8,11 @@ coverage/
 .agents/
 .gemini/
 .commandcode/
+.grok/
+.tmp-article-audit/
+.turbo/
+.vercel/
+skills-lock.json
 *.tsbuildinfo
 data/inquiries.json
 data/subscribers.json

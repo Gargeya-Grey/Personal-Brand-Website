@@ -8,11 +8,11 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - See `README.md` and `package.json` for general template notes and npm scripts.
 
 ## Owner goals (product)
-- Genuine **X growth** toward ~10k in ~3 months (stretch; views first). Locked 90-day merge: replies carry think/learn/judge/offload; own tweets are the rest of him. Two sittings, then stop. No 15–25 reply grind, no 3–5 on-thesis originals, no connect-farm.
+- Genuine **X growth**. Owner dashboard: `lib/x-growth-strategy.ts` (updated 21 Aug 2026). Daily: **1 strong original** + **3–5 thoughtful replies** in bigger borrowed rooms. Two sittings, then stop. Twice a week: Edudojo/build proof. No 15–25 reply grind, no several weak originals, no connect-farm.
 - Scout wakes **every 4h and always writes** a pack (t11 before 15:00 IST, t19 after). He sits at 11:30 and 19:00 and **picks** what to post.
 - **Write brief:** `data/gargeya-voice.md` only. Short. He edits that. No numeric scores. He picks what to post.
 - **Gate:** `scripts/score-x-drafts.mjs` is a tiny mechanical check (source URL, em-dash, punch-stack, sports/shift, invented ranking). Not a 90-point rubric.
-- **Replies** = education / assessment / cognitive offloading only. **Own tweets** = the other parts of him.
+- **Replies** = useful distinction in live rooms (educators, assessment, AI + capability, students passing without becoming capable, people judged by proxies). Borrow heat. **Own tweets** = beliefs, examples, frameworks, build notes.
 - Source **grounding** for replies (one draft ↔ one real post).
 - Strategy dashboard: `lib/x-growth-strategy.ts` (he reads it; scout does not).
 - Laptop **Grok scout** → merge/ingest → **production Supabase** so live To-Do updates without waiting on git.
@@ -47,7 +47,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### X content system
 | Piece | Role |
 | :--- | :--- |
-| `lib/x-content-model.ts` | Pack ids t11/t19, sanitize, `resolveMvpIds` (2 replies + 2 small tweets) |
+| `lib/x-content-model.ts` | Pack ids t11/t19, sanitize, `resolveMvpIds` (morning 2 replies + 1 original; evening 3 replies + 1 original) |
 | `lib/x-content-service.ts` | Hydrate packs, meta normalization, Supabase row ↔ pack |
 | `lib/x-source-grounding.ts` | Grounding rules / helpers |
 | `app/api/x-content/*` | Read + ingest (`X_SCOUT_SECRET`) |
@@ -90,7 +90,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 1. Always pack. Do not skip for sitting hour.
 2. Pack id → `t11` before 15:00 IST, `t19` from 15:00.
 3. Read **only** `data/gargeya-voice.md`. Write like a person. No scores.
-4. **2 replies** + **2 small own tweets** when the rooms are real.
+4. **t11:** 2 replies + 1 original. **t19:** 3 replies (+ original only if morning did not already leave one). Prefer big rooms still in territory.
 5. Validate (mechanical) → merge/ingest.
 6. He posts at **11:30** and **19:00 IST** if he wants. He picks.
 
@@ -101,7 +101,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### Wipe packs (full clean slate — rare)
 1. User runs `data/sql/x_content_packs_wipe.sql` in Supabase.
 2. Confirm empty.
-3. Merge a fresh **2 replies + 2 small tweets** pack for the current sitting.
+3. Merge a fresh sitting pack (morning 2 replies + 1 original, or evening 3 replies).
 
 ### Public-safe git
 - Commit code, playbooks, SQL, non-secret data.
@@ -114,3 +114,13 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ## Session state (durable)
 - Brief is **`data/gargeya-voice.md` only**. No scores. Loop every 4h. He picks at 11:30 and 19:00 IST.
 - Do not invent claims; grounding still non-negotiable.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

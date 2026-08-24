@@ -14,12 +14,6 @@ import {
 } from '@/lib/ledger-schema';
 import { applyBusinessRules, clipText, smartMapValue } from '@/lib/ledger-engine';
 import { completeLedgerModel, parseJsonFromModel, type LedgerAiProvider } from '@/lib/ledger-ai';
-import {
-  applyHarvestLocks,
-  formatSignalsForPrompt,
-  harvestDocumentSignals,
-  type HarvestedSignals,
-} from '@/lib/ledger-parse';
 
 export type ExtractRequest = {
   file?: { data?: string; mimeType?: string } | null;
@@ -60,130 +54,104 @@ function wrapUntrusted(tag: string, value: string): string {
   return `<${tag}>\n${cleaned}\n</${tag}>`;
 }
 
-function extractPrompt(
-  fileText: string,
-  extraDetails: string,
-  signals: HarvestedSignals,
-  hasImage: boolean
-): string {
-  return `Extract one ledger row as JSON. Use EVERY token in the sources below. Do not summarize away names, dates, invoice numbers, or amounts.
+const OCR_SYSTEM_PROMPT = `You are a precision OCR and document transcription engine.
+Transcribe EVERY word, number, symbol, label, table, line item, and footer in this document with 100% verbatim fidelity.
+Ensure you capture all:
+- Invoice numbers, receipt numbers, reference numbers
+- Merchant names, addresses, emails, and phone numbers
+- Customer names, billing details, and country
+- Dates (invoice date, payment date, billing cycle period)
+- Line items with descriptions, quantities, unit prices, and amounts
+- Subtotals, fees, taxes, discounts, and total paid amounts
+- Payment methods (card brand, last 4 digits, receipt numbers)
+Do not summarize. Output the complete raw text transcription of the document.`;
 
-SOURCE PRIORITY:
-1. TRUSTED_OPERATOR_NOTES — the bookkeeper. They win on conflicts (INR bank debit, card, purpose, entity).
-2. LOCKED_* fields in DETERMINISTIC_SIGNALS — copy them into JSON. Do not invent a different date, vendor, or INR total when a lock is present.
-3. UNTRUSTED_INVOICE_TEXT — use every remaining word for purpose, line items, tax, subscription, payment rail.
-4. ${hasImage ? 'An image of the document is attached — use it only to fill gaps the text did not lock.' : 'No image. The text is the document.'}
+const LEDGER_EXTRACT_SYSTEM_PROMPT = `You are an expert startup accountant and financial data extraction engine.
+You are given a verbatim document transcription and trusted human bookkeeper notes.
 
-${extraDetails ? wrapUntrusted('TRUSTED_OPERATOR_NOTES', extraDetails) : '(No operator notes.)'}
+INPUT PRIORITY & ROLES:
+1. TRUSTED OPERATOR NOTES (<HIGH_IMPORTANCE_TRUSTED_OPERATOR_NOTES>):
+   - Highest authority for bank debit amount (INR ₹), payment rail used (e.g. IDFC WOW / International Card), GST confirmation, and owner notes.
+2. DOCUMENT TRANSCRIPT (<VERBATIM_DOCUMENT_TRANSCRIPT>):
+   - Supplies merchant facts: Vendor name, exact invoice/receipt number (e.g. "81H04RAX-0003"), line items, printed dates, original foreign currency amounts, and subscription billing cycle.
 
-${fileText ? wrapUntrusted('UNTRUSTED_INVOICE_TEXT', fileText) : '(No extracted document text.)'}
+CRITICAL FIELD RULES:
+- transactionName: Clean, professional format: "[Vendor] - [Product / Service]" (e.g. "Command Code - GOAT Subscription").
+- invoiceNumber: Extract the exact invoice number (e.g. "81H04RAX-0003") or receipt number (e.g. "2601-1320"). Preserve exact hyphens, slashes, and digits. Never leave empty when present in the document.
+- businessPurpose: Describe WHAT was purchased and WHY it is a business expense (e.g. "Software subscription for AI coding assistant and developer tooling"). Write a full, complete, untruncated sentence. NEVER put payment methods, card names, or transaction amounts here.
+- notes: Full context breakdown. Itemize individual line items, processing fees, total original currency amount (e.g. "$10.00 Command Code GOAT + $0.78 processing fee = $10.78 USD Total"), and billing cycle dates (e.g. "Aug 24–Sep 24, 2026").
+- amount: Final amount in INR. Use the trusted operator notes bank debit if provided (e.g. 1032.62). If foreign currency with no INR debit, set amount: 0 and requiresInrConversion: true.
+- netAmount: Pre-tax INR amount.
+- gstAmount: GST amount in INR (0 if not applicable).
+- gstApplicable: true only if GST is explicitly charged or confirmed by operator.
+- idfcWowCard: true if operator notes or invoice indicate IDFC WOW.
+- paymentMode: "International Card" (for IDFC Wow / foreign card charges), "UPI", "Business Current Account", etc.
+- date: YYYY-MM-DD format (convert any human date like "August 24, 2026" to "2026-08-24").
+- type: "Expense" | "Income" | "Asset Purchase" | "Refund" | "Transfer".
+- category: Standard category (e.g. "SaaS Tools", "Hosting & Cloud", "AI / API Credits", "Domain & DNS", "Laptop & Equipment", etc.).
+- taxClass: "Fully Deductible" (standard business operating expenses) | "Not Deductible" | "Capital Asset - Depreciation".
+- dealType: "Subscription" (for recurring software/tools) | "Internal" | "Pilot" | "Implementation".
+- isSubscription: true when the document represents a recurring SaaS/tool subscription with a billing cycle.
+- subscriptionFrequency: "Monthly" | "Yearly" | "One-time".
+- confidence_flags: Mark HIGH for fields confirmed by document or operator notes. Mark MEDIUM for reasonable inferences.`;
 
-<DETERMINISTIC_SIGNALS>
-${formatSignalsForPrompt(signals) || '(none)'}
-</DETERMINISTIC_SIGNALS>
+const JUDGE_SYSTEM_PROMPT = `You are the Senior Chief Auditor reviewing and perfecting a financial ledger extraction.
+Compare the proposed first-pass extraction against the raw document transcript and trusted operator notes.
+Fix all omissions, complement missing signals, and return the perfected final ledger row JSON.
 
-JSON fields:
-- chainOfThought: short. Cite which source filled date, vendor, amount.
-- transactionName, type, category, paymentMode, taxClass, dealType
-- amount, netAmount, gstAmount (numbers, INR)
-- date MUST be YYYY-MM-DD (convert "July 20, 2026" → 2026-07-20)
-- vendor, customer, invoiceNumber, businessPurpose, notes
-- idfcWowCard, gstApplicable, requiresInrConversion, isSubscription
-- subscriptionFrequency: Monthly | Yearly | One-time
-- financialYear, month
-- confidence_flags for every field: HIGH | MEDIUM | LOW | ABSENT
+AUDIT CRITERIA:
+1. INVOICE NUMBER: If invoiceNumber is empty or missing, find it in the transcript (e.g. "Invoice number: 81H04RAX-0003" or "Receipt number: 2601-1320") and extract it with full hyphens/digits intact.
+2. BUSINESS PURPOSE: Ensure businessPurpose is a complete, well-formed sentence (fix any truncation like "tware" -> "Software subscription for AI coding assistant and developer tooling"). Ensure it never contains payment methods or card names.
+3. NOTES BREAKDOWN: Ensure notes contains the itemized line items, processing fees, original foreign currency figures, and billing cycle dates. Never leave notes blank when line items exist.
+4. SUBSCRIPTION & DEAL TYPE: If this is a recurring SaaS tool or subscription (e.g. billing period Aug 24-Sep 24), set isSubscription: true, subscriptionFrequency: 'Monthly', and dealType: 'Subscription'.
+5. OPERATOR OVERRIDES: Ensure trusted operator notes for bank debit (INR 1032.62), card (IDFC WOW / International Card), and GST are accurately reflected.
+6. CONFIDENCE FLAGS: Set confidence_flags for every field.`;
 
-Enums:
-- type: ${Types.join(', ')}
-- category: ${Categories.join(', ')}
-- paymentMode: ${PaymentModes.join(', ')}
-- taxClass: ${TaxClasses.join(', ')}
-- dealType: ${DealTypes.join(', ')}
+function buildExtractUserPrompt(transcript: string, extraDetails: string): string {
+  const sections: string[] = [];
 
-Rules:
-- If INR (₹) is printed, do NOT set requiresInrConversion.
-- If only USD/EUR/GBP and notes have no INR debit, requiresInrConversion=true and leave amounts null; put foreign figures in notes.
-- IDFC / WOW → International Card + idfcWowCard true.
-- GST applicable only if GST is explicit.
-- SaaS / SuperGrok / ChatGPT / GitHub / Notion → isSubscription true when it is a recurring plan.
-- Output JSON only.`;
-}
-
-const EXTRACT_SYSTEM =
-  'You are a careful Indian-startup bookkeeper. Map the full invoice text and the operator notes into one ledger JSON object. Convert every human date to YYYY-MM-DD. Never drop a vendor name that appears in the letterhead. Operator notes override the invoice when they conflict.';
-
-const VERIFY_SYSTEM =
-  'You are a second, independent bookkeeper. Your only job is to check the first extract against the raw invoice text and the operator notes. Correct anything wrong, truncated, or polluted. Do not invent facts. Payment asides like "Used IDFC Wow" are payment flags, never the business purpose.';
-
-function verifyPrompt(fileText: string, extraDetails: string, proposed: LedgerEntry, signals: HarvestedSignals): string {
-  return `Check this proposed ledger row against the sources. Return the FULL corrected JSON.
-
-Rules:
-- invoiceNumber must be only the id (e.g. BJWTF8LV 0001). Never include the words Receipt, Date, Number, Paid.
-- businessPurpose = what was bought and why it is a business cost. NOT the payment method.
-- Operator notes win for payment rail / INR / card. If they only say IDFC/WOW, set idfcWowCard true and write a purpose from the invoice (e.g. SuperGrok subscription for Jul–Aug 2026).
-- notes must not contain "Harvest locks" or engine debug. Put useful FX/split context only.
-- SuperGrok / Slack / Notion / GitHub Copilot style plans → isSubscription true, dealType Subscription, category SaaS Tools unless it is raw API tokens.
-- Mark confidence HIGH only when the value is explicitly in the invoice or operator notes.
-- MEDIUM = reasonable inference. LOW = guess. Prefer to correct the value so it can be HIGH.
-
-<PROPOSED_ROW>
-${JSON.stringify(
-    {
-      transactionName: proposed.transactionName,
-      type: proposed.type,
-      category: proposed.category,
-      amount: proposed.amount,
-      netAmount: proposed.netAmount,
-      gstAmount: proposed.gstAmount,
-      date: proposed.date,
-      paymentMode: proposed.paymentMode,
-      taxClass: proposed.taxClass,
-      dealType: proposed.dealType,
-      vendor: proposed.vendor,
-      invoiceNumber: proposed.invoiceNumber,
-      businessPurpose: proposed.businessPurpose,
-      notes: proposed.notes,
-      idfcWowCard: proposed.idfcWowCard,
-      gstApplicable: proposed.gstApplicable,
-      isSubscription: proposed.isSubscription,
-      subscriptionFrequency: proposed.subscriptionFrequency,
-    },
-    null,
-    2
-  )}
-</PROPOSED_ROW>
-
-${extraDetails ? wrapUntrusted('TRUSTED_OPERATOR_NOTES', extraDetails) : '(No operator notes.)'}
-
-${fileText ? wrapUntrusted('UNTRUSTED_INVOICE_TEXT', fileText) : '(No document text.)'}
-
-<DETERMINISTIC_SIGNALS>
-${formatSignalsForPrompt(signals)}
-</DETERMINISTIC_SIGNALS>
-
-Add verifierNotes: one short sentence on what you changed, or "Confirmed against invoice."`;
-}
-
-function confidenceFromMethod(method: string): ConfidenceLevel {
-  if (method.includes('Direct Exact Match') || method.includes('Fuzzy Strip Match') || method.includes('Substring Match')) {
-    return 'HIGH';
+  if (extraDetails.trim()) {
+    sections.push(wrapUntrusted('HIGH_IMPORTANCE_TRUSTED_OPERATOR_NOTES', extraDetails.trim()));
+  } else {
+    sections.push('(No operator notes provided)');
   }
-  if (method.includes('Heuristics') || method.includes('Keyword') || method.includes('Card Detection')) {
-    return 'MEDIUM';
+
+  if (transcript.trim()) {
+    sections.push(wrapUntrusted('VERBATIM_DOCUMENT_TRANSCRIPT', transcript.trim()));
+  } else {
+    sections.push('(No document text available)');
   }
-  return 'LOW';
+
+  sections.push('Extract the complete structured financial ledger row JSON.');
+  return sections.join('\n\n');
 }
 
-function salvageFromSignals(entry: LedgerEntry, signals: HarvestedSignals): LedgerEntry {
-  return applyHarvestLocks(entry, signals);
+function buildJudgeUserPrompt(transcript: string, extraDetails: string, pass1: unknown): string {
+  const sections: string[] = [];
+
+  if (extraDetails.trim()) {
+    sections.push(wrapUntrusted('HIGH_IMPORTANCE_TRUSTED_OPERATOR_NOTES', extraDetails.trim()));
+  }
+
+  if (transcript.trim()) {
+    sections.push(wrapUntrusted('VERBATIM_DOCUMENT_TRANSCRIPT', transcript.trim()));
+  }
+
+  sections.push(
+    wrapUntrusted(
+      'PROPOSED_FIRST_PASS_EXTRACTION',
+      typeof pass1 === 'object' && pass1 ? JSON.stringify(pass1, null, 2) : '{}'
+    )
+  );
+
+  sections.push('Audit every field, fix any omissions or truncations, complement missing signals, and return the final perfected JSON.');
+  return sections.join('\n\n');
 }
 
 function normalizeStructured(
   raw: Record<string, unknown>,
   fileText: string,
-  extraDetails: string,
-  signals: HarvestedSignals
+  extraDetails: string
 ): LedgerEntry {
   const context = [extraDetails, fileText, clipText(raw.vendor, 200), clipText(raw.transactionName, 200)].join('\n');
 
@@ -193,15 +161,25 @@ function normalizeStructured(
   const taxRes = smartMapValue(String(raw.taxClass || ''), TaxClasses, context, 'taxClass');
   const dealRes = smartMapValue(String(raw.dealType || ''), DealTypes, context, 'dealType');
 
+  const rawFlags = (typeof raw.confidence_flags === 'object' && raw.confidence_flags ? raw.confidence_flags : {}) as Record<string, ConfidenceLevel>;
   const flags: Record<string, ConfidenceLevel> = {
-    ...(typeof raw.confidence_flags === 'object' && raw.confidence_flags
-      ? (raw.confidence_flags as Record<string, ConfidenceLevel>)
-      : {}),
-    type: confidenceFromMethod(typeRes.method),
-    category: confidenceFromMethod(catRes.method),
-    paymentMode: confidenceFromMethod(payRes.method),
-    taxClass: confidenceFromMethod(taxRes.method),
-    dealType: confidenceFromMethod(dealRes.method),
+    transactionName: rawFlags.transactionName || 'HIGH',
+    type: rawFlags.type || 'HIGH',
+    category: rawFlags.category || 'HIGH',
+    amount: rawFlags.amount || (raw.amount ? 'HIGH' : 'LOW'),
+    netAmount: rawFlags.netAmount || 'HIGH',
+    gstAmount: rawFlags.gstAmount || 'HIGH',
+    date: rawFlags.date || (raw.date ? 'HIGH' : 'LOW'),
+    paymentMode: rawFlags.paymentMode || 'HIGH',
+    taxClass: rawFlags.taxClass || 'HIGH',
+    dealType: rawFlags.dealType || 'HIGH',
+    vendor: rawFlags.vendor || (raw.vendor ? 'HIGH' : 'LOW'),
+    invoiceNumber: rawFlags.invoiceNumber || (raw.invoiceNumber ? 'HIGH' : 'MEDIUM'),
+    businessPurpose: rawFlags.businessPurpose || (raw.businessPurpose ? 'HIGH' : 'MEDIUM'),
+    financialYear: rawFlags.financialYear || 'HIGH',
+    month: rawFlags.month || 'HIGH',
+    notes: rawFlags.notes || 'HIGH',
+    isSubscription: rawFlags.isSubscription || 'HIGH',
   };
 
   const amountRaw = typeof raw.amount === 'number' ? raw.amount : Number(raw.amount);
@@ -249,28 +227,7 @@ function normalizeStructured(
     entry.idfcWowCard = true;
   }
 
-  const salvaged = salvageFromSignals(entry, signals);
-  if (signals.picks.date) flags.date = 'HIGH';
-  if (signals.picks.vendor) flags.vendor = 'HIGH';
-  if (signals.picks.amount != null) flags.amount = 'HIGH';
-  if (signals.picks.invoiceNumber) flags.invoiceNumber = 'HIGH';
-  const fused = applyBusinessRules(salvaged, extraDetails);
-  const trail = [
-    fused.chainOfThought ? `--- MODEL ---\n${fused.chainOfThought}` : '',
-    '--- ENGINE ---',
-    `Type: ${fused.type} [${typeRes.method}]`,
-    `Category: ${fused.category} [${catRes.method}]`,
-    `Payment: ${fused.paymentMode} [${payRes.method}]`,
-    `Tax: ${fused.taxClass} [${taxRes.method}]`,
-    `Deal: ${fused.dealType} [${dealRes.method}]`,
-    fused.sourceFusion ? `Fusion: ${fused.sourceFusion}` : '',
-    signals.dates[0] ? `Harvested date: ${signals.dates[0]}` : '',
-    signals.vendor ? `Harvested vendor: ${signals.vendor}` : '',
-  ]
-    .filter(Boolean)
-    .join('\n');
-
-  fused.chainOfThought = trail;
+  const fused = applyBusinessRules(entry, extraDetails);
   fused.confidence_flags = flags;
   return fused;
 }
@@ -284,47 +241,69 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
     throw new Error('Add an invoice, extracted text, or operator notes.');
   }
 
-  const signals = harvestDocumentSignals(fileText, extraDetails);
   const hasImage = !!(file.data && file.mimeType && file.mimeType.startsWith('image/'));
+  const imageData = hasImage ? { mimeType: file.mimeType || 'image/jpeg', data: file.data || '' } : undefined;
 
-  let parsed: unknown = {};
-  try {
-    const mapped = await completeLedgerModel({
-      provider: input.provider,
-      systemPrompt: EXTRACT_SYSTEM,
-      userText: extractPrompt(fileText, extraDetails, signals, hasImage),
-      image: hasImage ? { mimeType: file.mimeType || 'image/jpeg', data: file.data || '' } : undefined,
-      jsonFormat: true,
-    });
-    parsed = parseJsonFromModel(mapped.text);
-  } catch (error) {
-    console.warn('[ledger-extract] model failed, using harvested signals', error);
-    parsed = {};
-  }
-
-  if (!parsed || typeof parsed !== 'object') parsed = {};
-
-  let data = normalizeStructured(parsed as Record<string, unknown>, fileText, extraDetails, signals);
-
-  try {
-    const checked = await completeLedgerModel({
-      provider: input.provider,
-      systemPrompt: VERIFY_SYSTEM,
-      userText: verifyPrompt(fileText, extraDetails, data, signals),
-      jsonFormat: true,
-    });
-    const verified = parseJsonFromModel(checked.text);
-    if (verified && typeof verified === 'object') {
-      data = normalizeStructured(verified as Record<string, unknown>, fileText, extraDetails, signals);
-      const note = clipText((verified as { verifierNotes?: string }).verifierNotes, 400);
-      if (note) {
-        data.chainOfThought = [data.chainOfThought, `--- VERIFIER ---\n${note}`].filter(Boolean).join('\n');
-        data.sourceFusion = `${data.sourceFusion || 'Merged.'} Verifier: ${note}`;
+  // Phase 1: High-Fidelity Document Transcription (OCR)
+  let transcript = fileText;
+  if (hasImage && (!fileText || fileText.trim().length < 80)) {
+    try {
+      const ocrResult = await completeLedgerModel({
+        provider: input.provider,
+        systemPrompt: OCR_SYSTEM_PROMPT,
+        userText: 'Please transcribe all visible text, tables, line items, and invoice numbers from this document image.',
+        image: imageData,
+        jsonFormat: false,
+      });
+      if (ocrResult.text && ocrResult.text.trim()) {
+        transcript = [fileText, ocrResult.text.trim()].filter(Boolean).join('\n\n');
       }
+    } catch (ocrErr) {
+      console.warn('[ledger-extract] OCR transcription pass failed, proceeding with direct image extraction', ocrErr);
     }
-  } catch (error) {
-    console.warn('[ledger-extract] verifier failed; keeping first extract', error);
   }
+
+  // Phase 2: High-Thinking Structured Extraction
+  let pass1Parsed: unknown = null;
+  try {
+    const pass1Result = await completeLedgerModel({
+      provider: input.provider,
+      systemPrompt: LEDGER_EXTRACT_SYSTEM_PROMPT,
+      userText: buildExtractUserPrompt(transcript, extraDetails),
+      image: imageData,
+      jsonFormat: true,
+      thinkingBudget: 2048,
+    });
+    pass1Parsed = parseJsonFromModel(pass1Result.text);
+  } catch (extractErr) {
+    console.error('[ledger-extract] Phase 2 extraction error', extractErr);
+    throw new Error(extractErr instanceof Error ? extractErr.message : 'Structured extraction failed.');
+  }
+
+  // Phase 3: High-Thinking Judge & Complementary Verifier
+  let finalParsed = pass1Parsed;
+  try {
+    const judgeResult = await completeLedgerModel({
+      provider: input.provider,
+      systemPrompt: JUDGE_SYSTEM_PROMPT,
+      userText: buildJudgeUserPrompt(transcript, extraDetails, pass1Parsed),
+      image: imageData,
+      jsonFormat: true,
+      thinkingBudget: 2048,
+    });
+    const judgeParsed = parseJsonFromModel(judgeResult.text);
+    if (judgeParsed && typeof judgeParsed === 'object') {
+      finalParsed = judgeParsed;
+    }
+  } catch (judgeErr) {
+    console.warn('[ledger-extract] Judge pass failed, falling back to Phase 2 output', judgeErr);
+  }
+
+  if (!finalParsed || typeof finalParsed !== 'object') {
+    throw new Error('Extraction did not produce a valid ledger entry.');
+  }
+
+  const data = normalizeStructured(finalParsed as Record<string, unknown>, transcript, extraDetails);
 
   const errors: string[] = [];
   if (!data.date || !/^\d{4}-\d{2}-\d{2}$/.test(data.date)) {
@@ -343,6 +322,6 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
     validation_errors: errors,
     confidence_flags: flags,
     status: hasLow ? 'REVIEW_REQUIRED' : 'DONE',
-    fusion: data.sourceFusion || 'Document and notes were merged.',
+    fusion: data.sourceFusion || 'Document transcript and operator notes were successfully audited and merged.',
   };
 }

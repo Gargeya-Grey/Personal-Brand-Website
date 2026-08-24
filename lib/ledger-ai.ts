@@ -1,4 +1,12 @@
 import 'server-only';
+import {
+  Categories,
+  DealTypes,
+  PaymentModes,
+  SubscriptionFrequencies,
+  TaxClasses,
+  Types,
+} from '@/lib/ledger-schema';
 
 export type LedgerAiProvider = 'google' | 'openrouter';
 
@@ -17,9 +25,9 @@ export function geminiApiKey(): string {
 }
 
 export function geminiModels(): string[] {
-  const primary = (process.env.GEMINI_MODEL || process.env.LEDGER_GEMINI_MODEL || 'gemini-3.6-flash').trim();
-  const fallback = (process.env.GEMINI_MODEL_FALLBACK || 'gemini-3.5-flash-lite').trim();
-  return [...new Set([primary, fallback].filter(Boolean))];
+  const primary = (process.env.GEMINI_MODEL || process.env.LEDGER_GEMINI_MODEL || 'gemini-flash-latest').trim();
+  const fallback = (process.env.GEMINI_MODEL_FALLBACK || 'gemini-flash-latest').trim();
+  return [...new Set([primary, fallback, 'gemini-flash-latest'].filter(Boolean))];
 }
 
 /** Change LEDGER_OPENROUTER_MODEL in .env to switch the OpenRouter model. */
@@ -108,20 +116,22 @@ function contentFromGemini(data: unknown): string {
   return text;
 }
 
-const LEDGER_RESPONSE_SCHEMA = {
+const CONFIDENCE_LEVELS = ['HIGH', 'MEDIUM', 'LOW', 'ABSENT'];
+
+export const LEDGER_RESPONSE_SCHEMA = {
   type: 'OBJECT',
   properties: {
     chainOfThought: { type: 'STRING' },
     transactionName: { type: 'STRING' },
-    type: { type: 'STRING' },
-    category: { type: 'STRING' },
+    type: { type: 'STRING', enum: [...Types] },
+    category: { type: 'STRING', enum: [...Categories] },
     amount: { type: 'NUMBER', nullable: true },
     netAmount: { type: 'NUMBER', nullable: true },
     gstAmount: { type: 'NUMBER', nullable: true },
     date: { type: 'STRING' },
-    paymentMode: { type: 'STRING' },
-    taxClass: { type: 'STRING' },
-    dealType: { type: 'STRING' },
+    paymentMode: { type: 'STRING', enum: [...PaymentModes] },
+    taxClass: { type: 'STRING', enum: [...TaxClasses] },
+    dealType: { type: 'STRING', enum: [...DealTypes] },
     vendor: { type: 'STRING' },
     customer: { type: 'STRING', nullable: true },
     invoiceNumber: { type: 'STRING' },
@@ -133,32 +143,32 @@ const LEDGER_RESPONSE_SCHEMA = {
     notes: { type: 'STRING' },
     requiresInrConversion: { type: 'BOOLEAN', nullable: true },
     isSubscription: { type: 'BOOLEAN', nullable: true },
-    subscriptionFrequency: { type: 'STRING', nullable: true },
+    subscriptionFrequency: { type: 'STRING', enum: [...SubscriptionFrequencies], nullable: true },
     confidence_flags: {
       type: 'OBJECT',
       properties: {
-        transactionName: { type: 'STRING' },
-        type: { type: 'STRING' },
-        category: { type: 'STRING' },
-        amount: { type: 'STRING' },
-        netAmount: { type: 'STRING' },
-        gstAmount: { type: 'STRING' },
-        date: { type: 'STRING' },
-        paymentMode: { type: 'STRING' },
-        taxClass: { type: 'STRING' },
-        dealType: { type: 'STRING' },
-        vendor: { type: 'STRING' },
-        invoiceNumber: { type: 'STRING' },
-        businessPurpose: { type: 'STRING' },
-        financialYear: { type: 'STRING' },
-        month: { type: 'STRING' },
-        notes: { type: 'STRING' },
-        isSubscription: { type: 'STRING' },
+        transactionName: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        type: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        category: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        amount: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        netAmount: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        gstAmount: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        date: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        paymentMode: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        taxClass: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        dealType: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        vendor: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        invoiceNumber: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        businessPurpose: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        financialYear: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        month: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        notes: { type: 'STRING', enum: CONFIDENCE_LEVELS },
+        isSubscription: { type: 'STRING', enum: CONFIDENCE_LEVELS },
       },
     },
-    verifierNotes: { type: 'STRING' },
+    sourceFusion: { type: 'STRING' },
   },
-  required: ['transactionName', 'type', 'category', 'date', 'vendor'],
+  required: ['transactionName', 'type', 'category', 'date', 'vendor', 'businessPurpose'],
 };
 
 async function callGemini(opts: {
@@ -166,6 +176,7 @@ async function callGemini(opts: {
   userText: string;
   image?: { mimeType: string; data: string };
   jsonFormat?: boolean;
+  thinkingBudget?: number;
 }): Promise<string> {
   const apiKey = geminiApiKey();
   if (!apiKey) throw new Error('GEMINI_API_KEY is not configured.');
@@ -185,7 +196,10 @@ async function callGemini(opts: {
     system_instruction: { parts: [{ text: opts.systemPrompt }] },
     contents: [{ role: 'user', parts }],
     generationConfig: {
-      temperature: 0,
+      temperature: 0.1,
+      ...(opts.thinkingBudget !== undefined
+        ? { thinkingConfig: { thinkingBudget: opts.thinkingBudget } }
+        : {}),
       ...(opts.jsonFormat
         ? {
             responseMimeType: 'application/json',
@@ -220,6 +234,11 @@ async function callGemini(opts: {
           const message =
             (parsed as { error?: { message?: string } }).error?.message ||
             `Gemini ${response.status}`;
+          // If thinkingConfig is unsupported on this model, retry without it
+          if (body.generationConfig.thinkingConfig && /thinkingConfig|unrecognized/i.test(message)) {
+            delete (body.generationConfig as { thinkingConfig?: unknown }).thinkingConfig;
+            continue;
+          }
           const transient =
             response.status === 429 ||
             response.status === 503 ||
@@ -305,6 +324,7 @@ export async function completeLedgerModel(opts: {
   userText: string;
   image?: { mimeType: string; data: string };
   jsonFormat?: boolean;
+  thinkingBudget?: number;
 }): Promise<{ text: string; provider: LedgerAiProvider; model: string }> {
   const provider = resolveLedgerProvider(opts.provider);
 
