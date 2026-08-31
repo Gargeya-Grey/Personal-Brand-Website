@@ -81,7 +81,8 @@ export async function proxy(request: NextRequest) {
   if (
     pathname.startsWith('/api/newsletter') &&
     !pathname.startsWith('/api/newsletter/ingest') &&
-    !pathname.startsWith('/api/newsletter/read')
+    !pathname.startsWith('/api/newsletter/read') &&
+    !pathname.startsWith('/api/newsletter/unsubscribe')
   ) {
     if (!user) {
       return unauthorizedJson('Unauthorized: valid allowlisted session required', reason);

@@ -11,6 +11,7 @@ import {
   type NewsletterWeek,
 } from './newsletter-model';
 import { renderNewsletterEmail } from './newsletter-html';
+import { unsubscribeUrl } from './newsletter-unsubscribe';
 import {
   getResendKey,
   listResendContacts,
@@ -84,7 +85,13 @@ export async function sendWeekNow(
   }
 
   const now = options?.now || new Date();
-  const rendered = renderNewsletterEmail(week, { includeUnsubscribe: true });
+  const renderFor = (email: string) => {
+    const unsub = unsubscribeUrl(email);
+    return {
+      ...renderNewsletterEmail(week, { unsubscribeUrl: unsub }),
+      unsub,
+    };
+  };
   let recipients = await resolveRecipients();
   if (options?.onlyEmail) {
     const email = options.onlyEmail.trim().toLowerCase();
@@ -113,11 +120,16 @@ export async function sendWeekNow(
   for (let i = 0; i < recipients.length; i += BATCH) {
     const slice = recipients.slice(i, i + BATCH);
     if (slice.length === 1 && slice[0]) {
+      const rendered = renderFor(slice[0].email);
       const one = await sendResendEmail({
         to: slice[0].email,
         subject: rendered.subject,
         html: rendered.html,
         text: rendered.text,
+        headers: {
+          'List-Unsubscribe': `<${rendered.unsub}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
       });
       if (one.ok) {
         sent += 1;
@@ -135,12 +147,19 @@ export async function sendWeekNow(
       continue;
     }
     const batch = await sendResendBatch(
-      slice.map((row) => ({
-        to: row.email,
-        subject: rendered.subject,
-        html: rendered.html,
-        text: rendered.text,
-      }))
+      slice.map((row) => {
+        const rendered = renderFor(row.email);
+        return {
+          to: row.email,
+          subject: rendered.subject,
+          html: rendered.html,
+          text: rendered.text,
+          headers: {
+            'List-Unsubscribe': `<${rendered.unsub}>`,
+            'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+          },
+        };
+      })
     );
     if (batch.error) {
       error = batch.error;

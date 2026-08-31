@@ -26,16 +26,22 @@ export { markdownToEmailHtml, emailHasUnsubscribe } from './newsletter-markdown'
 
 export function renderNewsletterEmail(
   week: NewsletterWeek,
-  options?: { includeUnsubscribe?: boolean; origin?: string }
+  options?: { unsubscribeUrl?: string; origin?: string }
 ): { html: string; text: string; subject: string } {
   const origin = options?.origin || getSiteOrigin();
   const archiveUrl = `${origin}/notes/${encodeURIComponent(week.slug)}`;
-  const includeUnsub = options?.includeUnsubscribe !== false;
+  const unsubscribeUrl = options?.unsubscribeUrl || `${origin}/notes/unsubscribe`;
   const body = markdownToEmailHtml(week.bodyMd);
   const deeper = linksBlock(week.links);
-  const unsub = includeUnsub
-    ? `<p style="margin:24px 0 0;font-size:12px;color:#94a3b8;line-height:1.5;">If this is no longer for you, <a href="{{{RESEND_UNSUBSCRIBE_URL}}}" style="color:#64748b;">unsubscribe</a>.</p>`
-    : '';
+  const unsub = `<p style="margin:28px 0 12px;font-size:13px;color:#64748b;line-height:1.5;">If this is no longer for you, you can leave the list in one click.</p>
+              <table role="presentation" cellspacing="0" cellpadding="0">
+                <tr>
+                  <td>
+                    <a href="${escapeHtml(unsubscribeUrl)}" style="display:inline-block;padding:10px 18px;border:1px solid #059669;border-radius:999px;color:#059669;text-decoration:none;font-size:13px;font-weight:700;line-height:1;">Unsubscribe</a>
+                  </td>
+                </tr>
+              </table>
+              <p style="margin:12px 0 0;font-size:12px;color:#94a3b8;">Or open <a href="${escapeHtml(unsubscribeUrl)}" style="color:#059669;text-decoration:underline;">this unsubscribe link</a>.</p>`;
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -91,7 +97,7 @@ export function renderNewsletterEmail(
       ? `Go deeper:\n${week.links.map((l) => `- ${l.label}: ${l.url}`).join('\n')}`
       : '',
     `Read in the browser: ${archiveUrl}`,
-    includeUnsub ? 'Unsubscribe: {{{RESEND_UNSUBSCRIBE_URL}}}' : '',
+    `Unsubscribe: ${unsubscribeUrl}`,
   ].filter((block) => block !== '');
 
   return {

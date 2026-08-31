@@ -80,5 +80,5 @@ export function markdownToEmailHtml(md: string): string {
 }
 
 export function emailHasUnsubscribe(html: string): boolean {
-  return html.includes('{{{RESEND_UNSUBSCRIBE_URL}}}');
+  return /unsubscribe/i.test(html) && /href=/i.test(html);
 }

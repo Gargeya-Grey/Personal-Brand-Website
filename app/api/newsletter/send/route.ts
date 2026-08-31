@@ -3,6 +3,7 @@ import { checkCsrf, requireEditorialUser } from '@/lib/newsletter-auth';
 import { getNewsletterWeek } from '@/lib/newsletter-service';
 import { sendWeekNow } from '@/lib/newsletter-send';
 import { renderNewsletterEmail } from '@/lib/newsletter-html';
+import { getSiteOrigin } from '@/lib/site-config';
 
 export async function POST(request: Request) {
   try {
@@ -17,7 +18,9 @@ export async function POST(request: Request) {
     if (!week) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 
     if (body.preview === true) {
-      const rendered = renderNewsletterEmail(week, { includeUnsubscribe: false });
+      const rendered = renderNewsletterEmail(week, {
+        unsubscribeUrl: `${getSiteOrigin()}/notes/unsubscribe`,
+      });
       return NextResponse.json({ html: rendered.html, text: rendered.text, subject: rendered.subject });
     }
 

@@ -138,6 +138,29 @@ export async function countResendSubscribers(): Promise<number | null> {
   }
 }
 
+export async function unsubscribeResendContact(email: string): Promise<{ ok: boolean; error?: string }> {
+  const target = email.trim().toLowerCase();
+  const contacts = await listResendContacts();
+  const match = contacts.find((c) => c.email === target);
+  const attempts: Array<{ path: string; body: Record<string, unknown> }> = [];
+  if (match?.id) {
+    attempts.push({ path: `/contacts/${match.id}`, body: { unsubscribed: true } });
+  }
+  attempts.push({ path: `/contacts/${encodeURIComponent(target)}`, body: { unsubscribed: true } });
+  attempts.push({ path: '/contacts', body: { email: target, unsubscribed: true } });
+
+  let last = 'Could not update Resend contact.';
+  for (const attempt of attempts) {
+    const res = await resendFetch(attempt.path, {
+      method: 'PATCH',
+      body: JSON.stringify(attempt.body),
+    });
+    if (res.ok) return { ok: true };
+    last = await res.text().catch(() => `HTTP ${res.status}`);
+  }
+  return { ok: false, error: last.slice(0, 400) };
+}
+
 export async function sendResendEmail(input: {
   to: string | string[];
   subject: string;
@@ -168,7 +191,13 @@ export async function sendResendEmail(input: {
 }
 
 export async function sendResendBatch(
-  messages: Array<{ to: string; subject: string; html: string; text: string }>
+  messages: Array<{
+    to: string;
+    subject: string;
+    html: string;
+    text: string;
+    headers?: Record<string, string>;
+  }>
 ): Promise<{ sent: number; ids: string[]; error?: string }> {
   if (!messages.length) return { sent: 0, ids: [] };
   const from = getResendFrom();
@@ -178,6 +207,7 @@ export async function sendResendBatch(
     subject: m.subject,
     html: m.html,
     text: m.text,
+    headers: m.headers,
   }));
   const res = await resendFetch('/emails/batch', {
     method: 'POST',
