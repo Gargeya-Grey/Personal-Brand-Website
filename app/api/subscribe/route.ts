@@ -4,7 +4,7 @@ import path from 'path';
 import { normalizeTimeZone } from '@/lib/newsletter-model';
 import { upsertSubscriberTimezone } from '@/lib/newsletter-service';
 import { renderWelcomeEmail } from '@/lib/newsletter-html';
-import { sendResendEmail } from '@/lib/resend';
+import { sendResendEmail, setResendUnsubscribed } from '@/lib/resend';
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -134,6 +134,9 @@ export async function POST(request: Request) {
 
         if (res.ok || res.status === 409) {
           await upsertSubscriberTimezone({ email, timezone, source }).catch(() => undefined);
+          if (res.status === 409) {
+            await setResendUnsubscribed(email, false).catch(() => undefined);
+          }
           if (process.env.NODE_ENV !== 'production') {
             await appendLocalSubscriber(payload).catch(() => undefined);
           }

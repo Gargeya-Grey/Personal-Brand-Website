@@ -5,20 +5,20 @@ import {
   markComplete,
   markSent,
   NEWSLETTER_TZ,
-  normalizeTimeZone,
+  activeRecipients,
   shouldSendToTimezone,
   type NewsletterRecipientSend,
   type NewsletterWeek,
 } from './newsletter-model';
 import { renderNewsletterEmail } from './newsletter-html';
-import { unsubscribeUrl } from './newsletter-unsubscribe';
+import { unsubscribeApiUrl, unsubscribeUrl } from './newsletter-unsubscribe';
 import {
   getResendKey,
   listResendContacts,
   sendResendBatch,
   sendResendEmail,
 } from './resend';
-import { getSubscriberTimezones, upsertNewsletterWeek } from './newsletter-service';
+import { listSubscriberRows, upsertNewsletterWeek } from './newsletter-service';
 
 const BATCH = 50;
 
@@ -44,19 +44,19 @@ function uniqueEmails(week: NewsletterWeek, contacts: Array<{ email: string; tim
 }
 
 export async function resolveRecipients(): Promise<Array<{ email: string; timezone: string }>> {
-  const tzMap = await getSubscriberTimezones();
-  const fromResend = await listResendContacts();
-  if (fromResend.length) {
-    return fromResend.map((c) => {
-      const propTz =
-        c.properties && typeof c.properties.timezone === 'string' ? c.properties.timezone : '';
-      return {
-        email: c.email,
-        timezone: normalizeTimeZone(tzMap.get(c.email) || propTz || NEWSLETTER_TZ),
-      };
-    });
-  }
-  return [...tzMap.entries()].map(([email, timezone]) => ({ email, timezone }));
+  const local = await listSubscriberRows();
+  const fromResend = await listResendContacts({ includeUnsubscribed: true });
+  return activeRecipients(
+    local,
+    fromResend.map((c) => ({
+      email: c.email,
+      unsubscribed: c.unsubscribed === true,
+      timezone:
+        c.properties && typeof c.properties.timezone === 'string'
+          ? c.properties.timezone
+          : undefined,
+    }))
+  );
 }
 
 export async function sendWeekNow(
@@ -127,7 +127,7 @@ export async function sendWeekNow(
         html: rendered.html,
         text: rendered.text,
         headers: {
-          'List-Unsubscribe': `<${rendered.unsub}>`,
+          'List-Unsubscribe': `<${unsubscribeApiUrl(slice[0].email)}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
         },
       });
@@ -155,7 +155,7 @@ export async function sendWeekNow(
           html: rendered.html,
           text: rendered.text,
           headers: {
-            'List-Unsubscribe': `<${rendered.unsub}>`,
+            'List-Unsubscribe': `<${unsubscribeApiUrl(row.email)}>`,
             'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
           },
         };

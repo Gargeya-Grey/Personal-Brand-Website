@@ -4,15 +4,16 @@ import {
   type IssueMetrics,
   type NewsletterDashboard,
 } from './newsletter-model';
-import { getBroadcastMetrics, countResendSubscribers } from './resend';
+import { getBroadcastMetrics } from './resend';
 import { getNewsletterWeeks, getReadSeconds } from './newsletter-service';
+import { resolveRecipients } from './newsletter-send';
 
 export type { IssueMetrics, NewsletterDashboard };
 
 export async function getNewsletterDashboard(): Promise<NewsletterDashboard> {
   const [weeks, subscribers] = await Promise.all([
     getNewsletterWeeks(),
-    countResendSubscribers(),
+    resolveRecipients().then((rows) => rows.length),
   ]);
   const sentish = weeks.filter((w) => w.stage === 'sent' || w.stage === 'sending' || w.sentAt);
   const issues: IssueMetrics[] = [];

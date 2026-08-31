@@ -18,6 +18,7 @@ import {
   shouldSendToTimezone,
   skipWeek,
   upcomingSunday,
+  activeRecipients,
 } from '../lib/newsletter-model.ts';
 import { emailHasUnsubscribe, markdownToEmailHtml } from '../lib/newsletter-markdown.ts';
 
@@ -118,6 +119,37 @@ assert.equal(
   true
 );
 assert.equal(emailHasUnsubscribe('<p>nope</p>'), false);
+assert.match(
+  '<a href="https://www.sgargeya.com/notes/unsubscribe?email=a%40b.com&token=abc">Unsubscribe</a>',
+  /href="https:\/\/www\.sgargeya\.com\/notes\/unsubscribe/
+);
+
+const mailing = activeRecipients(
+  [
+    { email: 'kept@example.com', timezone: 'Asia/Kolkata', unsubscribed: false },
+    { email: 'left@example.com', timezone: 'Asia/Kolkata', unsubscribed: true },
+  ],
+  [
+    { email: 'kept@example.com', unsubscribed: false },
+    { email: 'left@example.com', unsubscribed: false },
+    { email: 'resend-left@example.com', unsubscribed: true },
+  ]
+);
+assert.deepEqual(
+  mailing.map((row) => row.email),
+  ['kept@example.com']
+);
+const localOnly = activeRecipients(
+  [
+    { email: 'alive@example.com', timezone: 'America/New_York', unsubscribed: false },
+    { email: 'gone@example.com', timezone: 'America/New_York', unsubscribed: true },
+  ],
+  []
+);
+assert.deepEqual(
+  localOnly.map((row) => row.email),
+  ['alive@example.com']
+);
 
 assert.equal(medianReadSeconds([5, 12, 40, 80, 90]), 80);
 assert.equal(medianReadSeconds([5, 12]), null);

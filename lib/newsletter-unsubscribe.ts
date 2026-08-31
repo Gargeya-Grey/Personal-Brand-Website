@@ -14,12 +14,21 @@ export function unsubscribeToken(email: string): string {
   return createHmac('sha256', secret()).update(email.trim().toLowerCase()).digest('hex').slice(0, 32);
 }
 
-export function unsubscribeUrl(email: string, origin = getSiteOrigin()): string {
+function unsubscribeQuery(email: string): string {
   const params = new URLSearchParams({
     email: email.trim().toLowerCase(),
     token: unsubscribeToken(email),
   });
-  return `${origin.replace(/\/$/, '')}/notes/unsubscribe?${params.toString()}`;
+  return params.toString();
+}
+
+export function unsubscribeUrl(email: string, origin = getSiteOrigin()): string {
+  return `${origin.replace(/\/$/, '')}/notes/unsubscribe?${unsubscribeQuery(email)}`;
+}
+
+/** One-click header target. Gmail POSTs here; we keep the row and stop sending. */
+export function unsubscribeApiUrl(email: string, origin = getSiteOrigin()): string {
+  return `${origin.replace(/\/$/, '')}/api/newsletter/unsubscribe?${unsubscribeQuery(email)}`;
 }
 
 export function verifyUnsubscribeToken(email: string, token: string): boolean {

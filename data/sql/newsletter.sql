@@ -34,7 +34,9 @@ create table if not exists public.newsletter_subscribers (
   email text primary key,
   timezone text not null default 'Asia/Kolkata',
   source text,
-  subscribed_at timestamptz not null default now()
+  subscribed_at timestamptz not null default now(),
+  unsubscribed boolean not null default false,
+  unsubscribed_at timestamptz
 );
 
 alter table public.newsletter_subscribers enable row level security;
@@ -48,7 +50,7 @@ create policy "newsletter_subscribers_no_public"
   with check (false);
 
 comment on table public.newsletter_subscribers is
-  'Timezone + source for Notes subscribers. Resend remains source of truth for unsubscribes.';
+  'Notes subscribers. Never delete a row to unsubscribe: set unsubscribed = true.';
 
 create table if not exists public.newsletter_reads (
   issue_id text not null,

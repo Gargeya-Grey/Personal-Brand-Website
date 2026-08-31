@@ -33,7 +33,7 @@ export function renderNewsletterEmail(
   const unsubscribeUrl = options?.unsubscribeUrl || `${origin}/notes/unsubscribe`;
   const body = markdownToEmailHtml(week.bodyMd);
   const deeper = linksBlock(week.links);
-  const unsub = `<p style="margin:28px 0 12px;font-size:13px;color:#64748b;line-height:1.5;">If this is no longer for you, you can leave the list in one click.</p>
+  const unsub = `<p style="margin:28px 0 12px;font-size:13px;color:#64748b;line-height:1.5;">If this is no longer for you, leave the list here.</p>
               <table role="presentation" cellspacing="0" cellpadding="0">
                 <tr>
                   <td>

@@ -10,6 +10,7 @@ import {
   normalizeTimeZone,
   publicWeek,
   sanitizeWeek,
+  NEWSLETTER_TZ,
   upcomingSunday,
   type NewsletterTaste,
   type NewsletterWeek,
@@ -169,6 +170,12 @@ export async function getNewsletterTaste(): Promise<NewsletterTaste> {
   return buildTaste(weeks);
 }
 
+export type SubscriberRow = {
+  email: string;
+  timezone: string;
+  unsubscribed: boolean;
+};
+
 export async function upsertSubscriberTimezone(input: {
   email: string;
   timezone?: string;
@@ -178,33 +185,112 @@ export async function upsertSubscriberTimezone(input: {
   const timezone = normalizeTimeZone(input.timezone);
   const source = (input.source || 'site').slice(0, 64);
   if (!isSupabaseUsable()) return;
-  const { error } = await supabase.from('newsletter_subscribers').upsert(
+  const now = new Date().toISOString();
+  const full = {
+    email,
+    timezone,
+    source,
+    subscribed_at: now,
+    unsubscribed: false,
+    unsubscribed_at: null,
+  };
+  const { error } = await supabase.from('newsletter_subscribers').upsert(full, { onConflict: 'email' });
+  if (!error) return;
+  const { error: fallback } = await supabase.from('newsletter_subscribers').upsert(
+    { email, timezone, source, subscribed_at: now },
+    { onConflict: 'email' }
+  );
+  if (fallback) console.warn('[newsletter] subscriber upsert failed:', fallback);
+}
+
+/** Flag the row. Never delete it. */
+export async function setSubscriberUnsubscribed(
+  email: string,
+  unsubscribed: boolean
+): Promise<{ ok: boolean; error?: string }> {
+  const target = email.trim().toLowerCase();
+  if (!target || !isSupabaseUsable()) return { ok: !isSupabaseUsable() };
+  const now = new Date().toISOString();
+  const patch = unsubscribed
+    ? { unsubscribed: true, unsubscribed_at: now }
+    : { unsubscribed: false, unsubscribed_at: null, subscribed_at: now };
+
+  const { data, error } = await supabase
+    .from('newsletter_subscribers')
+    .update(patch)
+    .eq('email', target)
+    .select('email');
+  if (!error && data && data.length > 0) return { ok: true };
+
+  const columnMissing = Boolean(error && /unsubscribed/i.test(error.message || ''));
+  if (columnMissing) {
+    const { data: legacy, error: legacyError } = await supabase
+      .from('newsletter_subscribers')
+      .update({ source: unsubscribed ? 'unsubscribe' : 'site' })
+      .eq('email', target)
+      .select('email');
+    if (!legacyError && legacy && legacy.length > 0) return { ok: true };
+    const { error: legacyInsert } = await supabase.from('newsletter_subscribers').upsert(
+      {
+        email: target,
+        timezone: NEWSLETTER_TZ,
+        source: unsubscribed ? 'unsubscribe' : 'site',
+        subscribed_at: now,
+      },
+      { onConflict: 'email' }
+    );
+    if (!legacyInsert) return { ok: true };
+    return { ok: false, error: legacyInsert.message };
+  }
+
+  const { error: insertError } = await supabase.from('newsletter_subscribers').upsert(
     {
-      email,
-      timezone,
-      source,
-      subscribed_at: new Date().toISOString(),
+      email: target,
+      timezone: NEWSLETTER_TZ,
+      source: unsubscribed ? 'unsubscribe' : 'site',
+      subscribed_at: now,
+      ...patch,
     },
     { onConflict: 'email' }
   );
-  if (error) console.warn('[newsletter] subscriber upsert failed:', error);
+  if (!insertError) return { ok: true };
+  return { ok: false, error: insertError.message };
+}
+
+export async function listSubscriberRows(): Promise<SubscriberRow[]> {
+  if (!isSupabaseUsable()) return [];
+  try {
+    const withFlag = await supabase
+      .from('newsletter_subscribers')
+      .select('email, timezone, unsubscribed');
+    if (!withFlag.error) {
+      return (withFlag.data || [])
+        .filter((row) => row && typeof row.email === 'string')
+        .map((row) => ({
+          email: row.email.toLowerCase(),
+          timezone: normalizeTimeZone(row.timezone),
+          unsubscribed: row.unsubscribed === true,
+        }));
+    }
+    const legacy = await supabase.from('newsletter_subscribers').select('email, timezone, source');
+    if (legacy.error) throw legacy.error;
+    return (legacy.data || [])
+      .filter((row) => row && typeof row.email === 'string')
+      .map((row) => ({
+        email: row.email.toLowerCase(),
+        timezone: normalizeTimeZone(row.timezone),
+        unsubscribed: typeof row.source === 'string' && row.source.startsWith('unsubscribe'),
+      }));
+  } catch (err) {
+    console.warn('[newsletter] subscriber list failed:', err);
+    return [];
+  }
 }
 
 export async function getSubscriberTimezones(): Promise<Map<string, string>> {
   const map = new Map<string, string>();
-  if (!isSupabaseUsable()) return map;
-  try {
-    const { data, error } = await supabase
-      .from('newsletter_subscribers')
-      .select('email, timezone');
-    if (error) throw error;
-    for (const row of data || []) {
-      if (row && typeof row.email === 'string') {
-        map.set(row.email.toLowerCase(), normalizeTimeZone(row.timezone));
-      }
-    }
-  } catch (err) {
-    console.warn('[newsletter] timezone list failed:', err);
+  for (const row of await listSubscriberRows()) {
+    if (!row.unsubscribed) map.set(row.email, row.timezone);
   }
   return map;
 }

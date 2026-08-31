@@ -225,6 +225,44 @@ export function normalizeTimeZone(value: unknown): string {
   return NEWSLETTER_TZ;
 }
 
+export type RecipientSeed = {
+  email: string;
+  timezone?: string;
+  unsubscribed?: boolean;
+};
+
+/**
+ * Who gets the next letter. Unsubscribed in our table or in Resend is skipped.
+ * Rows stay in the database until they subscribe again.
+ */
+export function activeRecipients(
+  local: RecipientSeed[],
+  resend: RecipientSeed[]
+): Array<{ email: string; timezone: string }> {
+  const unsubscribed = new Set<string>();
+  const timezone = new Map<string, string>();
+
+  for (const row of [...local, ...resend]) {
+    const email = asString(row.email).trim().toLowerCase();
+    if (!email) continue;
+    if (row.unsubscribed) unsubscribed.add(email);
+    if (row.timezone) timezone.set(email, normalizeTimeZone(row.timezone));
+  }
+
+  const pool = (resend.length ? resend : local)
+    .map((row) => asString(row.email).trim().toLowerCase())
+    .filter(Boolean);
+
+  const seen = new Set<string>();
+  const out: Array<{ email: string; timezone: string }> = [];
+  for (const email of pool) {
+    if (seen.has(email) || unsubscribed.has(email)) continue;
+    seen.add(email);
+    out.push({ email, timezone: timezone.get(email) || NEWSLETTER_TZ });
+  }
+  return out;
+}
+
 export function isLocalSunday7pm(timeZone: string, now = new Date()): boolean {
   const tz = normalizeTimeZone(timeZone);
   const local = zonedParts(now, tz);

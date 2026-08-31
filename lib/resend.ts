@@ -84,7 +84,7 @@ export async function addResendContact(input: {
   return { ok: false, status: lastStatus, body: lastBody };
 }
 
-export async function listResendContacts(): Promise<ResendContact[]> {
+async function listAllResendContacts(): Promise<ResendContact[]> {
   const segmentId = getResendSegmentId();
   const key = getResendKey();
   if (!key) return [];
@@ -125,6 +125,14 @@ export async function listResendContacts(): Promise<ResendContact[]> {
     if (!hasMore || !lastId) break;
     after = lastId;
   }
+  return contacts;
+}
+
+export async function listResendContacts(options?: {
+  includeUnsubscribed?: boolean;
+}): Promise<ResendContact[]> {
+  const contacts = await listAllResendContacts();
+  if (options?.includeUnsubscribed) return contacts;
   return contacts.filter((c) => !c.unsubscribed);
 }
 
@@ -138,16 +146,20 @@ export async function countResendSubscribers(): Promise<number | null> {
   }
 }
 
-export async function unsubscribeResendContact(email: string): Promise<{ ok: boolean; error?: string }> {
+export async function setResendUnsubscribed(
+  email: string,
+  unsubscribed: boolean
+): Promise<{ ok: boolean; error?: string }> {
   const target = email.trim().toLowerCase();
-  const contacts = await listResendContacts();
+  const contacts = await listAllResendContacts();
   const match = contacts.find((c) => c.email === target);
+  if (match && match.unsubscribed === unsubscribed) return { ok: true };
+
   const attempts: Array<{ path: string; body: Record<string, unknown> }> = [];
   if (match?.id) {
-    attempts.push({ path: `/contacts/${match.id}`, body: { unsubscribed: true } });
+    attempts.push({ path: `/contacts/${match.id}`, body: { unsubscribed } });
   }
-  attempts.push({ path: `/contacts/${encodeURIComponent(target)}`, body: { unsubscribed: true } });
-  attempts.push({ path: '/contacts', body: { email: target, unsubscribed: true } });
+  attempts.push({ path: `/contacts/${encodeURIComponent(target)}`, body: { unsubscribed } });
 
   let last = 'Could not update Resend contact.';
   for (const attempt of attempts) {
@@ -158,7 +170,16 @@ export async function unsubscribeResendContact(email: string): Promise<{ ok: boo
     if (res.ok) return { ok: true };
     last = await res.text().catch(() => `HTTP ${res.status}`);
   }
+  if (!match && unsubscribed) {
+    const created = await addResendContact({ email: target, unsubscribed: true });
+    if (created.ok) return { ok: true };
+    last = created.body || last;
+  }
   return { ok: false, error: last.slice(0, 400) };
+}
+
+export async function unsubscribeResendContact(email: string): Promise<{ ok: boolean; error?: string }> {
+  return setResendUnsubscribed(email, true);
 }
 
 export async function sendResendEmail(input: {
