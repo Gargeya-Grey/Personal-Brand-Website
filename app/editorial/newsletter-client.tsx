@@ -6,6 +6,7 @@ import {
   ArrowLeft,
   ArrowUpRight,
   Check,
+  CircleHelp,
   Eye,
   Loader2,
   Mail,
@@ -619,6 +620,7 @@ export function NewsletterClient({
         <MetricCard
           label="Last median read time"
           value={formatReadTime(metrics?.lastMedianReadSeconds ?? null)}
+          hint={READ_TIME_HINT}
         />
       </div>
       {metrics?.issues?.length ? (
@@ -629,7 +631,12 @@ export function NewsletterClient({
                 <th className="px-4 py-3 font-medium">Letter</th>
                 <th className="px-4 py-3 font-medium">Subscribers</th>
                 <th className="px-4 py-3 font-medium">Opens</th>
-                <th className="px-4 py-3 font-medium">Read time</th>
+                <th className="px-4 py-3 font-medium">
+                  <span className="inline-flex items-center gap-1.5">
+                    Read time
+                    <InfoTip label="How read time is measured" text={READ_TIME_HINT} align="right" />
+                  </span>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -711,10 +718,69 @@ export function NewsletterClient({
   );
 }
 
-function MetricCard({ label, value }: { label: string; value: string | number }) {
+const READ_TIME_HINT =
+  'Visible time on the public letter page (/notes/…), not time in the inbox. The tab pings every 15 seconds while it is in front. Each visit is a random session id, not an email. Sessions under 20 seconds are ignored. We take the median of the rest, capped at 20 minutes. Reloading the same tab counts as the same session.';
+
+function InfoTip({
+  label,
+  text,
+  align = 'left',
+}: {
+  label: string;
+  text: string;
+  align?: 'left' | 'right';
+}) {
+  const [open, setOpen] = useState(false);
   return (
-    <div className="atelier-card-lg p-5">
-      <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">{label}</p>
+    <span
+      className="relative inline-flex"
+      onMouseEnter={() => setOpen(true)}
+      onMouseLeave={() => setOpen(false)}
+    >
+      <button
+        type="button"
+        className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[var(--atelier-faint)] transition-colors hover:text-[var(--atelier-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atelier-gold)]"
+        aria-label={label}
+        aria-expanded={open}
+        onFocus={() => setOpen(true)}
+        onBlur={() => setOpen(false)}
+        onClick={() => setOpen((v) => !v)}
+      >
+        <CircleHelp className="h-3.5 w-3.5" aria-hidden="true" />
+      </button>
+      {open ? (
+        <span
+          role="tooltip"
+          className={`absolute top-full z-40 mt-2 w-[min(18rem,calc(100vw-3rem))] rounded-xl border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-3 text-left text-[0.7rem] font-normal normal-case leading-relaxed tracking-normal text-[var(--atelier-muted)] shadow-[var(--atelier-shadow)] ${
+            align === 'right' ? 'right-0' : 'left-0'
+          }`}
+        >
+          {text}
+        </span>
+      ) : null}
+    </span>
+  );
+}
+
+function MetricCard({
+  label,
+  value,
+  hint,
+  hintAlign = 'right',
+}: {
+  label: string;
+  value: string | number;
+  hint?: string;
+  hintAlign?: 'left' | 'right';
+}) {
+  return (
+    <div className="atelier-card-lg relative overflow-visible p-5">
+      <p className="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
+        {label}
+        {hint ? (
+          <InfoTip label={`How ${label.toLowerCase()} is measured`} text={hint} align={hintAlign} />
+        ) : null}
+      </p>
       <p className="mt-2 font-headline text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">{value}</p>
     </div>
   );
