@@ -23,7 +23,11 @@ import {
 } from '../lib/newsletter-model.ts';
 import { emailHasUnsubscribe, markdownToEmailHtml, parseKickerLine } from '../lib/newsletter-markdown.ts';
 import { notesBrand } from '../lib/notes-brand.ts';
-import { formatSubscriberAlert, subscriberAlertKind } from '../lib/notes-alerts.ts';
+import {
+  formatSubscriberAlert,
+  subscriberAlertFromWebhook,
+  subscriberAlertKind,
+} from '../lib/notes-alerts.ts';
 
 const sunday = upcomingSunday(new Date('2026-08-31T08:00:00.000Z'));
 assert.equal(sunday, '2026-09-06');
@@ -39,6 +43,37 @@ assert.equal(subscriberAlertKind({ priorUnsubscribed: false, nextUnsubscribed: f
 assert.match(
   formatSubscriberAlert({ kind: 'subscribed', email: 'a@b.com', source: 'notes', timezone: 'Asia/Kolkata' }),
   /new subscriber/
+);
+assert.equal(
+  subscriberAlertFromWebhook({
+    type: 'INSERT',
+    record: { email: 'New@Site.com', source: 'notes', timezone: 'Asia/Kolkata', unsubscribed: false },
+  })?.kind,
+  'subscribed'
+);
+assert.equal(
+  subscriberAlertFromWebhook({
+    type: 'UPDATE',
+    old_record: { email: 'a@b.com', unsubscribed: false },
+    record: { email: 'a@b.com', unsubscribed: true, source: 'unsubscribe' },
+  })?.kind,
+  'unsubscribed'
+);
+assert.equal(
+  subscriberAlertFromWebhook({
+    type: 'UPDATE',
+    old_record: { email: 'a@b.com', unsubscribed: true },
+    record: { email: 'a@b.com', unsubscribed: false, source: 'notes', timezone: 'UTC' },
+  })?.kind,
+  'resubscribed'
+);
+assert.equal(
+  subscriberAlertFromWebhook({
+    type: 'UPDATE',
+    old_record: { email: 'a@b.com', unsubscribed: false, timezone: 'UTC' },
+    record: { email: 'a@b.com', unsubscribed: false, timezone: 'Asia/Kolkata' },
+  }),
+  null
 );
 
 const istSundayEvening = new Date('2026-09-06T13:30:00.000Z');
