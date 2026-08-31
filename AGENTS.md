@@ -95,7 +95,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ### Deploy
 - Vercel deploys this personal repo; wrong Vercel team/MCP credentials have caused confusion — use the personal project, not unrelated orgs.
-- Push often blocked for agent auto-mode; **user runs** `git push origin main` when needed.
+- GitHub account for this repo is **Gargeya-Grey** (not EdudojoAI). See Public-safe git.
 
 ### Brand
 - Nav short name: **Gargeya**.
@@ -121,6 +121,9 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 3. Merge a fresh sitting pack (morning 2 replies + 1 original, or evening 3 replies).
 
 ### Public-safe git
+- **Before any git action in a turn** (`status`, `diff`, `commit`, `push`, `pull`): run `gh auth status` once. Active account must be **Gargeya-Grey**. If it is EdudojoAI or anything else, `gh auth switch --user Gargeya-Grey` then continue. One check per turn is enough; do not skip it.
+- HTTPS git uses the GitHub CLI helper, so the wrong active `gh` account 403s this private-looking public repo (`Permission denied to EdudojoAI`).
+- This repo’s local commit identity is already `Gargeya Sharma` / `58877563+Gargeya-Grey@users.noreply.github.com`. Do not switch global `user.name` for other machines unless he asks.
 - Commit code, playbooks, SQL, non-secret data.
 - Never commit `.env`, service roles, or OAuth secrets.
 - Uncommitted scout JSON + logo tweaks after a run are normal; live site uses Supabase.
@@ -132,6 +135,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - Brief is **`data/gargeya-voice.md` only**. No scores. Loop every 4h. He picks at 11:30 and 19:00 IST.
 - Notes bot reads **`data/newsletter-brief.md` + voice + ingest taste**. Saturday 19:00 IST draft, Sunday 13:00 IST research refresh. He curates at `/editorial?workspace=notes`.
 - Do not invent claims; grounding still non-negotiable.
+- Git: every turn that touches git starts with `gh auth status`. Active account **Gargeya-Grey** only.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
