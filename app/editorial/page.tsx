@@ -3,6 +3,7 @@ import { redirect } from 'next/navigation';
 import type { Metadata } from 'next';
 import { requireAllowedSession } from '@/lib/auth';
 import { getEditorialArticlesLite } from '@/lib/blog-service';
+import { getNewsletterWeeks } from '@/lib/newsletter-service';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { EditorialClient } from './editorial-client';
@@ -29,18 +30,22 @@ export default async function EditorialPage({
   if (ws === 'ledger' || ws === 'finance' || ws === 'books') {
     redirect('/ledger');
   }
-  const initialWorkspace: 'blog' | 'x' | 'lab' | 'strategy' =
+  const initialWorkspace: 'blog' | 'x' | 'lab' | 'strategy' | 'notes' =
     ws === 'x' || ws === 'todo' || ws === 'x-todo'
       ? 'x'
       : ws === 'lab' || ws === 'x-lab' || ws === 'analytics'
         ? 'lab'
         : ws === 'strategy' || ws === 'growth' || ws === 'growth-strategy'
           ? 'strategy'
-          : 'blog';
+          : ws === 'notes' || ws === 'newsletter' || ws === 'letters'
+            ? 'notes'
+            : 'blog';
 
   // Skip blog list I/O when opening X workspaces — major latency win
   const articles =
     initialWorkspace === 'blog' ? await getEditorialArticlesLite() : [];
+  const initialNotes =
+    initialWorkspace === 'notes' ? await getNewsletterWeeks() : [];
 
   return (
     <div className="atelier-root min-h-screen relative flex flex-col justify-between antialiased">
@@ -51,6 +56,7 @@ export default async function EditorialPage({
           initialArticles={articles}
           user={user}
           initialWorkspace={initialWorkspace}
+          initialNotes={initialNotes}
         />
       </main>
       <Footer />

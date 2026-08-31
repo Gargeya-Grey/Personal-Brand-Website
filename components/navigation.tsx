@@ -1,6 +1,6 @@
 'use client';
 
-import { Menu, X, BookOpen, AtSign, Landmark } from 'lucide-react';
+import { Menu, X, BookOpen, AtSign, Landmark, Mail } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { Suspense, useState, useEffect, useRef, type ReactNode } from 'react';
@@ -40,6 +40,13 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           icon: <BookOpen className="h-3.5 w-3.5" strokeWidth={2.25} />,
         },
         {
+          name: 'Notes',
+          shortName: 'Notes',
+          path: '/editorial?workspace=notes',
+          key: 'notes',
+          icon: <Mail className="h-3.5 w-3.5" strokeWidth={2.25} />,
+        },
+        {
           name: 'X To-Do',
           shortName: 'X',
           path: '/editorial?workspace=x',
@@ -59,6 +66,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         { name: 'Startup', path: siteConfig.links.edudojo, external: true, key: 'startup' },
         { name: 'Community', path: '/community', key: 'community' },
         { name: 'Blog', path: '/blog', key: 'blog' },
+        { name: 'Notes', path: '/notes', key: 'notes' },
         { name: 'YouTube', path: '/youtube', key: 'youtube' },
         { name: 'About', path: '/about', key: 'about' },
         { name: 'CV', path: siteConfig.links.cv, external: true, key: 'cv' },
@@ -211,12 +219,19 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     workspaceParam === 'strategy' ||
     workspaceParam === 'growth' ||
     workspaceParam === 'growth-strategy';
+  const onNotes =
+    workspaceParam === 'notes' ||
+    workspaceParam === 'newsletter' ||
+    workspaceParam === 'letters';
 
   const isLinkActive = (link: NavLink) => {
     if (isAtelier) {
       if (link.key === 'ledger') return pathname.startsWith('/ledger');
       if (link.key === 'x') return pathname.startsWith('/editorial') && onX;
-      if (link.key === 'blog') return pathname.startsWith('/editorial') && !onX && !pathname.startsWith('/ledger');
+      if (link.key === 'notes') return pathname.startsWith('/editorial') && onNotes;
+      if (link.key === 'blog') {
+        return pathname.startsWith('/editorial') && !onX && !onNotes && !pathname.startsWith('/ledger');
+      }
       return pathname === link.path;
     }
     return (

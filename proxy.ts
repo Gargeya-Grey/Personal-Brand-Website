@@ -78,6 +78,16 @@ export async function proxy(request: NextRequest) {
     }
   }
 
+  if (
+    pathname.startsWith('/api/newsletter') &&
+    !pathname.startsWith('/api/newsletter/ingest') &&
+    !pathname.startsWith('/api/newsletter/read')
+  ) {
+    if (!user) {
+      return unauthorizedJson('Unauthorized: valid allowlisted session required', reason);
+    }
+  }
+
   const res = NextResponse.next();
   if (
     pathname.startsWith('/editorial') ||
@@ -105,5 +115,7 @@ export const config = {
     '/api/x-lab/:path*',
     '/api/ledger',
     '/api/ledger/:path*',
+    '/api/newsletter',
+    '/api/newsletter/:path*',
   ],
 };

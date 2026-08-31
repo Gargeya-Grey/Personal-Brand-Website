@@ -1,6 +1,10 @@
 import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
+import { normalizeTimeZone } from '@/lib/newsletter-model';
+import { upsertSubscriberTimezone } from '@/lib/newsletter-service';
+import { renderWelcomeEmail } from '@/lib/newsletter-html';
+import { sendResendEmail } from '@/lib/resend';
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
@@ -53,6 +57,7 @@ export async function POST(request: Request) {
     const body = await request.json();
     const email = String(body.email || '').trim().toLowerCase();
     const source = String(body.source || 'site').slice(0, 64);
+    const timezone = normalizeTimeZone(body.timezone);
 
     if (!email || !isValidEmail(email) || email.length > 200) {
       return NextResponse.json({ error: 'Please provide a valid email address.' }, { status: 400 });
@@ -128,14 +133,23 @@ export async function POST(request: Request) {
         });
 
         if (res.ok || res.status === 409) {
-          // Best-effort local backup in dev only
+          await upsertSubscriberTimezone({ email, timezone, source }).catch(() => undefined);
           if (process.env.NODE_ENV !== 'production') {
             await appendLocalSubscriber(payload).catch(() => undefined);
+          }
+          if (res.ok) {
+            const welcome = renderWelcomeEmail();
+            await sendResendEmail({
+              to: email,
+              subject: welcome.subject,
+              html: welcome.html,
+              text: welcome.text,
+            }).catch(() => undefined);
           }
           return NextResponse.json({
             success: true,
             delivery: 'resend',
-            message: 'You are on the list. High-signal notes only — no spam.',
+            message: 'You are on the list. One letter on Sunday. No roundup.',
           });
         }
 
@@ -204,6 +218,7 @@ export async function POST(request: Request) {
 
     if (process.env.NODE_ENV !== 'production') {
       await appendLocalSubscriber(payload);
+      await upsertSubscriberTimezone({ email, timezone, source }).catch(() => undefined);
       return NextResponse.json({
         success: true,
         delivery: 'local',

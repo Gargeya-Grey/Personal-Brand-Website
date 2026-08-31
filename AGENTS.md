@@ -28,7 +28,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ### Auth / CMS
 - Google OAuth + JWT session cookie; allowed email gate in `lib/auth.ts`.
-- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`) + **Growth Strategy** (`x-growth-strategy.tsx`, `?workspace=strategy`). Scout brief is `data/gargeya-voice.md`. The strategy page is a dashboard, not the brief.
+- CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`) + **Growth Strategy** (`x-growth-strategy.tsx`, `?workspace=strategy`) + **Notes** (`newsletter-client.tsx`, `?workspace=notes`). Scout brief is `data/gargeya-voice.md`. Notes brief is `data/newsletter-brief.md`. The strategy page is a dashboard, not the brief.
 - **Finance Ledger** `/ledger` — invoice extract → review → Notion. Same allowlist. Setup: `data/ledger-setup.md`.
 
 ### Finance ledger
@@ -70,6 +70,23 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 **Critical UI rule:** draft `meta` for sources must be a **status URL string** (or normalize to one). Object-shaped `{url, note}` broke **Copy & open** (opened compose instead of source). Always use `draftOpenUrl` / `normalizeDraftMeta`.
 
 **Pack id:** `pack-YYYY-MM-DD-tHH` with **IST** date + hour ∈ {11,13,15,17,19,21}. Legacy UTC t00/t06/t12/t18 may still exist.
+
+### Notes (weekly letter)
+| Piece | Role |
+| :--- | :--- |
+| `data/newsletter-brief.md` | Only Notes bot brief. Owner edits this. |
+| `data/gargeya-voice.md` | How it should sound. Bot reads this too. |
+| `data/grok-bot-newsletter-prompt.md` | Copy-paste handover for Grok Bot. |
+| `lib/newsletter-model.ts` | Week shape, Sunday ids, ingest merge, Sunday 19:00 local send rules. |
+| `lib/newsletter-service.ts` | Supabase weeks / subscriber TZ / read pings. |
+| `app/api/newsletter/ingest` | Bot GET taste + POST week (`X_SCOUT_SECRET`). |
+| `app/editorial?workspace=notes` | Curator: edit, preview, auto-publish checkbox, "I'm happy with this". |
+| `/notes` | Public landing + example + archive. |
+| Metrics | Subscribers (Resend), unique opens (Resend), median read time (`newsletter_reads`). |
+
+**Cadence (IST):** Saturday 19:00 bot drafts. Sunday 13:00 bot refreshes research. Sunday 19:00 site sends if auto-publish is on (each subscriber's local Sunday 19:00) or immediately when he presses happy with auto-publish off.
+
+**Preserve:** curator body edits, auto-publish, acknowledgment, sent receipts survive bot re-ingest.
 
 ### Analytics / social proof (site)
 - **Likes**: `localStorage` only, not a shared DB.
@@ -113,6 +130,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 
 ## Session state (durable)
 - Brief is **`data/gargeya-voice.md` only**. No scores. Loop every 4h. He picks at 11:30 and 19:00 IST.
+- Notes bot reads **`data/newsletter-brief.md` + voice + ingest taste**. Saturday 19:00 IST draft, Sunday 13:00 IST research refresh. He curates at `/editorial?workspace=notes`.
 - Do not invent claims; grounding still non-negotiable.
 
 <!-- BEGIN:nextjs-agent-rules -->

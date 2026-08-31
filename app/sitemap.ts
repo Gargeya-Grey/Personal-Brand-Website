@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { getArticles } from '@/lib/blog-service';
+import { getPublicNotes } from '@/lib/newsletter-service';
 import { getSiteOrigin } from '@/lib/site-config';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -8,6 +9,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '',
     '/about',
     '/blog',
+    '/notes',
     '/youtube',
     '/community',
     '/contact',
@@ -16,8 +18,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((path) => ({
     url: `${base}${path || '/'}`,
     lastModified: new Date(),
-    changeFrequency: path === '/blog' ? 'weekly' : 'monthly',
-    priority: path === '' ? 1 : path === '/blog' ? 0.9 : 0.7,
+    changeFrequency: path === '/blog' || path === '/notes' ? 'weekly' : 'monthly',
+    priority: path === '' ? 1 : path === '/blog' || path === '/notes' ? 0.9 : 0.7,
   }));
 
   try {
@@ -30,7 +32,19 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         changeFrequency: 'monthly' as const,
         priority: 0.8,
       }));
-    return [...staticRoutes, ...posts];
+    let notes: MetadataRoute.Sitemap = [];
+    try {
+      const sent = await getPublicNotes();
+      notes = sent.map((week) => ({
+        url: `${base}/notes/${week.slug}`,
+        lastModified: week.updatedAt ? new Date(week.updatedAt) : new Date(),
+        changeFrequency: 'weekly' as const,
+        priority: 0.8,
+      }));
+    } catch {
+      notes = [];
+    }
+    return [...staticRoutes, ...posts, ...notes];
   } catch {
     return staticRoutes;
   }

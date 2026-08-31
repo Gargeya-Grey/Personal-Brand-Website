@@ -101,7 +101,11 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: subscribeEmail.trim(), source: 'blog' }),
+        body: JSON.stringify({
+          email: subscribeEmail.trim(),
+          source: 'blog',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata',
+        }),
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok) {
@@ -541,11 +545,11 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                 </span>
                 
                 <h3 className="font-headline text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  Get new posts when they go up
+                  Notes, Sunday evening
                 </h3>
                 
                 <p className="font-body text-slate-600 dark:text-white/70 text-sm md:text-base leading-relaxed">
-                  Occasional notes from Gargeya — whatever made the cut that week. No product pitch, no spam.
+                  One argument a week on the mind, learning with AI, and what we actually score. Not a recap of the blog. <a href="/notes" className="text-accent hover:underline">See a letter</a>.
                 </p>
               </div>
 
@@ -587,7 +591,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                 )}
 
                 <div className="pt-1">
-                  <p className="text-[10px] text-slate-400 font-body">No spam. Unsubscribe anytime via Resend broadcasts.</p>
+                  <p className="text-[10px] text-slate-400 font-body">Sunday evening. Unsubscribe anytime.</p>
                 </div>
               </div>
             </div>

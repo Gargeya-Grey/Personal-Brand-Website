@@ -33,6 +33,9 @@ function AtelierFooter() {
           <Link href="/editorial" className="hover:text-[var(--atelier-gold)] transition-colors">
             Blog CMS
           </Link>
+          <Link href="/editorial?workspace=notes" className="hover:text-[var(--atelier-gold)] transition-colors">
+            Notes
+          </Link>
           <Link
             href="/editorial?workspace=x"
             className="hover:text-[var(--atelier-gold)] transition-colors"
@@ -89,7 +92,11 @@ function PublicFooter() {
       const res = await fetch('/api/subscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: email.trim(), source: 'footer' }),
+        body: JSON.stringify({
+          email: email.trim(),
+          source: 'footer',
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata',
+        }),
       });
       const data = await res.json();
 
@@ -147,14 +154,17 @@ function PublicFooter() {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
             <div className="max-w-md space-y-3">
               <h3 className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                Stay updated
+                Notes
               </h3>
               <p className="font-display text-2xl font-light tracking-[-0.02em] text-white sm:text-3xl">
                 Notes worth opening.
               </p>
               <p className="font-body text-sm leading-relaxed text-slate-400 sm:text-[15px]">
-                High-signal writing on AI evaluation, craft, and building Edudojo — no spam.
+                One argument a week on the mind, learning with AI, and what we actually score. Sunday evening. No roundup.
               </p>
+              <Link href="/notes" className="inline-block text-sm text-accent hover:underline">
+                See how a letter looks
+              </Link>
             </div>
 
             <div className="w-full max-w-md lg:max-w-lg">
@@ -263,6 +273,11 @@ function PublicFooter() {
               <li>
                 <Link href="/blog" className={linkClass}>
                   Blog
+                </Link>
+              </li>
+              <li>
+                <Link href="/notes" className={linkClass}>
+                  Notes
                 </Link>
               </li>
               <li>
