@@ -48,32 +48,34 @@ export default async function NoteIssuePage({
         <Link href="/notes" className="text-sm text-accent hover:underline">
           All Notes
         </Link>
-        <p className="mt-6 text-xs uppercase tracking-[0.16em] text-on-surface-variant">
-          {week.weekOf} · {minutes} min · {siteConfig.shortName}
-        </p>
-        <h1 className="mt-4 font-display text-4xl font-medium tracking-[-0.03em] text-primary sm:text-5xl">
-          {week.title}
-        </h1>
-        {week.dek ? (
-          <p className="mt-4 font-body text-lg leading-relaxed text-on-surface-variant">{week.dek}</p>
-        ) : null}
-        <div className="mt-10 font-body text-lg leading-relaxed text-primary">
-          <MarkdownPreview content={week.bodyMd} />
-        </div>
-        {week.links.length ? (
-          <aside className="mt-12 border-t border-slate-200 pt-8 dark:border-white/10">
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Go deeper</p>
-            <ul className="mt-4 space-y-2">
-              {week.links.map((link) => (
-                <li key={link.url}>
-                  <a href={link.url} className="text-accent hover:underline" target="_blank" rel="noreferrer">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </aside>
-        ) : null}
+        <article className="relative mt-8 rounded-[2rem] border border-slate-200/60 bg-white/75 p-5 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.18)] backdrop-blur-md sm:p-8 md:p-10 dark:border-white/10 dark:bg-slate-950/65">
+          <p className="text-xs uppercase tracking-[0.16em] text-on-surface-variant">
+            {week.weekOf} · {minutes} min · {siteConfig.shortName}
+          </p>
+          <h1 className="mt-4 font-display text-4xl font-medium tracking-[-0.03em] text-primary sm:text-5xl">
+            {week.title}
+          </h1>
+          {week.dek ? (
+            <p className="mt-4 font-body text-lg leading-relaxed text-on-surface-variant">{week.dek}</p>
+          ) : null}
+          <div className="mt-10 font-body text-lg leading-relaxed text-primary">
+            <MarkdownPreview content={week.bodyMd} />
+          </div>
+          {week.links.length ? (
+            <aside className="mt-12 border-t border-slate-200/80 pt-8 dark:border-white/10">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Go deeper</p>
+              <ul className="mt-4 space-y-2">
+                {week.links.map((link) => (
+                  <li key={link.url}>
+                    <a href={link.url} className="text-accent hover:underline" target="_blank" rel="noreferrer">
+                      {link.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </aside>
+          ) : null}
+        </article>
         <div className="mt-16 rounded-[2rem] border border-slate-200/80 p-6 dark:border-white/10">
           <p className="font-headline text-lg font-bold text-primary">Get the next one</p>
           <p className="mt-2 mb-5 text-sm text-on-surface-variant">Sunday evening. One argument. No roundup.</p>
