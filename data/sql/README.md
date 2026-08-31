@@ -8,7 +8,7 @@
 
 1. Run `newsletter.sql` in Supabase SQL Editor.
 2. Confirm `RESEND_API_KEY` + `RESEND_SEGMENT_ID` on Vercel. Turn on **open tracking** for the sending domain. Leave click tracking off.
-3. Set `CRON_SECRET` on Vercel so `/api/cron/newsletter-send` can run every 30 minutes (Sunday 19:00 local waves).
+3. Set `CRON_SECRET` on Vercel so `/api/cron/newsletter-send` can run. Hobby plans only allow one run per day; the job is `30 13 * * *` (19:00 IST). Auto-publish therefore lands at India evening unless you upgrade Vercel Pro for timezone waves.
 4. Paste `data/grok-bot-newsletter-prompt.md` into a Grok Bot with `APP_URL` + `X_SCOUT_SECRET`.
 5. Open `/editorial?workspace=notes`. Curate. Press **I'm happy with this**, or enable auto-publish.
 
