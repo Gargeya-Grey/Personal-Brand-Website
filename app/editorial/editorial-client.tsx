@@ -325,6 +325,7 @@ export function EditorialClient({
   initialNotes = [],
 }: EditorialClientProps) {
   const workspace = initialWorkspace;
+  const [notesEditing, setNotesEditing] = useState(false);
   const [articles, setArticles] = useState<ArticleLite[]>(initialArticles);
   const [searchQuery, setSearchQuery] = useState('');
   const deferredSearch = useDeferredValue(searchQuery);
@@ -931,7 +932,7 @@ export function EditorialClient({
   return (
     <div
       className={`px-4 sm:px-6 md:px-10 mx-auto w-full transition-all duration-300 ${
-        editingArticle
+        editingArticle || (workspace === 'notes' && notesEditing)
           ? 'max-w-[96%] 2xl:max-w-[1700px]'
           : workspace === 'x'
             ? 'max-w-5xl'
@@ -973,7 +974,13 @@ export function EditorialClient({
       </AnimatePresence>
 
       {/* Hero — full for blog CMS; compact for X To-Do so the queue has room */}
-      <header className={workspace === 'x' || workspace === 'lab' || workspace === 'strategy' || workspace === 'notes' ? 'mb-6 sm:mb-8' : 'mb-10 sm:mb-12'}>
+      <header className={
+        workspace === 'notes' && notesEditing
+          ? 'hidden'
+          : workspace === 'x' || workspace === 'lab' || workspace === 'strategy' || workspace === 'notes'
+            ? 'mb-6 sm:mb-8'
+            : 'mb-10 sm:mb-12'
+      }>
         {workspace === 'x' || workspace === 'lab' || workspace === 'strategy' || workspace === 'notes' ? (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
             <div className="space-y-2 min-w-0">
@@ -1133,7 +1140,7 @@ export function EditorialClient({
         </XStudioErrorBoundary>
       ) : workspace === 'notes' && !editingArticle ? (
         <XStudioErrorBoundary>
-          <NewsletterClient initialWeeks={initialNotes} />
+          <NewsletterClient initialWeeks={initialNotes} onEditingChange={setNotesEditing} />
         </XStudioErrorBoundary>
       ) : (
       <AnimatePresence mode="wait">

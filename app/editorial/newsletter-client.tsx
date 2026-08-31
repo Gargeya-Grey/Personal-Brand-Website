@@ -4,15 +4,21 @@ import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import {
   ArrowLeft,
+  ArrowUpRight,
   Check,
+  Eye,
+  Loader2,
   Mail,
   Newspaper,
+  Pen,
   Save,
   Send,
+  Settings2,
+  SkipForward,
 } from 'lucide-react';
 import {
   stageLabel,
-  wordCount,
+  wordCount as countWords,
   type NewsletterDashboard,
   type NewsletterLink,
   type NewsletterWeek,
@@ -24,8 +30,18 @@ const MarkdownPreview = dynamic(
 );
 const MarkdownSourceEditor = dynamic(
   () => import('@/components/editor/markdown-source-editor').then((m) => m.MarkdownSourceEditor),
-  { ssr: false, loading: () => <div className="min-h-[260px] text-sm italic text-[var(--atelier-faint)]">Loading editor…</div> }
+  {
+    ssr: false,
+    loading: () => (
+      <div className="min-h-[260px] flex-grow text-sm italic text-[var(--atelier-faint)] sm:min-h-[360px]">
+        Loading editor…
+      </div>
+    ),
+  }
 );
+
+type LayoutMode = 'write' | 'split' | 'preview';
+type PreviewKind = 'page' | 'email';
 
 function formatReadTime(seconds: number | null): string {
   if (seconds == null) return '—';
@@ -35,19 +51,74 @@ function formatReadTime(seconds: number | null): string {
   return s ? `${m}m ${s}s` : `${m}m`;
 }
 
-export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWeek[] }) {
+function getEditor(): HTMLTextAreaElement | null {
+  return document.querySelector('textarea[data-atelier-editor]') as HTMLTextAreaElement | null;
+}
+
+function wrapMarkdown(body: string, before: string, after: string, start: number, end: number) {
+  const selected = body.slice(start, end);
+  return {
+    next: `${body.slice(0, start)}${before}${selected}${after}${body.slice(end)}`,
+    selStart: start + before.length,
+    selEnd: start + before.length + selected.length,
+  };
+}
+
+function StageBadge({ stage }: { stage: NewsletterWeek['stage'] }) {
+  if (stage === 'sent') {
+    return (
+      <span className="atelier-chip !border-emerald-500/25 !bg-emerald-500/10 !text-emerald-800 dark:!text-emerald-200">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+        Sent
+      </span>
+    );
+  }
+  if (stage === 'approved' || stage === 'sending') {
+    return (
+      <span className="atelier-chip !border-[var(--atelier-gold)]/30 !bg-[var(--atelier-gold-soft)] !text-[var(--atelier-gold)]">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--atelier-gold)]" />
+        {stageLabel(stage)}
+      </span>
+    );
+  }
+  if (stage === 'skipped') {
+    return (
+      <span className="atelier-chip">
+        <span className="h-1.5 w-1.5 rounded-full bg-[var(--atelier-faint)]" />
+        Skipped
+      </span>
+    );
+  }
+  return (
+    <span className="atelier-chip !border-amber-500/25 !bg-amber-500/10 !text-amber-800 dark:!text-amber-200">
+      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
+      Draft
+    </span>
+  );
+}
+
+export function NewsletterClient({
+  initialWeeks,
+  onEditingChange,
+}: {
+  initialWeeks: NewsletterWeek[];
+  onEditingChange?: (editing: boolean) => void;
+}) {
   const [weeks, setWeeks] = useState<NewsletterWeek[]>(initialWeeks);
   const [metrics, setMetrics] = useState<NewsletterDashboard | null>(null);
   const [error, setError] = useState('');
   const [activeId, setActiveId] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [previewHtml, setPreviewHtml] = useState('');
-  const [previewMode, setPreviewMode] = useState<'write' | 'page' | 'email'>('write');
+  const [layoutMode, setLayoutMode] = useState<LayoutMode>('split');
+  const [previewKind, setPreviewKind] = useState<PreviewKind>('page');
+  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [status, setStatus] = useState('');
 
   const [title, setTitle] = useState('');
   const [dek, setDek] = useState('');
   const [subject, setSubject] = useState('');
+  const [slug, setSlug] = useState('');
   const [bodyMd, setBodyMd] = useState('');
   const [autoPublish, setAutoPublish] = useState(false);
   const [testEmail, setTestEmail] = useState('');
@@ -56,16 +127,28 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
     () => weeks.find((w) => w.id === activeId) || null,
     [weeks, activeId]
   );
+  const words = countWords(bodyMd);
+  const chars = bodyMd.length;
+  const locked = active?.stage === 'sent' || active?.stage === 'skipped';
 
-  const applyWeek = (week: NewsletterWeek) => {
+  const applyWeek = (week: NewsletterWeek | null) => {
+    if (!week) {
+      setActiveId(null);
+      onEditingChange?.(false);
+      return;
+    }
     setActiveId(week.id);
     setTitle(week.title);
     setDek(week.dek);
     setSubject(week.subject);
+    setSlug(week.slug);
     setBodyMd(week.bodyMd);
     setAutoPublish(week.autoPublish);
     setPreviewHtml('');
-    setPreviewMode('write');
+    setLayoutMode('split');
+    setPreviewKind('page');
+    setSidebarOpen(true);
+    onEditingChange?.(true);
   };
 
   useEffect(() => {
@@ -85,6 +168,7 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
     if (!active) return;
     setSaving(true);
     setStatus('');
+    setError('');
     try {
       const res = await fetch('/api/newsletter/weeks', {
         method: 'POST',
@@ -101,7 +185,7 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
         setStatus(
           data.send.sent
             ? `Sent to ${data.send.sent} people.`
-            : data.send.error || 'Saved as happy. Waiting for Sunday 19:00 local if auto-publish is on.'
+            : data.send.error || 'Marked happy. It will send on the Sunday slot if auto-publish is on, or immediately if not.'
         );
       } else {
         setStatus('Saved.');
@@ -114,11 +198,10 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
   };
 
   const saveEdits = () =>
-    act('save', { title, dek, subject, bodyMd, links: active?.links || [] });
+    act('save', { title, dek, subject, bodyMd, slug, links: active?.links || [] });
 
   const loadEmailPreview = async () => {
     if (!active) return;
-    setPreviewMode('email');
     const res = await fetch('/api/newsletter/send', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -126,6 +209,25 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
     });
     const data = await res.json();
     if (res.ok && data.html) setPreviewHtml(data.html);
+  };
+
+  const setPreview = (kind: PreviewKind) => {
+    setPreviewKind(kind);
+    if (kind === 'email') void loadEmailPreview();
+  };
+
+  const applyWrap = (before: string, after: string) => {
+    const textarea = getEditor();
+    const start = textarea?.selectionStart ?? bodyMd.length;
+    const end = textarea?.selectionEnd ?? bodyMd.length;
+    const { next, selStart, selEnd } = wrapMarkdown(bodyMd, before, after, start, end);
+    setBodyMd(next);
+    requestAnimationFrame(() => {
+      const editor = getEditor();
+      if (!editor) return;
+      editor.focus();
+      editor.setSelectionRange(selStart, selEnd);
+    });
   };
 
   const sendTest = async () => {
@@ -144,12 +246,378 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
     }
   };
 
+  if (active) {
+    const showWrite = layoutMode === 'write' || layoutMode === 'split';
+    const showPreview = layoutMode === 'preview' || layoutMode === 'split';
+
+    return (
+      <div className="article-workbench space-y-6">
+        <div className="sticky top-0 z-30 -mx-4 bg-[color-mix(in_srgb,var(--atelier-paper)_92%,transparent)] px-4 pb-3 pt-[4.75rem] backdrop-blur-xl sm:-mx-6 sm:px-6 md:-mx-10 md:px-10">
+          <div className="article-command-bar atelier-card-lg flex flex-col justify-between gap-3 p-3 sm:p-3.5 xl:flex-row xl:items-center">
+            <button
+              type="button"
+              onClick={() => applyWeek(null)}
+              className="inline-flex items-center gap-2 px-2 py-1.5 text-sm font-bold text-[var(--atelier-muted)] transition-colors hover:text-[var(--atelier-ink)]"
+            >
+              <ArrowLeft className="h-4 w-4" /> Library
+            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <StageBadge stage={active.stage} />
+              {status ? (
+                <span className="atelier-chip !text-[0.65rem]">
+                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
+                  {status}
+                </span>
+              ) : null}
+              <button
+                type="button"
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className={`atelier-btn h-10 text-xs ${sidebarOpen ? 'atelier-btn-gold' : 'atelier-btn-ghost'}`}
+              >
+                <Settings2 className="h-3.5 w-3.5" /> Meta
+              </button>
+              <div className="flex rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 p-1">
+                {(['write', 'split', 'preview'] as const).map((mode) => (
+                  <button
+                    key={mode}
+                    type="button"
+                    onClick={() => setLayoutMode(mode)}
+                    className={`rounded-full px-3.5 py-1.5 text-[0.7rem] font-bold capitalize transition-all ${
+                      layoutMode === mode
+                        ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)] shadow-md'
+                        : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
+                    }`}
+                  >
+                    {mode}
+                  </button>
+                ))}
+              </div>
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() => void saveEdits()}
+                className="atelier-btn atelier-btn-primary h-10 disabled:opacity-50"
+              >
+                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
+                {saving ? 'Saving' : 'Save'}
+              </button>
+              <button
+                type="button"
+                disabled={saving || locked}
+                onClick={() => {
+                  void (async () => {
+                    await saveEdits();
+                    await act('acknowledge');
+                  })();
+                }}
+                className="atelier-btn atelier-btn-gold h-10 disabled:opacity-50"
+              >
+                <Check className="h-4 w-4" /> I&apos;m happy with this
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {error ? (
+          <p role="alert" className="text-sm text-red-600">
+            {error}
+          </p>
+        ) : null}
+
+        <div className="article-workbench-form space-y-6">
+          {sidebarOpen ? (
+            <div className="article-metadata-panel atelier-card-lg p-6 sm:p-8">
+              <div className="flex flex-col justify-between gap-4 border-b border-[var(--atelier-line)] pb-6 sm:flex-row sm:items-start">
+                <div>
+                  <p className="mb-1 text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)]">
+                    Curation
+                  </p>
+                  <h2 className="font-headline text-2xl font-bold tracking-tight text-[var(--atelier-ink)]">
+                    Letter metadata
+                  </h2>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="atelier-chip">{active.weekOf}</span>
+                  <span className="atelier-chip tabular-nums">
+                    {words.toLocaleString()} w · {chars.toLocaleString()} c
+                  </span>
+                </div>
+              </div>
+
+              <div className="mt-7 space-y-6">
+                <section className="article-meta-section">
+                  <header className="article-meta-section__head">
+                    <span className="article-meta-section__index">1</span>
+                    <h3 className="article-meta-section__title">Identity</h3>
+                  </header>
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-12">
+                    <div className="md:col-span-12">
+                      <label className="atelier-label">Title *</label>
+                      <input
+                        className="atelier-input !h-12 font-headline text-base font-semibold"
+                        value={title}
+                        onChange={(e) => setTitle(e.target.value)}
+                        placeholder="A title with quiet authority"
+                      />
+                    </div>
+                    <div className="md:col-span-6">
+                      <label className="atelier-label">Subject</label>
+                      <input
+                        className="atelier-input !h-12"
+                        value={subject}
+                        onChange={(e) => setSubject(e.target.value)}
+                        placeholder="Inbox subject"
+                      />
+                    </div>
+                    <div className="md:col-span-6">
+                      <label className="atelier-label">Slug</label>
+                      <input
+                        className="atelier-input !h-12 font-mono text-xs"
+                        value={slug}
+                        onChange={(e) => setSlug(e.target.value)}
+                      />
+                    </div>
+                    <div className="md:col-span-12">
+                      <label className="atelier-label">Dek</label>
+                      <input
+                        className="atelier-input"
+                        value={dek}
+                        onChange={(e) => setDek(e.target.value)}
+                        placeholder="One elegant sentence…"
+                      />
+                    </div>
+                  </div>
+                </section>
+
+                <section className="article-meta-section">
+                  <header className="article-meta-section__head">
+                    <span className="article-meta-section__index">2</span>
+                    <h3 className="article-meta-section__title">Send</h3>
+                  </header>
+                  <div className="grid grid-cols-1 gap-5 md:grid-cols-12">
+                    <div className="md:col-span-12">
+                      <label className="flex cursor-pointer items-start gap-3 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 px-3.5 py-3">
+                        <input
+                          type="checkbox"
+                          className="mt-0.5 h-4 w-4 rounded accent-[var(--atelier-gold)]"
+                          checked={autoPublish}
+                          disabled={locked}
+                          onChange={(e) => {
+                            setAutoPublish(e.target.checked);
+                            void act('autoPublish', { autoPublish: e.target.checked });
+                          }}
+                        />
+                        <span>
+                          <span className="block text-xs font-bold text-[var(--atelier-ink)]">
+                            Auto-publish Sunday 7pm local
+                          </span>
+                          <span className="mt-1 block text-sm leading-relaxed text-[var(--atelier-muted)]">
+                            On: sends at the Sunday slot even if you have not pressed happy. Off: waits until you are happy, then goes immediately.
+                          </span>
+                        </span>
+                      </label>
+                    </div>
+                    <div className="md:col-span-8">
+                      <label className="atelier-label">Send a test</label>
+                      <input
+                        type="email"
+                        className="atelier-input !h-12"
+                        value={testEmail}
+                        onChange={(e) => setTestEmail(e.target.value)}
+                        placeholder="you@example.com"
+                      />
+                    </div>
+                    <div className="flex items-end md:col-span-4">
+                      <button
+                        type="button"
+                        className="atelier-btn atelier-btn-ghost h-12 w-full"
+                        disabled={saving}
+                        onClick={() => void sendTest()}
+                      >
+                        <Send className="h-4 w-4" /> Send test
+                      </button>
+                    </div>
+                    <div className="md:col-span-12">
+                      <button
+                        type="button"
+                        className="atelier-btn atelier-btn-ghost h-10 text-xs disabled:opacity-40"
+                        disabled={saving || active.stage === 'sent'}
+                        onClick={() => void act('skip', { note: 'Skipped by curator' })}
+                      >
+                        <SkipForward className="h-3.5 w-3.5" /> Skip this week
+                      </button>
+                    </div>
+                  </div>
+                </section>
+
+                {active.links.length ? (
+                  <section className="article-meta-section">
+                    <header className="article-meta-section__head">
+                      <span className="article-meta-section__index">3</span>
+                      <h3 className="article-meta-section__title">Go deeper</h3>
+                    </header>
+                    <ul className="space-y-2 text-sm">
+                      {active.links.map((link: NewsletterLink) => (
+                        <li key={link.url}>
+                          <a
+                            href={link.url}
+                            className="inline-flex items-center gap-1.5 text-[var(--atelier-gold)] hover:underline"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {link.label}
+                            <ArrowUpRight className="h-3.5 w-3.5" />
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </section>
+                ) : null}
+              </div>
+            </div>
+          ) : null}
+
+          <div className="article-editor-canvas relative">
+            <div
+              className={`grid min-h-[520px] gap-5 ${
+                layoutMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'
+              }`}
+            >
+              {showWrite ? (
+                <div className="article-writing-pane atelier-card-lg relative flex min-h-[360px] flex-col p-5 focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6">
+                  <div className="mb-4 flex items-center justify-between gap-3 border-b border-[var(--atelier-line)] pb-4">
+                    <div className="flex min-w-0 items-center gap-3">
+                      <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
+                        Write
+                      </span>
+                      <div className="flex flex-wrap items-center gap-0.5 border-l border-[var(--atelier-line)] pl-3">
+                        <button
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => applyWrap('**', '**')}
+                          className="h-8 w-8 rounded-xl text-xs font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] hover:text-[var(--atelier-ink)]"
+                          title="Bold"
+                        >
+                          B
+                        </button>
+                        <button
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => applyWrap('*', '*')}
+                          className="h-8 w-8 rounded-xl text-xs italic text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]"
+                          title="Italic"
+                        >
+                          I
+                        </button>
+                        <button
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => applyWrap('### ', '')}
+                          className="h-8 w-8 rounded-xl text-[0.65rem] font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]"
+                          title="Heading"
+                        >
+                          H
+                        </button>
+                        <button
+                          type="button"
+                          onMouseDown={(e) => e.preventDefault()}
+                          onClick={() => applyWrap('[', '](url)')}
+                          className="flex h-8 w-8 items-center justify-center rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]"
+                          title="Link"
+                        >
+                          <ArrowUpRight className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                    <span className="shrink-0 text-[0.65rem] font-medium tabular-nums text-[var(--atelier-faint)]">
+                      {words.toLocaleString()} w · {chars.toLocaleString()} c
+                    </span>
+                  </div>
+                  <MarkdownSourceEditor
+                    value={bodyMd}
+                    onChange={setBodyMd}
+                    placeholder="# Begin the letter…"
+                  />
+                  <p className="pt-3 text-[0.65rem] text-[var(--atelier-faint)]">
+                    Write pane styles markdown in place. Marks stay visible.
+                  </p>
+                </div>
+              ) : null}
+
+              {showPreview ? (
+                <div className="article-preview-pane atelier-card-lg flex min-h-[360px] flex-col bg-[color-mix(in_srgb,var(--atelier-paper)_55%,var(--atelier-card))] p-5 sm:min-h-[480px] sm:p-6">
+                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--atelier-line)] pb-4">
+                    <div className="flex items-center gap-2">
+                      <Eye className="h-4 w-4 text-[var(--atelier-gold)]" />
+                      <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
+                        Preview
+                      </span>
+                    </div>
+                    <div className="flex rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 p-1">
+                      <button
+                        type="button"
+                        onClick={() => setPreview('page')}
+                        className={`rounded-full px-3 py-1.5 text-[0.65rem] font-bold ${
+                          previewKind === 'page'
+                            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
+                            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
+                        }`}
+                      >
+                        Page
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setPreview('email')}
+                        className={`rounded-full px-3 py-1.5 text-[0.65rem] font-bold ${
+                          previewKind === 'email'
+                            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
+                            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
+                        }`}
+                      >
+                        Email
+                      </button>
+                    </div>
+                  </div>
+                  <div className="min-h-0 flex-grow overflow-y-auto">
+                    {previewKind === 'email' ? (
+                      <iframe
+                        title="Email preview"
+                        className="h-[min(70vh,40rem)] w-full rounded-[1.25rem] border border-[var(--atelier-line)] bg-white"
+                        srcDoc={
+                          previewHtml ||
+                          '<p style="padding:24px;font-family:sans-serif;color:#64748b">Loading email preview…</p>'
+                        }
+                      />
+                    ) : bodyMd ? (
+                      <div className="text-left">
+                        <h2 className="mb-2 font-headline text-3xl font-bold tracking-tight text-[var(--atelier-ink)]">
+                          {title || 'Untitled'}
+                        </h2>
+                        {dek ? <p className="mb-6 text-[var(--atelier-muted)]">{dek}</p> : null}
+                        <MarkdownPreview content={bodyMd} />
+                      </div>
+                    ) : (
+                      <p className="text-sm italic text-[var(--atelier-faint)]">The page is blank — write to see light.</p>
+                    )}
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="space-y-8">
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
         <MetricCard label="Subscribers" value={metrics?.subscribers ?? '—'} />
         <MetricCard label="Last unique opens" value={metrics?.lastUniqueOpens ?? '—'} />
-        <MetricCard label="Last median read time" value={formatReadTime(metrics?.lastMedianReadSeconds ?? null)} />
+        <MetricCard
+          label="Last median read time"
+          value={formatReadTime(metrics?.lastMedianReadSeconds ?? null)}
+        />
       </div>
       {metrics?.issues?.length ? (
         <div className="overflow-x-auto rounded-2xl border border-[var(--atelier-line)]">
@@ -168,7 +636,9 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
                   <td className="px-4 py-3 text-[var(--atelier-ink)]">{issue.title || issue.weekOf}</td>
                   <td className="px-4 py-3 text-[var(--atelier-muted)]">{issue.subscribersAtSend ?? '—'}</td>
                   <td className="px-4 py-3 text-[var(--atelier-muted)]">{issue.uniqueOpens ?? '—'}</td>
-                  <td className="px-4 py-3 text-[var(--atelier-muted)]">{formatReadTime(issue.medianReadSeconds)}</td>
+                  <td className="px-4 py-3 text-[var(--atelier-muted)]">
+                    {formatReadTime(issue.medianReadSeconds)}
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -176,182 +646,63 @@ export function NewsletterClient({ initialWeeks }: { initialWeeks: NewsletterWee
         </div>
       ) : null}
 
-      {error ? <p className="text-sm text-red-600">{error}</p> : null}
-      {status ? <p className="text-sm text-[var(--atelier-gold)]">{status}</p> : null}
+      {error ? (
+        <p role="alert" className="text-sm text-red-600">
+          {error}
+        </p>
+      ) : null}
 
-      {active ? (
-        <article className="space-y-6">
-          <button
-            type="button"
-            onClick={() => setActiveId(null)}
-            className="atelier-btn atelier-btn-ghost"
-          >
-            <ArrowLeft className="h-4 w-4" /> All letters
-          </button>
-
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="atelier-chip">{stageLabel(active.stage)}</span>
-            <span className="text-xs text-[var(--atelier-faint)]">{active.weekOf}</span>
-            <span className="text-xs text-[var(--atelier-faint)]">{wordCount(bodyMd)} words</span>
+      {weeks.length === 0 ? (
+        <div className="atelier-card-lg flex flex-col items-center gap-5 px-8 py-20 text-center sm:py-28">
+          <div className="flex h-20 w-20 items-center justify-center rounded-[1.75rem] bg-[var(--atelier-gold-soft)]">
+            <Newspaper className="h-8 w-8 text-[var(--atelier-gold)]" />
           </div>
-
-          <label className="flex items-start gap-3 rounded-2xl border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/40 p-4">
-            <input
-              type="checkbox"
-              className="mt-1 h-4 w-4 accent-emerald-600"
-              checked={autoPublish}
-              disabled={active.stage === 'sent' || active.stage === 'skipped'}
-              onChange={(e) => {
-                setAutoPublish(e.target.checked);
-                void act('autoPublish', { autoPublish: e.target.checked });
-              }}
-            />
-            <span>
-              <span className="block font-headline text-sm font-bold text-[var(--atelier-ink)]">
-                Auto-publish Sunday 7pm local
-              </span>
-              <span className="mt-1 block text-sm leading-relaxed text-[var(--atelier-muted)]">
-                On: each subscriber gets it Sunday 19:00 in their timezone, even if you have not pressed happy.
-                Off: nothing goes until you are happy, then it sends immediately.
-              </span>
-            </span>
-          </label>
-
-          <div className="grid gap-4">
-            <Field label="Title">
-              <input
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                className="atelier-input w-full"
-              />
-            </Field>
-            <Field label="One-line dek">
-              <input value={dek} onChange={(e) => setDek(e.target.value)} className="atelier-input w-full" />
-            </Field>
-            <Field label="Subject">
-              <input
-                value={subject}
-                onChange={(e) => setSubject(e.target.value)}
-                className="atelier-input w-full"
-              />
-            </Field>
+          <div className="max-w-sm space-y-2">
+            <p className="font-headline text-2xl font-bold text-[var(--atelier-ink)]">No letters yet</p>
+            <p className="leading-relaxed text-[var(--atelier-muted)]">
+              The Grok Bot files a draft here every Saturday.
+            </p>
           </div>
-
-          <div className="flex flex-wrap gap-2">
-            <TabBtn active={previewMode === 'write'} onClick={() => setPreviewMode('write')}>
-              Write
-            </TabBtn>
-            <TabBtn active={previewMode === 'page'} onClick={() => setPreviewMode('page')}>
-              Page preview
-            </TabBtn>
-            <TabBtn active={previewMode === 'email'} onClick={() => void loadEmailPreview()}>
-              Email preview
-            </TabBtn>
-          </div>
-
-          {previewMode === 'write' ? (
-            <div className="overflow-hidden rounded-[1.5rem] border border-[var(--atelier-line)]">
-              <MarkdownSourceEditor
-                value={bodyMd}
-                onChange={setBodyMd}
-                placeholder="The letter…"
-              />
-            </div>
-          ) : previewMode === 'page' ? (
-            <div className="atelier-card-lg prose-notes px-6 py-8 sm:px-10">
-              <h2 className="mb-2 font-display text-3xl text-[var(--atelier-ink)]">{title || 'Untitled'}</h2>
-              {dek ? <p className="mb-6 text-[var(--atelier-muted)]">{dek}</p> : null}
-              <div className="font-body text-base leading-relaxed text-[var(--atelier-ink)]">
-                <MarkdownPreview content={bodyMd} />
-              </div>
-            </div>
-          ) : (
-            <iframe
-              title="Email preview"
-              className="h-[640px] w-full rounded-[1.5rem] border border-[var(--atelier-line)] bg-white"
-              srcDoc={previewHtml || '<p style="padding:24px;font-family:sans-serif;color:#64748b">Loading…</p>'}
-            />
-          )}
-
-          {active.links.length ? (
-            <ul className="space-y-1 text-sm text-[var(--atelier-muted)]">
-              {active.links.map((link: NewsletterLink) => (
-                <li key={link.url}>
-                  <a href={link.url} className="text-[var(--atelier-gold)] underline" target="_blank" rel="noreferrer">
-                    {link.label}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          ) : null}
-
-          <div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-            <button type="button" className="atelier-btn atelier-btn-primary" disabled={saving} onClick={() => void saveEdits()}>
-              <Save className="h-4 w-4" /> Save edits
-            </button>
-            <button
-              type="button"
-              className="atelier-btn atelier-btn-gold"
-              disabled={saving || active.stage === 'sent' || active.stage === 'skipped'}
-              onClick={() => void act('acknowledge')}
-            >
-              <Check className="h-4 w-4" /> I&apos;m happy with this
-            </button>
-            <button
-              type="button"
-              className="atelier-btn atelier-btn-ghost"
-              disabled={saving || active.stage === 'sent'}
-              onClick={() => void act('skip', { note: 'Skipped by curator' })}
-            >
-              Skip this week
-            </button>
-          </div>
-
-          <div className="flex flex-col gap-2 sm:flex-row sm:items-center">
-            <input
-              type="email"
-              value={testEmail}
-              onChange={(e) => setTestEmail(e.target.value)}
-              placeholder="Test email"
-              className="atelier-input sm:max-w-xs"
-            />
-            <button type="button" className="atelier-btn atelier-btn-ghost" disabled={saving} onClick={() => void sendTest()}>
-              <Send className="h-4 w-4" /> Send test
-            </button>
-          </div>
-        </article>
+        </div>
       ) : (
         <div className="space-y-4">
-          {weeks.length === 0 ? (
-            <div className="atelier-card-lg py-16 text-center">
-              <Newspaper className="mx-auto mb-4 h-8 w-8 text-[var(--atelier-gold)]" />
-              <p className="font-headline text-lg font-bold text-[var(--atelier-ink)]">No letters yet</p>
-              <p className="mx-auto mt-2 max-w-md text-sm text-[var(--atelier-muted)]">
-                The Grok Bot files a draft here every Saturday. Run ingest, or wait for the first Saturday 19:00 IST job.
-              </p>
-            </div>
-          ) : (
-            weeks.map((week) => (
-              <button
-                key={week.id}
-                type="button"
-                onClick={() => applyWeek(week)}
-                className="atelier-card-lg flex w-full flex-col gap-2 p-5 text-left transition hover:-translate-y-0.5 sm:flex-row sm:items-center sm:justify-between"
-              >
-                <div>
-                  <p className="font-headline text-lg font-bold text-[var(--atelier-ink)]">
-                    {week.title || 'Untitled letter'}
+          {weeks.map((week) => (
+            <article
+              key={week.id}
+              className="atelier-card group flex flex-col gap-5 p-4 transition-shadow duration-300 hover:shadow-[var(--atelier-shadow)] sm:flex-row sm:items-center sm:p-5"
+            >
+              <div className="flex h-[96px] w-full shrink-0 items-center justify-center overflow-hidden rounded-[1.25rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)] sm:w-[148px]">
+                <Mail className="h-7 w-7 text-[var(--atelier-gold)]" />
+              </div>
+              <div className="min-w-0 flex-1 space-y-2.5">
+                <StageBadge stage={week.stage} />
+                <h3 className="font-headline text-xl font-bold leading-snug tracking-tight text-[var(--atelier-ink)] transition-colors group-hover:text-[var(--atelier-gold)] sm:text-[1.35rem]">
+                  {week.title || 'Untitled letter'}
+                </h3>
+                {week.dek ? (
+                  <p className="line-clamp-2 text-[0.9375rem] leading-relaxed text-[var(--atelier-muted)]">
+                    {week.dek}
                   </p>
-                  <p className="mt-1 text-sm text-[var(--atelier-muted)]">
-                    {week.weekOf} · {stageLabel(week.stage)}
-                    {week.autoPublish ? ' · auto-publish on' : ''}
-                    {week.acknowledgedAt ? ' · happy' : ''}
-                  </p>
-                </div>
-                <Mail className="h-4 w-4 shrink-0 text-[var(--atelier-faint)]" />
-              </button>
-            ))
-          )}
+                ) : null}
+                <p className="text-[0.7rem] font-medium tracking-wide text-[var(--atelier-faint)]">
+                  {week.weekOf}
+                  {week.autoPublish ? ' · auto-publish on' : ''}
+                  {week.acknowledgedAt ? ' · happy' : ''}
+                </p>
+              </div>
+              <div className="flex shrink-0 items-center gap-2 self-end sm:self-center">
+                <button
+                  type="button"
+                  onClick={() => applyWeek(week)}
+                  className="atelier-icon-btn"
+                  title="Edit"
+                  aria-label="Edit"
+                >
+                  <Pen className="h-4 w-4" />
+                </button>
+              </div>
+            </article>
+          ))}
         </div>
       )}
     </div>
@@ -364,40 +715,5 @@ function MetricCard({ label, value }: { label: string; value: string | number })
       <p className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">{label}</p>
       <p className="mt-2 font-headline text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">{value}</p>
     </div>
-  );
-}
-
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
-  return (
-    <label className="block space-y-1.5">
-      <span className="text-[0.65rem] font-bold uppercase tracking-[0.16em] text-[var(--atelier-faint)]">
-        {label}
-      </span>
-      {children}
-    </label>
-  );
-}
-
-function TabBtn({
-  active,
-  onClick,
-  children,
-}: {
-  active: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={`rounded-full px-3 py-1.5 text-xs font-bold ${
-        active
-          ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-          : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-      }`}
-    >
-      {children}
-    </button>
   );
 }
