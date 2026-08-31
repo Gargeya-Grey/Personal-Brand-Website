@@ -63,24 +63,37 @@ function listHtml(items: string[], ordered: boolean): string {
     const lis = items
       .map(
         (item) =>
-          `<tr><td style="width:14px;vertical-align:top;padding:0 0 10px;color:#10b981;font-size:16px;line-height:1.7;">•</td><td style="padding:0 0 10px;font-size:16px;line-height:1.7;color:#1e293b;">${inline(item)}</td></tr>`
+          `<tr><td style="width:18px;vertical-align:top;padding:0 0 10px;color:#10b981;font-size:16px;line-height:1.7;">•</td><td style="padding:0 0 10px;font-size:16px;line-height:1.7;color:#1e293b;">${inline(item)}</td></tr>`
       )
       .join('');
-    return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:8px 0 20px;">${lis}</table>`;
+    return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:8px 0 20px;">
+  <tr>
+    <td style="padding:0 8px 0 12px;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0">${lis}</table>
+    </td>
+  </tr>
+</table>`;
   }
   const rows = items
     .map((item, index) => {
       const n = String(index + 1).padStart(2, '0');
+      const bottom = index === items.length - 1 ? '0' : '16px';
       return `<tr>
-        <td style="width:36px;vertical-align:top;padding:0 0 14px;">
-          <p style="margin:0;font-family:ui-monospace,monospace;font-size:12px;letter-spacing:0.08em;color:#059669;font-weight:700;line-height:1.7;">${n}</p>
+        <td style="width:44px;vertical-align:top;padding:0 14px ${bottom} 0;">
+          <p style="margin:0;font-family:ui-monospace,Consolas,monospace;font-size:12px;letter-spacing:0.08em;color:#059669;font-weight:700;line-height:1.7;">${n}</p>
         </td>
-        <td style="padding:0 0 14px;font-size:16px;line-height:1.7;color:#1e293b;">${inline(item)}</td>
+        <td style="padding:0 0 ${bottom};font-size:16px;line-height:1.7;color:#1e293b;">${inline(item)}</td>
       </tr>`;
     })
     .join('');
-  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:12px 0 24px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;">
-  <tr><td style="padding:16px 18px 4px;">${rows}</td></tr>
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:16px 0 28px;background:#f8fafc;border:1px solid #e2e8f0;border-radius:12px;">
+  <tr>
+    <td style="padding:22px 28px 18px 28px;">
+      <table role="presentation" width="100%" cellspacing="0" cellpadding="0">
+        ${rows}
+      </table>
+    </td>
+  </tr>
 </table>`;
 }
 

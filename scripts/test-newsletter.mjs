@@ -165,6 +165,9 @@ assert.match(structured, /pull quote/);
 assert.match(structured, /Why this holds/);
 assert.match(structured, /Keep the hour/);
 assert.match(structured, /01/);
+assert.match(structured, /padding:22px 28px 18px 28px/);
+assert.match(structured, /width:44px/);
+assert.equal((structured.match(/role="presentation"/g) || []).length >= 4, true);
 assert.equal(
   emailHasUnsubscribe('<a href="{{{RESEND_UNSUBSCRIBE_URL}}}">unsubscribe</a>'),
   true
