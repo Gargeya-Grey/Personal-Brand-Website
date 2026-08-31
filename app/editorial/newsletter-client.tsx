@@ -252,8 +252,8 @@ export function NewsletterClient({
 
     return (
       <div className="article-workbench space-y-6">
-        <div className="sticky top-0 z-30 -mx-4 bg-[color-mix(in_srgb,var(--atelier-paper)_92%,transparent)] px-4 pb-3 pt-[4.75rem] backdrop-blur-xl sm:-mx-6 sm:px-6 md:-mx-10 md:px-10">
-          <div className="article-command-bar atelier-card-lg flex flex-col justify-between gap-3 p-3 sm:p-3.5 xl:flex-row xl:items-center">
+        <div className="sticky top-24 z-30">
+          <div className="article-command-bar atelier-card-lg flex flex-col justify-between gap-3 bg-[color-mix(in_srgb,var(--atelier-card)_92%,transparent)] p-3 backdrop-blur-xl sm:p-3.5 xl:flex-row xl:items-center">
             <button
               type="button"
               onClick={() => applyWeek(null)}
