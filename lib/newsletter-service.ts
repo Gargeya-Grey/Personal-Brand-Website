@@ -15,6 +15,8 @@ import {
   type NewsletterTaste,
   type NewsletterWeek,
 } from './newsletter-model';
+import { subscriberAlertKind } from './notes-alerts';
+import { notifySubscriberAlert } from './telegram';
 
 const dataDir = path.join(process.cwd(), 'data');
 const dataFilePath = path.join(dataDir, 'newsletter-weeks.json');
@@ -176,6 +178,55 @@ export type SubscriberRow = {
   unsubscribed: boolean;
 };
 
+async function getSubscriberRow(email: string): Promise<SubscriberRow | null> {
+  if (!isSupabaseUsable()) return null;
+  const target = email.trim().toLowerCase();
+  const withFlag = await supabase
+    .from('newsletter_subscribers')
+    .select('email, timezone, unsubscribed, source')
+    .eq('email', target)
+    .maybeSingle();
+  if (!withFlag.error && withFlag.data && typeof withFlag.data.email === 'string') {
+    return {
+      email: withFlag.data.email.toLowerCase(),
+      timezone: normalizeTimeZone(withFlag.data.timezone),
+      unsubscribed: withFlag.data.unsubscribed === true,
+    };
+  }
+  const legacy = await supabase
+    .from('newsletter_subscribers')
+    .select('email, timezone, source')
+    .eq('email', target)
+    .maybeSingle();
+  if (legacy.error || !legacy.data || typeof legacy.data.email !== 'string') return null;
+  return {
+    email: legacy.data.email.toLowerCase(),
+    timezone: normalizeTimeZone(legacy.data.timezone),
+    unsubscribed:
+      typeof legacy.data.source === 'string' && legacy.data.source.startsWith('unsubscribe'),
+  };
+}
+
+function pingSubscriberChange(input: {
+  email: string;
+  source?: string;
+  timezone?: string;
+  priorUnsubscribed: boolean | null;
+  nextUnsubscribed: boolean;
+}): void {
+  const kind = subscriberAlertKind({
+    priorUnsubscribed: input.priorUnsubscribed,
+    nextUnsubscribed: input.nextUnsubscribed,
+  });
+  if (!kind) return;
+  void notifySubscriberAlert({
+    kind,
+    email: input.email,
+    source: input.source,
+    timezone: input.timezone,
+  });
+}
+
 export async function upsertSubscriberTimezone(input: {
   email: string;
   timezone?: string;
@@ -185,6 +236,7 @@ export async function upsertSubscriberTimezone(input: {
   const timezone = normalizeTimeZone(input.timezone);
   const source = (input.source || 'site').slice(0, 64);
   if (!isSupabaseUsable()) return;
+  const prior = await getSubscriberRow(email);
   const now = new Date().toISOString();
   const full = {
     email,
@@ -195,12 +247,31 @@ export async function upsertSubscriberTimezone(input: {
     unsubscribed_at: null,
   };
   const { error } = await supabase.from('newsletter_subscribers').upsert(full, { onConflict: 'email' });
-  if (!error) return;
+  if (!error) {
+    pingSubscriberChange({
+      email,
+      source,
+      timezone,
+      priorUnsubscribed: prior ? prior.unsubscribed : null,
+      nextUnsubscribed: false,
+    });
+    return;
+  }
   const { error: fallback } = await supabase.from('newsletter_subscribers').upsert(
     { email, timezone, source, subscribed_at: now },
     { onConflict: 'email' }
   );
-  if (fallback) console.warn('[newsletter] subscriber upsert failed:', fallback);
+  if (fallback) {
+    console.warn('[newsletter] subscriber upsert failed:', fallback);
+    return;
+  }
+  pingSubscriberChange({
+    email,
+    source,
+    timezone,
+    priorUnsubscribed: prior ? prior.unsubscribed : null,
+    nextUnsubscribed: false,
+  });
 }
 
 /** Flag the row. Never delete it. */
@@ -210,6 +281,7 @@ export async function setSubscriberUnsubscribed(
 ): Promise<{ ok: boolean; error?: string }> {
   const target = email.trim().toLowerCase();
   if (!target || !isSupabaseUsable()) return { ok: !isSupabaseUsable() };
+  const prior = await getSubscriberRow(target);
   const now = new Date().toISOString();
   const patch = unsubscribed
     ? { unsubscribed: true, unsubscribed_at: now }
@@ -220,7 +292,21 @@ export async function setSubscriberUnsubscribed(
     .update(patch)
     .eq('email', target)
     .select('email');
-  if (!error && data && data.length > 0) return { ok: true };
+  if (!error && data && data.length > 0) {
+    pingSubscriberChange({
+      email: target,
+      priorUnsubscribed: prior ? prior.unsubscribed : null,
+      nextUnsubscribed: unsubscribed,
+    });
+    return { ok: true };
+  }
+
+  const ping = () =>
+    pingSubscriberChange({
+      email: target,
+      priorUnsubscribed: prior ? prior.unsubscribed : null,
+      nextUnsubscribed: unsubscribed,
+    });
 
   const columnMissing = Boolean(error && /unsubscribed/i.test(error.message || ''));
   if (columnMissing) {
@@ -229,7 +315,10 @@ export async function setSubscriberUnsubscribed(
       .update({ source: unsubscribed ? 'unsubscribe' : 'site' })
       .eq('email', target)
       .select('email');
-    if (!legacyError && legacy && legacy.length > 0) return { ok: true };
+    if (!legacyError && legacy && legacy.length > 0) {
+      ping();
+      return { ok: true };
+    }
     const { error: legacyInsert } = await supabase.from('newsletter_subscribers').upsert(
       {
         email: target,
@@ -239,7 +328,10 @@ export async function setSubscriberUnsubscribed(
       },
       { onConflict: 'email' }
     );
-    if (!legacyInsert) return { ok: true };
+    if (!legacyInsert) {
+      ping();
+      return { ok: true };
+    }
     return { ok: false, error: legacyInsert.message };
   }
 
@@ -253,7 +345,10 @@ export async function setSubscriberUnsubscribed(
     },
     { onConflict: 'email' }
   );
-  if (!insertError) return { ok: true };
+  if (!insertError) {
+    ping();
+    return { ok: true };
+  }
   return { ok: false, error: insertError.message };
 }
 
