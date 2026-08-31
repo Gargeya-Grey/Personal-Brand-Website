@@ -20,6 +20,23 @@ function inline(text: string): string {
   return out;
 }
 
+export function parseKickerLine(line: string): { label: string; rest: string } | null {
+  const match = /^\*\*([^*]{2,40})\.\*\*\s+(.+)$/.exec(line.trim());
+  if (!match || !match[1] || !match[2]) return null;
+  return { label: match[1], rest: match[2] };
+}
+
+function kickerHtml(label: string, rest: string): string {
+  return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:8px 0 28px;">
+  <tr>
+    <td style="border-left:3px solid #10b981;padding:6px 0 6px 16px;">
+      <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#059669;font-weight:700;">${escapeHtml(label)}</p>
+      <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.5;color:#0f172a;">${inline(rest)}</p>
+    </td>
+  </tr>
+</table>`;
+}
+
 function headingHtml(text: string): string {
   return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:36px 0 14px;">
   <tr>
@@ -115,6 +132,14 @@ export function markdownToEmailHtml(md: string): string {
       continue;
     }
     if (trimmed.startsWith('# ')) {
+      i += 1;
+      continue;
+    }
+
+    const kicker = parseKickerLine(trimmed);
+    if (kicker) {
+      html.push(kickerHtml(kicker.label, kicker.rest));
+      firstParagraph = false;
       i += 1;
       continue;
     }

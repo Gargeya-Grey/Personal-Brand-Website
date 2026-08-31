@@ -8,7 +8,7 @@ export const SAMPLE_NOTE: Pick<
   weekOf: 'example',
   slug: 'example',
   title: 'Keep the hour the model cannot do',
-  dek: 'Homework can look better while the person gets worse at the work. Here is how to use the tool without handing it your mind.',
+  dek: 'Here is the four-step hour, and what the studies actually showed, so you can use the tool without handing it your mind.',
   links: [
     {
       label: 'AI assistance and persistence (arXiv)',
@@ -23,7 +23,11 @@ export const SAMPLE_NOTE: Pick<
   ],
   bodyMd: `A student finishes the problem set in twenty minutes. The write-up is clean. The teacher is pleased. Two years later the entrance exam is eighteen to twenty-four percent worse, and nobody is surprised except the gradebook.
 
+Can I use the model on the assignment without getting worse at the work?
+
 > The leak was not "AI in the building." The leak was finishing the easy version of the hour.
+
+**Why this holds.** The assignment rewards the finish. Learning rewards sitting with the hard part.
 
 ## What the numbers actually say
 
@@ -49,6 +53,10 @@ That is not anti-AI. It is how you keep the human part in the loop. Feedback hel
 ## If you teach, hire, or work on yourself
 
 Grade the process you can see. Time on the hard part. A short defense of the work. A version done without the model. A correct answer tells you what got produced. It does not tell you what someone understood.
+
+## Five minutes
+
+Before the next assignment, put a timer on the first pass without the model. Five minutes is enough to start. Then open the tool.
 
 ---
 

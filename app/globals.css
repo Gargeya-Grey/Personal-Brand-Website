@@ -1783,6 +1783,20 @@ a.board-card {
   font-weight: 450;
   color: var(--color-primary, #0f172a);
 }
+.notes-kicker {
+  margin: 1.5rem 0 2rem;
+  padding: 0.15rem 0 0.15rem 1.25rem;
+  border-left: 3px solid var(--color-accent, #059669);
+}
+.notes-kicker-label {
+  display: block;
+  margin-bottom: 0.4rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-accent, #059669);
+}
 .notes-prose blockquote p {
   margin: 0;
   font-size: inherit;

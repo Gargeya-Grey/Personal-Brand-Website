@@ -5,6 +5,7 @@ import { Footer } from '@/components/footer';
 import { NewsletterSignup } from '@/components/newsletter-signup';
 import { getPublicNotes } from '@/lib/newsletter-service';
 import { SAMPLE_NOTE } from '@/lib/newsletter-sample';
+import { formatNoteDate } from '@/lib/newsletter-model';
 import { NotesBody } from '@/components/notes-body';
 import { siteConfig } from '@/lib/site-config';
 
@@ -47,6 +48,9 @@ export default async function NotesPage() {
         <section className="mt-16">
           <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
             {exampleIsLive ? 'Latest letter' : 'How a letter looks'}
+          </p>
+          <p className="mt-2 text-sm text-on-surface-variant">
+            {siteConfig.shortName} · {formatNoteDate(example.weekOf === 'example' ? '2026-09-06' : example.weekOf)}
           </p>
           <h2 className="mt-3 font-display text-3xl font-medium tracking-[-0.02em] text-primary">
             {example.title}

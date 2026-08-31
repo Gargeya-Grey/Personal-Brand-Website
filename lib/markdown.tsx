@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { ExpandableFrame } from '@/components/article-expandable';
+import { parseKickerLine } from '@/lib/newsletter-markdown';
 
 /**
  * Custom inline markdown parser supporting **bold**, *italic*, _italic_, `inline code`, [links](url), and ![images](url)
@@ -340,6 +341,19 @@ export function renderMarkdown(
             </figcaption>
           ) : null}
         </figure>
+      );
+      i++;
+      continue;
+    }
+
+    const kicker = parseKickerLine(line);
+    if (kicker) {
+      sawParagraph = true;
+      elements.push(
+        <p key={`kicker-${i}`} className="notes-kicker">
+          <span className="notes-kicker-label">{kicker.label}</span>
+          {parseInlineMarkdown(kicker.rest)}
+        </p>
       );
       i++;
       continue;

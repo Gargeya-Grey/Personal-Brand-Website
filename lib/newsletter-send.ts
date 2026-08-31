@@ -10,7 +10,7 @@ import {
   type NewsletterRecipientSend,
   type NewsletterWeek,
 } from './newsletter-model';
-import { renderNewsletterEmail } from './newsletter-html';
+import { notesReplyTo, renderNewsletterEmail } from './newsletter-html';
 import { unsubscribeApiUrl, unsubscribeUrl } from './newsletter-unsubscribe';
 import {
   getResendKey,
@@ -126,6 +126,7 @@ export async function sendWeekNow(
         subject: rendered.subject,
         html: rendered.html,
         text: rendered.text,
+        replyTo: notesReplyTo(),
         headers: {
           'List-Unsubscribe': `<${unsubscribeApiUrl(slice[0].email)}>`,
           'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
@@ -154,6 +155,7 @@ export async function sendWeekNow(
           subject: rendered.subject,
           html: rendered.html,
           text: rendered.text,
+          replyTo: notesReplyTo(),
           headers: {
             'List-Unsubscribe': `<${unsubscribeApiUrl(row.email)}>`,
             'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',

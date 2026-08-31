@@ -19,12 +19,15 @@ import {
   skipWeek,
   upcomingSunday,
   activeRecipients,
+  formatNoteDate,
 } from '../lib/newsletter-model.ts';
-import { emailHasUnsubscribe, markdownToEmailHtml } from '../lib/newsletter-markdown.ts';
+import { emailHasUnsubscribe, markdownToEmailHtml, parseKickerLine } from '../lib/newsletter-markdown.ts';
 
 const sunday = upcomingSunday(new Date('2026-08-31T08:00:00.000Z'));
 assert.equal(sunday, '2026-09-06');
 assert.equal(letterIdForSunday(sunday), 'letter-2026-09-06');
+assert.equal(formatNoteDate('2026-09-06'), '6 September 2026');
+assert.equal(parseKickerLine('**Why this holds.** The assignment rewards the finish.')?.label, 'Why this holds');
 
 const istSundayEvening = new Date('2026-09-06T13:30:00.000Z');
 assert.equal(isLocalSunday7pm('Asia/Kolkata', istSundayEvening), true);
@@ -108,10 +111,11 @@ assert.match(html, /<strong[^>]*>world<\/strong>/);
 assert.match(html, /href="https:\/\/example.com\/p"/);
 
 const structured = markdownToEmailHtml(
-  'Lead sentence lives here.\n\n> A pull quote for the screenshot.\n\n## Keep the hour\n\n1. **First pass** without the model.\n2. Then open the tool.\n'
+  'Lead sentence lives here.\n\nCan I keep the hour?\n\n> A pull quote for the screenshot.\n\n**Why this holds.** Persistence is the work.\n\n## Keep the hour\n\n1. **First pass** without the model.\n2. Then open the tool.\n'
 );
 assert.match(structured, /font-size:19px/);
 assert.match(structured, /pull quote/);
+assert.match(structured, /Why this holds/);
 assert.match(structured, /Keep the hour/);
 assert.match(structured, /01/);
 assert.equal(

@@ -6,7 +6,7 @@ import { Footer } from '@/components/footer';
 import { NewsletterSignup } from '@/components/newsletter-signup';
 import { NotesBody } from '@/components/notes-body';
 import { getWeekBySlug } from '@/lib/newsletter-service';
-import { publicWeek, wordCount } from '@/lib/newsletter-model';
+import { formatNoteDate, publicWeek, wordCount } from '@/lib/newsletter-model';
 import { NotesReadTracker } from '../notes-read-client';
 import { siteConfig } from '@/lib/site-config';
 
@@ -49,8 +49,9 @@ export default async function NoteIssuePage({
           All Notes
         </Link>
         <article className="relative mt-8 rounded-[2rem] border border-slate-200/60 bg-white/75 p-5 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.18)] backdrop-blur-md sm:p-8 md:p-10 dark:border-white/10 dark:bg-slate-950/65">
-          <p className="text-xs uppercase tracking-[0.16em] text-on-surface-variant">
-            {week.weekOf} · {minutes} min · {siteConfig.shortName}
+          <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Notes</p>
+          <p className="mt-3 text-sm text-on-surface-variant">
+            {siteConfig.shortName} · {formatNoteDate(week.weekOf)} · {minutes} min
           </p>
           <h1 className="mt-4 font-display text-4xl font-medium tracking-[-0.03em] text-primary sm:text-5xl">
             {week.title}
@@ -61,6 +62,16 @@ export default async function NoteIssuePage({
           <div className="notes-prose article-prose mt-10">
             <NotesBody content={week.bodyMd} />
           </div>
+          <p className="mt-10 font-body text-sm leading-relaxed text-on-surface-variant">
+            If this landed,{' '}
+            <a
+              href={`mailto:${siteConfig.email}?subject=${encodeURIComponent(`Notes: ${week.title}`)}`}
+              className="text-accent hover:underline"
+            >
+              reply and tell me where it broke
+            </a>
+            .
+          </p>
           {week.links.length ? (
             <aside className="mt-12 border-t border-slate-200/80 pt-8 dark:border-white/10">
               <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Go deeper</p>

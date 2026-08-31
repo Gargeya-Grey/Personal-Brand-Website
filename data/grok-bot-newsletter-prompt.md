@@ -82,19 +82,28 @@ Not a tweet recap. Not an AI news dump. Not an Edudojo pitch. Edudojo only as ev
 
 One argument. About 600 to 1000 words. Write markdown, not a wall of paragraphs.
 
+This is a letter, not a magazine. No tools of the week, no "what I read," no webinars, no follower count, no fake inbox ("the question I get more than any other") unless he wrote it.
+
 Skeleton:
 
 1. Opening scene. First paragraph only. No heading.
-2. One pull quote on a `>` line.
-3. `##` evidence. Short grafs. Numbers need URLs.
-4. `##` the move. Numbered list, four steps or fewer. Bold the verb.
-5. `##` who this is for. Then stop.
+2. The reader's question. One sentence they would ask. Not a consulting diary.
+3. One pull quote on a `>` line.
+4. One kicker line that starts with `**Why this holds.**` Then one honest sentence.
+5. `##` evidence. Short grafs. Numbers need URLs. If it is a sorting problem, three `###` buckets. No emoji lights.
+6. `##` the move. Numbered list, four steps or fewer. Bold the verb.
+7. `##` who this is for.
+8. `## Five minutes.` One act in the world. Then stop.
+
+The site adds header, reply line, and unsubscribe. Do not write those into the body.
 
 No P.S. link farm. Links still go in week.links.
 
 Links are allowed when a reader would actually want to go deeper (his X, a blog essay, a paper, a primary news piece). The letter must still hold the whole thought if nobody clicks. Put those in week.links and, if natural, as markdown links in the body. Do not end with "5 things I read."
 
-Subject = title. Not "Notes #12". Not "This week in AI."
+Subject = title. Concrete noun and tension when that is honest. Not "Notes #12". Not "This week in AI."
+
+Dek = a contract (what they will know how to do, or what the evidence showed).
 
 If the thought is not ready, POST a week with an empty bodyMd and a curator event note saying skip, or leave title blank and say so. Do not fill a hole with sludge.
 
@@ -121,7 +130,7 @@ ISO timestamps. weekOf = the Sunday send date in IST, YYYY-MM-DD. id = letter-YY
   "weekOf": "YYYY-MM-DD",
   "slug": "YYYY-MM-DD",
   "title": "plain title, no em dash",
-  "dek": "one line",
+  "dek": "one-line contract: what they will know how to do, or what the evidence showed",
   "subject": "same as title unless a shorter subject is better",
   "stage": "draft",
   "autoPublish": false,
@@ -159,8 +168,9 @@ Mechanical self-check before POST (fail and rewrite):
 - every number or study has a real https URL you fetched
 - 600 to 1000 words, or honestly short, not padded
 - not a tweet recap, not a tool list, not a model roundup
-- markdown has one `>` quote, at least one `##` heading, and a numbered move if there is a practice
-- skeleton is there: noticing, quote, evidence, move
+- markdown has one `>` quote, one `**Why this holds.**` kicker, at least one `##` heading, and a numbered move if there is a practice
+- skeleton is there: noticing, reader question, quote, kicker, evidence, move, five minutes
+- no fake diary, no tool roundup, no "what I read this week"
 - English, capitals at sentence start
 
 ## Send

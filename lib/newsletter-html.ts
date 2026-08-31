@@ -1,6 +1,10 @@
 import { siteConfig, getSiteOrigin } from './site-config';
 import { markdownToEmailHtml } from './newsletter-markdown';
-import type { NewsletterLink, NewsletterWeek } from './newsletter-model';
+import { formatNoteDate, type NewsletterLink, type NewsletterWeek } from './newsletter-model';
+
+export function notesReplyTo(): string {
+  return (process.env.CONTACT_EMAIL || '').trim() || siteConfig.email;
+}
 
 function escapeHtml(text: string): string {
   return text
@@ -33,6 +37,8 @@ export function renderNewsletterEmail(
   const unsubscribeUrl = options?.unsubscribeUrl || `${origin}/notes/unsubscribe`;
   const body = markdownToEmailHtml(week.bodyMd);
   const deeper = linksBlock(week.links);
+  const dateLabel = formatNoteDate(week.weekOf);
+  const preheader = (week.dek || week.title).slice(0, 140);
   const unsub = `<p style="margin:28px 0 12px;font-size:13px;color:#64748b;line-height:1.5;">If this is no longer for you, leave the list here.</p>
               <table role="presentation" cellspacing="0" cellpadding="0">
                 <tr>
@@ -51,6 +57,7 @@ export function renderNewsletterEmail(
   <title>${escapeHtml(week.subject || week.title)}</title>
 </head>
 <body style="margin:0;padding:0;background:#f8fafc;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">${escapeHtml(preheader)}</div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f8fafc;padding:24px 12px;">
     <tr>
       <td align="center">
@@ -58,7 +65,10 @@ export function renderNewsletterEmail(
           <tr>
             <td style="padding:28px 32px 8px;">
               <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.18em;text-transform:uppercase;color:#10b981;font-weight:700;">Notes</p>
-              <p style="margin:0 0 20px;font-size:12px;color:#94a3b8;">${escapeHtml(week.weekOf)} · ${escapeHtml(siteConfig.shortName)}</p>
+              <p style="margin:0 0 20px;font-size:12px;color:#94a3b8;">
+                ${escapeHtml(siteConfig.shortName)} · ${escapeHtml(dateLabel)}
+                · <a href="${escapeHtml(archiveUrl)}" style="color:#059669;text-decoration:underline;">Read in the browser</a>
+              </p>
               <h1 style="font-family:Georgia,serif;font-size:28px;line-height:1.2;color:#0f172a;margin:0 0 10px;">${escapeHtml(week.title)}</h1>
               ${
                 week.dek
@@ -67,9 +77,8 @@ export function renderNewsletterEmail(
               }
               ${body}
               ${deeper}
-              <p style="margin:28px 0 0;font-size:13px;color:#64748b;">
-                <a href="${escapeHtml(archiveUrl)}" style="color:#059669;">Read in the browser</a>
-                · takes a minute, and helps me see whether the letter was actually read.
+              <p style="margin:28px 0 0;font-size:14px;line-height:1.6;color:#475569;">
+                If this landed, reply to this email and tell me where it broke.
               </p>
               ${unsub}
             </td>
@@ -87,7 +96,7 @@ export function renderNewsletterEmail(
 </html>`;
 
   const textParts = [
-    `Notes · ${week.weekOf}`,
+    `Notes · ${siteConfig.shortName} · ${dateLabel}`,
     week.title,
     week.dek,
     '',
@@ -96,6 +105,7 @@ export function renderNewsletterEmail(
     week.links.length
       ? `Go deeper:\n${week.links.map((l) => `- ${l.label}: ${l.url}`).join('\n')}`
       : '',
+    'If this landed, reply to this email and tell me where it broke.',
     `Read in the browser: ${archiveUrl}`,
     `Unsubscribe: ${unsubscribeUrl}`,
   ].filter((block) => block !== '');

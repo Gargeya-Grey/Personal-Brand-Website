@@ -40,19 +40,28 @@ One argument. About 600 to 1000 words. Readable in one sitting. The email should
 
 Write in markdown. Do not dump a wall of paragraphs. Give the eye somewhere to land.
 
-1. **Noticing.** Open on a real scene. First paragraph only. No heading yet.
-2. **Pull quote.** One `>` line: the sentence they would screenshot.
-3. **## Evidence.** What the numbers or the study actually show. Short grafs.
-4. **## The move.** A numbered list they can do. Four steps or fewer.
-5. **## Who this is for.** Teach, hire, or work on yourself. Then stop.
+This is a letter from Gargeya, not a magazine and not a store. No tools of the week. No "what I read." No webinars. No follower count. No fake "the question I get more than any other" unless he wrote that.
 
-Use `##` headings, `>` for one quote, and `1. 2. 3.` for the practice. Bold the verb in each step. Horizontal rule `---` only before the last beat, if it earns it.
+1. **Noticing.** Open on a real scene. First paragraph only. No heading.
+2. **The reader's question.** One sentence they would actually ask. Not a consulting diary. Do not invent an inbox.
+3. **Pull quote.** One `>` line: the sentence they would screenshot.
+4. **Kicker.** One line that starts with `**Why this holds.**` Then one honest sentence. Not a slogan.
+5. **## Evidence.** What the numbers or the study actually show. Short grafs. If the argument is a sorting problem, three `###` buckets (what the model can finish / what only you can do / what looks like learning). No emoji traffic lights.
+6. **## The move.** A numbered list they can do. Four steps or fewer. Bold the verb.
+7. **## Who this is for.** Teach, hire, or work on yourself.
+8. **## Five minutes.** One act in the world they can do before the next sitting. Then stop.
 
-Links are allowed when they go deeper: one of his X posts, a blog essay, a paper, a primary news piece. The letter still makes sense if the reader never opens them. Put links where a curious person would actually want them, not as a roundup at the end.
+Use `##` headings, `>` for one quote, `**Why this holds.**` for the kicker, and `1. 2. 3.` for the practice. Horizontal rule `---` only before the last beat, if it earns it.
 
-Subject line = the title. Not "Notes #12". Not "This week in AI."
+Dek is a contract: what they will know how to do, or what the evidence showed. Not a vibe.
+
+Subject line = the title. A concrete noun and a tension when it is honest. Not "Notes #12". Not "This week in AI."
+
+Links are allowed when they go deeper: one of his X posts, a blog essay, a paper, a primary news piece. The letter still makes sense if the reader never opens them. Put those in week.links and, if natural, as markdown links in the body. Do not end with "5 things I read."
 
 English only. No Hinglish. No em dash. Capital letters at the start of sentences. Warm, a bit earnest. Contractions are fine. Match `gargeya-voice.md`.
+
+The engine adds the header (Notes, date, his name, read in the browser), a reply line, and unsubscribe. Do not write those into the body.
 
 ---
 

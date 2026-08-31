@@ -187,6 +187,7 @@ export async function sendResendEmail(input: {
   subject: string;
   html: string;
   text?: string;
+  replyTo?: string;
   headers?: Record<string, string>;
 }): Promise<{ id?: string; ok: boolean; error?: string }> {
   const to = Array.isArray(input.to) ? input.to : [input.to];
@@ -198,6 +199,7 @@ export async function sendResendEmail(input: {
       subject: input.subject,
       html: input.html,
       text: input.text,
+      reply_to: input.replyTo || undefined,
       headers: input.headers,
     }),
   });
@@ -217,6 +219,7 @@ export async function sendResendBatch(
     subject: string;
     html: string;
     text: string;
+    replyTo?: string;
     headers?: Record<string, string>;
   }>
 ): Promise<{ sent: number; ids: string[]; error?: string }> {
@@ -228,6 +231,7 @@ export async function sendResendBatch(
     subject: m.subject,
     html: m.html,
     text: m.text,
+    reply_to: m.replyTo || undefined,
     headers: m.headers,
   }));
   const res = await resendFetch('/emails/batch', {

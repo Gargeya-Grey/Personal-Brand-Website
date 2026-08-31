@@ -283,6 +283,27 @@ export function wordCount(text: string): number {
   return text.trim().split(/\s+/).filter(Boolean).length;
 }
 
+const MONTHS = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
+export function formatNoteDate(weekOf: string): string {
+  const [year, month, day] = weekOf.split('-').map((part) => Number(part));
+  if (!year || !month || !day || month < 1 || month > 12) return weekOf;
+  return `${day} ${MONTHS[month - 1]} ${year}`;
+}
+
 function sanitizeSource(raw: unknown): NewsletterSource | null {
   if (!isRecord(raw)) return null;
   const url = asString(raw.url).trim();
