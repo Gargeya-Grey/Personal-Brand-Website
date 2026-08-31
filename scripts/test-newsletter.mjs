@@ -103,8 +103,16 @@ assert.equal(dirty.topics[0].status, 'proposed');
 assert.equal(dirty.links[0].kind, 'blog');
 
 const html = markdownToEmailHtml('Hello **world** and [a paper](https://example.com/p).');
-assert.match(html, /<strong>world<\/strong>/);
+assert.match(html, /<strong[^>]*>world<\/strong>/);
 assert.match(html, /href="https:\/\/example.com\/p"/);
+
+const structured = markdownToEmailHtml(
+  'Lead sentence lives here.\n\n> A pull quote for the screenshot.\n\n## Keep the hour\n\n1. **First pass** without the model.\n2. Then open the tool.\n'
+);
+assert.match(structured, /font-size:19px/);
+assert.match(structured, /pull quote/);
+assert.match(structured, /Keep the hour/);
+assert.match(structured, /01/);
 assert.equal(
   emailHasUnsubscribe('<a href="{{{RESEND_UNSUBSCRIBE_URL}}}">unsubscribe</a>'),
   true

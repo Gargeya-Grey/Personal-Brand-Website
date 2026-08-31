@@ -1741,6 +1741,49 @@ a.board-card {
 .article-prose a {
   overflow-wrap: anywhere;
 }
+
+.notes-prose p {
+  margin: 0 0 1.35em;
+  font-size: 1.125rem;
+  line-height: 1.8;
+  color: var(--color-on-surface, #334155);
+}
+.notes-prose > p:first-of-type {
+  font-family: var(--font-display, Georgia, serif);
+  font-size: 1.28rem;
+  line-height: 1.55;
+  color: var(--color-primary, #0f172a);
+}
+.notes-prose h2 {
+  margin: 2.4rem 0 0.9rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid color-mix(in srgb, var(--color-primary, #0f172a) 12%, transparent);
+  font-size: 1.45rem;
+  letter-spacing: -0.02em;
+}
+.notes-prose h3 {
+  margin: 1.8rem 0 0.7rem;
+  font-size: 1.15rem;
+}
+.notes-prose blockquote {
+  margin: 1.75rem 0;
+  padding: 0.15rem 0 0.15rem 1.15rem;
+  border-left: 3px solid #10b981;
+  font-family: var(--font-headline, Georgia, serif);
+  font-size: 1.2rem;
+  line-height: 1.55;
+  color: var(--color-primary, #0f172a);
+}
+.notes-prose ol {
+  margin: 1rem 0 1.75rem;
+  padding: 1rem 1.1rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--color-primary, #0f172a) 10%, transparent);
+  border-radius: 1.1rem;
+  background: color-mix(in srgb, #f8fafc 80%, transparent);
+}
+.notes-prose hr {
+  margin: 2rem 0;
+}
 .article-prose p,
 .article-prose li,
 .article-takeaway {

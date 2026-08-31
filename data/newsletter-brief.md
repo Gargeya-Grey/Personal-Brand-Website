@@ -38,11 +38,15 @@ Edudojo belongs here only as evidence: a product decision that taught you someth
 
 One argument. About 600 to 1000 words. Readable in one sitting. The email should hold the whole thought even if nobody clicks a link.
 
-1. **Noticing.** A real scene or a specific system. Not "the future of AI."
-2. **Consequence.** What we lost, mis-scored, or rewarded. What happens to the person.
-3. **Evidence.** Sourced. A number needs a URL. Research and news earn their place by serving the argument.
-4. **Move.** How to learn, how to use the tool, what to ask, what to practice. Uplift is practical.
-5. **Stop.** No P.S. link farm.
+Write in markdown. Do not dump a wall of paragraphs. Give the eye somewhere to land.
+
+1. **Noticing.** Open on a real scene. First paragraph only. No heading yet.
+2. **Pull quote.** One `>` line: the sentence they would screenshot.
+3. **## Evidence.** What the numbers or the study actually show. Short grafs.
+4. **## The move.** A numbered list they can do. Four steps or fewer.
+5. **## Who this is for.** Teach, hire, or work on yourself. Then stop.
+
+Use `##` headings, `>` for one quote, and `1. 2. 3.` for the practice. Bold the verb in each step. Horizontal rule `---` only before the last beat, if it earns it.
 
 Links are allowed when they go deeper: one of his X posts, a blog essay, a paper, a primary news piece. The letter still makes sense if the reader never opens them. Put links where a curious person would actually want them, not as a roundup at the end.
 

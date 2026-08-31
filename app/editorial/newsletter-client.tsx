@@ -594,7 +594,9 @@ export function NewsletterClient({
                           {title || 'Untitled'}
                         </h2>
                         {dek ? <p className="mb-6 text-[var(--atelier-muted)]">{dek}</p> : null}
-                        <MarkdownPreview content={bodyMd} />
+                        <div className="notes-prose article-prose">
+                          <MarkdownPreview content={bodyMd} />
+                        </div>
                       </div>
                     ) : (
                       <p className="text-sm italic text-[var(--atelier-faint)]">The page is blank — write to see light.</p>

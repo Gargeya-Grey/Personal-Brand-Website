@@ -58,7 +58,7 @@ export default async function NoteIssuePage({
           {week.dek ? (
             <p className="mt-4 font-body text-lg leading-relaxed text-on-surface-variant">{week.dek}</p>
           ) : null}
-          <div className="mt-10 font-body text-lg leading-relaxed text-primary">
+          <div className="notes-prose article-prose mt-10">
             <MarkdownPreview content={week.bodyMd} />
           </div>
           {week.links.length ? (

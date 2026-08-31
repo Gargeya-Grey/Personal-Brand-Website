@@ -80,13 +80,17 @@ Territory:
 
 Not a tweet recap. Not an AI news dump. Not an Edudojo pitch. Edudojo only as evidence.
 
-One argument. About 600 to 1000 words. Skeleton:
+One argument. About 600 to 1000 words. Write markdown, not a wall of paragraphs.
 
-1. Noticing (a real scene or specific system)
-2. Consequence (what we lost, mis-scored, or rewarded)
-3. Evidence (sourced; a number needs a URL)
-4. Move (how to learn, what to practice, what to ask)
-5. Stop. No P.S. link farm
+Skeleton:
+
+1. Opening scene. First paragraph only. No heading.
+2. One pull quote on a `>` line.
+3. `##` evidence. Short grafs. Numbers need URLs.
+4. `##` the move. Numbered list, four steps or fewer. Bold the verb.
+5. `##` who this is for. Then stop.
+
+No P.S. link farm. Links still go in week.links.
 
 Links are allowed when a reader would actually want to go deeper (his X, a blog essay, a paper, a primary news piece). The letter must still hold the whole thought if nobody clicks. Put those in week.links and, if natural, as markdown links in the body. Do not end with "5 things I read."
 
@@ -155,7 +159,8 @@ Mechanical self-check before POST (fail and rewrite):
 - every number or study has a real https URL you fetched
 - 600 to 1000 words, or honestly short, not padded
 - not a tweet recap, not a tool list, not a model roundup
-- skeleton is there: noticing, consequence, evidence, move
+- markdown has one `>` quote, at least one `##` heading, and a numbered move if there is a practice
+- skeleton is there: noticing, quote, evidence, move
 - English, capitals at sentence start
 
 ## Send

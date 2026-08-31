@@ -430,10 +430,19 @@ export function mergeIngest(
     return created;
   }
 
-  if (terminalStage(existing.stage)) {
+  if (existing.stage === 'skipped') {
+    return existing;
+  }
+  if (existing.stage === 'sent') {
     return {
       ...existing,
-      updatedAt: existing.updatedAt,
+      title: incoming.title || existing.title,
+      dek: incoming.dek || existing.dek,
+      subject: incoming.subject || existing.subject,
+      bodyMd: incoming.bodyMd || existing.bodyMd,
+      draftMd: incoming.draftMd || existing.draftMd,
+      links: incoming.links.length ? incoming.links : existing.links,
+      updatedAt: now.toISOString(),
     };
   }
 

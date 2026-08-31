@@ -65,7 +65,7 @@ export default async function NotesPage() {
               </Link>
             </p>
           )}
-          <div className="relative mt-8 max-h-[32rem] overflow-hidden rounded-[1.75rem] border border-slate-200/60 bg-white/75 p-5 font-body text-base leading-relaxed text-primary shadow-[0_18px_40px_-28px_rgba(15,23,42,0.18)] backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_72%,transparent)] sm:p-8 dark:border-white/10 dark:bg-slate-950/65">
+          <div className="notes-prose article-prose relative mt-8 max-h-[32rem] overflow-hidden rounded-[1.75rem] border border-slate-200/60 bg-white/75 p-5 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.18)] backdrop-blur-md [mask-image:linear-gradient(to_bottom,black_72%,transparent)] sm:p-8 dark:border-white/10 dark:bg-slate-950/65">
             <MarkdownPreview content={example.bodyMd} />
           </div>
         </section>
