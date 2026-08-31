@@ -983,7 +983,7 @@ export function EditorialClient({
       }>
         {workspace === 'x' || workspace === 'lab' || workspace === 'strategy' || workspace === 'notes' ? (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
-            <div className="space-y-2 min-w-0">
+            <div className="min-w-0 flex-1 space-y-2">
               <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
                 Private atelier
               </p>
@@ -996,7 +996,7 @@ export function EditorialClient({
                       ? 'Notes'
                       : 'X To-Do'}
               </h1>
-              <p className="text-sm text-[var(--atelier-muted)] max-w-md leading-relaxed">
+              <p className="text-sm leading-relaxed text-[var(--atelier-muted)] sm:text-pretty">
                 {workspace === 'lab'
                   ? 'Growth analytics from X API snapshots. Refresh, explore, ask the AI analyst.'
                   : workspace === 'strategy'
