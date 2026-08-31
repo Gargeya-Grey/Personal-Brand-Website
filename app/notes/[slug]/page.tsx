@@ -4,7 +4,7 @@ import { notFound } from 'next/navigation';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { NewsletterSignup } from '@/components/newsletter-signup';
-import { MarkdownPreview } from '@/components/editor/markdown-preview';
+import { NotesBody } from '@/components/notes-body';
 import { getWeekBySlug } from '@/lib/newsletter-service';
 import { publicWeek, wordCount } from '@/lib/newsletter-model';
 import { NotesReadTracker } from '../notes-read-client';
@@ -59,7 +59,7 @@ export default async function NoteIssuePage({
             <p className="mt-4 font-body text-lg leading-relaxed text-on-surface-variant">{week.dek}</p>
           ) : null}
           <div className="notes-prose article-prose mt-10">
-            <MarkdownPreview content={week.bodyMd} />
+            <NotesBody content={week.bodyMd} />
           </div>
           {week.links.length ? (
             <aside className="mt-12 border-t border-slate-200/80 pt-8 dark:border-white/10">

@@ -285,7 +285,7 @@ export function renderMarkdown(
           {listItems.map((item, idx) => (
             <li key={idx} className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-baseline gap-3">
               <span className="font-label tabular-nums text-slate-400 dark:text-slate-500">
-                {idx + 1}
+                {String(idx + 1).padStart(2, '0')}
               </span>
               <span>{parseInlineMarkdown(item)}</span>
             </li>
@@ -363,7 +363,7 @@ export function renderMarkdown(
             afterSourcesHeading
               ? `${BODY} mb-4 text-[0.9375rem] md:text-base text-slate-600 dark:text-slate-400`
               : isLead
-                ? `${BODY} mb-6 text-[1.125rem] md:text-[1.1875rem] leading-[1.75] text-slate-700 dark:text-slate-300`
+                ? `${BODY} letter-lead mb-6 text-[1.125rem] md:text-[1.1875rem] leading-[1.75] text-slate-700 dark:text-slate-300`
                 : `${BODY} mb-4`
           }
         >
