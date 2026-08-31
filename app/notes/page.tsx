@@ -7,12 +7,13 @@ import { getPublicNotes } from '@/lib/newsletter-service';
 import { SAMPLE_NOTE } from '@/lib/newsletter-sample';
 import { formatNoteDate } from '@/lib/newsletter-model';
 import { NotesBody } from '@/components/notes-body';
+import { NotesMasthead } from '@/components/notes-masthead';
+import { notesBrand } from '@/lib/notes-brand';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Notes',
-  description:
-    'A weekly letter from Gargeya on the human mind, learning with AI, and what we actually score. Sunday evening. No roundup.',
+  title: `${notesBrand.name}`,
+  description: `${notesBrand.tagline} A weekly letter from Gargeya on the human mind, learning with AI, and what we actually score. Sunday evening. No roundup.`,
   alternates: { canonical: '/notes' },
 };
 
@@ -29,11 +30,11 @@ export default async function NotesPage() {
     <div className="flex min-h-screen flex-col">
       <Navigation />
       <main id="page-main" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-grow px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32">
-        <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">Notes</p>
-        <h1 className="mt-4 font-display text-4xl font-medium tracking-[-0.03em] text-primary sm:text-5xl">
-          One argument a week. The mind stays in the picture.
+        <h1 className="sr-only">
+          {notesBrand.name}. {notesBrand.tagline}
         </h1>
-        <p className="mt-6 max-w-2xl font-body text-lg leading-relaxed text-on-surface-variant">
+        <NotesMasthead size="hero" />
+        <p className="mt-8 max-w-2xl font-body text-lg leading-relaxed text-on-surface-variant">
           A Sunday letter from {siteConfig.shortName} on how people learn and grow with AI in the room: capability, judgment, assessment, and the techniques that keep you in the loop. Not a news dump. Not a recap of tweets. If a week has nothing honest to say, it stays quiet.
         </p>
 

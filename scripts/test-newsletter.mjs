@@ -22,11 +22,14 @@ import {
   formatNoteDate,
 } from '../lib/newsletter-model.ts';
 import { emailHasUnsubscribe, markdownToEmailHtml, parseKickerLine } from '../lib/newsletter-markdown.ts';
+import { notesBrand } from '../lib/notes-brand.ts';
 
 const sunday = upcomingSunday(new Date('2026-08-31T08:00:00.000Z'));
 assert.equal(sunday, '2026-09-06');
 assert.equal(letterIdForSunday(sunday), 'letter-2026-09-06');
 assert.equal(formatNoteDate('2026-09-06'), '6 September 2026');
+assert.equal(notesBrand.kicker, 'A Sunday letter');
+assert.match(notesBrand.tagline, /mind stays in the picture/);
 assert.equal(parseKickerLine('**Why this holds.** The assignment rewards the finish.')?.label, 'Why this holds');
 
 const istSundayEvening = new Date('2026-09-06T13:30:00.000Z');

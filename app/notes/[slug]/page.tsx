@@ -8,6 +8,8 @@ import { NotesBody } from '@/components/notes-body';
 import { getWeekBySlug } from '@/lib/newsletter-service';
 import { formatNoteDate, publicWeek, wordCount } from '@/lib/newsletter-model';
 import { NotesReadTracker } from '../notes-read-client';
+import { NotesMasthead } from '@/components/notes-masthead';
+import { notesBrand } from '@/lib/notes-brand';
 import { siteConfig } from '@/lib/site-config';
 
 export const dynamic = 'force-dynamic';
@@ -20,7 +22,7 @@ export async function generateMetadata({
   const { slug } = await params;
   const week = await getWeekBySlug(slug);
   if (!week || !publicWeek(week)) {
-    return { title: 'Notes' };
+    return { title: notesBrand.name };
   }
   return {
     title: week.title,
@@ -46,11 +48,11 @@ export default async function NoteIssuePage({
       <Navigation />
       <main id="page-main" tabIndex={-1} className="mx-auto w-full max-w-3xl flex-grow px-4 pb-20 pt-28 sm:px-6 sm:pb-24 sm:pt-32">
         <Link href="/notes" className="text-sm text-accent hover:underline">
-          All Notes
+          All letters
         </Link>
         <article className="relative mt-8 rounded-[2rem] border border-slate-200/60 bg-white/75 p-5 shadow-[0_18px_40px_-28px_rgba(15,23,42,0.18)] backdrop-blur-md sm:p-8 md:p-10 dark:border-white/10 dark:bg-slate-950/65">
-          <p className="text-xs font-bold uppercase tracking-[0.16em] text-accent">Notes</p>
-          <p className="mt-3 text-sm text-on-surface-variant">
+          <NotesMasthead size="letter" href="/notes" />
+          <p className="mt-6 text-sm text-on-surface-variant">
             {siteConfig.shortName} · {formatNoteDate(week.weekOf)} · {minutes} min
           </p>
           <h1 className="mt-4 font-display text-4xl font-medium tracking-[-0.03em] text-primary sm:text-5xl">

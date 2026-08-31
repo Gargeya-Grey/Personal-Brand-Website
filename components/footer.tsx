@@ -154,10 +154,10 @@ function PublicFooter() {
           <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between lg:gap-16">
             <div className="max-w-md space-y-3">
               <h3 className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                Notes
+                A Sunday letter
               </h3>
               <p className="font-display text-2xl font-light tracking-[-0.02em] text-white sm:text-3xl">
-                Notes worth opening.
+                The mind stays in the picture.
               </p>
               <p className="font-body text-sm leading-relaxed text-slate-400 sm:text-[15px]">
                 One argument a week on the mind, learning with AI, and what we actually score. Sunday evening. No roundup.

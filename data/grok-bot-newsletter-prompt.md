@@ -95,7 +95,7 @@ Skeleton:
 7. `##` who this is for.
 8. `## Five minutes.` One act in the world. Then stop.
 
-The site adds header, reply line, and unsubscribe. Do not write those into the body.
+The site adds the masthead (A Sunday letter / Notes / The mind stays in the picture), reply line, and unsubscribe. Do not write those into the body.
 
 No P.S. link farm. Links still go in week.links.
 

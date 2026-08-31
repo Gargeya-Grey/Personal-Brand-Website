@@ -63,7 +63,7 @@ export function NewsletterSignup({
             : 'rounded-xl border border-emerald-200 bg-emerald-50 p-4 font-headline text-sm font-bold text-accent dark:border-emerald-500/30 dark:bg-emerald-950/20'
         }
       >
-        You&apos;re on Notes. One letter, Sunday evening.
+        You&apos;re on the Sunday letter. The mind stays in the picture.
       </p>
     );
   }

@@ -61,7 +61,7 @@ Links are allowed when they go deeper: one of his X posts, a blog essay, a paper
 
 English only. No Hinglish. No em dash. Capital letters at the start of sentences. Warm, a bit earnest. Contractions are fine. Match `gargeya-voice.md`.
 
-The engine adds the header (Notes, date, his name, read in the browser), a reply line, and unsubscribe. Do not write those into the body.
+The engine adds the masthead (A Sunday letter / Notes / The mind stays in the picture), date, his name, read in the browser, a reply line, and unsubscribe. Do not write those into the body.
 
 ---
 

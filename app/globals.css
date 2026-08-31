@@ -1742,6 +1742,15 @@ a.board-card {
   overflow-wrap: anywhere;
 }
 
+.notes-masthead-rule {
+  display: block;
+  width: 2.75rem;
+  height: 2px;
+  margin-top: 1.35rem;
+  background: var(--color-accent, #059669);
+  border-radius: 999px;
+}
+
 .notes-prose p {
   margin: 0 0 1.35em;
   font-size: 1.125rem;
