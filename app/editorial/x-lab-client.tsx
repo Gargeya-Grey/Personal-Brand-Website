@@ -555,6 +555,8 @@ export function XLabClient() {
   }, []);
 
   useEffect(() => {
+    // Fetch-on-mount/range-change: effect syncs with the external X Lab API.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     void load(range);
   }, [load, range]);
 
@@ -562,6 +564,8 @@ export function XLabClient() {
     if (typeof window === 'undefined') return;
     const sp = new URLSearchParams(window.location.search);
     const xe = sp.get('x_error');
+    // One-shot read of an external value (OAuth redirect query param).
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     if (xe) setError(decodeURIComponent(xe));
   }, []);
 

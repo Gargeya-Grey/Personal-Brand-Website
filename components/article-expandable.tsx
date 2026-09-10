@@ -99,6 +99,8 @@ export function ExpandableFrame({
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // Mount-gate only: defers portal creation until after hydration.
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
   }, []);
 

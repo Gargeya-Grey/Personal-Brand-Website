@@ -5,7 +5,6 @@ import '@fontsource/stack-sans-notch/300.css';
 import '@fontsource/stack-sans-notch/500.css';
 import './globals.css';
 import { ThemeProvider } from '@/components/theme-provider';
-import { InteractiveBackgroundLazy } from '@/components/interactive-background-lazy';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 import { getDefaultShareImage, getSiteOrigin, siteConfig } from '@/lib/site-config';
@@ -126,9 +125,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Skip to content
           </a>
-          {/* Layered atmosphere: CSS mesh + grain + interactive canvas */}
+          {/* Layered atmosphere: CSS mesh + grain */}
           <div className="site-atmosphere" aria-hidden="true" />
-          <InteractiveBackgroundLazy />
           <div className="site-grain" aria-hidden="true" />
           <div className="relative z-0">{children}</div>
         </ThemeProvider>

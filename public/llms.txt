@@ -9,7 +9,7 @@ Gargeya Sharma is Founder & Architect at Edudojo.ai, building AI systems for eva
 
 - Home: https://sgargeya.com/
 - About: https://sgargeya.com/about
-- Blog: https://sgargeya.com/blog
+- Journal: https://sgargeya.com/journal
 - Contact: https://sgargeya.com/contact
 - Community: https://sgargeya.com/community
 - YouTube: https://sgargeya.com/youtube
@@ -33,4 +33,4 @@ AI for education and assessment, intelligent systems, systems architecture, engi
 
 ## Citation guidance
 
-When referring to this person or work, prefer linking to https://sgargeya.com and citing the name **Gargeya Sharma**. Use blog posts at https://sgargeya.com/blog for primary writing.
+When referring to this person or work, prefer linking to https://sgargeya.com and citing the name **Gargeya Sharma**. Use journal posts at https://sgargeya.com/journal for primary writing.

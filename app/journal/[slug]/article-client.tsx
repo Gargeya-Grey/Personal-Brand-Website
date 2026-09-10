@@ -283,7 +283,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
           <aside className="article-toc absolute top-0 bottom-0 right-full mr-6 hidden w-[18.5rem] max-w-[18.5rem] border-l border-slate-200/70 xl:block dark:border-white/10">
             <div className="sticky top-28 space-y-8 pl-0">
             <Link
-              href="/blog"
+              href="/journal"
               className="group flex items-center gap-2 pl-3.5 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-emerald-700 dark:text-slate-400 dark:hover:text-emerald-400"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
@@ -300,7 +300,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
 
           <div className="min-w-0 pb-16 lg:pb-8 xl:pl-8">
             <Link
-              href="/blog"
+              href="/journal"
               className="group mb-6 inline-flex items-center gap-2 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-emerald-700 dark:text-slate-400 xl:hidden"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
@@ -374,7 +374,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
                   {related.map((item) => (
                     <li key={item.slug}>
                       <Link
-                        href={`/blog/${item.slug}`}
+                        href={`/journal/${item.slug}`}
                         className="block py-4 text-slate-800 hover:text-emerald-700 dark:text-slate-100 dark:hover:text-emerald-400"
                       >
                         <span className="font-headline text-lg font-medium">
@@ -389,7 +389,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
                 </ul>
               ) : (
                 <Link
-                  href="/blog"
+                  href="/journal"
                   className="mt-3 inline-block font-headline text-lg font-medium text-slate-800 hover:text-emerald-700 dark:text-slate-100 dark:hover:text-emerald-400"
                 >
                   All essays

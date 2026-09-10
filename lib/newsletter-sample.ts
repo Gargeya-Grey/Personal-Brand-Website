@@ -52,7 +52,7 @@ That is not anti-AI. It is how you keep the human part in the loop. Feedback hel
 
 ## If you teach, hire, or work on yourself
 
-Grade the process you can see. Time on the hard part. A short defense of the work. A version done without the model. A correct answer tells you what got produced. It does not tell you what someone understood.
+Value the process you can see. Time on the hard part. A short defense of the work. A version done without the model. A correct answer tells you what got produced. It does not tell you what someone understood.
 
 ## Five minutes
 

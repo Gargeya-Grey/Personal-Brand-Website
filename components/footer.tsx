@@ -271,8 +271,8 @@ function PublicFooter() {
             </h3>
             <ul className="space-y-3 font-ui text-[15px] font-normal tracking-wide text-slate-400">
               <li>
-                <Link href="/blog" className={linkClass}>
-                  Blog
+                <Link href="/journal" className={linkClass}>
+                  Journal
                 </Link>
               </li>
               <li>
@@ -282,7 +282,7 @@ function PublicFooter() {
               </li>
               <li>
                 <Link href="/youtube" className={linkClass}>
-                  YouTube
+                  Video essays
                 </Link>
               </li>
               <li>
@@ -414,17 +414,15 @@ function PublicFooter() {
           </div>
 
           <div className="flex justify-center sm:justify-end">
-            <motion.button
+            <button
               type="button"
               onClick={scrollToTop}
-              whileHover={{ y: -3, scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 shadow-sm transition-all duration-300 hover:border-emerald-400/50 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
+              className="group flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-slate-800 bg-slate-900 text-slate-400 shadow-sm transition-[transform,border-color,color] duration-300 hover:-translate-y-0.5 hover:border-emerald-400/50 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 active:translate-y-0 motion-reduce:transform-none"
               title="Scroll to top"
               aria-label="Scroll to top"
             >
-              <ArrowUp className="h-4 w-4" />
-            </motion.button>
+              <ArrowUp className="h-4 w-4 transition-transform duration-300 group-hover:-translate-y-px motion-reduce:transform-none" />
+            </button>
           </div>
         </div>
 

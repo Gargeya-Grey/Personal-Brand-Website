@@ -56,6 +56,13 @@ const nextConfig: NextConfig = {
   },
   output: 'standalone',
   transpilePackages: ['motion'],
+  async redirects() {
+    // /blog was renamed to /journal — keep permanent redirects for SEO link equity.
+    return [
+      { source: '/blog', destination: '/journal', permanent: true },
+      { source: '/blog/:slug', destination: '/journal/:slug', permanent: true },
+    ];
+  },
   turbopack: {},
   webpack: (config, {dev}) => {
     // HMR is disabled in AI Studio via DISABLE_HMR env var.

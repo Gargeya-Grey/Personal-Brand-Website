@@ -147,7 +147,7 @@ const dirty = sanitizeWeek({
   weekOf: '2026-09-06',
   title: 'x',
   bodyMd: 'hi',
-  links: [{ label: 'Essay', url: 'https://sgargeya.com/blog/hello', kind: 'blog' }],
+  links: [{ label: 'Essay', url: 'https://sgargeya.com/journal/hello', kind: 'blog' }],
   topics: [{ title: 'Nope', status: 'nope' }],
 });
 assert.equal(dirty.topics[0].status, 'proposed');

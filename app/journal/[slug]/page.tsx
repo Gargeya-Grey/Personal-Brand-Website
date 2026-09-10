@@ -1,8 +1,8 @@
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';
+import { cache } from 'react';
 import {
   getArticleBySlug,
-  getArticles,
   getPublishedArticlesLite,
   isArticlePublished,
   type Article,
@@ -27,9 +27,9 @@ export const revalidate = 60;
 
 export async function generateStaticParams() {
   try {
-    const list = await getArticles();
+    const list = await getPublishedArticlesLite();
     return list
-      .filter((a) => isArticlePublished(a) && a.slug)
+      .filter((a) => a.slug)
       .map((a) => ({
         slug: a.slug,
       }));
@@ -39,9 +39,11 @@ export async function generateStaticParams() {
   }
 }
 
+const getCachedArticleBySlug = cache(getArticleBySlug);
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const article = await getArticleBySlug(slug);
+  const article = await getCachedArticleBySlug(slug);
 
   if (!isArticlePublished(article)) {
     return {
@@ -53,7 +55,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const descriptionText = clampMetaDescription(article!.excerpt, {
     fallback: `${article!.title} — writing by ${siteConfig.name} on systems, AI, and building in public.`,
   });
-  const canonicalPath = `/blog/${article!.slug}`;
+  const canonicalPath = `/journal/${article!.slug}`;
   const defaultShare = getDefaultShareImage(brandedTitle);
   const cover = article!.coverImage
     ? [
@@ -118,7 +120,7 @@ function pickRelated(current: Article, all: Awaited<ReturnType<typeof getPublish
 export default async function BlogPostPage({ params }: PageProps) {
   const { slug } = await params;
   const [article, listing] = await Promise.all([
-    getArticleBySlug(slug),
+    getCachedArticleBySlug(slug),
     getPublishedArticlesLite(),
   ]);
 

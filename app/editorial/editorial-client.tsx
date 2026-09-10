@@ -253,7 +253,7 @@ const ArticleCard = memo(function ArticleCard({
           <Pen className="w-4 h-4" />
         </button>
         <Link
-          href={`/blog/${post.slug}`}
+          href={`/journal/${post.slug}`}
           target="_blank"
           className="atelier-icon-btn"
           title="View"
@@ -546,11 +546,14 @@ export function EditorialClient({
 
   // Client nav from X/Lab/Strategy → Blog reuses this component. Server skips the
   // article query on X workspaces, so state would stay [] until a hard refresh.
-  useEffect(() => {
+  // Sync-during-render keeps this a derived update (no cascading effect pass).
+  const [prevInitialArticles, setPrevInitialArticles] = useState(initialArticles);
+  if (initialArticles !== prevInitialArticles) {
+    setPrevInitialArticles(initialArticles);
     if (initialArticles.length > 0) {
       setArticles(initialArticles);
     }
-  }, [initialArticles]);
+  }
 
   useEffect(() => {
     if (workspace !== 'blog' || articles.length > 0) return;

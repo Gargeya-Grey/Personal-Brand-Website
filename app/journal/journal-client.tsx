@@ -4,40 +4,37 @@ import { useState, useEffect, useRef, useMemo } from 'react';
 import * as motion from 'motion/react-client';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
-import { 
-  BookOpen, 
-  ArrowRight, 
-  Search, 
-  Mail, 
-  Clock, 
-  ChevronDown, 
-  Filter, 
+import {
+  BookOpen,
+  ArrowRight,
+  Search,
+  Clock,
+  ChevronDown,
+  Filter,
   X,
 } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { renderIllustration } from '@/components/render-illustration';
 import { AuthorAvatar } from '@/components/author-avatar';
+import { NewsletterSignup } from '@/components/newsletter-signup';
 import { Article } from '@/lib/blog-service';
 import { CATEGORIES } from '@/lib/categories';
 import { siteConfig } from '@/lib/site-config';
 
-type BlogListArticle = Omit<Article, 'content' | 'takeaways'> &
+type JournalListArticle = Omit<Article, 'content' | 'takeaways'> &
   Partial<Pick<Article, 'content' | 'takeaways'>>;
 
-interface BlogClientProps {
-  initialArticles: BlogListArticle[];
+interface JournalClientProps {
+  initialArticles: JournalListArticle[];
 }
 
-export default function BlogClient({ initialArticles }: BlogClientProps) {
-  const [articles] = useState<BlogListArticle[]>(initialArticles);
+export default function JournalClient({ initialArticles }: JournalClientProps) {
+  const [articles] = useState<JournalListArticle[]>(initialArticles);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [subscribeEmail, setSubscribeEmail] = useState<string>("");
-  const [subscribed, setSubscribed] = useState<boolean>(false);
-  const [subscribeError, setSubscribeError] = useState('');
   const [visibleCount, setVisibleCount] = useState<number>(9);
 
   const handleLoadMore = () => {
@@ -68,14 +65,17 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
   // Redirect ?id=X parameter to slug-based URLs if visited directly
   useEffect(() => {
     if (articles.length === 0) return;
-    const params = new URLSearchParams(window.location.search);
-    const idParam = params.get('id');
-    if (!idParam) return;
-    const id = parseInt(idParam, 10);
-    const article = articles.find((a) => a.id === id);
-    if (article) {
-      window.location.href = `/blog/${article.slug}`;
-    }
+    const frameId = window.requestAnimationFrame(() => {
+      const params = new URLSearchParams(window.location.search);
+      const idParam = params.get('id');
+      if (!idParam) return;
+      const id = parseInt(idParam, 10);
+      const article = articles.find((a) => a.id === id);
+      if (article) {
+        window.location.href = `/journal/${article.slug}`;
+      }
+    });
+    return () => window.cancelAnimationFrame(frameId);
   }, [articles]);
 
   const handleCategoryToggle = (category: string) => {
@@ -93,42 +93,6 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
     }
   };
 
-  const handleSubscribe = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!subscribeEmail.trim()) return;
-    setSubscribeError('');
-    try {
-      const res = await fetch('/api/subscribe', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          email: subscribeEmail.trim(),
-          source: 'blog',
-          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'Asia/Kolkata',
-        }),
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok) {
-        setSubscribeError(data.error || 'Subscribe failed. Please try again.');
-        return;
-      }
-      if (data.delivery === 'local') {
-        setSubscribeError(
-          data.message ||
-            'Saved only locally. Set a valid RESEND_API_KEY to sync to Resend.'
-        );
-        return;
-      }
-      setSubscribed(true);
-      setTimeout(() => {
-        setSubscribeEmail('');
-      }, 3000);
-    } catch (err) {
-      console.error(err);
-      setSubscribeError('Network error. Please try again.');
-    }
-  };
-
   // Filter, Sort & Search computation (Sorted from latest to oldest date)
   const sortedArticles = useMemo(() => {
     const filtered = articles.filter(post => {
@@ -141,7 +105,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
       return categoryMatches && searchMatches;
     });
 
-    return filtered.sort((a, b) => {
+    return [...filtered].sort((a, b) => {
       const timeA = a.date ? new Date(a.date).getTime() : 0;
       const timeB = b.date ? new Date(b.date).getTime() : 0;
       return timeB - timeA;
@@ -164,68 +128,188 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
 
   // Dynamic real stats tracking
   const insights = [
-    { value: "Deep Dives", label: "On Curious Themes" },
-    { value: "Unfiltered", label: "Personal Vantage" },
-    { value: `${articles.length} Musings`, label: "And Counting" },
+    { value: `${articles.length} ${articles.length === 1 ? 'Essay' : 'Essays'}`, label: 'In the journal' },
+    { value: `${CATEGORIES.length} Lanes`, label: 'Thesis to craft' },
+    { value: 'Long-form', label: 'No hot takes' },
   ];
+  // Hero ledger — always the three newest published essays, independent of search/filter.
+  const latestThree = useMemo(
+    () =>
+      [...articles]
+        .sort((a, b) => {
+          const timeA = a.date ? new Date(a.date).getTime() : 0;
+          const timeB = b.date ? new Date(b.date).getTime() : 0;
+          return timeB - timeA;
+        })
+        .slice(0, 3),
+    [articles]
+  );
 
   return (
-    <div className="min-h-screen bg-surface text-primary antialiased relative selection:bg-accent/30 selection:text-current">
+    <div className="relative flex min-h-screen flex-col bg-surface text-primary antialiased selection:bg-accent/30 selection:text-current">
 
       {/* Global Navigation Bar */}
       <Navigation />
 
       {/* Main Container */}
-      <main id="page-main" tabIndex={-1} className="relative z-10 pt-28 sm:pt-36 lg:pt-44">
-        
-        {/* Render Blog Listings Screen */}
-        <div className="mx-auto w-full max-w-screen-2xl px-4 pb-20 sm:px-6 sm:pb-24 lg:px-10 lg:pb-32 xl:px-12">
-          
-          {/* Hero Layout Grid */}
-          <div className="mb-12 grid grid-cols-1 items-center gap-10 sm:mb-16 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
-            
-            {/* Left Column: Brand & Copy */}
-            <div className="space-y-6">
-              <span className="font-label text-xs uppercase tracking-[0.25em] text-accent font-bold block">
-                Personal writing
-              </span>
-              <h1 className="font-display text-[clamp(2.5rem,8vw,4.5rem)] font-medium leading-[1.02] tracking-[-0.02em] text-slate-900 dark:text-white">
-                Notes, opinions <br/>&amp; <span className="text-emerald-600 dark:text-accent">useful finds</span><span className="text-emerald-500">.</span>
-              </h1>
-              <p className="font-body text-lg md:text-xl text-slate-600 dark:text-white/70 leading-relaxed max-w-xl">
-                This is my personal blog — whatever I want to write. Systems and AI when they matter, but also opinions, travel notes, craft, and anything else I find useful. Use the filters below if you&apos;re hunting a specific lane.
+      <main id="page-main" tabIndex={-1} className="relative z-10 mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-24 pb-20 sm:px-6 sm:pt-28 lg:px-10 lg:pb-24 xl:px-12">
+
+        {/* Hero — the journal as a desk, not a bare headline */}
+        <section className="home-hero relative isolate grid min-h-[min(72svh,680px)] grid-cols-1 items-center gap-10 overflow-hidden rounded-[2rem] px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 lg:grid-cols-12 lg:gap-12 lg:px-14 lg:py-14">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 space-y-7 motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:transform-none lg:col-span-7"
+          >
+            <p className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1.5 font-label text-[11px] font-bold uppercase tracking-[0.16em] text-accent">
+              <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
+              Journal · {articles.length} {articles.length === 1 ? 'essay' : 'essays'}
+            </p>
+
+            <div className="max-w-2xl">
+              <p className="mb-4 font-label text-[11px] font-bold uppercase tracking-[0.22em] text-slate-500 dark:text-white/45">
+                Essays &amp; build logs
               </p>
+              <h1 className="font-display text-[clamp(2.6rem,6.5vw,4.9rem)] font-medium leading-[0.98] tracking-[-0.045em] text-primary dark:text-white">
+                Longer thinking on <span className="text-accent">systems and craft.</span>
+              </h1>
             </div>
 
-            {/* Right Column: Interactive Telemetry Visualizer */}
-            <div className="relative flex h-[210px] items-center justify-center overflow-hidden rounded-3xl border border-slate-200 bg-slate-50 p-4 shadow-xl backdrop-blur-xl dark:border-white/[0.05] dark:bg-slate-900/40 sm:h-[240px] sm:p-6">
-              <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(16,185,129,0.1),transparent_70%)] blur-2xl" />
-              <div className="w-full h-full max-w-sm flex items-center justify-center">
-                {(() => {
-                  try {
-                    return renderIllustration("digital-ledger", true);
-                  } catch (e) {
-                    return (
-                      <div className="text-xs text-slate-400 font-mono">
-                        Illustration failed to load
-                      </div>
-                    );
-                  }
-                })()}
+            <p className="max-w-xl font-body text-[1.05rem] leading-[1.65] text-on-surface-variant dark:text-white/70 sm:text-lg">
+              Some ideas need evidence and room, so I work them out here at full length —
+              systems, AI, and the craft of building. If you want the short version, Notes
+              lands one argument every Sunday evening.
+            </p>
+
+            <div className="grid max-w-xl grid-cols-2 gap-5 border-t border-slate-900/[0.12] pt-5 dark:border-white/15">
+              <div>
+                <p className="font-label text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-white/45">
+                  Long-form
+                </p>
+                <p className="mt-1 font-headline text-sm font-bold text-primary/90 dark:text-white/90 sm:text-base">
+                  Essays + build logs
+                </p>
+              </div>
+              <div>
+                <p className="font-label text-[10px] font-bold uppercase tracking-[0.18em] text-slate-500 dark:text-white/45">
+                  Short-form
+                </p>
+                <p className="mt-1 font-headline text-sm font-bold text-primary/90 dark:text-white/90 sm:text-base">
+                  Notes, every Sunday
+                </p>
               </div>
             </div>
 
-          </div>
+            <div className="flex flex-col gap-3 pt-1 sm:flex-row sm:items-center">
+              <a
+                href="#essays"
+                className="btn-accent h-12 shrink-0 whitespace-nowrap rounded-2xl px-5 font-headline text-sm font-extrabold tracking-tight"
+              >
+                Start reading <ArrowRight className="btn-icon h-4 w-4" />
+              </a>
+              <Link
+                href="/notes"
+                className="home-hero-secondary h-12 shrink-0 whitespace-nowrap rounded-2xl px-5 font-headline text-sm font-bold tracking-tight"
+              >
+                Try the Sunday letter <ArrowRight className="btn-icon h-4 w-4" />
+              </Link>
+            </div>
 
-          {/* Metrics Tiles Grid */}
-          <section className="mb-12 grid grid-cols-1 gap-4 sm:mb-16 sm:grid-cols-3 sm:gap-6">
+            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-label text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">
+              <a href="#essays" className="transition-colors hover:text-accent">
+                Essays ↓
+              </a>
+              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent/60" />
+              <a href="#subscribe" className="transition-colors hover:text-accent">
+                Get Notes
+              </a>
+            </div>
+          </motion.div>
+
+          {/* Artifact — open ledger: latest entries + lane index */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+            className="relative z-10 motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:transform-none lg:col-span-5"
+          >
+            <div className="relative mx-auto w-full max-w-[520px]">
+              <div className="relative overflow-hidden rounded-[1.5rem] border border-slate-900/[0.1] bg-white shadow-[0_28px_68px_-34px_rgba(0,0,0,0.4)] dark:border-white/10 dark:bg-slate-950">
+                <div className="flex items-center justify-between gap-3 border-b border-slate-900/[0.08] px-5 py-3.5 dark:border-white/10">
+                  <div className="flex items-center gap-1.5" aria-hidden="true">
+                    <span className="h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-white/15" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-white/15" />
+                    <span className="h-2.5 w-2.5 rounded-full bg-accent/60" />
+                  </div>
+                  <p className="flex min-w-0 items-center gap-1.5 font-label text-[10px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">
+                    <BookOpen className="h-3.5 w-3.5 shrink-0 text-accent" />
+                    <span className="truncate">Journal — open ledger</span>
+                  </p>
+                  <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-700 dark:text-accent">
+                    {articles.length}
+                  </span>
+                </div>
+
+                <div className="space-y-2.5 p-5 sm:p-6">
+                  {latestThree.length > 0 ? latestThree.map((post, i) => (
+                    <Link
+                      key={post.id}
+                      href={`/journal/${post.slug}`}
+                      className="group flex items-center gap-3 rounded-2xl border border-slate-900/[0.06] bg-slate-50/70 p-3.5 transition-colors hover:border-accent/30 hover:bg-accent/[0.05] dark:border-white/[0.07] dark:bg-white/[0.03]"
+                    >
+                      <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-accent/10 font-mono text-[11px] font-bold text-accent">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate font-headline text-sm font-bold text-primary group-hover:text-accent">
+                          {post.title}
+                        </span>
+                        <span className="block truncate font-body text-xs text-on-surface-variant">
+                          {post.date} · {post.readTime}
+                        </span>
+                      </span>
+                      <ArrowRight className="h-4 w-4 shrink-0 text-on-surface-variant transition-transform duration-300 group-hover:translate-x-1 group-hover:text-accent" />
+                    </Link>
+                  )) : (
+                    <p className="rounded-2xl border border-dashed border-slate-300 p-6 text-center font-body text-sm text-on-surface-variant dark:border-white/15">
+                      First essays are on the desk — check back soon.
+                    </p>
+                  )}
+                </div>
+
+                <div className="flex flex-wrap gap-1.5 border-t border-slate-900/[0.08] px-5 py-4 dark:border-white/10">
+                  {CATEGORIES.slice(0, 5).map((c) => (
+                    <span
+                      key={c}
+                      className="rounded-full border border-slate-200/70 px-2.5 py-1 font-label text-[10px] font-bold uppercase tracking-[0.1em] text-on-surface-variant dark:border-white/10"
+                    >
+                      {c}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div className="absolute -right-2 top-10 hidden rotate-2 rounded-full border border-slate-900/[0.08] bg-white px-3.5 py-1.5 font-label text-[10px] font-bold uppercase tracking-[0.14em] text-primary shadow-lg sm:block dark:border-white/10 dark:bg-slate-900 dark:text-white">
+                Long-form desk
+              </div>
+              <div className="absolute -left-2 bottom-16 hidden -rotate-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1.5 font-label text-[10px] font-bold uppercase tracking-[0.14em] text-accent shadow-lg backdrop-blur-sm sm:block">
+                Searchable archive
+              </div>
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Proof strip */}
+        <section className="py-14 sm:py-16 lg:py-20">
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-6">
             {insights.map((stat, i) => (
-              <div key={i} className="board-card group flex h-32 flex-col justify-between rounded-2xl p-6">
+              <div key={stat.label} className="board-card group flex h-32 flex-col justify-between rounded-2xl p-6">
                 <div className="flex justify-between items-start">
                   <span className="text-2xl md:text-3xl font-headline font-medium text-slate-900 dark:text-white tracking-tight">
                     {stat.value}
                   </span>
-                  {i === 2 && (
+                  {i === 0 && (
                     <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.8)]" />
                   )}
                 </div>
@@ -234,16 +318,18 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                 </span>
               </div>
             ))}
-          </section>
+          </div>
+        </section>
 
-          {/* Filter & Search Bar Area */}
-          <section className="relative z-30 mb-12 flex flex-col items-stretch justify-between gap-4 sm:mb-16 md:flex-row md:items-center">
+          {/* Filter & Search Bar Area — sticky instrument, not a loose row */}
+          <section id="essays" className="sticky top-24 z-30 mb-12 scroll-mt-32 sm:mb-14">
+            <div className="flex flex-col items-stretch justify-between gap-3 rounded-[1.5rem] border border-white/50 bg-white/55 p-3 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl md:flex-row md:items-center dark:border-white/10 dark:bg-white/[0.04]">
             {/* Search Input Widget */}
-            <div className="relative flex-grow max-w-lg">
+            <div className="relative flex-grow md:max-w-lg">
               <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input 
-                type="text" 
-                placeholder="Search headlines, keywords, or topics..." 
+              <input
+                type="text"
+                placeholder="Search headlines, keywords, or topics..."
                 aria-label="Search articles"
                 value={searchQuery}
                 onChange={(e) => {
@@ -253,7 +339,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                 className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-10 text-base text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
               />
               {searchQuery && (
-                <button 
+                <button
                   onClick={() => {
                     setSearchQuery("");
                     setVisibleCount(9);
@@ -267,8 +353,8 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
             </div>
 
             {/* Custom Interactive Multi-Select Category Dropdown */}
-            <div className="relative" ref={dropdownRef}>
-              <button 
+            <div className="relative shrink-0" ref={dropdownRef}>
+              <button
                 onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                 aria-haspopup="listbox"
                 aria-expanded={isDropdownOpen}
@@ -277,15 +363,15 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
               >
                 <span className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-slate-400" />
-                  {selectedCategories.length === 0 
-                    ? "All Categories" 
+                  {selectedCategories.length === 0
+                    ? "All Categories"
                     : `${selectedCategories.length} selected`}
                 </span>
                 <ChevronDown className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
               {isDropdownOpen && (
-                <div 
+                <div
                   role="listbox"
                   className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-3 space-y-1 z-50 animate-in fade-in slide-in-from-top-3 duration-200"
                 >
@@ -297,8 +383,8 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                       setIsDropdownOpen(false);
                     }}
                     className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-headline font-bold transition-all flex items-center justify-between ${
-                      selectedCategories.length === 0 
-                        ? 'bg-accent/10 text-accent font-extrabold' 
+                      selectedCategories.length === 0
+                        ? 'bg-accent/10 text-accent font-extrabold'
                         : 'text-slate-600 dark:text-white/70 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white'
                     }`}
                   >
@@ -318,8 +404,8 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                           aria-selected={active}
                           onClick={() => handleCategoryToggle(c)}
                           className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-headline font-bold transition-all flex items-center justify-between ${
-                            active 
-                              ? 'bg-accent/10 text-accent font-extrabold' 
+                            active
+                              ? 'bg-accent/10 text-accent font-extrabold'
                               : 'text-slate-600 dark:text-white/70 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white'
                           }`}
                         >
@@ -332,9 +418,10 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                 </div>
               )}
             </div>
+            </div>
           </section>
 
-          {/* Results Listings Content */}
+          {/* Results Listings Content — single rhythm: featured, grid, closing */}
           {sortedArticles.length === 0 ? (
             <div className="board-card mx-auto max-w-xl space-y-6 rounded-[2.5rem] p-8 py-24 text-center">
               <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
@@ -354,7 +441,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
               </button>
             </div>
           ) : (
-            <div className="space-y-24">
+            <div className="space-y-16 lg:space-y-20">
               
               {/* 1. DYNAMIC FEATURED HERO SECTION */}
               {featuredPost && selectedCategories.length === 0 && searchQuery === "" && (
@@ -368,7 +455,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                   </div>
 
                   <Link 
-                    href={`/blog/${featuredPost.slug}`}
+                    href={`/journal/${featuredPost.slug}`}
                     aria-label={`Featured story: ${featuredPost.title}`}
                     className="board-card group grid grid-cols-1 items-center gap-8 rounded-[2.5rem] p-6 md:p-8 lg:grid-cols-12"
                   >
@@ -452,7 +539,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                       className="h-full"
                     >
                       <Link 
-                        href={`/blog/${post.slug}`}
+                        href={`/journal/${post.slug}`}
                         aria-label={`Read essay: ${post.title}`}
                         className="board-card group flex h-full flex-col justify-between rounded-[2rem] p-5"
                       >
@@ -515,7 +602,7 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                 </div>
 
                 {/* Pagination Controls block */}
-                <div className="flex flex-col items-center gap-4 pt-12 border-t border-slate-200/50 dark:border-white/10">
+                <div className="flex flex-col items-center gap-4 border-t border-slate-200/50 pt-10 dark:border-white/10">
                   <p className="font-label text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold">
                     Showing {Math.min(visibleCount, sortedArticles.length)} of {sortedArticles.length} posts
                   </p>
@@ -523,10 +610,10 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
                   {sortedArticles.length > visibleCount && (
                     <button
                       onClick={handleLoadMore}
-                      className="board-card group relative flex h-12 cursor-pointer items-center justify-center gap-2.5 px-10 font-headline text-xs font-bold text-slate-800 transition-all duration-300 hover:border-accent hover:bg-accent hover:text-slate-900 active:scale-95 dark:text-white dark:hover:text-slate-900 rounded-2xl"
+                      className="btn-accent group relative flex h-12 cursor-pointer items-center justify-center gap-2.5 px-10 font-headline text-xs font-bold rounded-2xl"
                     >
                       <span>Load More Stories</span>
-                      <ArrowRight className="w-4.5 h-4.5 group-hover:translate-x-1 transition-transform" />
+                      <ArrowRight className="btn-icon w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
                   )}
                 </div>
@@ -535,69 +622,43 @@ export default function BlogClient({ initialArticles }: BlogClientProps) {
             </div>
           )}
 
-          {/* Newsletter input card */}
-          <section className="board-card relative mt-20 overflow-hidden rounded-[2rem] p-5 sm:mt-28 sm:rounded-[2.5rem] sm:p-8 md:p-12">
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-8 lg:gap-12">
-              {/* Left Side: Editorial Content */}
-              <div className="space-y-4 lg:w-[48%] lg:max-w-xl">
-                <span className="font-label text-xs uppercase tracking-[0.2em] text-accent font-bold flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-accent" /> Subscribe
-                </span>
-                
-                <h3 className="font-headline text-2xl md:text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">
-                  Notes, Sunday evening
-                </h3>
-                
-                <p className="font-body text-slate-600 dark:text-white/70 text-sm md:text-base leading-relaxed">
-                  One argument a week on the mind, learning with AI, and what we actually score. Not a recap of the blog. <a href="/notes" className="text-accent hover:underline">See a letter</a>.
-                </p>
-              </div>
-
-              {/* Right Side: Form & Trust Caption */}
-              <div className="w-full lg:w-[45%] lg:max-w-md space-y-4">
-                {subscribed ? (
-                  <motion.div 
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 rounded-xl text-center text-accent font-headline font-bold text-sm"
-                  >
-                    Successfully Registered. Thank you for subscribing!
-                  </motion.div>
-                ) : (
-                  <form onSubmit={handleSubscribe} className="flex flex-col gap-3">
-                    <div className="flex flex-col sm:flex-row gap-3">
-                      <input 
-                        type="email" 
-                        placeholder="john.doe@acme.com" 
-                        aria-label="Email address for newsletter"
-                        required
-                        value={subscribeEmail}
-                        onChange={(e) => setSubscribeEmail(e.target.value)}
-                        className="flex-grow rounded-xl border border-slate-200 bg-slate-50 px-5 py-3 text-base text-slate-800 shadow-inner placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-white/[0.04] dark:text-white"
-                      />
-                      <button 
-                        type="submit" 
-                        className="bg-accent text-primary dark:text-primary-container hover:bg-accent/90 font-headline font-bold text-sm h-12 px-8 rounded-xl transition-all active:scale-[0.98] flex items-center justify-center gap-2 shrink-0 shadow-md hover:shadow-[0_0_20px_rgba(16,185,129,0.3)]"
-                      >
-                        Subscribe <ArrowRight className="w-4 h-4" />
-                      </button>
-                    </div>
-                    {subscribeError && (
-                      <p role="alert" className="text-xs text-red-600 dark:text-red-400 leading-relaxed">
-                        {subscribeError}
-                      </p>
-                    )}
-                  </form>
-                )}
-
-                <div className="pt-1">
-                  <p className="text-[10px] text-slate-400 font-body">Sunday evening. Unsubscribe anytime.</p>
+          {/* Closing — the short version lives in Notes */}
+          <section id="subscribe" className="scroll-mt-32">
+            <div className="cta-card-gradient relative overflow-hidden rounded-[2rem] p-6 sm:p-10 md:rounded-[2.5rem] md:p-14">
+              <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
+                <div className="lg:col-span-6">
+                  <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
+                    Sunday evening
+                  </span>
+                  <h2 className="cta-card-heading mt-3 font-display text-3xl font-light leading-[1.08] tracking-[-0.02em] sm:text-4xl">
+                    Prefer the short version?
+                  </h2>
+                  <p className="cta-card-copy mt-4 max-w-md font-body text-base leading-relaxed">
+                    Notes is one argument a week on the mind, learning with AI, and what we
+                    actually score. Not a recap of the journal — the desk notes, distilled.
+                  </p>
+                  <div className="mt-8">
+                    <Link
+                      href="/notes"
+                      className="project-link rounded-sm font-headline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
+                    >
+                      <span>See how a letter looks</span>
+                      <ArrowRight className="btn-icon h-3.5 w-3.5" />
+                    </Link>
+                  </div>
+                </div>
+                <div className="lg:col-span-6">
+                  <div className="rounded-[1.5rem] border border-slate-900/[0.08] bg-white/70 p-5 backdrop-blur-sm sm:p-7 dark:border-white/10 dark:bg-white/[0.04]">
+                    <p className="font-headline text-lg font-bold text-primary">Get Notes weekly</p>
+                    <p className="mt-1.5 mb-5 font-body text-sm text-on-surface-variant">
+                      Free · Sunday 19:00 in your timezone · unsubscribe anytime.
+                    </p>
+                    <NewsletterSignup source="journal-closing" variant="light" />
+                  </div>
                 </div>
               </div>
             </div>
           </section>
-
-        </div>
 
       </main>
 

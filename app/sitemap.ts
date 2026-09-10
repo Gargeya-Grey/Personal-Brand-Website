@@ -8,7 +8,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     '',
     '/about',
-    '/blog',
+    '/journal',
     '/notes',
     '/youtube',
     '/community',
@@ -18,8 +18,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   ].map((path) => ({
     url: `${base}${path || '/'}`,
     lastModified: new Date(),
-    changeFrequency: path === '/blog' || path === '/notes' ? 'weekly' : 'monthly',
-    priority: path === '' ? 1 : path === '/blog' || path === '/notes' ? 0.9 : 0.7,
+    changeFrequency: path === '/journal' || path === '/notes' ? 'weekly' : 'monthly',
+    priority: path === '' ? 1 : path === '/journal' || path === '/notes' ? 0.9 : 0.7,
   }));
 
   try {
@@ -27,7 +27,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const posts = articles
       .filter((a) => a.status === 'published' || !a.status)
       .map((a) => ({
-        url: `${base}/blog/${a.slug}`,
+        url: `${base}/journal/${a.slug}`,
         lastModified: a.updatedAt ? new Date(a.updatedAt) : new Date(),
         changeFrequency: 'monthly' as const,
         priority: 0.8,

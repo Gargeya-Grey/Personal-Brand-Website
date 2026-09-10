@@ -37,10 +37,12 @@
   --color-outline-variant: rgba(15, 23, 42, 0.12);
   --color-cta-glow: #0f172a;
 
-  /* 3D floor — canvas reads these so light/dark always stay in sync */
-  --floor-line-rgb: 4, 120, 87;
-  --floor-alpha: 0.28;
-  --floor-line-width: 0.75;
+  /* Hover / UI motion — cubic ease-out (settles, no snap) */
+  --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --ease-in-out: cubic-bezier(0.77, 0, 0.175, 1);
+  --default-transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+  --default-transition-duration: 280ms;
 }
 
 .dark {
@@ -65,10 +67,6 @@
   --color-on-surface-variant: #94a3b8;
   --color-outline-variant: rgba(255, 255, 255, 0.12);
   --color-cta-glow: #020617;
-
-  --floor-line-rgb: 110, 231, 183;
-  --floor-alpha: 0.15;
-  --floor-line-width: 0.55;
 }
 
 @theme {
@@ -218,6 +216,7 @@ canvas {
     0 1px 0 rgba(255, 255, 255, 0.9) inset,
     0 18px 40px -28px rgba(15, 23, 42, 0.16);
   transition:
+    transform 450ms var(--ease-out-smooth),
     border-color 0.35s ease,
     box-shadow 0.45s cubic-bezier(0.16, 1, 0.3, 1),
     background-color 0.3s ease;
@@ -247,6 +246,12 @@ a.board-card {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 1) inset,
     0 24px 48px -24px rgba(15, 23, 42, 0.22);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-project-card]:hover {
+    transform: translateY(-5px);
+  }
 }
 
 .dark .board-card {
@@ -291,8 +296,91 @@ a.board-card {
 }
 
 /*
- * Premium atmosphere: cool depth + vignette.
- * Accent lives in type, CTAs, and the 3D floor.
+ * Bento lift — short cubic settle on hover.
+ * Disabled on touch / reduced-motion.
+ */
+.bento-card {
+  transition:
+    transform 300ms var(--ease-out-smooth),
+    border-color 0.45s ease,
+    box-shadow 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 0.45s ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .bento-card:hover {
+    transform: translateY(-3px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bento-card {
+    transition: none;
+  }
+  .bento-card:hover {
+    transform: none;
+  }
+  [data-project-card]:hover {
+    transform: none;
+  }
+}
+
+/*
+ * Project card hover — one gesture, same start.
+ * Card and image begin on the same frame; sync comes from the curves
+ * (snappy 450ms ease-out vs slow 720ms ease-in-out), not timing offsets.
+ */
+.project-card-image {
+  transition: transform 720ms var(--ease-out-smooth);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  [data-project-card]:hover .project-card-image {
+    transform: scale(1.04);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card-image {
+    transition: none;
+  }
+  [data-project-card]:hover .project-card-image {
+    transform: none;
+    transition-delay: 0ms;
+  }
+}
+
+/*
+ * Scroll cue — single-property GPU nudge.
+ * Cheaper than animate-bounce (no layout keyframes, 2.2s cycle).
+ */
+@media (prefers-reduced-motion: no-preference) {
+  .scroll-hint {
+    animation: scroll-hint 2.2s ease-in-out infinite;
+  }
+}
+
+@keyframes scroll-hint {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0.85;
+  }
+  50% {
+    transform: translateY(4px);
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-hint {
+    animation: none;
+  }
+}
+
+/*
+ * Premium atmosphere: wet paper, cool depth + vignette.
+ * Accent lives in type, CTAs, and editorial surfaces.
  */
 .site-atmosphere {
   position: fixed;
@@ -308,10 +396,10 @@ a.board-card {
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 90% 70% at 50% -10%, #ffffff 0%, transparent 55%),
-    radial-gradient(ellipse 55% 45% at 100% 0%, rgba(226, 232, 240, 0.7), transparent 55%),
-    radial-gradient(ellipse 50% 40% at 0% 100%, rgba(241, 245, 249, 0.9), transparent 50%),
-    linear-gradient(180deg, #f8fafc 0%, #f1f5f9 48%, #eef2f6 100%);
+    radial-gradient(ellipse 62% 48% at 92% 2%, rgba(16, 185, 129, 0.1), transparent 68%),
+    radial-gradient(ellipse 48% 42% at 4% 72%, rgba(14, 116, 144, 0.07), transparent 72%),
+    radial-gradient(ellipse 90% 70% at 50% -10%, #ffffff 0%, transparent 58%),
+    linear-gradient(180deg, #fbfefc 0%, #f3f9f6 52%, #edf4f2 100%);
 }
 
 .site-atmosphere::after {
@@ -320,12 +408,14 @@ a.board-card {
   inset: 0;
   pointer-events: none;
   background:
-    radial-gradient(ellipse 120% 80% at 50% 120%, rgba(15, 23, 42, 0.04), transparent 55%);
+    radial-gradient(ellipse 120% 80% at 50% 120%, rgba(15, 23, 42, 0.045), transparent 55%),
+    radial-gradient(ellipse 55% 40% at 78% 55%, rgba(5, 150, 105, 0.035), transparent 70%);
   opacity: 1;
 }
 
 .dark .site-atmosphere::before {
   background:
+    radial-gradient(ellipse 62% 48% at 92% 2%, rgba(52, 211, 153, 0.11), transparent 68%),
     radial-gradient(ellipse 80% 55% at 50% -15%, rgba(51, 65, 85, 0.35), transparent 55%),
     radial-gradient(ellipse 45% 35% at 85% 20%, rgba(30, 41, 59, 0.5), transparent 60%),
     linear-gradient(180deg, #0b1220 0%, #0f172a 52%, #0a101c 100%);
@@ -333,7 +423,8 @@ a.board-card {
 
 .dark .site-atmosphere::after {
   background:
-    radial-gradient(ellipse 100% 70% at 50% 110%, rgba(2, 6, 23, 0.55), transparent 50%);
+    radial-gradient(ellipse 100% 70% at 50% 110%, rgba(2, 6, 23, 0.55), transparent 50%),
+    radial-gradient(ellipse 55% 40% at 78% 55%, rgba(16, 185, 129, 0.035), transparent 70%);
 }
 
 /* Fine film grain for depth (CSS-only, no image request) */
@@ -350,6 +441,178 @@ a.board-card {
 .dark .site-grain {
   opacity: 0.03;
   mix-blend-mode: soft-light;
+}
+
+/* Editorial hero field — a light paper surface with a dark-mode counterpart. */
+.home-hero {
+  background: linear-gradient(125deg, #f9fffc 0%, #edf9f4 52%, #dcefe9 120%);
+  box-shadow: 0 32px 90px -46px rgba(15, 79, 67, 0.26);
+}
+
+.dark .home-hero {
+  background: linear-gradient(125deg, #101731 0%, #14243b 52%, #0d3036 120%);
+  box-shadow: 0 32px 90px -46px rgba(15, 23, 42, 0.62);
+}
+
+.home-hero::before {
+  content: "";
+  position: absolute;
+  top: -18rem;
+  right: -15rem;
+  width: 42rem;
+  height: 42rem;
+  border-radius: 999px;
+  background: radial-gradient(
+    circle,
+    rgba(5, 150, 105, 0.16) 0%,
+    rgba(5, 150, 105, 0.05) 34%,
+    transparent 68%
+  );
+  pointer-events: none;
+}
+
+.dark .home-hero::before {
+  background: radial-gradient(
+    circle,
+    rgba(52, 211, 153, 0.28) 0%,
+    rgba(52, 211, 153, 0.08) 34%,
+    transparent 68%
+  );
+}
+
+.home-hero::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 58% 75% at 100% 100%, rgba(5, 150, 105, 0.07), transparent 68%),
+    linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.55) 48%, transparent 78%);
+  pointer-events: none;
+}
+
+.dark .home-hero::after {
+  background:
+    radial-gradient(ellipse 58% 75% at 100% 100%, rgba(2, 6, 23, 0.25), transparent 68%),
+    linear-gradient(105deg, transparent 0%, rgba(255, 255, 255, 0.025) 48%, transparent 78%);
+}
+
+.home-hero-photo {
+  background: #0b1220;
+  box-shadow: 0 28px 68px -34px rgba(0, 0, 0, 0.7);
+}
+
+.home-hero-secondary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: 1px solid rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.64);
+  color: var(--color-text-primary);
+  transition:
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    color 0.25s ease;
+}
+
+.home-hero-secondary .btn-icon {
+  color: var(--color-accent);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.home-hero-secondary:hover {
+  border-color: rgba(5, 150, 105, 0.5);
+  background: rgba(255, 255, 255, 0.88);
+}
+
+.home-hero-secondary:hover .btn-icon {
+  transform: translateX(3px);
+}
+
+.dark .home-hero-secondary {
+  border-color: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+}
+
+.dark .home-hero-secondary:hover {
+  border-color: rgba(52, 211, 153, 0.55);
+  background: rgba(52, 211, 153, 0.1);
+}
+
+/* Intent rooms — one dark primary route, two quieter editorial routes. */
+.home-room {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 24px 58px -42px rgba(15, 23, 42, 0.42);
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1),
+    background-color 250ms ease;
+}
+
+.home-room-build {
+  background: linear-gradient(135deg, #101731 0%, #15304a 56%, #0d6b61 140%);
+}
+
+.home-room-build::before {
+  content: "";
+  position: absolute;
+  right: -9rem;
+  bottom: -12rem;
+  width: 32rem;
+  height: 32rem;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(52, 211, 153, 0.2), transparent 68%);
+  pointer-events: none;
+}
+
+.home-room-light {
+  background: rgba(255, 255, 255, 0.68);
+  box-shadow: 0 20px 48px -38px rgba(15, 23, 42, 0.3);
+}
+
+.dark .home-room-light {
+  background: rgba(15, 23, 42, 0.58);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: 0 22px 52px -36px rgba(0, 0, 0, 0.65);
+}
+
+.dark .home-room-light:hover,
+.dark .home-room-light:focus-visible {
+  background: rgba(21, 32, 54, 0.85);
+  border-color: rgba(255, 255, 255, 0.06);
+  box-shadow:
+    0 24px 60px -20px rgba(52, 211, 153, 0.35),
+    0 0 44px -6px rgba(52, 211, 153, 0.28);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-room:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 30px 62px -38px rgba(15, 23, 42, 0.48);
+  }
+
+  .dark .home-room:hover {
+    box-shadow: 0 30px 62px -38px rgba(0, 0, 0, 0.72);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .home-hero-secondary,
+  .home-hero-secondary .btn-icon,
+  .home-room {
+    transition: none;
+  }
+
+  .home-hero-secondary:hover .btn-icon {
+    transform: none;
+  }
+
+  .home-room:hover {
+    transform: none;
+  }
 }
 
 /*
@@ -439,16 +702,16 @@ a.board-card {
   gap: 0.5rem;
   overflow: hidden;
   isolation: isolate;
-  background: var(--color-accent);
-  color: #020617;
-  border: 1px solid color-mix(in srgb, var(--color-accent) 70%, #022c22);
+  background: var(--color-accent-dark);
+  color: #ffffff;
+  border: 1px solid color-mix(in srgb, var(--color-accent-dark) 70%, #022c22);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.28) inset,
     0 10px 24px -12px rgba(15, 23, 42, 0.35);
   transition:
-    box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.45s ease,
-    border-color 0.45s ease;
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    border-color 0.25s ease;
 }
 
 .btn-accent > * {
@@ -467,21 +730,21 @@ a.board-card {
     transparent 72%
   );
   transform: translateX(-130%) skewX(-12deg);
-  transition: transform 0.75s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
   z-index: 0;
 }
 
 .btn-accent .btn-icon {
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-accent:hover {
-  background: color-mix(in srgb, var(--color-accent) 88%, white);
+  background: color-mix(in srgb, var(--color-accent-dark) 86%, #022c22);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.4) inset,
-    0 0 0 1px color-mix(in srgb, var(--color-accent) 35%, transparent),
-    0 14px 32px -14px color-mix(in srgb, var(--color-accent) 45%, rgba(15, 23, 42, 0.4));
+    0 0 0 1px color-mix(in srgb, var(--color-accent-dark) 40%, transparent),
+    0 14px 32px -14px color-mix(in srgb, var(--color-accent-dark) 50%, rgba(15, 23, 42, 0.4));
 }
 
 .btn-accent:hover::after {
@@ -493,7 +756,7 @@ a.board-card {
 }
 
 .btn-accent:active {
-  background: color-mix(in srgb, var(--color-accent) 92%, #022c22);
+  background: color-mix(in srgb, var(--color-accent-dark) 88%, #022c22);
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.2) inset,
     0 6px 16px -10px rgba(15, 23, 42, 0.35);
@@ -536,10 +799,10 @@ a.board-card {
     0 1px 0 rgba(255, 255, 255, 0.85) inset,
     0 8px 20px -14px rgba(15, 23, 42, 0.18);
   transition:
-    border-color 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    background-color 0.5s ease,
-    color 0.45s ease,
-    box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+    border-color 0.3s cubic-bezier(0.22, 1, 0.36, 1),
+    background-color 0.25s ease,
+    color 0.25s ease,
+    box-shadow 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-ghost > * {
@@ -554,14 +817,14 @@ a.board-card {
   background: color-mix(in srgb, var(--color-accent) 12%, transparent);
   transform: scaleX(0);
   transform-origin: left center;
-  transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
   pointer-events: none;
   z-index: 0;
 }
 
 .btn-ghost .btn-icon {
   color: var(--color-accent);
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .btn-ghost:hover {
@@ -622,16 +885,15 @@ a.board-card {
   font-weight: 700;
   letter-spacing: -0.02em;
   color: var(--color-accent);
-  transition: color 0.4s ease, letter-spacing 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: color 0.25s ease;
 }
 
 .project-link .btn-icon {
-  transition: transform 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .project-link:hover {
   color: var(--color-accent-dark);
-  letter-spacing: 0.01em;
 }
 
 .project-link:hover .btn-icon {
@@ -877,12 +1139,32 @@ a.board-card {
 /* Closing ink panel — crafted for light board + dark */
 .cta-card-gradient {
   background:
-    radial-gradient(ellipse 70% 55% at 85% 10%, rgba(5, 150, 105, 0.14), transparent 55%),
-    linear-gradient(145deg, #172033 0%, #131b2e 48%, #0f172a 100%);
-  border: 1px solid rgba(15, 23, 42, 0.22);
+    radial-gradient(ellipse 62% 55% at 88% 5%, rgba(5, 150, 105, 0.16), transparent 58%),
+    radial-gradient(ellipse 48% 42% at 8% 90%, rgba(13, 148, 136, 0.12), transparent 60%),
+    linear-gradient(145deg, #fbfffd 0%, #eef8f3 52%, #dcefe8 100%);
+  border: 1px solid rgba(15, 23, 42, 0.1);
   box-shadow:
-    0 1px 0 rgba(255, 255, 255, 0.08) inset,
-    0 28px 60px -32px rgba(15, 23, 42, 0.45);
+    0 1px 0 rgba(255, 255, 255, 0.9) inset,
+    0 28px 60px -36px rgba(15, 79, 67, 0.3);
+}
+
+.cta-card-gradient .cta-card-heading {
+  color: var(--color-text-primary);
+}
+
+.cta-card-gradient .cta-card-copy {
+  color: var(--color-text-muted);
+}
+
+.cta-card-gradient .cta-card-secondary {
+  border-color: rgba(15, 23, 42, 0.16);
+  background: rgba(255, 255, 255, 0.68);
+  color: var(--color-text-primary);
+}
+
+.cta-card-gradient .cta-card-secondary:hover {
+  border-color: rgba(5, 150, 105, 0.5);
+  background: rgba(255, 255, 255, 0.9);
 }
 
 .dark .cta-card-gradient {
@@ -894,6 +1176,25 @@ a.board-card {
   box-shadow:
     0 1px 0 rgba(255, 255, 255, 0.1) inset,
     0 24px 48px -28px rgba(0, 0, 0, 0.55);
+}
+
+.dark .cta-card-gradient .cta-card-heading {
+  color: #ffffff;
+}
+
+.dark .cta-card-gradient .cta-card-copy {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.dark .cta-card-gradient .cta-card-secondary {
+  border-color: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.04);
+  color: #ffffff;
+}
+
+.dark .cta-card-gradient .cta-card-secondary:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.08);
 }
 
 .discord-card-gradient {
@@ -1852,6 +2153,15 @@ a.board-card {
 .article-prose li,
 .article-takeaway {
   text-align: start;
+}
+
+/* Letter reading on an open canvas: body ink stays primary, dek stays muted. */
+.notes-unboxed p {
+  color: var(--color-primary, #0f172a);
+}
+.notes-unboxed .letter-lead,
+.notes-unboxed > div > p:first-of-type {
+  color: var(--color-primary, #0f172a);
 }
 
 /* TOC: pin inline size so a long heading cannot shove the rail left. */
