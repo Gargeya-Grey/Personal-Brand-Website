@@ -24,8 +24,6 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     pathname.startsWith('/ledger') ||
     pathname.startsWith('/login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  /** Optional full-bleed dark hero — only active when #home-hero exists */
-  const [overDarkHero, setOverDarkHero] = useState(false);
   const [readingNavHidden, setReadingNavHidden] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
@@ -63,58 +61,57 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         { name: 'Public site', shortName: 'Public', path: '/', key: 'public' },
       ]
     : [
-        { name: 'Startup', path: siteConfig.links.edudojo, external: true, key: 'startup' },
-        { name: 'Community', path: '/community', key: 'community' },
-        { name: 'Blog', path: '/blog', key: 'blog' },
+        { name: 'Build', path: siteConfig.links.edudojo, external: true, key: 'build' },
+        { name: 'Journal', path: '/journal', key: 'journal' },
         { name: 'Notes', path: '/notes', key: 'notes' },
+        { name: 'Community', path: '/community', key: 'community' },
         { name: 'YouTube', path: '/youtube', key: 'youtube' },
         { name: 'About', path: '/about', key: 'about' },
         { name: 'CV', path: siteConfig.links.cv, external: true, key: 'cv' },
       ];
 
+  const isReadingArticle = !isAtelier && pathname.startsWith('/journal/');
+
+  const scrollToTop = () => {
+    const reduce =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({ top: 0, behavior: reduce ? 'auto' : 'smooth' });
+  };
+
+  // Next.js treats a Link to the current route as a no-op, so clicking the
+  // nav item for the page you're already on does nothing. Match standard
+  // behavior instead: same-page clicks scroll back to the top.
+  const handleSamePageNav = (e: React.MouseEvent, linkPath: string, isExternal?: boolean) => {
+    if (isExternal) return;
+    try {
+      const target = new URL(linkPath, window.location.origin);
+      const normalize = (p: string) => (p !== '/' ? p.replace(/\/+$/, '') : p);
+      const current = normalize(window.location.pathname) + window.location.search;
+      const destination = normalize(target.pathname) + target.search;
+      if (destination === current) {
+        e.preventDefault();
+        if (mobileMenuOpen) {
+          setMobileMenuOpen(false);
+          // Let the menu close (and body overflow restore) before scrolling.
+          window.requestAnimationFrame(() => scrollToTop());
+        } else {
+          scrollToTop();
+        }
+      }
+    } catch {
+      /* ignore malformed URLs — fall through to default navigation */
+    }
+  };
+
   useEffect(() => {
-    if (isAtelier || pathname !== '/') {
-      setOverDarkHero(false);
-      return;
-    }
-
-    const hero = document.getElementById('home-hero');
-    if (!hero) {
-      setOverDarkHero(false);
-      return;
-    }
-
-    const update = () => {
-      const { bottom } = hero.getBoundingClientRect();
-      setOverDarkHero(bottom > 96);
-    };
-
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-    window.addEventListener('resize', update, { passive: true });
-    return () => {
-      window.removeEventListener('scroll', update);
-      window.removeEventListener('resize', update);
-    };
-  }, [pathname, isAtelier]);
-
-  const isReadingArticle = !isAtelier && pathname.startsWith('/blog/');
-
-  useEffect(() => {
-    if (!isReadingArticle) {
-      setReadingNavHidden(false);
-      return;
-    }
+    if (!isReadingArticle || mobileMenuOpen) return;
     let lastY = window.scrollY;
     const onScroll = () => {
       const y = window.scrollY;
       const goingDown = y > lastY + 6;
       const goingUp = y < lastY - 6;
       if (goingDown || goingUp) lastY = y;
-      if (mobileMenuOpen) {
-        setReadingNavHidden(false);
-        return;
-      }
       setReadingNavHidden((prev) => {
         if (y < 120 || goingUp) return false;
         if (goingDown) return true;
@@ -168,46 +165,32 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     };
   }, [mobileMenuOpen]);
 
-  const forceDarkNav = !isAtelier && overDarkHero;
-
-  // Glass chrome — dark while over the wave hero, then theme-aware
+  // Glass chrome — theme-aware
   const navShell = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/90 shadow-[var(--atelier-shadow-sm)] backdrop-blur-xl'
-    : forceDarkNav
-      ? 'border-white/10 bg-white/[0.02] shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_2px_1px_rgba(255,255,255,0.15)] backdrop-blur-xl'
-      : 'border-white/60 bg-white/65 shadow-[0_8px_32px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.02] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_2px_1px_rgba(255,255,255,0.15)]';
+    : 'border-white/60 bg-white/65 shadow-[0_8px_32px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.02] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_2px_1px_rgba(255,255,255,0.15)]';
 
   const logoText = isAtelier
     ? 'text-[var(--atelier-ink)] group-hover:text-[var(--atelier-gold)]'
-    : forceDarkNav
-      ? 'text-white group-hover:text-accent'
-      : 'text-primary group-hover:text-accent';
+    : 'text-primary group-hover:text-accent';
 
   const linkRail = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-paper)]/70'
-    : forceDarkNav
-      ? 'border-white/10 bg-white/[0.01] shadow-inner'
-      : 'border-white/50 bg-white/50 shadow-inner dark:border-white/10 dark:bg-white/[0.01]';
+    : 'border-white/50 bg-white/50 shadow-inner dark:border-white/10 dark:bg-white/[0.01]';
 
   const mobilePanel = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/98 shadow-[var(--atelier-shadow)]'
-    : forceDarkNav
-      ? 'border-white/10 bg-slate-900/95 shadow-xl backdrop-blur-xl'
-      : 'border-white/60 bg-white/95 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/95';
+    : 'border-white/60 bg-white/95 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/95';
 
   const mobileBtn = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)] text-[var(--atelier-ink)] hover:text-[var(--atelier-gold)]'
-    : forceDarkNav
-      ? 'border-white/10 bg-white/15 text-white/80'
-      : 'border-white/60 bg-white/80 text-slate-700 shadow-sm hover:text-accent dark:border-white/10 dark:bg-white/15 dark:text-white/80';
+    : 'border-white/60 bg-white/80 text-slate-700 shadow-sm hover:text-accent dark:border-white/10 dark:bg-white/15 dark:text-white/80';
 
-  const publicLinkIdle = forceDarkNav
-    ? 'border-transparent text-white/70 hover:border-white/20 hover:bg-white/10 hover:text-white'
-    : 'border-transparent text-on-surface-variant hover:border-white/80 hover:bg-white/70 hover:text-primary hover:shadow-sm dark:hover:border-white/20 dark:hover:bg-white/10';
+  const publicLinkIdle =
+    'border-transparent text-on-surface-variant hover:border-white/80 hover:bg-white/70 hover:text-primary hover:shadow-sm dark:hover:border-white/20 dark:hover:bg-white/10';
 
-  const publicMobileIdle = forceDarkNav
-    ? 'border-transparent text-white/70 hover:bg-white/5'
-    : 'border-transparent text-slate-600 hover:bg-slate-50 dark:text-white/70 dark:hover:bg-white/5';
+  const publicMobileIdle =
+    'border-transparent text-slate-600 hover:bg-slate-50 dark:text-white/70 dark:hover:bg-white/5';
 
   const onX =
     workspaceParam === 'x' ||
@@ -245,25 +228,28 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
   const atelierIdle =
     'border-transparent text-[var(--atelier-faint)] hover:bg-[var(--atelier-paper)] hover:text-[var(--atelier-ink)]';
 
+  const navLinkBase =
+    'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 md:px-5';
+
   return (
     <div
-      className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center transition-transform duration-300 ease-out ${
+      className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out ${
         isAtelier ? 'atelier-chrome' : ''
       } ${readingNavHidden && !mobileMenuOpen ? '-translate-y-[120%]' : 'translate-y-0'}`}
     >
       <nav
-        className={`pointer-events-auto isolate flex w-full max-w-5xl items-center justify-between gap-2 rounded-full border px-3 py-2.5 transition-[background-color,border-color,box-shadow,color] duration-300 sm:px-4 sm:py-3 ${navShell}`}
+        className={`pointer-events-auto isolate flex w-full max-w-5xl items-center justify-between gap-2 rounded-full border px-3 py-2.5 motion-safe:transition-[background-color,border-color,box-shadow,color] motion-safe:duration-300 sm:px-4 sm:py-3 ${navShell}`}
         aria-label="Primary"
       >
         <Link
           href={isAtelier ? '/editorial' : '/'}
+          onClick={(e) => handleSamePageNav(e, isAtelier ? '/editorial' : '/')}
           className="group flex shrink-0 items-center gap-2 px-1 sm:gap-3 sm:px-2"
         >
           <BrandMark
             size={32}
             priority
             variant="auto"
-            onDarkChrome={forceDarkNav}
             className="h-8 w-8 shrink-0 transition-transform duration-300 group-hover:scale-105"
           />
           <span
@@ -288,12 +274,13 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
               <Link
                 key={link.key || link.name}
                 href={link.path}
+                onClick={(e) => handleSamePageNav(e, link.path, link.external)}
                 scroll={!isAtelier}
                 prefetch={isAtelier ? false : undefined}
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
                 aria-current={isActive ? 'page' : undefined}
-                className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight transition-all duration-300 md:px-5 ${
+                className={`${navLinkBase} ${
                   isAtelier
                     ? isActive
                       ? atelierActive
@@ -326,10 +313,11 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                   <Link
                     key={link.key}
                     href={link.path}
+                    onClick={(e) => handleSamePageNav(e, link.path, link.external)}
                     scroll={false}
                     prefetch={false}
                     aria-current={isActive ? 'page' : undefined}
-                    className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight transition-all duration-300 ${
+                    className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
                       isActive ? atelierActive : atelierIdle
                     }`}
                   >
@@ -342,15 +330,11 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         )}
 
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
-          <ThemeToggle inverted={forceDarkNav} />
+          <ThemeToggle />
           {!isAtelier && (
             <Link
               href="/contact"
-              className={
-                forceDarkNav
-                  ? 'hidden rounded-full border border-white/80 bg-white px-6 py-2.5 text-center font-headline text-sm font-semibold tracking-tight text-slate-950 shadow-[0_8px_24px_-12px_rgba(0,0,0,0.55)] transition-all hover:bg-white/90 active:scale-95 lg:inline-block'
-                  : 'hidden rounded-full border border-accent/20 bg-accent px-6 py-2.5 text-center font-headline text-sm font-bold tracking-tight text-slate-950 shadow-md transition-all hover:bg-accent/90 hover:shadow-[0_4px_20px_rgba(16,185,129,0.25)] active:scale-95 lg:inline-block'
-              }
+              className="btn-accent hidden rounded-full px-6 py-2.5 text-center font-headline text-sm font-bold tracking-tight lg:inline-block"
             >
               Contact
             </Link>
@@ -368,7 +352,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             ref={buttonRef}
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atelier-gold)] ${
+            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atelier-gold)] ${
               isAtelier ? 'sm:hidden' : 'md:hidden'
             } ${mobileBtn}`}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
@@ -413,11 +397,14 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                   href={link.path}
                   scroll={!isAtelier}
                   prefetch={isAtelier ? false : undefined}
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={(e) => {
+                    handleSamePageNav(e, link.path, link.external);
+                    setMobileMenuOpen(false);
+                  }}
                   target={link.external ? '_blank' : undefined}
                   rel={link.external ? 'noopener noreferrer' : undefined}
                   aria-current={isActive ? 'page' : undefined}
-                  className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight transition-all ${
+                  className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
                     isAtelier
                       ? isActive
                         ? atelierActive
@@ -444,11 +431,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
               <Link
                 href="/contact"
                 onClick={() => setMobileMenuOpen(false)}
-                className={
-                  forceDarkNav
-                    ? 'mt-2 w-full rounded-2xl border border-white/80 bg-white py-3 text-center font-headline text-sm font-semibold tracking-tight text-slate-950'
-                    : 'btn-accent mt-2 w-full rounded-2xl py-3 text-center font-headline text-sm font-bold tracking-tight'
-                }
+                className="btn-accent mt-2 w-full rounded-2xl py-3 text-center font-headline text-sm font-bold tracking-tight"
               >
                 Contact
               </Link>

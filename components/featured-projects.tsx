@@ -1,19 +1,17 @@
-'use client';
-
-import * as motion from 'motion/react-client';
+import Image from 'next/image';
 import { ArrowUpRight } from 'lucide-react';
 import Link from 'next/link';
 import { projects, type Project } from '@/data/projects';
 import { siteConfig } from '@/lib/site-config';
 
 const EDUDOJO_STEPS = [
-  { n: '01', label: 'Draft', hint: 'Student works' },
-  { n: '02', label: 'Socratic', hint: 'AI interviews' },
-  { n: '03', label: 'Evaluate', hint: 'Score thinking' },
-  { n: '04', label: 'Insights', hint: 'Teacher view' },
+  { n: '01', label: 'Create', hint: 'Student works' },
+  { n: '02', label: 'Question', hint: 'AI challenges' },
+  { n: '03', label: 'Journal', hint: 'Process visible' },
+  { n: '04', label: 'Feedback', hint: 'Teacher view' },
 ] as const;
 
-/** Product window inspired by edudojo.ai — process over submission */
+/** Product window inspired by edudojo.ai — value the process, not just the output */
 function EdudojoPreview({ href }: { href: string }) {
   return (
     <a
@@ -37,10 +35,10 @@ function EdudojoPreview({ href }: { href: string }) {
           <div className="flex items-start justify-between gap-3">
             <div>
               <p className="font-label text-[11px] font-bold uppercase tracking-[0.18em] text-accent">
-                Process-based assessment
+                Student-centred learning
               </p>
               <p className="mt-1 font-headline text-[15px] font-semibold tracking-tight text-slate-800 dark:text-white/90">
-                Grade the process, not the submission
+                Value the process, not just the output
               </p>
             </div>
             <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-700 dark:text-accent">
@@ -73,15 +71,15 @@ function EdudojoPreview({ href }: { href: string }) {
 
           <div className="flex flex-wrap items-center gap-2 rounded-xl border border-slate-200/80 bg-white/80 px-2.5 py-2 dark:border-white/10 dark:bg-white/[0.03]">
             <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-500 dark:bg-white/10 dark:text-white/45">
-              Raw Draft
+              Student work
             </span>
             <span className="text-[10px] text-slate-300 dark:text-white/25">→</span>
             <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-700 dark:text-accent">
-              Socratic Polish
+              Process journal
             </span>
             <span className="text-[10px] text-slate-300 dark:text-white/25">→</span>
             <span className="rounded bg-slate-100 px-1.5 py-0.5 font-mono text-[11px] text-slate-500 dark:bg-white/10 dark:text-white/45">
-              Verified
+              Personal feedback
             </span>
           </div>
         </div>
@@ -180,10 +178,9 @@ function ProjectCard({
   const edudojoHref = project.link || siteConfig.links.edudojo;
 
   return (
-    <motion.article
-      className="board-card group flex h-full flex-col overflow-hidden rounded-[1.75rem] transition-[border-color,box-shadow,transform] duration-500"
-      whileHover={{ y: -4 }}
-      transition={{ type: 'spring', stiffness: 340, damping: 26, mass: 0.65 }}
+    <article
+      data-project-card
+      className="board-card project-card group flex h-full flex-col overflow-hidden rounded-[1.75rem]"
     >
       <div
         className={`relative flex shrink-0 flex-col justify-between overflow-hidden border-b border-black/10 dark:border-white/10 ${
@@ -191,22 +188,42 @@ function ProjectCard({
         }`}
         style={{ background: project.gradient }}
       >
-        <div
-          className="pointer-events-none absolute inset-0 opacity-[0.28]"
-          style={{
-            backgroundImage:
-              'linear-gradient(to right, rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.2) 1px, transparent 1px)',
-            backgroundSize: featured ? '36px 36px' : '26px 26px',
-          }}
-        />
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-black/20" />
+        {project.image && (
+          <Image
+            src={project.image}
+            alt=""
+            fill
+            sizes="(max-width: 1024px) 100vw, 60vw"
+            loading={featured ? 'eager' : 'lazy'}
+            fetchPriority={featured ? 'high' : undefined}
+            className="project-card-image object-cover"
+          />
+        )}
+        {project.image ? (
+          <>
+            <div className="pointer-events-none absolute inset-0 bg-slate-950/[0.04]" />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/[0.075] via-black/[0.025] to-black/[0.01]" />
+          </>
+        ) : (
+          <>
+            <div
+              className="pointer-events-none absolute inset-0 opacity-[0.28]"
+              style={{
+                backgroundImage:
+                  'linear-gradient(to right, rgba(255,255,255,0.2) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,0.2) 1px, transparent 1px)',
+                backgroundSize: featured ? '36px 36px' : '26px 26px',
+              }}
+            />
+            <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/55 via-black/15 to-black/25" />
+          </>
+        )}
         <div className="pointer-events-none absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-white/35 via-white/10 to-transparent" />
 
         <div className="relative z-10 flex items-start justify-between gap-3 p-5 sm:p-6">
           <span className="font-label text-[10px] font-bold uppercase tracking-[0.22em] text-white/70">
             {String(index + 1).padStart(2, '0')}
           </span>
-          <span className="rounded-full border border-white/25 bg-black/30 px-2.5 py-1 font-label text-[10px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm">
+          <span className="hidden rounded-full border border-white/25 bg-black/30 px-2.5 py-1 font-label text-[10px] font-bold uppercase tracking-[0.16em] text-white backdrop-blur-sm sm:inline-flex">
             {project.category}
           </span>
         </div>
@@ -260,7 +277,7 @@ function ProjectCard({
           <ProjectLinks link={project.link} github={project.github} />
         </div>
       </div>
-    </motion.article>
+    </article>
   );
 }
 

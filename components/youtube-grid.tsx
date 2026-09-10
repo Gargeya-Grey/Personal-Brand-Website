@@ -21,13 +21,14 @@ function VideoThumbnail({ id, title }: { id: string; title: string }) {
       src={`https://img.youtube.com/vi/${id}/hqdefault.jpg`}
       alt={title}
       fill
+      loading="lazy"
       className="object-cover group-hover/video:scale-105 transition-transform duration-500"
       sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
     />
   );
 }
 
-const VIDEOS: VideoItem[] = [
+export const VIDEOS: VideoItem[] = [
   {
     id: 'bUk92KXUh1M',
     title: 'Travelling to my Dream Country : Japan🗾 (Part 1: ARRIVAL)',
@@ -61,7 +62,17 @@ export function YoutubeGrid() {
   const [playingId, setPlayingId] = useState<string | null>(null);
 
   return (
-    <div className="space-y-16">
+    <div className="space-y-12">
+      <div className="mb-2 flex items-center gap-4">
+        <span className="font-label text-xs uppercase tracking-[0.25em] text-accent font-bold flex items-center gap-2">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent animate-pulse" />
+          Earlier films
+        </span>
+        <div className="h-[1px] bg-emerald-500/25 dark:bg-white/10 flex-grow" />
+        <span className="font-label text-xs uppercase tracking-[0.2em] text-slate-400 font-bold">
+          {VIDEOS.length} {VIDEOS.length === 1 ? 'video' : 'videos'}
+        </span>
+      </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {VIDEOS.map((video, index) => (
           <motion.article
@@ -70,7 +81,7 @@ export function YoutubeGrid() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-5%' }}
             transition={{ duration: 0.5, delay: index * 0.08, ease: [0.16, 1, 0.3, 1] }}
-            className="group/video liquid-glass rounded-[1.75rem] overflow-hidden flex flex-col"
+            className="group/video board-card rounded-[1.75rem] overflow-hidden flex flex-col"
           >
             <div className="relative aspect-video bg-slate-900">
               {playingId === video.id ? (
@@ -122,17 +133,25 @@ export function YoutubeGrid() {
         ))}
       </div>
 
-      <div className="flex justify-center">
-        <a
-          href={siteConfig.links.youtube}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="inline-flex items-center gap-2 h-12 px-8 rounded-full bg-primary dark:bg-accent text-white dark:text-slate-950 font-headline font-bold text-sm hover:opacity-95 transition-all shadow-md"
-        >
-          <Film className="w-4 h-4" />
-          Open full channel
-          <ExternalLink className="w-4 h-4" />
-        </a>
+      <div className="cta-card-gradient relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
+        <div className="flex flex-col items-center gap-4 text-center">
+          <p className="font-headline text-xl font-bold tracking-tight text-primary sm:text-2xl">
+            More on the channel
+          </p>
+          <p className="max-w-md font-body text-sm leading-relaxed text-on-surface-variant">
+            Early films stay on the channel. New work starts here soon.
+          </p>
+          <a
+            href={siteConfig.links.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-accent inline-flex items-center gap-2 h-12 px-8 rounded-2xl font-headline font-bold text-sm"
+          >
+            <Film className="btn-icon w-4 h-4" />
+            Open full channel
+            <ExternalLink className="btn-icon w-4 h-4" />
+          </a>
+        </div>
       </div>
     </div>
   );

@@ -21,9 +21,13 @@ function checkCsrf(request: Request): boolean {
 
 function revalidateBlog(slug?: string) {
   try {
+    revalidatePath('/journal');
     revalidatePath('/blog');
     revalidatePath('/sitemap');
-    if (slug) revalidatePath(`/blog/${slug}`);
+    if (slug) {
+      revalidatePath(`/journal/${slug}`);
+      revalidatePath(`/blog/${slug}`);
+    }
   } catch {
     /* revalidatePath can throw outside Next request context — ignore */
   }

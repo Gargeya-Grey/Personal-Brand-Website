@@ -26,7 +26,7 @@ export const PROFILE_POSITION = {
   link: 'edudojo.ai',
   pin: 'A belief post or practical framework about process, capability, and assessment. Not a connect post.',
   photo:
-    'Keep the face. Drop the painted filter, AirPods, and busy overshirt. Solid dark tee, even light, head and shoulders. Banner: Grade the process, not the submission.',
+    'Keep the face. Drop the painted filter, AirPods, and busy overshirt. Solid dark tee, even light, head and shoulders. Banner: Value the process, not just the output.',
 };
 
 export const AUDIENCE = [

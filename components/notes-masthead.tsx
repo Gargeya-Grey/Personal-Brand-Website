@@ -9,24 +9,19 @@ export function NotesMasthead({
   href?: string;
 }) {
   const hero = size === 'hero';
-  const title = (
-    <span
-      className={
-        hero
-          ? 'font-display text-5xl font-medium tracking-[-0.035em] text-primary sm:text-6xl'
-          : 'font-display text-[2rem] font-medium tracking-[-0.03em] text-primary sm:text-4xl'
-      }
-    >
-      {notesBrand.name}
-    </span>
-  );
+  const TitleTag = hero ? 'h1' : 'p';
+  const titleClass = hero
+    ? 'font-display text-5xl font-medium tracking-[-0.035em] text-primary sm:text-6xl'
+    : 'font-display text-[2rem] font-medium tracking-[-0.03em] text-primary sm:text-4xl';
 
   return (
     <div className="notes-masthead">
       <p className="font-label text-[0.65rem] font-bold uppercase tracking-[0.22em] text-accent">
         {notesBrand.kicker}
       </p>
-      <p className={hero ? 'mt-3' : 'mt-2'}>{href ? <Link href={href}>{title}</Link> : title}</p>
+      <TitleTag className={`${hero ? 'mt-3' : 'mt-2'} ${titleClass}`}>
+        {href ? <Link href={href}>{notesBrand.name}</Link> : notesBrand.name}
+      </TitleTag>
       <p
         className={
           hero

@@ -25,10 +25,10 @@ export default function NotFound() {
               Back home
             </Link>
             <Link
-              href="/blog"
+              href="/journal"
               className="inline-flex items-center justify-center h-12 px-8 rounded-full border border-outline-variant/40 text-primary font-headline font-bold text-sm hover:border-accent/40 transition-colors"
             >
-              Read the blog
+              Read the journal
             </Link>
           </div>
         </div>

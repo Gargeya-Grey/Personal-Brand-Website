@@ -73,7 +73,7 @@ function safeIsoDate(dateStr: string | undefined): string | undefined {
 
 export function getBlogPostingJsonLd(article: BlogPostingInput) {
   const origin = getSiteOrigin();
-  const pageUrl = `${origin}/blog/${article.slug}`;
+  const pageUrl = `${origin}/journal/${article.slug}`;
   const publishedIso = safeIsoDate(article.date);
   const imageUrl = absoluteUrl(article.coverImage || siteConfig.authorAvatar);
 
