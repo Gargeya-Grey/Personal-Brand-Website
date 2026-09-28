@@ -16,15 +16,7 @@ export default function ContactPage() {
     <div className="field-site">
       <Navigation />
       <main id="page-main" tabIndex={-1} className="field-main">
-        <PageIntro
-          title={
-            <>
-              Something on
-              <br />
-              <em>your mind?</em>
-            </>
-          }
-        >
+        <PageIntro title="Let’s talk.">
           <p>
             A project, a question, a shared curiosity. Tell me a little about it, and let’s see
             where the conversation goes.

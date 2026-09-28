@@ -23,9 +23,7 @@ export default function YoutubePage() {
         <PageIntro
           title={
             <>
-              Sometimes, you have
-              <br />
-              <em>to be there.</em>
+              Films & <em>videos.</em>
             </>
           }
         >

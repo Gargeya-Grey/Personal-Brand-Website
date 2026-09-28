@@ -20,27 +20,30 @@ export function Footer() {
         </div>
       </footer>
     );
+  const hasPageSignup = pathname === '/notes' || pathname === '/journal';
   return (
     <footer className="field-footer" id="footer">
       <div className="footer-inner">
-        <div className="footer-top">
-          <div>
-            <h2>
-              A note on <em>Sunday.</em>
-            </h2>
-            <p>
-              One idea on learning, AI, and being human.
-              <br />
-              Delivered Sunday evening, your time.
-            </p>
+        {!hasPageSignup && (
+          <div className="footer-top">
+            <div>
+              <h2>
+                A note on <em>Sunday.</em>
+              </h2>
+              <p>
+                One idea on learning, AI, and being human.
+                <br />
+                Delivered Sunday evening, your time.
+              </p>
+            </div>
+            <div className="footer-signup">
+              <NewsletterSignup source="footer" variant="light" />
+              <Link href="/notes" className="field-text-link">
+                Read a letter first <ArrowUpRight size={15} />
+              </Link>
+            </div>
           </div>
-          <div className="footer-signup">
-            <NewsletterSignup source="footer" variant="light" />
-            <Link href="/notes" className="field-text-link">
-              Read a letter first <ArrowUpRight size={15} />
-            </Link>
-          </div>
-        </div>
+        )}
         <div className="footer-directory">
           <div>
             <p className="field-label">Explore</p>
@@ -90,7 +93,7 @@ export function Footer() {
           Gargeya<span>↗</span>
         </div>
         <div className="footer-colophon">
-          <span>© {new Date().getFullYear()} Gargeya Sharma · Made with curiosity.</span>
+          <span>© {new Date().getFullYear()} Gargeya Sharma</span>
           <div>
             <Link href="/privacy">Privacy</Link>
             <Link href="/terms">Terms</Link>

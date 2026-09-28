@@ -33,17 +33,18 @@ export default async function Home() {
                 <span className="status-dot" /> Hello, I’m Gargeya.
               </p>
               <h1>
-                A curious mind.
-                <br />A <em>work</em> in
-                <br className="cover-break" /> progress<span className="accent-period">.</span>
+                Learning, AI,
+                <br />
+                and things
+                <br />I <em>make.</em>
               </h1>
               <p className="cover-description">
-                I build things, write to think, and follow questions a little further than I
-                probably should. Currently building{' '}
+                I’m building{' '}
                 <a href={siteConfig.links.edudojo} target="_blank" rel="noopener noreferrer">
                   Edudojo ↗
-                </a>{' '}
-                and exploring how we learn with AI.
+                </a>
+                , where AI challenges students to think. This is also home to my essays, small apps,
+                and travel films.
               </p>
               <div className="field-actions">
                 <Link href="/playground" className="field-button">
@@ -159,9 +160,9 @@ export default async function Home() {
           </div>
           <div className="section-title-row">
             <h2>
-              Serious curiosity.
+              Apps &
               <br />
-              <em>Occasionally useful.</em>
+              <em>experiments.</em>
             </h2>
             <p>
               Small apps, side projects, and things made just to see what happens. Open one. Give it
@@ -210,9 +211,9 @@ export default async function Home() {
         <section className="field-section writing-spread" data-reveal>
           <div>
             <h2>
-              Some thoughts
+              Latest from
               <br />
-              need <em>more room.</em>
+              the <em>journal.</em>
             </h2>
             <p className="field-copy">
               Essays on AI, learning, systems, and the craft of building. Writing is how I find out
@@ -259,16 +260,16 @@ export default async function Home() {
         <section className="elsewhere-spread field-section" data-reveal>
           <div>
             <h2>
-              Same curiosity.
+              Films &
               <br />
-              <em>Different windows.</em>
+              <em>conversations.</em>
             </h2>
           </div>
           <div className="elsewhere-links">
             <Link href="/youtube">
               <Play size={21} />
               <span>
-                <strong>Moving pictures</strong>
+                <strong>Watch the films</strong>
                 <small>Films, videos, and another way of seeing.</small>
               </span>
               <ArrowUpRight size={20} />
@@ -276,7 +277,7 @@ export default async function Home() {
             <Link href="/community">
               <span className="social-at">@</span>
               <span>
-                <strong>The conversation continues</strong>
+                <strong>Find me online</strong>
                 <small>Find me on X, GitHub, and beyond.</small>
               </span>
               <ArrowUpRight size={20} />

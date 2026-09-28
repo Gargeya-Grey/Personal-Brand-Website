@@ -33,14 +33,14 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
           <span className="sr-only">Search projects</span>
           <input
             type="search"
-            placeholder="Find something…"
+            placeholder="Search projects"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
           />
         </label>
       </div>
       <p className="field-label" role="status">
-        {visible.length} {visible.length === 1 ? 'thing' : 'things'} to explore
+        {visible.length} {visible.length === 1 ? 'project' : 'projects'} to explore
       </p>
       <div className="project-shelf">
         {visible.map((entry, index) => (

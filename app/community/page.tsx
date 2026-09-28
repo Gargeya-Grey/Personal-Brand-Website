@@ -7,7 +7,7 @@ import { FieldMotion } from '@/components/field-notes';
 import { siteConfig } from '@/lib/site-config';
 
 export const metadata: Metadata = {
-  title: 'Elsewhere & community',
+  title: 'Social profiles',
   description:
     'Find Gargeya on X, GitHub, LinkedIn, and YouTube. Follow the work and join the conversation.',
   alternates: { canonical: '/community' },
@@ -56,18 +56,9 @@ export default function CommunityPage() {
       <Navigation />
       <FieldMotion />
       <main id="page-main" tabIndex={-1} className="field-main">
-        <PageIntro
-          title={
-            <>
-              Good work starts
-              <br />
-              <em>with a conversation.</em>
-            </>
-          }
-        >
+        <PageIntro title="Find me online.">
           <p>
-            This site is home. These are the places I wander out to share what I’m making, think in
-            public, and meet people following similar questions.
+            Follow my writing on X, explore my code on GitHub, or watch the travel films on YouTube.
           </p>
         </PageIntro>
         <section className="social-directory" aria-label="Social profiles">

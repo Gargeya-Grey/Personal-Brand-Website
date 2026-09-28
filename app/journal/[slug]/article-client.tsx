@@ -1,15 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import {
-  ArrowLeft,
-  Calendar,
-  Clock,
-  Check,
-  Copy,
-  Heart,
-  List,
-} from 'lucide-react';
+import { ArrowLeft, Calendar, Clock, Check, Copy, Heart, List } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import * as motion from 'motion/react-client';
@@ -153,7 +145,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
   };
 
   const shareClass =
-    'flex h-8 w-8 items-center justify-center text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 rounded-full active:scale-[0.97]';
+    'flex h-11 w-11 items-center justify-center text-on-surface-variant hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full active:scale-[0.97]';
 
   const renderToc = () =>
     headings.map((heading) => (
@@ -171,7 +163,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
         } ${
           activeHeadingId === heading.id
             ? 'text-emerald-700 dark:text-emerald-400'
-            : 'text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+            : 'text-on-surface-variant hover:text-slate-700 dark:hover:text-slate-200'
         }`}
       >
         <span
@@ -185,11 +177,21 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
 
   const shareCluster = (
     <div className="flex items-center justify-center gap-0.5">
-      <button type="button" onClick={handleLikeToggle} aria-label={liked ? 'Remove bookmark' : 'Save for later'} aria-pressed={liked} className={shareClass}>
+      <button
+        type="button"
+        onClick={handleLikeToggle}
+        aria-label={liked ? 'Remove bookmark' : 'Save for later'}
+        aria-pressed={liked}
+        className={shareClass}
+      >
         <Heart className={`h-3.5 w-3.5 ${liked ? 'fill-emerald-500 text-emerald-500' : ''}`} />
       </button>
       <button type="button" onClick={handleCopyLink} aria-label="Copy URL" className={shareClass}>
-        {copiedLink ? <Check className="h-3.5 w-3.5 text-emerald-500" /> : <Copy className="h-3.5 w-3.5" />}
+        {copiedLink ? (
+          <Check className="h-3.5 w-3.5 text-emerald-500" />
+        ) : (
+          <Copy className="h-3.5 w-3.5" />
+        )}
       </button>
       <a
         href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(shareUrl || '')}`}
@@ -226,7 +228,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
       </div>
 
       <motion.div
-        initial={{ opacity: 0 }}
+        initial={false}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         className="relative"
@@ -236,18 +238,18 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
             {article.categories.map((c) => (
               <span
                 key={c}
-                className="font-label text-[0.65rem] uppercase tracking-[0.14em] font-medium text-emerald-800 dark:text-emerald-300 bg-emerald-50/80 dark:bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-200/60 dark:border-emerald-400/20"
+                className="font-label text-xs font-medium text-accent bg-accent/5 px-3 py-1 rounded-full border border-accent/20"
               >
                 {c}
               </span>
             ))}
           </div>
 
-          <h1 className="mb-8 font-display text-3xl font-medium leading-[1.12] tracking-[-0.025em] text-slate-800 sm:text-4xl md:text-[2.75rem] dark:text-slate-50">
+          <h1 className="article-title mb-8 font-headline text-3xl font-semibold leading-[1.15] tracking-[-0.025em] text-primary sm:text-4xl md:text-[2.75rem]">
             {article.title}
           </h1>
 
-          <div className="mb-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-slate-500 dark:text-slate-400">
+          <div className="mb-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-on-surface-variant">
             <div className="flex items-center gap-2.5">
               <AuthorAvatar
                 src={article.authorAvatar || siteConfig.authorAvatar}
@@ -259,7 +261,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
                   {article.author || siteConfig.name}
                 </span>
                 {article.authorRole && (
-                  <span className="text-[0.7rem] text-slate-500 dark:text-slate-400">
+                  <span className="text-[0.7rem] text-on-surface-variant">
                     {article.authorRole}
                   </span>
                 )}
@@ -282,19 +284,19 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
         <div className="relative">
           <aside className="article-toc absolute top-0 bottom-0 right-full mr-6 hidden w-[18.5rem] max-w-[18.5rem] border-l border-slate-200/70 xl:block dark:border-white/10">
             <div className="sticky top-28 space-y-8 pl-0">
-            <Link
-              href="/journal"
-              className="group flex items-center gap-2 pl-3.5 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-emerald-700 dark:text-slate-400 dark:hover:text-emerald-400"
-            >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Essays
-            </Link>
+              <Link
+                href="/journal"
+                className="group flex items-center gap-2 pl-3.5 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-emerald-700 dark:text-slate-400 dark:hover:text-emerald-400"
+              >
+                <ArrowLeft className="h-3.5 w-3.5" />
+                Essays
+              </Link>
 
-            {headings.length > 0 && (
-              <nav aria-label="On this page" className="flex flex-col">
-                {renderToc()}
-              </nav>
-            )}
+              {headings.length > 0 && (
+                <nav aria-label="On this page" className="flex flex-col">
+                  {renderToc()}
+                </nav>
+              )}
             </div>
           </aside>
 
@@ -325,7 +327,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
                 <div className="relative overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-900">
                   {renderIllustration(
                     article.illustrationType === 'cover' ? 'diagram1' : article.illustrationType,
-                    true
+                    true,
                   )}
                 </div>
               </ExpandableFrame>
@@ -337,7 +339,10 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
                   <List className="h-3.5 w-3.5" />
                   On this page
                 </summary>
-                <nav aria-label="On this page" className="mt-3 flex flex-col border-l border-slate-200 dark:border-slate-800">
+                <nav
+                  aria-label="On this page"
+                  className="mt-3 flex flex-col border-l border-slate-200 dark:border-slate-800"
+                >
                   {renderToc()}
                 </nav>
               </details>
@@ -345,12 +350,15 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
 
             {article.takeaways && article.takeaways.length > 0 && (
               <aside className="mt-10 border-l-2 border-emerald-500/45 pl-5 dark:border-emerald-400/40">
-                <p className="mb-3 font-label text-[0.7rem] uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">
+                <p className="mb-3 font-label text-[0.7rem] uppercase tracking-[0.16em] text-on-surface-variant">
                   In brief
                 </p>
                 <ol className="space-y-3.5">
                   {article.takeaways.map((point, index) => (
-                    <li key={index} className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-baseline gap-3">
+                    <li
+                      key={index}
+                      className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-baseline gap-3"
+                    >
                       <span className="font-label text-[0.9375rem] leading-[1.75] tabular-nums text-slate-400">
                         {String(index + 1).padStart(2, '0')}
                       </span>
@@ -363,7 +371,9 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
               </aside>
             )}
 
-            <div className="article-prose mt-14">{renderMarkdown(article.content, { pageTitle: article.title })}</div>
+            <div className="article-prose mt-14">
+              {renderMarkdown(article.content, { pageTitle: article.title })}
+            </div>
 
             <section className="mt-4 border-t border-slate-200/70 pt-12 dark:border-white/10">
               <p className="font-label text-[0.65rem] uppercase tracking-[0.16em] text-slate-400">
@@ -377,10 +387,8 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
                         href={`/journal/${item.slug}`}
                         className="block py-4 text-slate-800 hover:text-emerald-700 dark:text-slate-100 dark:hover:text-emerald-400"
                       >
-                        <span className="font-headline text-lg font-medium">
-                          {item.title}
-                        </span>
-                        <span className="mt-1 block text-sm text-slate-500 dark:text-slate-400">
+                        <span className="font-headline text-lg font-medium">{item.title}</span>
+                        <span className="mt-1 block text-sm text-on-surface-variant">
                           {item.readTime}
                         </span>
                       </Link>

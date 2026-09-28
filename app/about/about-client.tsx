@@ -34,15 +34,13 @@ export default function AboutClient() {
         <PageIntro
           title={
             <>
-              Hi, I’m Gargeya.
-              <br />
-              <em>Still figuring things out.</em>
+              Hi, I’m <em>Gargeya.</em>
             </>
           }
         >
           <p>
-            Founder at Edudojo.ai. Builder, writer, and someone who thinks the interesting part
-            usually starts with a better question.
+            I’m the founder of Edudojo.ai. I write about AI and learning, build small applications,
+            and make films when I travel.
           </p>
         </PageIntro>
         <section className="about-spread" data-reveal>

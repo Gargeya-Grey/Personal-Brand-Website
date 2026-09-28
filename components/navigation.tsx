@@ -64,7 +64,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         { name: 'Playground', path: '/playground', key: 'playground' },
         { name: 'Journal', path: '/journal', key: 'journal' },
         { name: 'Notes', path: '/notes', key: 'notes' },
-        { name: 'Community', path: '/community', key: 'community' },
+        { name: 'Social', path: '/community', key: 'community' },
         { name: 'Videos', path: '/youtube', key: 'youtube' },
         { name: 'About', path: '/about', key: 'about' },
       ];
