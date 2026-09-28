@@ -13,7 +13,9 @@ import { getPublishedArticlesLite } from '@/lib/blog-service';
 
 export const revalidate = 60;
 export const metadata: Metadata = {
-  title: { absolute: 'Gargeya Sharma — Building, writing & following curiosity' },
+  title: {
+    absolute: 'Gargeya Sharma — Building, writing & following curiosity',
+  },
   description:
     'The personal corner of Gargeya Sharma. Building Edudojo, writing about learning and AI, and making small things you can play with.',
   alternates: { canonical: '/' },
@@ -202,7 +204,23 @@ export default async function Home() {
           <div className="writing-index">
             {articles.length ? (
               articles.map((article) => (
-                <Link key={article.id} href={'/journal/' + article.slug} className="writing-row">
+                <Link
+                  key={article.id}
+                  href={'/journal/' + article.slug}
+                  className={
+                    article.coverImage ? 'writing-row writing-row-illustrated' : 'writing-row'
+                  }
+                >
+                  {article.coverImage && (
+                    <div className="home-writing-image">
+                      <Image
+                        src={article.coverImage}
+                        alt=""
+                        fill
+                        sizes="(max-width: 700px) 96px, 150px"
+                      />
+                    </div>
+                  )}
                   <div>
                     <p className="field-label">
                       {article.categories.slice(0, 2).join(' / ') || 'Essay'}
@@ -238,11 +256,21 @@ export default async function Home() {
             <h2>Away from the editor.</h2>
           </div>
           <div className="elsewhere-links">
-            <Link href="/youtube">
-              <Play size={21} />
+            <Link href="/youtube" className="home-film-link">
+              <div className="home-film-image">
+                <Image
+                  src="https://img.youtube.com/vi/bUk92KXUh1M/hqdefault.jpg"
+                  alt=""
+                  fill
+                  sizes="(max-width: 700px) 90vw, 560px"
+                />
+                <span>
+                  <Play size={24} fill="currentColor" />
+                </span>
+              </div>
               <span>
                 <strong>Watch the films</strong>
-                <small>Travel, places, and the moments I stopped to film.</small>
+                <small>Start in Japan. Tokyo, Osaka, and a day in Nara.</small>
               </span>
               <ArrowUpRight size={20} />
             </Link>

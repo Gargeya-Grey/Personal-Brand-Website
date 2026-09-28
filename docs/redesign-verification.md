@@ -72,3 +72,21 @@ The owner reported that near-white text felt harsh against the dark background. 
 - Mobile menu opens and closes with Escape, returning focus to Open menu. The homepage work anchor leaves its heading below the fixed navigation.
 - Light cards gain separation through different surface colors, borders, and restrained shadows. Dark ink retains the softened contrast from the preceding pass. New interactions do not autoplay or depend on motion.
 - No real newsletter/contact form, production content change, or private workflow was submitted. Real device testing, unfamiliar-visitor testing, and actual product recordings remain outstanding; a self-assigned 9 is not independent validation.
+
+## Discovery and personal story follow-up (29 September 2026)
+
+| Before | After |
+| --- | --- |
+| Dark homepage surfaces were visually similar | Mint, blue, lilac, and sand artwork surfaces, lifted research/letter panels, journal thumbnails, and an existing film image. Reading ink stays soft. |
+| Social was a thin text directory | Four colored profile cards, clearer invitations, pointer hover feedback, immediate keyboard focus, and reduced-motion support. |
+| Latest Notes letter had several competing panels/actions | A short opening passage, one reading link, and collapsed contents/sources. Full sample content remains available when no live letter exists. |
+| About history read like a short CV | Six connected chapters based on the owner's account: theatre, university, pandemic self-teaching, research, QMUL, hospitality in London, and current work. |
+
+- The owner supplied the personal story during this pass. The corrected university start year is 2018; the pandemic chapter has no asserted year. Academic rankings, supervisor praise, and uncertain chronology were not published. Existing publication and academic links remain.
+- Production build and TypeScript pass. Changed-file ESLint passes; formatting-only cleanup followed the successful build. No browser runtime errors were observed.
+- Local production browser checks: all four changed routes fit 320px and 768px in both themes. Desktop light/dark Social, dark homepage work panels, light/dark About timeline and Notes middle, and 390px dark home/About/Notes were visually inspected. The first mobile work card remains at approximately 694px.
+- Journal thumbnails and the existing Japan film image load after scrolling. The image link opens the site's film collection.
+- Social hover moves the card 4px and its arrow 4px; keyboard focus has a 3px outline. Reduced-motion emulation produces no card or arrow transform.
+- Notes details open and close with Enter. The live reading link targets `/notes/2026-09-06`; three source links remain available. The no-live-letter branch was inspected in source, not exercised against a changed database.
+- Selected small-text contrast pairs: dark artwork ink 4.94:1 or above; Social descriptions 5.62:1 or above in dark mode and 4.83:1 or above in light mode. This is not an exhaustive accessibility audit.
+- Navigation, footer components, Videos, authentication, and publishing logic were not edited. No real form submissions or private-data writes were performed. Physical-device and independent visitor testing remain outstanding.

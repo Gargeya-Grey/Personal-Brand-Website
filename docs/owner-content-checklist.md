@@ -8,8 +8,8 @@ The preview uses verified public work. These are optional owner inputs, not inve
 | ----------------- | ---------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
 | Research          | Google Scholar profile omitted until confirmed | The exact profile URL. Search results did not establish a reliable match.                                                                  |
 | Odicto project    | Recording kept on this owner checklist         | A short desktop recording and an Android recording showing voice input in an everyday app.                                                 |
-| Edudojo project   | Visible “Walkthrough to add” panel             | A public demo or product capture you want published; your role; an outcome you can substantiate, or say that it is too early for outcomes. |
-| TwinAatma project | Visible “Walkthrough to add” panel             | A memory proposal, your approval, and retrieval in a later conversation. Use non-personal sample notes.                                    |
+| Edudojo project   | Recording kept on this owner checklist             | A public demo or product capture you want published; your role; an outcome you can substantiate, or say that it is too early for outcomes. |
+| TwinAatma project | Recording kept on this owner checklist             | A memory proposal, your approval, and retrieval in a later conversation. Use non-personal sample notes.                                    |
 | Films / About     | No invented story added                        | Pick a favourite video and explain what made you film it. One short paragraph is enough.                                                   |
 
 The public pages now contain labelled interactive explanations, not unfinished media panels. These are illustrative examples, not recordings of the products. Keep missing recordings on this checklist until real assets are available. Replace or supplement the explanations with approved media and useful captions.
@@ -34,3 +34,7 @@ The overlap lab is a new geometric teaching example built for this site. It is e
 ## Final review to earn a 9, not merely assign one
 
 Show the preview to three people unfamiliar with the site. After ten seconds ask what Gargeya does. Then ask them to find a browser experiment, a publication, and a way to contact him. Record where they hesitate. Check one actual phone, including the menu and theme switch. Do not count this checklist as completed user research.
+
+## About story supplied
+
+On 29 September 2026 the owner supplied the personal account used for the six-part About timeline: school theatre, a 2018 cybersecurity/forensics degree start, pandemic self-study and reinforcement learning, research and paid writing, the QMUL MSc, and hospitality work in London. The published adaptation omits uncertain dates and academic superlatives. The favourite-film recollection remains optional.
