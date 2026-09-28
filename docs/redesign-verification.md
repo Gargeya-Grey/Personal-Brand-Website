@@ -90,3 +90,21 @@ The owner reported that near-white text felt harsh against the dark background. 
 - Notes details open and close with Enter. The live reading link targets `/notes/2026-09-06`; three source links remain available. The no-live-letter branch was inspected in source, not exercised against a changed database.
 - Selected small-text contrast pairs: dark artwork ink 4.94:1 or above; Social descriptions 5.62:1 or above in dark mode and 4.83:1 or above in light mode. This is not an exhaustive accessibility audit.
 - Navigation, footer components, Videos, authentication, and publishing logic were not edited. No real form submissions or private-data writes were performed. Physical-device and independent visitor testing remain outstanding.
+
+## Charcoal dark theme (29 September 2026)
+
+The owner approved a neutral charcoal and sea-glass direction after comparing the navy version. Light-mode values and layouts are unchanged.
+
+| Before | After |
+| --- | --- |
+| Blue-black background and blue reading ink | Charcoal `#191c20`, graphite cards `#242a2d`, silver headings `#d2d5d2`, reading ink `#b5bebc` |
+| Bright mint accent | Sea glass `#8acdb5`; blue/lilac reserved for artwork and secondary surfaces |
+| Full-width pastel home illustrations | Inset framing and 220px secondary project illustrations, with shorter experiment panels |
+| Legacy white Journal titles and emerald article links | Shared silver titles, sea-glass links, and graphite table surfaces in dark mode |
+
+- Final production build and TypeScript pass. CSS-only implementation; no application logic or content changes.
+- Visually inspected dark desktop home, selected work, Playground, Journal, article body and Notes closing panel, plus 320px project artwork. Nine public routes fit 320px with no document overflow: home, Playground, Journal, article, Notes, About, Social, Research, Contact. Browser errors list was empty.
+- Reduced illustration space initially clipped the Odicto caption at 320px. Tightened its mobile vertical spacing; final bounding-box checks confirm all illustration labels remain inside both visible project panels.
+- Light-mode home was visually checked. Computed background/headings remain `#f0f5f6` / `#142936`; work artwork retains zero inset and 260px height. The light-mode inverted Notes panel remains `#102633`.
+- Main reading ink contrast is 9.00:1 on the page, 7.66:1 on cards, and at least 6.09:1 across the tested tinted dark surfaces. Small artwork labels are at least 4.52:1. These are selected token checks, not a complete accessibility audit or a measure of subjective comfort.
+- Local production build was used for visual checks. No real forms submitted, private content changed, or production merge performed.

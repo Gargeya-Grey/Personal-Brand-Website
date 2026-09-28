@@ -1,4 +1,4 @@
-/* Midnight navy, silver, and sea-glass mint, drawn from the journal artwork. */
+/* Cool paper by day; neutral charcoal, silver, and sea-glass mint after dark. */
 :root {
   --color-bg-primary: #f0f5f6;
   --color-canvas: #fbfdfd;
@@ -23,27 +23,27 @@
 }
 .dark {
   color-scheme: dark;
-  --color-bg-primary: #101b27;
-  --color-canvas: #162431;
-  --color-text-primary: #cbd5dc;
-  --color-text-reading: #b8c5ce;
-  --color-text-muted: #a0b2c0;
-  --color-accent: #83dfc1;
-  --color-accent-dark: #a6ecd5;
-  --color-accent-secondary: #9fbfdc;
-  --color-accent-soft: #83dfc112;
-  --color-accent-secondary-soft: #9fbfdc12;
-  --color-primary-container: #142936;
-  --color-secondary-container: #173a37;
-  --color-on-surface-variant: #a0b2c0;
-  --color-outline-variant: #edf5f72b;
-  --color-surface-container-low: #162431;
-  --color-surface-container-high: #203344;
-  --color-surface-container-lowest: #101b27;
-  --field-rule: #edf5f72b;
-  --field-soft: #192b3b;
-  --field-mint: #173a37;
-  --field-blue: #233b53;
+  --color-bg-primary: #191c20;
+  --color-canvas: #242a2d;
+  --color-text-primary: #d2d5d2;
+  --color-text-reading: #b5bebc;
+  --color-text-muted: #b5bebc;
+  --color-accent: #8acdb5;
+  --color-accent-dark: #a3ddc7;
+  --color-accent-secondary: #91adca;
+  --color-accent-soft: #8acdb512;
+  --color-accent-secondary-soft: #91adca12;
+  --color-primary-container: #242a2d;
+  --color-secondary-container: #293d36;
+  --color-on-surface-variant: #b5bebc;
+  --color-outline-variant: #d2d5d22b;
+  --color-surface-container-low: #242a2d;
+  --color-surface-container-high: #30373a;
+  --color-surface-container-lowest: #191c20;
+  --field-rule: #d2d5d22b;
+  --field-soft: #2b3033;
+  --field-mint: #293d36;
+  --field-blue: #2d3945;
 }
 /* Reading ink is softer than display ink. Override legacy slate utilities too. */
 .dark :is(.article-prose, .notes-prose, .notes-unboxed) :is(p, li, td, blockquote, em) {
@@ -51,6 +51,31 @@
 }
 .dark :is(.article-prose, .notes-prose, .notes-unboxed) :is(h2, h3, h4, strong, th) {
   color: var(--color-text-primary);
+}
+/* Older article utilities also follow the sea-glass reading palette. */
+.dark :is(.article-prose, .notes-prose) :is(a, code) {
+  color: var(--color-accent);
+  text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent);
+}
+.dark :is(.article-prose, .notes-prose) a:hover {
+  color: var(--color-accent-dark);
+  text-decoration-color: currentColor;
+}
+.dark .article-prose :is(table, thead, th, td) {
+  background-color: var(--color-canvas);
+  border-color: var(--field-rule);
+}
+.dark .article-toc-link[aria-current='location'] {
+  color: var(--color-accent);
+}
+.dark .article-toc-link[aria-current='location'] > span:first-child {
+  background-color: var(--color-accent);
+}
+.dark .reading-index .board-card :is(h2, h3) {
+  color: var(--color-text-primary);
+}
+.dark .reading-index .board-card:hover :is(h2, h3) {
+  color: var(--color-accent);
 }
 body {
   background: var(--color-bg-primary);
@@ -1499,10 +1524,17 @@ body {
   color: #0b141f;
 }
 .dark .field-main .cta-card-gradient {
-  --color-primary: #cbd5dc;
-  --color-text-primary: #cbd5dc;
-  --color-text-muted: #a0b2c0;
-  --color-on-surface-variant: #a0b2c0;
+  --color-bg-primary: #202824;
+  --color-surface: #202824;
+  --color-canvas: #2b3530;
+  --color-primary: #d2d5d2;
+  --color-text-primary: #d2d5d2;
+  --color-text-muted: #b5bebc;
+  --color-on-surface-variant: #b5bebc;
+  --color-accent: #8acdb5;
+  --color-accent-dark: #a3ddc7;
+  --color-outline-variant: #d2d5d240;
+  background: var(--color-bg-primary);
 }
 .dark .field-main .cta-card-gradient :is(h2, h3) {
   color: var(--color-text-primary);
