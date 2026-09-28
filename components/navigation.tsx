@@ -61,13 +61,12 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         { name: 'Public site', shortName: 'Public', path: '/', key: 'public' },
       ]
     : [
-        { name: 'Build', path: siteConfig.links.edudojo, external: true, key: 'build' },
+        { name: 'Playground', path: '/playground', key: 'playground' },
         { name: 'Journal', path: '/journal', key: 'journal' },
         { name: 'Notes', path: '/notes', key: 'notes' },
         { name: 'Community', path: '/community', key: 'community' },
-        { name: 'YouTube', path: '/youtube', key: 'youtube' },
+        { name: 'Videos', path: '/youtube', key: 'youtube' },
         { name: 'About', path: '/about', key: 'about' },
-        { name: 'CV', path: siteConfig.links.cv, external: true, key: 'cv' },
       ];
 
   const isReadingArticle = !isAtelier && pathname.startsWith('/journal/');
@@ -125,6 +124,12 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
   useEffect(() => {
     if (!mobileMenuOpen) return;
 
+    const desktop = window.matchMedia(isAtelier ? '(min-width: 640px)' : '(min-width: 1024px)');
+    const closeOnDesktop = () => {
+      if (desktop.matches) setMobileMenuOpen(false);
+    };
+    desktop.addEventListener('change', closeOnDesktop);
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setMobileMenuOpen(false);
@@ -135,8 +140,8 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
       if (e.key === 'Tab' && menuRef.current) {
         const focusable = Array.from(
           menuRef.current.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
-          )
+            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+          ),
         );
         if (focusable.length === 0) return;
 
@@ -162,13 +167,14 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     return () => {
       document.removeEventListener('keydown', onKey);
       document.body.style.overflow = prevOverflow;
+      desktop.removeEventListener('change', closeOnDesktop);
     };
-  }, [mobileMenuOpen]);
+  }, [mobileMenuOpen, isAtelier]);
 
   // Glass chrome — theme-aware
   const navShell = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/90 shadow-[var(--atelier-shadow-sm)] backdrop-blur-xl'
-    : 'border-white/60 bg-white/65 shadow-[0_8px_32px_rgba(0,0,0,0.04)] backdrop-blur-xl dark:border-white/10 dark:bg-white/[0.02] dark:shadow-[0_8px_32px_rgba(0,0,0,0.2),inset_0_2px_1px_rgba(255,255,255,0.15)]';
+    : 'border-outline-variant bg-surface/95 backdrop-blur-xl';
 
   const logoText = isAtelier
     ? 'text-[var(--atelier-ink)] group-hover:text-[var(--atelier-gold)]'
@@ -176,11 +182,11 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
   const linkRail = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-paper)]/70'
-    : 'border-white/50 bg-white/50 shadow-inner dark:border-white/10 dark:bg-white/[0.01]';
+    : 'border-transparent bg-transparent';
 
   const mobilePanel = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/98 shadow-[var(--atelier-shadow)]'
-    : 'border-white/60 bg-white/95 shadow-xl backdrop-blur-xl dark:border-white/10 dark:bg-slate-900/95';
+    : 'border-outline-variant bg-surface shadow-xl';
 
   const mobileBtn = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)] text-[var(--atelier-ink)] hover:text-[var(--atelier-gold)]'
@@ -203,9 +209,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     workspaceParam === 'growth' ||
     workspaceParam === 'growth-strategy';
   const onNotes =
-    workspaceParam === 'notes' ||
-    workspaceParam === 'newsletter' ||
-    workspaceParam === 'letters';
+    workspaceParam === 'notes' || workspaceParam === 'newsletter' || workspaceParam === 'letters';
 
   const isLinkActive = (link: NavLink) => {
     if (isAtelier) {
@@ -213,7 +217,9 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
       if (link.key === 'x') return pathname.startsWith('/editorial') && onX;
       if (link.key === 'notes') return pathname.startsWith('/editorial') && onNotes;
       if (link.key === 'blog') {
-        return pathname.startsWith('/editorial') && !onX && !onNotes && !pathname.startsWith('/ledger');
+        return (
+          pathname.startsWith('/editorial') && !onX && !onNotes && !pathname.startsWith('/ledger')
+        );
       }
       return pathname === link.path;
     }
@@ -229,7 +235,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     'border-transparent text-[var(--atelier-faint)] hover:bg-[var(--atelier-paper)] hover:text-[var(--atelier-ink)]';
 
   const navLinkBase =
-    'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 md:px-5';
+    'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 md:px-3';
 
   return (
     <div
@@ -238,7 +244,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
       } ${readingNavHidden && !mobileMenuOpen ? '-translate-y-[120%]' : 'translate-y-0'}`}
     >
       <nav
-        className={`pointer-events-auto isolate flex w-full max-w-5xl items-center justify-between gap-2 rounded-full border px-3 py-2.5 motion-safe:transition-[background-color,border-color,box-shadow,color] motion-safe:duration-300 sm:px-4 sm:py-3 ${navShell}`}
+        className={`field-nav pointer-events-auto isolate flex w-full max-w-[1320px] items-center justify-between gap-2 rounded-full border px-3 py-2.5 motion-safe:transition-[background-color,border-color,box-shadow,color] motion-safe:duration-300 sm:px-4 sm:py-3 ${navShell}`}
         aria-label="Primary"
       >
         <Link
@@ -264,7 +270,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         {/* Desktop / tablet link rail */}
         <div
           className={`hidden min-w-0 items-center gap-0.5 rounded-full border p-1 shadow-inner ${
-            isAtelier ? 'sm:flex' : 'md:flex'
+            isAtelier ? 'sm:flex' : 'lg:flex'
           } ${linkRail}`}
         >
           {linksList.map((link) => {
@@ -353,7 +359,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atelier-gold)] ${
-              isAtelier ? 'sm:hidden' : 'md:hidden'
+              isAtelier ? 'sm:hidden' : 'lg:hidden'
             } ${mobileBtn}`}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
@@ -369,7 +375,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           <button
             type="button"
             className={`pointer-events-auto fixed inset-0 z-30 bg-slate-950/20 backdrop-blur-[2px] ${
-              isAtelier ? 'sm:hidden' : 'md:hidden'
+              isAtelier ? 'sm:hidden' : 'lg:hidden'
             }`}
             onClick={() => {
               setMobileMenuOpen(false);
@@ -381,62 +387,72 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           <div
             id="mobile-nav-panel"
             ref={menuRef}
-            className={`pointer-events-auto absolute top-20 right-3 left-3 z-40 animate-in rounded-3xl border p-4 duration-200 fade-in slide-in-from-top-4 sm:right-4 sm:left-4 ${
-              isAtelier ? 'sm:hidden' : 'md:hidden'
+            className={`pointer-events-auto absolute top-20 right-3 left-3 z-40 max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-xl border p-4 sm:right-4 sm:left-4 ${
+              isAtelier ? 'sm:hidden' : 'lg:hidden'
             } ${mobilePanel}`}
             role="dialog"
             aria-modal="true"
             aria-label="Mobile navigation"
           >
-          <div className="flex flex-col gap-2">
-            {linksList.map((link) => {
-              const isActive = isLinkActive(link);
-              return (
+            <div className="flex flex-col gap-2">
+              <button
+                type="button"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  buttonRef.current?.focus();
+                }}
+                className="flex min-h-11 items-center justify-between rounded-lg px-4 text-sm font-semibold"
+              >
+                Close menu <X className="h-4 w-4" />
+              </button>
+              {linksList.map((link) => {
+                const isActive = isLinkActive(link);
+                return (
+                  <Link
+                    key={link.name}
+                    href={link.path}
+                    scroll={!isAtelier}
+                    prefetch={isAtelier ? false : undefined}
+                    onClick={(e) => {
+                      handleSamePageNav(e, link.path, link.external);
+                      setMobileMenuOpen(false);
+                    }}
+                    target={link.external ? '_blank' : undefined}
+                    rel={link.external ? 'noopener noreferrer' : undefined}
+                    aria-current={isActive ? 'page' : undefined}
+                    className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
+                      isAtelier
+                        ? isActive
+                          ? atelierActive
+                          : 'border-transparent text-[var(--atelier-ink)] hover:bg-[var(--atelier-paper)]'
+                        : isActive
+                          ? 'border-accent/20 bg-accent/10 text-accent'
+                          : publicMobileIdle
+                    }`}
+                  >
+                    {link.icon}
+                    {link.name}
+                  </Link>
+                );
+              })}
+              {isAtelier ? (
                 <Link
-                  key={link.name}
-                  href={link.path}
-                  scroll={!isAtelier}
-                  prefetch={isAtelier ? false : undefined}
-                  onClick={(e) => {
-                    handleSamePageNav(e, link.path, link.external);
-                    setMobileMenuOpen(false);
-                  }}
-                  target={link.external ? '_blank' : undefined}
-                  rel={link.external ? 'noopener noreferrer' : undefined}
-                  aria-current={isActive ? 'page' : undefined}
-                  className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
-                    isAtelier
-                      ? isActive
-                        ? atelierActive
-                        : 'border-transparent text-[var(--atelier-ink)] hover:bg-[var(--atelier-paper)]'
-                      : isActive
-                        ? 'border-accent/20 bg-accent/10 text-accent'
-                        : publicMobileIdle
-                  }`}
+                  href="/api/auth/logout"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="mt-2 w-full rounded-2xl border border-[var(--atelier-line)] py-3 text-center font-headline text-sm font-bold text-[var(--atelier-muted)]"
                 >
-                  {link.icon}
-                  {link.name}
+                  Sign out
                 </Link>
-              );
-            })}
-            {isAtelier ? (
-              <Link
-                href="/api/auth/logout"
-                onClick={() => setMobileMenuOpen(false)}
-                className="mt-2 w-full rounded-2xl border border-[var(--atelier-line)] py-3 text-center font-headline text-sm font-bold text-[var(--atelier-muted)]"
-              >
-                Sign out
-              </Link>
-            ) : (
-              <Link
-                href="/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="btn-accent mt-2 w-full rounded-2xl py-3 text-center font-headline text-sm font-bold tracking-tight"
-              >
-                Contact
-              </Link>
-            )}
-          </div>
+              ) : (
+                <Link
+                  href="/contact"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="btn-accent mt-2 w-full rounded-2xl py-3 text-center font-headline text-sm font-bold tracking-tight"
+                >
+                  Contact
+                </Link>
+              )}
+            </div>
           </div>
         </>
       )}

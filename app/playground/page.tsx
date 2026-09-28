@@ -1,0 +1,42 @@
+import type { Metadata } from 'next';
+import { Navigation } from '@/components/navigation';
+import { Footer } from '@/components/footer';
+import { PageIntro } from '@/components/page-intro';
+import { FieldMotion } from '@/components/field-notes';
+import { PlaygroundIndex } from './playground-index';
+import { playgroundEntries } from '@/data/playground';
+
+export const metadata: Metadata = {
+  title: 'Playground',
+  description:
+    'Apps, experiments, and things made out of curiosity by Gargeya Sharma. Open one and try it.',
+  alternates: { canonical: '/playground' },
+};
+export default function PlaygroundPage() {
+  return (
+    <div className="field-site">
+      <Navigation />
+      <FieldMotion />
+      <main id="page-main" tabIndex={-1} className="field-main">
+        <PageIntro
+          number="01"
+          eyebrow="The playground"
+          title={
+            <>
+              A place to make.
+              <br />
+              <em>And mess around.</em>
+            </>
+          }
+        >
+          <p>
+            Some things start with a plan. Others start with “I wonder if…” A collection of apps,
+            experiments, and work you can actually explore.
+          </p>
+        </PageIntro>
+        <PlaygroundIndex entries={playgroundEntries} />
+      </main>
+      <Footer />
+    </div>
+  );
+}

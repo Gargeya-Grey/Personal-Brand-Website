@@ -8,6 +8,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     '',
     '/about',
+    '/playground',
+    '/playground/idea-mixer',
     '/journal',
     '/notes',
     '/youtube',

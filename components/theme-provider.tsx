@@ -3,6 +3,7 @@
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { Sun, Moon } from 'lucide-react';
+import { MotionConfig } from 'motion/react';
 
 type Theme = 'light' | 'dark';
 
@@ -18,7 +19,11 @@ function applyTheme(nextTheme: Theme) {
   } else {
     root.classList.remove('dark');
   }
-  localStorage.setItem('theme', nextTheme);
+  try {
+    localStorage.setItem('theme', nextTheme);
+  } catch {
+    /* Theme still works without storage. */
+  }
   window.dispatchEvent(new CustomEvent('themechange', { detail: nextTheme }));
 }
 
@@ -27,7 +32,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     // Prefer the class already set by the beforeInteractive script to avoid flicker/desync
-    const savedTheme = localStorage.getItem('theme') as Theme | null;
+    let savedTheme: Theme | null = null;
+    try {
+      const stored = localStorage.getItem('theme');
+      if (stored === 'light' || stored === 'dark') savedTheme = stored;
+    } catch {
+      /* Use the system preference when storage is unavailable. */
+    }
     const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
       ? 'dark'
       : 'light';
@@ -45,7 +56,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
   return (
     <ThemeContext.Provider value={{ theme, toggleTheme }}>
-      {children}
+      <MotionConfig reducedMotion="user">{children}</MotionConfig>
     </ThemeContext.Provider>
   );
 }

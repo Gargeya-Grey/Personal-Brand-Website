@@ -88,7 +88,7 @@
   --color-cta-glow: var(--color-cta-glow);
 
   /* Display = Stack Sans Notch; headline/body = clean sans; label = technical small caps */
-  --font-display: "Stack Sans Notch", ui-sans-serif, sans-serif;
+  --font-display: var(--font-editorial), Georgia, serif;
   --font-headline: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
   --font-body: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
   --font-label: var(--font-manrope), ui-sans-serif, sans-serif;

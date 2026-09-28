@@ -1,16 +1,7 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
-import * as motion from 'motion/react-client';
-import {
-  ArrowRight,
-  ArrowUpRight,
-  BookOpen,
-  Check,
-  Clock,
-  Mail,
-  Moon,
-  Target,
-} from 'lucide-react';
+
+import { ArrowRight, ArrowUpRight, Check, Mail } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { NewsletterSignup } from '@/components/newsletter-signup';
@@ -40,24 +31,6 @@ function slugifyHeading(text: string): string {
     .replace(/^-+|-+$/g, '');
 }
 
-const PROMISES = [
-  {
-    icon: Target,
-    title: 'One claim',
-    body: 'Carried through to the end. Quiet weeks stay quiet.',
-  },
-  {
-    icon: BookOpen,
-    title: 'Real evidence',
-    body: 'Studies and trials, linked. Check the numbers yourself.',
-  },
-  {
-    icon: Moon,
-    title: 'No noise',
-    body: 'Sunday evening, your time. Never a roundup.',
-  },
-] as const;
-
 export default async function NotesPage() {
   const sent = await getPublicNotes();
   const example = sent[0]
@@ -73,7 +46,7 @@ export default async function NotesPage() {
   const exampleIsLive = Boolean(sent[0]);
   const exampleWeekOf = example.weekOf === 'example' ? '2026-09-06' : example.weekOf;
   const exampleMinutes = Math.max(1, Math.round(wordCount(example.bodyMd) / 220));
-  const second = sent[1] || null;
+
   const exampleHeadings = example.bodyMd
     .split('\n')
     .filter((line) => line.startsWith('## '))
@@ -88,181 +61,53 @@ export default async function NotesPage() {
       <main
         id="page-main"
         tabIndex={-1}
-        className="mx-auto w-full max-w-screen-2xl flex-grow px-4 pt-24 pb-20 sm:px-6 sm:pt-28 lg:px-10 lg:pb-24 xl:px-12"
+        className="field-main reading-index w-full flex-grow pb-20"
       >
-        {/* Hero — the letter as an object, not a centered paragraph */}
-        <section className="home-hero relative isolate grid min-h-[min(78svh,760px)] grid-cols-1 items-center gap-10 overflow-hidden rounded-[2rem] px-5 py-8 sm:px-8 sm:py-10 md:px-10 md:py-12 lg:grid-cols-12 lg:gap-12 lg:px-14 lg:py-14">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 space-y-7 motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:transform-none lg:col-span-7"
-          >
-            <p className="inline-flex items-center gap-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1.5 font-label text-[11px] font-bold uppercase tracking-[0.16em] text-accent">
-              <span className="h-1.5 w-1.5 rounded-full bg-accent" aria-hidden="true" />
-              Sunday evening · One argument · ~{exampleMinutes} min
-            </p>
-
+        <section className="notes-cover" aria-label="About Notes">
+          <div>
+            <p className="field-label">03 / A letter on Sunday</p>
             <NotesMasthead size="hero" />
-
-            <p className="max-w-xl font-body text-[1.05rem] leading-[1.65] text-on-surface-variant sm:text-lg">
-              A Sunday letter from {siteConfig.shortName} on how people learn and grow with AI in
-              the room: capability, judgment, assessment, and the techniques that keep you in the
-              loop. Not a news dump. Not a recap of tweets.
+            <p className="field-copy mt-6">
+              A weekly letter from Gargeya on learning, judgment, and being human with AI in the
+              room. One argument, followed all the way through.
             </p>
-
-            <div className="flex items-center gap-3">
-              <AuthorAvatar src={siteConfig.authorAvatar} name={siteConfig.name} size="md" />
-              <div className="leading-tight">
-                <p className="font-label text-sm font-semibold text-primary">{siteConfig.name}</p>
-                <p className="text-xs text-on-surface-variant">
-                  {siteConfig.authorRole} · Free · Sunday 19:00 local
-                </p>
-              </div>
-            </div>
-
-            <div className="max-w-xl rounded-2xl border border-slate-900/[0.08] bg-white/70 p-4 backdrop-blur-sm sm:p-5 dark:border-white/10 dark:bg-white/[0.04]">
-              <p className="mb-3 font-headline text-base font-bold text-primary">
-                Get it on Sunday evening
-              </p>
+            <div className="mt-6 max-w-lg">
               <NewsletterSignup source="notes" variant="light" />
             </div>
-
-            <div className="flex flex-wrap items-center gap-x-4 gap-y-2 font-label text-[11px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">
-              <a href="#latest" className="transition-colors hover:text-accent">
-                Read the latest ↓
+            <div className="field-actions mt-4">
+              <a href="#latest" className="field-text-link">
+                Read a letter ↓
               </a>
-              <span aria-hidden="true" className="h-1 w-1 rounded-full bg-accent/60" />
-              <a href="#archive" className="transition-colors hover:text-accent">
-                Browse the inbox
-              </a>
+              {sent.length > 0 && (
+                <a href="#archive" className="field-text-link">
+                  Browse the archive ↓
+                </a>
+              )}
             </div>
-          </motion.div>
-
-          {/* Letter artifact — an email window, not a text card */}
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
-            className="relative z-10 motion-reduce:animate-none motion-reduce:opacity-100 motion-reduce:transform-none lg:col-span-5"
-          >
-            <div className="relative mx-auto w-full max-w-[480px]">
-              {second ? (
-                <div
-                  aria-hidden="true"
-                  className="absolute inset-x-6 -top-6 rotate-[-3deg] rounded-[1.5rem] border border-slate-900/[0.08] bg-white/60 p-5 opacity-70 backdrop-blur-sm dark:border-white/10 dark:bg-white/[0.03]"
-                >
-                  <p className="font-label text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
-                    {formatNoteDate(second.weekOf)}
-                  </p>
-                  <p className="mt-1 truncate font-headline text-sm font-bold text-primary">
-                    {second.title}
-                  </p>
-                </div>
-              ) : null}
-
-              <div className="relative overflow-hidden rounded-[1.5rem] border border-slate-900/[0.1] bg-white shadow-[0_28px_68px_-34px_rgba(0,0,0,0.4)] dark:border-white/10 dark:bg-slate-950">
-                <div className="flex items-center justify-between gap-3 border-b border-slate-900/[0.08] px-5 py-3.5 dark:border-white/10">
-                  <div className="flex items-center gap-1.5" aria-hidden="true">
-                    <span className="h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-white/15" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-slate-200 dark:bg-white/15" />
-                    <span className="h-2.5 w-2.5 rounded-full bg-accent/60" />
-                  </div>
-                  <p className="flex min-w-0 items-center gap-1.5 font-label text-[10px] font-bold uppercase tracking-[0.16em] text-on-surface-variant">
-                    <Mail className="h-3.5 w-3.5 shrink-0 text-accent" />
-                    <span className="truncate">Notes — Sunday letter</span>
-                  </p>
-                  <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-700 dark:text-accent">
-                    19:00
-                  </span>
-                </div>
-
-                <div className="p-5 sm:p-6">
-                  <div className="flex items-center gap-3">
-                    <AuthorAvatar src={siteConfig.authorAvatar} name={siteConfig.name} size="sm" />
-                    <div className="min-w-0 leading-tight">
-                      <p className="truncate font-label text-sm font-semibold text-primary">
-                        {siteConfig.name}
-                      </p>
-                      <p className="truncate text-xs text-on-surface-variant">
-                        to you · {formatNoteDate(exampleWeekOf)}
-                      </p>
-                    </div>
-                  </div>
-
-                  <p className="mt-4 font-headline text-xl font-bold leading-snug tracking-tight text-primary">
-                    {example.title}
-                  </p>
-                  {example.dek ? (
-                    <p className="mt-1.5 line-clamp-3 font-body text-sm leading-relaxed text-on-surface-variant">
-                      {example.dek}
-                    </p>
-                  ) : null}
-
-                  {/* Paper lines — suggests a real letter without re-rendering the body */}
-                  <div className="mt-5 space-y-2.5" aria-hidden="true">
-                    <div className="h-2 rounded-full bg-slate-900/[0.08] dark:bg-white/10" />
-                    <div className="h-2 w-[92%] rounded-full bg-slate-900/[0.08] dark:bg-white/10" />
-                    <div className="h-2 w-[84%] rounded-full bg-accent/25" />
-                    <div className="h-2 w-[95%] rounded-full bg-slate-900/[0.08] dark:bg-white/10" />
-                    <div className="h-2 w-[70%] rounded-full bg-slate-900/[0.08] dark:bg-white/10" />
-                  </div>
-
-                  <div className="mt-5 flex items-center justify-between gap-3 border-t border-slate-900/[0.08] pt-4 dark:border-white/10">
-                    <span className="flex items-center gap-1.5 font-label text-[11px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                      <Clock className="h-3.5 w-3.5 text-accent" />~{exampleMinutes} min
-                    </span>
-                    <span className="font-label text-[11px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                      One argument · No roundup
-                    </span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="absolute -right-2 top-16 hidden rotate-2 rounded-full border border-slate-900/[0.08] bg-white px-3.5 py-1.5 font-label text-[10px] font-bold uppercase tracking-[0.14em] text-primary shadow-lg sm:block dark:border-white/10 dark:bg-slate-900 dark:text-white">
-                Reply-friendly
-              </div>
-              <div className="absolute -left-2 bottom-14 hidden -rotate-2 rounded-full border border-accent/25 bg-accent/10 px-3.5 py-1.5 font-label text-[10px] font-bold uppercase tracking-[0.14em] text-accent shadow-lg backdrop-blur-sm sm:block">
-                Unsubscribe anytime
-              </div>
-            </div>
-          </motion.div>
-        </section>
-
-        {/* Promise strip */}
-        <section className="py-14 sm:py-16 lg:py-20">
-          <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                What you get
-              </span>
-              <h2 className="mt-2 font-display text-2xl font-light tracking-[-0.02em] text-primary sm:text-3xl">
-                Built like a letter.
-              </h2>
-            </div>
-            <p className="max-w-sm font-body text-sm leading-relaxed text-on-surface-variant sm:text-right">
-              Nothing filler. When it lands, this is the shape.
+          </div>
+          <a href="#latest" className="letter-object">
+            <p className="field-label">
+              {exampleIsLive ? 'The latest letter' : 'An example letter'} / ~{exampleMinutes} min
             </p>
-          </div>
-          <div className="grid gap-5 md:grid-cols-3">
-            {PROMISES.map((promise) => (
-              <article key={promise.title} className="board-card group rounded-[1.75rem] p-7">
-                <div className="mb-6 flex h-12 w-12 items-center justify-center rounded-2xl border border-accent/20 bg-accent/10 text-accent transition-colors duration-500 group-hover:bg-accent group-hover:text-white">
-                  <promise.icon className="h-6 w-6 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-3" />
-                </div>
-                <h3 className="font-headline text-xl font-bold tracking-tight text-primary">
-                  {promise.title}
-                </h3>
-                <p className="mt-3 font-body text-[15px] leading-relaxed text-on-surface-variant">
-                  {promise.body}
-                </p>
-              </article>
-            ))}
-          </div>
+            <h2>{example.title}</h2>
+            <p>{example.dek}</p>
+            <div>
+              <AuthorAvatar src={siteConfig.authorAvatar} name={siteConfig.name} size="md" />
+              <span>
+                From Gargeya
+                <br />
+                <small>Sunday evening, your time</small>
+              </span>
+              <ArrowRight size={18} />
+            </div>
+          </a>
         </section>
 
         {/* Latest letter — wide reading preview + rail */}
-        <section id="latest" className="scroll-mt-32 border-t border-slate-900/[0.08] py-14 dark:border-white/10 sm:py-16 lg:py-20">
+        <section
+          id="latest"
+          className="scroll-mt-32 border-t border-slate-900/[0.08] py-14 dark:border-white/10 sm:py-16 lg:py-20"
+        >
           <div className="mb-10 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
             <div className="max-w-3xl">
               <p className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
@@ -337,7 +182,10 @@ export default async function NotesPage() {
                   </p>
                   <ol className="mt-4 space-y-3">
                     {exampleHeadings.map((heading, i) => (
-                      <li key={`${slugifyHeading(heading)}-${i}`} className="flex items-baseline gap-3">
+                      <li
+                        key={`${slugifyHeading(heading)}-${i}`}
+                        className="flex items-baseline gap-3"
+                      >
                         <span className="font-mono text-xs font-bold text-accent">
                           {String(i + 1).padStart(2, '0')}
                         </span>
@@ -402,7 +250,10 @@ export default async function NotesPage() {
 
         {/* Archive — an inbox, not a bullet list */}
         {sent.length > 0 ? (
-          <section id="archive" className="scroll-mt-32 border-t border-slate-900/[0.08] py-14 dark:border-white/10 sm:py-16 lg:py-20">
+          <section
+            id="archive"
+            className="scroll-mt-32 border-t border-slate-900/[0.08] py-14 dark:border-white/10 sm:py-16 lg:py-20"
+          >
             <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
               <div>
                 <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
@@ -459,7 +310,10 @@ export default async function NotesPage() {
                           <span className="font-label text-[11px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
                             ~{minutes} min
                           </span>
-                          <ArrowRight className="h-4 w-4 shrink-0 text-on-surface-variant transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent" aria-hidden="true" />
+                          <ArrowRight
+                            className="h-4 w-4 shrink-0 text-on-surface-variant transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent"
+                            aria-hidden="true"
+                          />
                         </div>
                       </Link>
                     </li>
@@ -487,7 +341,10 @@ export default async function NotesPage() {
                     'Studies and trials linked — check the numbers yourself.',
                     'Quiet weeks stay quiet. No filler to feed a schedule.',
                   ].map((line) => (
-                    <li key={line} className="flex items-start gap-2.5 font-body text-sm leading-relaxed text-on-surface-variant sm:text-[15px]">
+                    <li
+                      key={line}
+                      className="flex items-start gap-2.5 font-body text-sm leading-relaxed text-on-surface-variant sm:text-[15px]"
+                    >
                       <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
                       {line}
                     </li>

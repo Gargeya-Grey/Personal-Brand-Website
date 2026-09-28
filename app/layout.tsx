@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from 'next';
-import { Manrope, MonteCarlo } from 'next/font/google';
+import { Manrope, Instrument_Serif } from 'next/font/google';
 import Script from 'next/script';
-import '@fontsource/stack-sans-notch/300.css';
-import '@fontsource/stack-sans-notch/500.css';
+
 import './globals.css';
+import './field.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
@@ -27,14 +27,13 @@ const manrope = Manrope({
   display: 'swap',
 });
 
-/** Footer wordmark — formal script with stroked outline + shoulder shine */
-const monteCarlo = MonteCarlo({
+const editorialSerif = Instrument_Serif({
   subsets: ['latin'],
   weight: '400',
-  variable: '--font-wordmark',
+  style: ['normal', 'italic'],
+  variable: '--font-editorial',
   display: 'swap',
 });
-
 const origin = getSiteOrigin();
 const shareImage = getDefaultShareImage();
 const rootDescription = clampMetaDescription(siteConfig.description);
@@ -96,8 +95,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f7faf9' },
-    { media: '(prefers-color-scheme: dark)', color: '#0b1220' },
+    { media: '(prefers-color-scheme: light)', color: '#f5f2eb' },
+    { media: '(prefers-color-scheme: dark)', color: '#191c18' },
   ],
 };
 
@@ -107,10 +106,13 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${monteCarlo.variable}`}
+      className={`${manrope.variable} ${editorialSerif.variable}`}
       suppressHydrationWarning
     >
-      <body className="antialiased selection:bg-accent/30 relative min-h-screen" suppressHydrationWarning>
+      <body
+        className="antialiased selection:bg-accent/30 relative min-h-screen"
+        suppressHydrationWarning
+      >
         <Script id="theme-init" strategy="beforeInteractive">
           {themeInitScript}
         </Script>
