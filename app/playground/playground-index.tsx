@@ -43,11 +43,17 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
         {visible.length} {visible.length === 1 ? 'thing' : 'things'} to explore
       </p>
       <div className="project-shelf">
-        {visible.map((entry) => (
+        {visible.map((entry, index) => (
           <article key={entry.id}>
             <div className={'shelf-art ' + (entry.id === 'idea-mixer' ? 'mixer' : '')}>
               {entry.image ? (
-                <Image src={entry.image} alt="" fill sizes="(max-width: 700px) 100vw, 50vw" />
+                <Image
+                  src={entry.image}
+                  alt=""
+                  fill
+                  loading={index < 2 ? 'eager' : 'lazy'}
+                  sizes="(max-width: 700px) 100vw, 50vw"
+                />
               ) : (
                 <span className="mix-disc" aria-hidden="true">
                   ?
