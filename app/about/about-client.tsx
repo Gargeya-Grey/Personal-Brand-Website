@@ -7,24 +7,6 @@ import { PageIntro } from '@/components/page-intro';
 import { FieldMotion } from '@/components/field-notes';
 import { siteConfig } from '@/lib/site-config';
 
-const principles = [
-  [
-    '01',
-    'Process over polish.',
-    'A correct answer tells you what someone produced. It does not necessarily tell you what they understood. I care about the drafts, decisions, revisions, and the ability to explain them.',
-  ],
-  [
-    '02',
-    'Make thinking visible.',
-    'Build in public. Show the reasoning. Let people question the assumptions and inspect the work, especially when a system is making judgments about them.',
-  ],
-  [
-    '03',
-    'Leave room to play.',
-    'The journal, the films, and the small experiments belong here too. Different ways of exploring the same world, without every curiosity needing to become a company.',
-  ],
-];
-
 export default function AboutClient() {
   return (
     <div className="field-site">
@@ -39,8 +21,8 @@ export default function AboutClient() {
           }
         >
           <p>
-            I’m the founder of Edudojo.ai. I write about AI and learning, build small applications,
-            and make films when I travel.
+            I’m an AI engineer and the founder of Edudojo.ai, with a background in theatre and
+            computer vision. I build tools, write about learning, and make films when I travel.
           </p>
         </PageIntro>
         <section className="about-spread" data-reveal>
@@ -87,15 +69,38 @@ export default function AboutClient() {
             </div>
           </div>
         </section>
-        <section className="field-section" data-reveal>
-          <p className="field-label">A few things I come back to</p>
-          <div className="principle-grid">
-            {principles.map(([number, title, body]) => (
-              <article key={number}>
-                <h3>{title}</h3>
-                <p>{body}</p>
-              </article>
-            ))}
+        <section className="personal-history field-section" data-reveal>
+          <h2>The path here.</h2>
+          <div className="history-rows">
+            <article>
+              <h3>Theatre, then AI</h3>
+              <p>
+                My background includes theatre. Today, the human side of technology still matters to
+                me: how people ask questions, explain their thinking, and interact with a system.
+              </p>
+            </article>
+            <article>
+              <h3>Learning how machines see</h3>
+              <p>
+                I coauthored a paper on surface-crack segmentation and a chapter on object
+                detection. I later studied Artificial Intelligence at Queen Mary University of
+                London.
+              </p>
+              <Link href="/research" className="field-text-link">
+                Papers & academic work <ArrowUpRight size={16} />
+              </Link>
+            </article>
+            <article>
+              <h3>Tools for the person using them</h3>
+              <p>
+                Edudojo focuses on the learning process. Odicto puts spoken words into the app
+                already in front of you. They explore different parts of how AI can help with
+                everyday work.
+              </p>
+              <Link href="/playground/odicto" className="field-text-link">
+                Explore Odicto <ArrowUpRight size={16} />
+              </Link>
+            </article>
           </div>
         </section>
         <section className="field-section elsewhere-spread" data-reveal>

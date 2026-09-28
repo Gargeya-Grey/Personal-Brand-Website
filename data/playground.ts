@@ -1,44 +1,67 @@
-import { projects } from './projects';
+import { selectedWork } from './selected-work';
 
-export type WorkKind = 'Apps' | 'Websites' | 'Advisory';
+export type WorkKind = 'In your browser' | 'Software' | 'Experiments';
 export interface PlaygroundEntry {
   id: string;
   title: string;
   description: string;
   kind: WorkKind;
   status: string;
-  href?: string;
+  href: string;
+  action: string;
   source?: string;
-  image?: string;
 }
 
-/** Add an internal app route or an HTTPS deployment here to publish it in the index. */
+/** Add a working route/deployment and a truthful destination label to publish a project. */
 export const playgroundEntries: PlaygroundEntry[] = [
+  {
+    id: 'box-lab',
+    title: 'The overlap lab',
+    kind: 'In your browser',
+    status: 'Interactive · no account',
+    href: '/playground/box-lab',
+    action: 'Try the experiment',
+    description:
+      'When does a predicted box count as a match? Move it, resize it, and see how computer vision measures overlap.',
+  },
   {
     id: 'idea-mixer',
     title: 'Idea mixer',
-    description:
-      'Combine an everyday audience with an unexpected constraint. Keep the prompts that spark something and turn one into a small experiment.',
-    kind: 'Apps',
-    status: 'Interactive experiment',
+    kind: 'In your browser',
+    status: 'Creative tool · no account',
     href: '/playground/idea-mixer',
-  },
-  ...projects.map((project): PlaygroundEntry => ({
-    id: project.id,
-    title: project.id === 'personal-brand' ? 'The personal corner' : project.title,
+    action: 'Mix an idea',
     description:
-      project.id === 'personal-brand'
-        ? 'This website, open source. A personal home for writing, videos, experiments, and a growing body of work.'
-        : project.description,
-    kind:
-      project.id === 'systems-thinking'
-        ? 'Advisory'
-        : project.id === 'edudojo'
-          ? 'Apps'
-          : 'Websites',
-    status: project.category,
-    href: project.link,
-    source: project.github,
-    image: project.image,
+      'Combine an audience with an unexpected constraint. Save the prompts that spark something and turn one into an experiment.',
+  },
+  ...selectedWork.map((work): PlaygroundEntry => ({
+    id: work.id,
+    title: work.title,
+    description: work.description,
+    kind: work.id === 'dataclean' ? 'Experiments' : 'Software',
+    status: work.category,
+    href: '/playground/' + work.id,
+    action: 'Explore the project',
+    source: work.source,
   })),
+  {
+    id: 'odicto-mobile',
+    title: 'Odicto Mobile',
+    kind: 'Software',
+    status: 'Android voice keyboard',
+    description:
+      'A voice keyboard for Android, with speech-to-text providers configured on the phone. Explore the source and setup instructions.',
+    href: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
+    action: 'Source & setup',
+  },
+  {
+    id: 'personal-brand',
+    title: 'This website',
+    kind: 'Experiments',
+    status: 'Public source',
+    description:
+      'The code behind the journal, publishing workspace, and these browser experiments. A growing home for the work.',
+    href: 'https://github.com/Gargeya-Grey/Personal-Brand-Website',
+    action: 'Read the source',
+  },
 ];

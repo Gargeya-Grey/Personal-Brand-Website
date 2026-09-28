@@ -6,6 +6,8 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { CuriosityMark, FieldMotion } from '@/components/field-notes';
 import { siteConfig } from '@/lib/site-config';
+import { selectedWork } from '@/data/selected-work';
+import { publications } from '@/data/research';
 import { getPublishedArticlesLite } from '@/lib/blog-service';
 
 export const revalidate = 60;
@@ -44,7 +46,7 @@ export default async function Home() {
                   Edudojo ↗
                 </a>
                 , where AI challenges students to think. This is also home to my essays, small apps,
-                and travel films.
+                computer-vision research, and travel films.
               </p>
               <div className="field-actions">
                 <Link href="/playground" className="field-button">
@@ -68,7 +70,7 @@ export default async function Home() {
                   />
                 </div>
                 <div className="portrait-caption">
-                  <span>The person behind the tabs.</span>
+                  <span>About me</span>
                   <ArrowUpRight size={18} />
                 </div>
               </Link>
@@ -86,69 +88,32 @@ export default async function Home() {
           </div>
           <div className="cover-bottom">
             <a href="#currently" className="field-text-link">
-              Take a look around <ArrowDown size={16} />
+              Explore my work <ArrowDown size={16} />
             </a>
           </div>
         </section>
 
-        <section id="currently" className="field-section" data-reveal>
-          <div className="venture-spread">
-            <div className="venture-copy">
-              <span className="field-chip">
-                <span className="status-dot" /> Building Edudojo.ai
-              </span>
-              <h2>
-                What if learning
-                <br />
-                was about{' '}
-                <em>
-                  becoming
-                  <br />
-                  capable?
-                </em>
-              </h2>
-              <p>
-                A correct answer isn’t the whole story. I’m building student-centred learning that
-                makes the questions, decisions, and revisions visible. AI that challenges you to
-                think.
-              </p>
-              <a
-                href={siteConfig.links.edudojo}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="field-text-link"
-              >
-                Step inside Edudojo <ArrowUpRight size={18} />
-              </a>
-            </div>
-            <a
-              className="learning-sketch"
-              href={siteConfig.links.edudojo}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label="Explore the Edudojo learning process"
-            >
-              <div className="sketch-caption field-label">
-                <span>Edudojo / The learning loop</span>
-                <ArrowUpRight size={18} />
-              </div>
-              <div className="sketch-orbit" aria-hidden="true">
-                <span className="orbit-word orbit-one">Create</span>
-                <span className="orbit-word orbit-two">Question</span>
-                <span className="orbit-word orbit-three">Reflect</span>
-                <span className="orbit-word orbit-four">Grow</span>
-                <div className="orbit-center">
-                  The thinking
-                  <br />
-                  <em>is the work.</em>
+        <section id="currently" className="field-section selected-work" data-reveal>
+          <div className="section-title-row">
+            <h2>
+              Selected <em>work.</em>
+            </h2>
+            <p>
+              Tools for getting a thought down, learning through a problem, and testing what an
+              agent can do.
+            </p>
+          </div>
+          <div className="work-index">
+            {selectedWork.map((work) => (
+              <Link key={work.id} href={'/playground/' + work.id} className="work-index-row">
+                <div>
+                  <span className="work-category">{work.category}</span>
+                  <h3>{work.title}</h3>
                 </div>
-              </div>
-              <p>
-                Less “give me the answer.”
-                <br />
-                More “show me how you got there.”
-              </p>
-            </a>
+                <p>{work.description}</p>
+                <ArrowUpRight size={24} aria-hidden="true" />
+              </Link>
+            ))}
           </div>
         </section>
 
@@ -164,10 +129,7 @@ export default async function Home() {
               <br />
               <em>experiments.</em>
             </h2>
-            <p>
-              Small apps, side projects, and things made just to see what happens. Open one. Give it
-              a spin.
-            </p>
+            <p>Two small experiments you can try right here. No installation or account needed.</p>
           </div>
           <div className="play-preview-grid">
             <Link href="/playground/idea-mixer" className="experiment-preview">
@@ -184,27 +146,50 @@ export default async function Home() {
                 <ArrowUpRight size={24} />
               </div>
             </Link>
-            <Link href="/playground" className="experiment-preview website-preview">
-              <div className="website-art" aria-hidden="true">
-                <div className="mini-browser">
-                  <span>● ● ●</span>
-                  <p>
-                    A space
-                    <br />
-                    to <em>make.</em>
-                  </p>
-                  <div />
-                  <div />
-                </div>
+            <Link href="/playground/box-lab" className="experiment-preview">
+              <div className="overlap-cover" aria-hidden="true">
+                <span className="box-reference" />
+                <span className="box-prediction" />
+                <span className="overlap-caption">Two boxes. One moving target.</span>
               </div>
               <div className="preview-caption">
                 <div>
-                  <h3>The personal corner</h3>
-                  <p>A home for an expanding body of work.</p>
+                  <h3>The overlap lab</h3>
+                  <p>See how computer vision measures a match.</p>
                 </div>
                 <ArrowUpRight size={24} />
               </div>
             </Link>
+          </div>
+        </section>
+
+        <section className="research-teaser field-section" data-reveal>
+          <div>
+            <h2>
+              How machines
+              <br />
+              <em>see the world.</em>
+            </h2>
+            <p className="field-copy">
+              My coauthored research explores object detection and surface-crack segmentation. This
+              is part of the work that came before Edudojo.
+            </p>
+            <Link href="/research" className="field-text-link">
+              Research & publications <ArrowUpRight size={18} />
+            </Link>
+          </div>
+          <div className="research-teaser-list">
+            {publications.map((paper) => (
+              <Link href={'/research#' + paper.id} key={paper.id}>
+                <span className="work-category">
+                  {paper.type} · {paper.year}
+                </span>
+                <h3>{paper.title}</h3>
+                <span className="field-text-link">
+                  Publication details <ArrowUpRight size={16} />
+                </span>
+              </Link>
+            ))}
           </div>
         </section>
 

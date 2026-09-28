@@ -1,6 +1,5 @@
 'use client';
 import { useState } from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowUpRight, Search } from 'lucide-react';
 import type { PlaygroundEntry, WorkKind } from '@/data/playground';
@@ -17,7 +16,7 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
     <>
       <div className="playground-toolbar">
         <div className="playground-filters" role="group" aria-label="Filter projects">
-          {(['All', 'Apps', 'Websites', 'Advisory'] as const).map((value) => (
+          {(['All', 'In your browser', 'Software', 'Experiments'] as const).map((value) => (
             <button
               type="button"
               key={value}
@@ -43,28 +42,21 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
         {visible.length} {visible.length === 1 ? 'project' : 'projects'} to explore
       </p>
       <div className="project-shelf">
-        {visible.map((entry, index) => (
+        {visible.map((entry) => (
           <article key={entry.id}>
-            <div className={'shelf-art ' + (entry.id === 'idea-mixer' ? 'mixer' : '')}>
-              {entry.image ? (
-                <Image
-                  src={entry.image}
-                  alt=""
-                  fill
-                  loading={index < 2 ? 'eager' : 'lazy'}
-                  sizes="(max-width: 700px) 100vw, 50vw"
-                />
-              ) : (
-                <span className="mix-disc" aria-hidden="true">
-                  ?
-                </span>
-              )}
-            </div>
             <div className="shelf-copy">
               <p className="field-label">
                 {entry.kind} / {entry.status}
               </p>
-              <h2>{entry.title}</h2>
+              <h2>
+                <Link
+                  href={entry.href}
+                  target={entry.href.startsWith('https://') ? '_blank' : undefined}
+                  rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
+                >
+                  {entry.title}
+                </Link>
+              </h2>
               <p>{entry.description}</p>
               <div className="field-actions">
                 {entry.href && (
@@ -74,7 +66,7 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
                     target={entry.href.startsWith('https://') ? '_blank' : undefined}
                     rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
                   >
-                    {entry.kind === 'Advisory' ? 'Let’s talk' : 'Open project'}
+                    {entry.action}
                     <ArrowUpRight size={16} />
                   </Link>
                 )}

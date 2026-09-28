@@ -50,6 +50,7 @@ export function Footer() {
             <Link href="/about">About me</Link>
             <Link href="/playground">Playground</Link>
             <Link href="/journal">Journal</Link>
+            <Link href="/research">Research & publications</Link>
             <Link href="/youtube">Videos</Link>
           </div>
           <div>

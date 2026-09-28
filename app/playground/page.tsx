@@ -21,14 +21,11 @@ export default function PlaygroundPage() {
         <PageIntro
           title={
             <>
-              Apps & <em>experiments.</em>
+              The <em>playground.</em>
             </>
           }
         >
-          <p>
-            Try a small app, explore Edudojo, or read the source behind this site. Each project has
-            a link to open it or see how it was made.
-          </p>
+          <p>Try a browser app, install a tool, or explore the code.</p>
         </PageIntro>
         <PlaygroundIndex entries={playgroundEntries} />
       </main>
