@@ -38,3 +38,17 @@ See `docs/publishing-experiments.md`. Internal apps get their own route; externa
 - Journal search for GLM and category Education each render their one matching article. Empty search and reset work. Fixed the previous exclusion of the featured article even when its feature presentation was hidden by filters; pagination counts now include the visible feature.
 - WCAG contrast calculations for the new semantic palette: light body 13.64:1, muted 5.38:1, accent 4.82:1, button 5.19:1; dark body 16.76:1, muted on cards 8.70:1, accent on cards 10.57:1, button 11.72:1. This measures these token pairs, not an exhaustive accessibility audit of all legacy components.
 - Production build and lint pass (the same two existing markdown image warnings). No browser runtime errors observed. No forms submitted or private data changed in this follow-up.
+
+## Dark reading comfort follow-up (29 September 2026)
+
+The owner reported that near-white text felt harsh against the dark background. Replaced it with cool silver display text, softer reading text, and a slightly lifted navy background. These values supersede the dark contrast figures in the earlier feedback section.
+
+| Base-background contrast | Before | After |
+| --- | --- | --- |
+| Main headings | 16.76:1 | 11.66:1 |
+| Article paragraphs | 12.47:1 | 9.86:1 |
+
+- Dark reading overrides cover article and Notes paragraphs, lists, tables, quotations, and emphasis, including legacy slate utilities. The inverted Journal subscription panel also uses the softer ink.
+- Production build passes. Inspected the built site locally: desktop home and article body, mobile Notes at 390px, and Journal subscription panel. Computed colors match the new tokens; mobile Notes has no horizontal overflow and no browser runtime errors were observed.
+- Light-mode base, heading, and article colors remain unchanged; light Notes was visually checked. No media dimming or page-wide opacity was applied.
+- Tested primary, reading, muted, and accent token colors against the six principal dark surfaces; the lowest pair was 5.28:1. This is a token contrast check, not an exhaustive accessibility audit. Contrast ratios do not measure subjective reading comfort; the owner should judge the preview on their usual screen.
