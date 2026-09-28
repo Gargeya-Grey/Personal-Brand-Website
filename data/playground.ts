@@ -1,4 +1,4 @@
-import { selectedWork } from './selected-work';
+import { allWork, selectedWork } from './selected-work';
 
 export type WorkKind = 'In your browser' | 'Software' | 'Experiments';
 export interface PlaygroundEntry {
@@ -34,26 +34,18 @@ export const playgroundEntries: PlaygroundEntry[] = [
     description:
       'Combine an audience with an unexpected constraint. Save the prompts that spark something and turn one into an experiment.',
   },
-  ...selectedWork.map((work): PlaygroundEntry => ({
-    id: work.id,
-    title: work.title,
-    description: work.description,
-    kind: work.id === 'dataclean' ? 'Experiments' : 'Software',
-    status: work.category,
-    href: '/playground/' + work.id,
-    action: 'Explore the project',
-    source: work.source,
-  })),
-  {
-    id: 'odicto-mobile',
-    title: 'Odicto Mobile',
-    kind: 'Software',
-    status: 'Android voice keyboard',
-    description:
-      'A voice keyboard for Android, with speech-to-text providers configured on the phone. Explore the source and setup instructions.',
-    href: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
-    action: 'Source & setup',
-  },
+  ...[...selectedWork, ...allWork.filter((work) => work.id === 'dataclean')].map(
+    (work): PlaygroundEntry => ({
+      id: work.id,
+      title: work.title,
+      description: work.description,
+      kind: work.id === 'dataclean' ? 'Experiments' : 'Software',
+      status: work.category,
+      href: '/playground/' + work.id,
+      action: 'Explore the project',
+      source: work.source,
+    }),
+  ),
   {
     id: 'personal-brand',
     title: 'This website',

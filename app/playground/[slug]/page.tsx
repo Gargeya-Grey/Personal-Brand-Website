@@ -4,11 +4,12 @@ import { notFound } from 'next/navigation';
 import { ArrowUpRight, ArrowLeft } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
-import { selectedWork } from '@/data/selected-work';
+import { WorkExplainer } from '@/components/work-explainer';
+import { allWork } from '@/data/selected-work';
 
 export const dynamicParams = false;
 export function generateStaticParams() {
-  return selectedWork.map(({ id }) => ({ slug: id }));
+  return allWork.map(({ id }) => ({ slug: id }));
 }
 export async function generateMetadata({
   params,
@@ -16,7 +17,7 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const work = selectedWork.find((entry) => entry.id === slug);
+  const work = allWork.find((entry) => entry.id === slug);
   if (!work) return {};
   return {
     title: work.title + ' · Playground',
@@ -27,7 +28,7 @@ export async function generateMetadata({
 
 export default async function WorkPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const work = selectedWork.find((entry) => entry.id === slug);
+  const work = allWork.find((entry) => entry.id === slug);
   if (!work) notFound();
   return (
     <div className="field-site">
@@ -44,18 +45,31 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
           <a href={work.href} target="_blank" rel="noopener noreferrer" className="field-button">
             {work.action} <ArrowUpRight size={18} />
           </a>
+          {work.id === 'odicto' && (
+            <a
+              href="https://github.com/Gargeya-Grey/Odicto-Mobile"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="field-text-link platform-link"
+            >
+              Android source & setup <ArrowUpRight size={18} />
+            </a>
+          )}
         </header>
-        <section className="work-process" aria-label="How it works">
-          <ol>
-            {work.steps.map((step, index) => (
-              <li key={step}>
-                <span aria-hidden="true">{index + 1}</span>
-                {step}
-              </li>
-            ))}
-          </ol>
-          <p>How it works · a process sketch</p>
-        </section>
+        <WorkExplainer id={work.id} />
+        {work.id === 'dataclean' && (
+          <section className="work-process" aria-label="How it works">
+            <ol>
+              {work.steps.map((step, index) => (
+                <li key={step}>
+                  <span aria-hidden="true">{index + 1}</span>
+                  {step}
+                </li>
+              ))}
+            </ol>
+            <p>How it works · a process sketch</p>
+          </section>
+        )}
         <div className="work-story">
           <aside>
             <h2>Built with</h2>
@@ -86,11 +100,7 @@ export default async function WorkPage({ params }: { params: Promise<{ slug: str
                 <p>{body}</p>
               </section>
             ))}
-            <aside className="content-placeholder">
-              <h3>Walkthrough to add</h3>
-              <p>{work.missing}</p>
-              <span>This space is reserved for a real demonstration.</span>
-            </aside>
+
             <Link href="/playground" className="field-text-link">
               <ArrowLeft size={16} /> Explore another project
             </Link>

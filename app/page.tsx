@@ -1,11 +1,12 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowDown, ArrowRight, ArrowUpRight, Play } from 'lucide-react';
+import { ArrowRight, ArrowUpRight, Play } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
-import { CuriosityMark, FieldMotion } from '@/components/field-notes';
+import { FieldMotion } from '@/components/field-notes';
 import { siteConfig } from '@/lib/site-config';
+import { WorkVisual } from '@/components/work-visual';
 import { selectedWork } from '@/data/selected-work';
 import { publications } from '@/data/research';
 import { getPublishedArticlesLite } from '@/lib/blog-service';
@@ -27,7 +28,7 @@ export default async function Home() {
     <div className="field-site">
       <Navigation />
       <FieldMotion />
-      <main id="page-main" tabIndex={-1} className="field-main">
+      <main id="page-main" tabIndex={-1} className="field-main home-main">
         <section className="personal-cover">
           <div className="cover-layout">
             <div className="cover-copy">
@@ -35,84 +36,86 @@ export default async function Home() {
                 <span className="status-dot" /> Hello, I’m Gargeya.
               </p>
               <h1>
-                Learning, AI,
+                I build tools
                 <br />
-                and things
-                <br />I <em>make.</em>
+                for how we <em>think.</em>
               </h1>
               <p className="cover-description">
                 I’m building{' '}
                 <a href={siteConfig.links.edudojo} target="_blank" rel="noopener noreferrer">
                   Edudojo ↗
                 </a>
-                , where AI challenges students to think. This is also home to my essays, small apps,
-                computer-vision research, and travel films.
+                , an AI learning workspace. I also make tools to capture thoughts, keep useful
+                context, and explore a question through code.
               </p>
               <div className="field-actions">
-                <Link href="/playground" className="field-button">
-                  Explore the playground <ArrowUpRight size={17} />
+                <Link href="#currently" className="field-button">
+                  Explore my work <ArrowUpRight size={17} />
                 </Link>
                 <Link href="/about" className="field-text-link">
-                  A little about me <ArrowRight size={16} />
+                  About me <ArrowRight size={16} />
                 </Link>
               </div>
             </div>
             <div className="cover-objects">
-              <CuriosityMark />
               <Link href="/about" className="portrait-note" aria-label="Meet Gargeya">
                 <div className="portrait-photo">
                   <Image
                     src="/profile.webp"
                     alt="Gargeya Sharma"
                     fill
-                    sizes="(max-width: 700px) 75vw, 380px"
+                    sizes="(max-width: 700px) 72px, 380px"
                     priority
                   />
                 </div>
                 <div className="portrait-caption">
-                  <span>About me</span>
+                  <span>Gargeya Sharma</span>
                   <ArrowUpRight size={18} />
                 </div>
               </Link>
-              <Link href="/playground/idea-mixer" className="desk-note">
-                <span>
-                  What happens
-                  <br />
-                  if you mix <em>these?</em>
-                </span>
-                <span className="desk-note-bottom">
-                  Try the idea mixer <ArrowUpRight size={18} />
-                </span>
-              </Link>
             </div>
-          </div>
-          <div className="cover-bottom">
-            <a href="#currently" className="field-text-link">
-              Explore my work <ArrowDown size={16} />
-            </a>
           </div>
         </section>
 
         <section id="currently" className="field-section selected-work" data-reveal>
           <div className="section-title-row">
-            <h2>
-              Selected <em>work.</em>
-            </h2>
-            <p>
-              Tools for getting a thought down, learning through a problem, and testing what an
-              agent can do.
-            </p>
+            <h2>Selected work</h2>
+            <p>Learning, voice, and memory. Software that gives your ideas somewhere to go.</p>
           </div>
-          <div className="work-index">
+          <div className="work-collection">
             {selectedWork.map((work) => (
-              <Link key={work.id} href={'/playground/' + work.id} className="work-index-row">
-                <div>
+              <article key={work.id} className={'work-feature feature-' + work.id}>
+                <Link
+                  href={'/playground/' + work.id}
+                  className="work-feature-art"
+                  aria-label={'Explore ' + work.title}
+                >
+                  <WorkVisual id={work.id} />
+                </Link>
+                <div className="work-feature-copy">
                   <span className="work-category">{work.category}</span>
-                  <h3>{work.title}</h3>
+                  <h3>
+                    <Link href={'/playground/' + work.id}>{work.title}</Link>
+                  </h3>
+                  <p>{work.description}</p>
+                  <div className="field-actions">
+                    <Link href={'/playground/' + work.id} className="field-text-link">
+                      {work.id === 'odicto' ? 'Meet both apps' : 'Explore the project'}{' '}
+                      <ArrowUpRight size={18} />
+                    </Link>
+                    {work.id === 'edudojo' && (
+                      <a
+                        href={work.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="field-text-link"
+                      >
+                        Visit Edudojo <ArrowUpRight size={16} />
+                      </a>
+                    )}
+                  </div>
                 </div>
-                <p>{work.description}</p>
-                <ArrowUpRight size={24} aria-hidden="true" />
-              </Link>
+              </article>
             ))}
           </div>
         </section>
@@ -124,11 +127,7 @@ export default async function Home() {
             </Link>
           </div>
           <div className="section-title-row">
-            <h2>
-              Apps &
-              <br />
-              <em>experiments.</em>
-            </h2>
+            <h2>Small things to try</h2>
             <p>Two small experiments you can try right here. No installation or account needed.</p>
           </div>
           <div className="play-preview-grid">
@@ -141,7 +140,7 @@ export default async function Home() {
               <div className="preview-caption">
                 <div>
                   <h3>Idea mixer</h3>
-                  <p>A tiny nudge for your next thing.</p>
+                  <p>Pair an audience with a constraint. Find something worth making.</p>
                 </div>
                 <ArrowUpRight size={24} />
               </div>
@@ -165,14 +164,10 @@ export default async function Home() {
 
         <section className="research-teaser field-section" data-reveal>
           <div>
-            <h2>
-              How machines
-              <br />
-              <em>see the world.</em>
-            </h2>
+            <h2>Before these tools, computer vision.</h2>
             <p className="field-copy">
-              My coauthored research explores object detection and surface-crack segmentation. This
-              is part of the work that came before Edudojo.
+              I started with problems in computer vision: finding objects and segmenting cracks in
+              surfaces. These publications are part of that earlier work.
             </p>
             <Link href="/research" className="field-text-link">
               Research & publications <ArrowUpRight size={18} />
@@ -195,14 +190,10 @@ export default async function Home() {
 
         <section className="field-section writing-spread" data-reveal>
           <div>
-            <h2>
-              Latest from
-              <br />
-              the <em>journal.</em>
-            </h2>
+            <h2>Working things out in writing.</h2>
             <p className="field-copy">
-              Essays on AI, learning, systems, and the craft of building. Writing is how I find out
-              what I actually think.
+              The questions behind the projects keep showing up here: what AI changes, how we learn,
+              and what it takes to build something useful.
             </p>
             <Link className="field-text-link" href="/journal">
               Open the journal <ArrowUpRight size={16} />
@@ -244,18 +235,14 @@ export default async function Home() {
         </section>
         <section className="elsewhere-spread field-section" data-reveal>
           <div>
-            <h2>
-              Films &
-              <br />
-              <em>conversations.</em>
-            </h2>
+            <h2>Away from the editor.</h2>
           </div>
           <div className="elsewhere-links">
             <Link href="/youtube">
               <Play size={21} />
               <span>
                 <strong>Watch the films</strong>
-                <small>Films, videos, and another way of seeing.</small>
+                <small>Travel, places, and the moments I stopped to film.</small>
               </span>
               <ArrowUpRight size={20} />
             </Link>
@@ -263,7 +250,7 @@ export default async function Home() {
               <span className="social-at">@</span>
               <span>
                 <strong>Find me online</strong>
-                <small>Find me on X, GitHub, and beyond.</small>
+                <small>Build notes on GitHub. Conversations on X and LinkedIn.</small>
               </span>
               <ArrowUpRight size={20} />
             </Link>

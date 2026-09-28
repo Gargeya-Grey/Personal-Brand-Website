@@ -52,3 +52,23 @@ The owner reported that near-white text felt harsh against the dark background. 
 - Production build passes. Inspected the built site locally: desktop home and article body, mobile Notes at 390px, and Journal subscription panel. Computed colors match the new tokens; mobile Notes has no horizontal overflow and no browser runtime errors were observed.
 - Light-mode base, heading, and article colors remain unchanged; light Notes was visually checked. No media dimming or page-wide opacity was applied.
 - Tested primary, reading, muted, and accent token colors against the six principal dark surfaces; the lowest pair was 5.28:1. This is a token contrast check, not an exhaustive accessibility audit. Contrast ratios do not measure subjective reading comfort; the owner should judge the preview on their usual screen.
+
+## Project story and discovery follow-up (29 September 2026)
+
+| Before | After | Why |
+| --- | --- | --- |
+| Odicto, Edudojo, then an agent experiment | Edudojo first; one Odicto family; TwinAatma third | Matches the owner's priorities and connects learning, voice, and memory. |
+| Long mobile portrait composition | Compact portrait beside the greeting, shorter introduction | First project starts at 694px instead of approximately 1,336px at a 390px viewport. |
+| Text-only Playground directory | Working overlap and idea-pairing samplers, plus project diagrams | Visitors can interact before choosing a project. |
+| Repeated latest-letter card and preview | One latest-letter preview, with only older letters in the archive | Reduces repeated content and scrolling. |
+| Visible missing-walkthrough panels | Labelled interactive explanations; recording requests in the owner checklist | Explains each project without presenting a sketch as real product footage. |
+
+- Source checks: current public READMEs for Odicto, Odicto-Mobile, and TwinAatma; Edudojo's public site. Desktop local transcription and Android provider-based transcription are distinguished. Edudojo is described as an MVP in testing, not as proven learning efficacy.
+- All four existing/new project writeups remain routable; DataClean stays in the Playground and sitemap but is no longer selected on the homepage. TwinAatma uses the public repository's spelling.
+- Production build and TypeScript pass. Full lint passes with only the same two existing markdown image warnings; a final lint pass over changed TS/TSX files has no warnings.
+- Browser verification on the local production build: changed home, Playground, Notes, and all four project pages fit 320px; home, Playground, Notes, and Edudojo fit 768px. Visually inspected desktop light/dark home, Notes and project layouts, mobile home/Notes, 320px Edudojo, and 390px TwinAatma. Browser errors list is empty.
+- Playground: pairing changes; keyboard Home/End on the overlap slider produce 1.00/0.00; Software filter returns Edudojo, Odicto, TwinAatma; unknown search shows an empty state; reset restores the collection.
+- Project explanations: Edudojo revision, Odicto platform switch and both repository destinations, TwinAatma accept/reject/reset paths checked. Keyboard focus moves to the selected stage when the decision buttons disappear. These examples use fixed sample content; no microphone, private memory, or model call is involved.
+- Mobile menu opens and closes with Escape, returning focus to Open menu. The homepage work anchor leaves its heading below the fixed navigation.
+- Light cards gain separation through different surface colors, borders, and restrained shadows. Dark ink retains the softened contrast from the preceding pass. New interactions do not autoplay or depend on motion.
+- No real newsletter/contact form, production content change, or private workflow was submitted. Real device testing, unfamiliar-visitor testing, and actual product recordings remain outstanding; a self-assigned 9 is not independent validation.

@@ -25,7 +25,10 @@ export default function PlaygroundPage() {
             </>
           }
         >
-          <p>Try a browser app, install a tool, or explore the code.</p>
+          <p>
+            Start with a small experiment below: move a box or mix an idea. Then explore the tools
+            I’m building for learning, voice, and memory.
+          </p>
         </PageIntro>
         <PlaygroundIndex entries={playgroundEntries} />
       </main>

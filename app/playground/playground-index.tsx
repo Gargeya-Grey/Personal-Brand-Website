@@ -1,4 +1,6 @@
 'use client';
+import { PlaygroundSampler } from '@/components/playground-sampler';
+import { WorkVisual } from '@/components/work-visual';
 import { useState } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Search } from 'lucide-react';
@@ -43,7 +45,22 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
       </p>
       <div className="project-shelf">
         {visible.map((entry) => (
-          <article key={entry.id}>
+          <article
+            key={entry.id}
+            className={entry.kind === 'In your browser' ? 'shelf-playable' : ''}
+          >
+            {entry.kind === 'In your browser' ? (
+              <PlaygroundSampler id={entry.id} />
+            ) : (
+              <Link
+                href={entry.href}
+                aria-label={'Explore ' + entry.title}
+                target={entry.href.startsWith('https://') ? '_blank' : undefined}
+                rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
+              >
+                <WorkVisual id={entry.id} />
+              </Link>
+            )}
             <div className="shelf-copy">
               <p className="field-label">
                 {entry.kind} / {entry.status}
@@ -87,7 +104,7 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
       </div>
       {!visible.length && (
         <div className="experiment-surface">
-          <h2>Nothing in this corner yet.</h2>
+          <h2>No projects match that search.</h2>
           <p className="field-copy">Try another search, or see the full collection.</p>
           <button
             className="field-button mt-6"

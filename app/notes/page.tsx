@@ -5,7 +5,6 @@ import { ArrowRight, ArrowUpRight, Check, Mail } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { NewsletterSignup } from '@/components/newsletter-signup';
-import { AuthorAvatar } from '@/components/author-avatar';
 import { getPublicNotes } from '@/lib/newsletter-service';
 import { SAMPLE_NOTE } from '@/lib/newsletter-sample';
 import { formatNoteDate, wordCount } from '@/lib/newsletter-model';
@@ -63,7 +62,7 @@ export default async function NotesPage() {
         tabIndex={-1}
         className="field-main reading-index w-full flex-grow pb-20"
       >
-        <section className="notes-cover" aria-label="About Notes">
+        <section className="notes-cover notes-cover-compact" aria-label="About Notes">
           <div>
             <NotesMasthead size="hero" />
             <p className="field-copy mt-6">
@@ -77,29 +76,13 @@ export default async function NotesPage() {
               <a href="#latest" className="field-text-link">
                 Read a letter ↓
               </a>
-              {sent.length > 0 && (
+              {sent.length > 1 && (
                 <a href="#archive" className="field-text-link">
                   Browse the archive ↓
                 </a>
               )}
             </div>
           </div>
-          <a href="#latest" className="letter-object">
-            <p className="field-label">
-              {exampleIsLive ? 'The latest letter' : 'An example letter'} / ~{exampleMinutes} min
-            </p>
-            <h2>{example.title}</h2>
-            <p>{example.dek}</p>
-            <div>
-              <AuthorAvatar src={siteConfig.authorAvatar} name={siteConfig.name} size="md" />
-              <span>
-                From Gargeya
-                <br />
-                <small>Sunday evening, your time</small>
-              </span>
-              <ArrowRight size={18} />
-            </div>
-          </a>
         </section>
 
         {/* Latest letter — wide reading preview + rail */}
@@ -248,7 +231,7 @@ export default async function NotesPage() {
         </section>
 
         {/* Archive — an inbox, not a bullet list */}
-        {sent.length > 0 ? (
+        {sent.length > 1 ? (
           <section
             id="archive"
             className="scroll-mt-32 border-t border-slate-900/[0.08] py-14 dark:border-white/10 sm:py-16 lg:py-20"
@@ -259,12 +242,11 @@ export default async function NotesPage() {
                   The inbox
                 </span>
                 <h2 className="mt-2 font-display text-2xl font-light tracking-[-0.02em] text-primary sm:text-3xl">
-                  Recent letters.
+                  Earlier letters.
                 </h2>
               </div>
               <p className="max-w-sm font-body text-sm leading-relaxed text-on-surface-variant sm:text-right">
-                {sent.length} {sent.length === 1 ? 'letter' : 'letters'} live · one a week, only
-                when honest.
+                {sent.length - 1} earlier {sent.length === 2 ? 'letter' : 'letters'}
               </p>
             </div>
 
@@ -278,7 +260,7 @@ export default async function NotesPage() {
                 </p>
               </div>
               <ul className="divide-y divide-slate-900/[0.06] dark:divide-white/[0.07]">
-                {sent.map((week, i) => {
+                {sent.slice(1).map((week, i) => {
                   const minutes = Math.max(1, Math.round(wordCount(week.bodyMd) / 220));
                   return (
                     <li key={week.id}>

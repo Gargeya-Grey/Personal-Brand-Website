@@ -1,42 +1,42 @@
 /** Curated from the owner's public repositories. Evidence links belong with the work. */
-export const selectedWork = [
+export const allWork = [
   {
     id: 'odicto',
     title: 'Odicto',
-    category: 'Desktop app',
-    subtitle: 'Speak a thought. Keep your cursor where it is.',
+    category: 'Desktop + Android',
+    subtitle: 'Your voice, in the app you’re already using.',
     description:
-      'Dictation that pastes into the app you’re already using. Local Whisper transcription, with optional cloud providers and AI replies.',
+      'Speak into a desktop hotkey or an Android keyboard. Odicto turns your voice into text where you’re already writing.',
     purpose:
-      'Writing by voice should not require moving your thoughts into a separate application. Odicto listens through a hotkey and puts the transcript into the focused field.',
+      'A thought often arrives faster than I can type it. Odicto is a way to get it down without opening another editor: a hotkey on the computer, a microphone in the keyboard on Android.',
     decision:
-      'Keep transcription and AI replies separate. Whisper can run locally; cloud transcription and model replies are optional choices. That makes the privacy tradeoff a decision the person using it can make.',
+      'One idea, two implementations. Desktop dictation can run locally with Whisper. Android sends voice requests directly to the provider you configure, without an Odicto backend. Both separate transcription from optional AI assistance.',
     state:
-      'Public source and installation instructions for Windows, macOS, and Linux. Platform permissions and setup requirements are documented in the repository.',
-    steps: ['Use a hotkey', 'Speak', 'Transcribe', 'Paste at the cursor'],
-    tags: ['Python', 'Whisper', 'PySide6'],
+      'Two public repositories, each with its own setup instructions. Desktop covers Windows, macOS, and Linux; the mobile app targets Android. The Android build requires your own provider keys. iOS is not available.',
+    steps: ['Choose desktop or Android', 'Speak', 'Transcribe', 'Keep writing'],
+    tags: ['Whisper', 'Python / Qt', 'Android / Kotlin'],
     source: 'https://github.com/Gargeya-Grey/Odicto',
-    action: 'Installation & source',
-    href: 'https://github.com/Gargeya-Grey/Odicto#quick-start',
+    action: 'Desktop source & setup',
+    href: 'https://github.com/Gargeya-Grey/Odicto',
     missing: 'A short screen recording showing dictation inside an everyday app.',
   },
   {
     id: 'edudojo',
-    title: 'Edudojo.ai',
+    title: 'Edudojo',
     category: 'Startup',
-    subtitle: 'The answer is only part of the work.',
+    subtitle: 'Give teachers more to discuss than a finished answer.',
     description:
-      'Student-centred learning with questions, revisions, and process journals. AI that challenges students to think.',
+      'My startup for learning with AI. A questioning coach and a process journal help students revise their work and teachers review how it developed.',
     purpose:
-      'A finished assignment can hide how much a student understands. Edudojo brings questions, reasoning, and revision into the learning process so teachers can respond to more than the final output.',
+      'When AI can produce a polished assignment, the final file leaves a lot unsaid. I’m building Edudojo to make space for questions, attempts, and revision during the work.',
     decision:
-      'Make the process visible. Questions and process journals give students a way to explain how they arrived at an answer and give teachers context for feedback.',
+      'The coach asks students to explain and revisit their ideas. A process journal records activity for teacher review; it does not score understanding or prove who wrote an answer. The teacher retains that judgment.',
     state:
-      'I’m building Edudojo as its founder. The public site is the place to explore the product and get in touch.',
-    steps: ['Ask a question', 'Make an attempt', 'Explain the reasoning', 'Reflect & revise'],
+      'I’m the founder and chief architect. The MVP is in testing, with a planned usability pilot in Jaipur. The public site includes illustrative product walkthroughs and the pilot plan.',
+    steps: ['Draft', 'Question', 'Revise', 'Review the process'],
     tags: ['Education', 'Socratic AI', 'Process journals'],
     source: undefined,
-    action: 'Visit Edudojo',
+    action: 'Explore Edudojo & the pilot',
     href: 'https://edudojo.ai',
     missing:
       'A product walkthrough with permission to show student work, plus a concrete learning or pilot outcome.',
@@ -61,4 +61,29 @@ export const selectedWork = [
     href: 'https://github.com/Gargeya-Grey/DataCleanOpenEnv',
     missing: 'One recorded task run, including a failed attempt and what changed on the next try.',
   },
+  {
+    id: 'twinaatma',
+    title: 'TwinAatma',
+    category: 'Personal AI memory',
+    subtitle: 'Start the next conversation with some shared history.',
+    description:
+      'A local memory for your AI tools: notes, decisions, and preferences you own, with proposed changes for you to review.',
+    purpose:
+      'A new AI conversation often starts with explaining yourself again. TwinAatma gives an assistant relevant context from a collection of notes you can read and keep.',
+    decision:
+      'Memory should be inspectable. Notes live in Markdown, and changes to the model of your preferences are proposed for approval. A lesson from one conversation can inform the next without silently rewriting who you are.',
+    state:
+      'A public, local-first toolkit with an MCP memory interface and optional Obsidian or Notion workflows. It needs a compatible AI host and initial setup; this is a developer tool, not a hosted chat service.',
+    steps: ['Load context', 'Have a conversation', 'Review a proposed memory', 'Carry it forward'],
+    tags: ['Markdown', 'Python', 'MCP'],
+    source: 'https://github.com/Gargeya-Grey/TwinAatma',
+    action: 'Explore TwinAatma',
+    href: 'https://github.com/Gargeya-Grey/TwinAatma',
+    missing: 'A recording of a memory proposal, approval, and retrieval in a later conversation.',
+  },
 ] as const;
+
+/** Homepage order is intentional; other experiments keep their existing routes. */
+export const selectedWork = ['edudojo', 'odicto', 'twinaatma'].map((id) =>
+  allWork.find((work) => work.id === id)!,
+);
