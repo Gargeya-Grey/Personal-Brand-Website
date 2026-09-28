@@ -17,8 +17,6 @@ export default function IdeaMixerPage() {
       <Navigation />
       <main id="page-main" tabIndex={-1} className="field-main">
         <PageIntro
-          number="001"
-          eyebrow="An interactive experiment"
           title={
             <>
               Good ideas have

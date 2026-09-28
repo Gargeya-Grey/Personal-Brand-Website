@@ -27,10 +27,6 @@ export default async function Home() {
       <FieldMotion />
       <main id="page-main" tabIndex={-1} className="field-main">
         <section className="personal-cover">
-          <div className="cover-topline field-label">
-            <span>A small corner of the internet</span>
-            <span>Always a work in progress ↗</span>
-          </div>
           <div className="cover-layout">
             <div className="cover-copy">
               <p className="cover-hello">
@@ -76,7 +72,6 @@ export default async function Home() {
                 </div>
               </Link>
               <Link href="/playground/idea-mixer" className="desk-note">
-                <span className="field-label">A small experiment</span>
                 <span>
                   What happens
                   <br />
@@ -86,22 +81,16 @@ export default async function Home() {
                   Try the idea mixer <ArrowUpRight size={18} />
                 </span>
               </Link>
-              <span className="cover-margin-note">Builder. Writer. Perpetually curious.</span>
             </div>
           </div>
           <div className="cover-bottom">
             <a href="#currently" className="field-text-link">
               Take a look around <ArrowDown size={16} />
             </a>
-            <span>Building · Writing · Experimenting</span>
           </div>
         </section>
 
         <section id="currently" className="field-section" data-reveal>
-          <div className="field-section-heading">
-            <p className="field-label">01 / On my desk</p>
-            <span className="field-aside">The question I keep coming back to</span>
-          </div>
           <div className="venture-spread">
             <div className="venture-copy">
               <span className="field-chip">
@@ -164,7 +153,6 @@ export default async function Home() {
 
         <section className="field-section" data-reveal>
           <div className="field-section-heading">
-            <p className="field-label">02 / Made to be tried</p>
             <Link href="/playground" className="field-text-link">
               All the experiments <ArrowUpRight size={16} />
             </Link>
@@ -189,7 +177,6 @@ export default async function Home() {
               </div>
               <div className="preview-caption">
                 <div>
-                  <p className="field-label">Interactive experiment / 001</p>
                   <h3>Idea mixer</h3>
                   <p>A tiny nudge for your next thing.</p>
                 </div>
@@ -211,7 +198,6 @@ export default async function Home() {
               </div>
               <div className="preview-caption">
                 <div>
-                  <p className="field-label">Open source / This very website</p>
                   <h3>The personal corner</h3>
                   <p>A home for an expanding body of work.</p>
                 </div>
@@ -223,7 +209,6 @@ export default async function Home() {
 
         <section className="field-section writing-spread" data-reveal>
           <div>
-            <p className="field-label">03 / Thinking out loud</p>
             <h2>
               Some thoughts
               <br />
@@ -239,9 +224,8 @@ export default async function Home() {
           </div>
           <div className="writing-index">
             {articles.length ? (
-              articles.map((article, index) => (
+              articles.map((article) => (
                 <Link key={article.id} href={'/journal/' + article.slug} className="writing-row">
-                  <span className="field-label">0{index + 1}</span>
                   <div>
                     <p className="field-label">
                       {article.categories.slice(0, 2).join(' / ') || 'Essay'}
@@ -254,7 +238,6 @@ export default async function Home() {
               ))
             ) : (
               <Link href="/journal" className="writing-row">
-                <span className="field-label">01</span>
                 <div>
                   <p className="field-label">The journal</p>
                   <h3>Follow a thought a little further.</h3>
@@ -266,7 +249,6 @@ export default async function Home() {
             <Link href="/notes" className="letter-row">
               <span aria-hidden="true">↳</span>
               <div>
-                <span className="field-label">Prefer a letter?</span>
                 <h3>Notes, on Sunday.</h3>
                 <p>One argument. A little room to think.</p>
               </div>
@@ -276,7 +258,6 @@ export default async function Home() {
         </section>
         <section className="elsewhere-spread field-section" data-reveal>
           <div>
-            <p className="field-label">04 / Outside the notebook</p>
             <h2>
               Same curiosity.
               <br />

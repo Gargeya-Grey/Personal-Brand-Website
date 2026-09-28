@@ -57,8 +57,6 @@ export default function CommunityPage() {
       <FieldMotion />
       <main id="page-main" tabIndex={-1} className="field-main">
         <PageIntro
-          number="05"
-          eyebrow="Around the internet"
           title={
             <>
               Good work starts
@@ -73,7 +71,7 @@ export default function CommunityPage() {
           </p>
         </PageIntro>
         <section className="social-directory" aria-label="Social profiles">
-          {destinations.map((item, index) => (
+          {destinations.map((item) => (
             <a
               key={item.title}
               href={item.href}
@@ -81,7 +79,6 @@ export default function CommunityPage() {
               rel="noopener noreferrer"
               data-reveal
             >
-              <span className="field-label">0{index + 1}</span>
               <div>
                 <h2>{item.title}</h2>
                 <span className="field-label">{item.handle}</span>

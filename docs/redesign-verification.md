@@ -28,3 +28,13 @@ Review the overall personality, headline scale, portrait treatment, motion feel,
 ## Adding future apps
 
 See `docs/publishing-experiments.md`. Internal apps get their own route; externally hosted apps use an HTTPS link. Both appear through the typed Playground registry.
+
+## Preview feedback follow-up (28 September 2026)
+
+- Removed redundant hero/section numbering, cover slogans, margin copy, and decorative article/social list numbers. Useful metadata uses readable 13px labels; journal category tags use 12px sentence case.
+- Replaced the olive/persimmon palette with the journal artwork's midnight navy, cool silver, teal, and mint in both themes. Search, category menus, contact fields, subscription fields, and inverted subscription panels use semantic colors.
+- Native modal navigation escapes the transformed header and supplies a full-viewport backdrop and inert background. At 467×1131: close button, backdrop click, Escape, focus return, keyboard movement, and route selection pass. At 667×320: menu scrolls inside the viewport. Resizing to desktop dismisses it and restores body scrolling; the private sign-in navigation passes its 640px breakpoint too.
+- Home, About, Community, Playground, Notes, Contact, and Videos fit 320px. Journal controls and the category popup also fit 320px. Light/dark desktop Journal and home were visually inspected at 1308×1131; Notes checked on phone/tablet; reduced-motion menu dismissal checked.
+- Journal search for GLM and category Education each render their one matching article. Empty search and reset work. Fixed the previous exclusion of the featured article even when its feature presentation was hidden by filters; pagination counts now include the visible feature.
+- WCAG contrast calculations for the new semantic palette: light body 13.64:1, muted 5.38:1, accent 4.82:1, button 5.19:1; dark body 16.76:1, muted on cards 8.70:1, accent on cards 10.57:1, button 11.72:1. This measures these token pairs, not an exhaustive accessibility audit of all legacy components.
+- Production build and lint pass (the same two existing markdown image warnings). No browser runtime errors observed. No forms submitted or private data changed in this follow-up.

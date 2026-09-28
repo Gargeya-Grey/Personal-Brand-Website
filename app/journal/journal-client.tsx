@@ -113,13 +113,17 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
     return sortedArticles.find((a) => a.featured) || sortedArticles[0];
   }, [sortedArticles]);
 
+  const shouldShowFeatured =
+    featuredPost !== null && selectedCategories.length === 0 && searchQuery === '';
+
   // Paginated recent stories — exclude the featured hero so it is not duplicated
   const paginatedArticles = useMemo(() => {
-    const rest = featuredPost
-      ? sortedArticles.filter((a) => a.id !== featuredPost.id)
-      : sortedArticles;
+    const rest =
+      shouldShowFeatured && featuredPost
+        ? sortedArticles.filter((a) => a.id !== featuredPost.id)
+        : sortedArticles;
     return rest.slice(0, visibleCount);
-  }, [sortedArticles, visibleCount, featuredPost]);
+  }, [sortedArticles, visibleCount, featuredPost, shouldShowFeatured]);
 
   return (
     <div className="relative flex min-h-screen flex-col bg-surface text-primary antialiased selection:bg-accent/30 selection:text-current">
@@ -133,8 +137,6 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
         className="field-main reading-index relative z-10 w-full flex-grow pb-20"
       >
         <PageIntro
-          number="02"
-          eyebrow="The journal"
           title={
             <>
               Follow a thought
@@ -147,9 +149,6 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
             Essays on systems, AI, learning, and the craft of building. Some ideas need more than a
             post, so I work them out here.
           </p>
-          <p className="field-label mt-5">
-            {articles.length} essays / Evidence, questions, and build notes
-          </p>
         </PageIntro>
 
         {/* Filter & Search Bar Area — sticky instrument, not a loose row */}
@@ -157,7 +156,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
           <div className="flex flex-col items-stretch justify-between gap-3 rounded-[1.5rem] border border-white/50 bg-white/55 p-3 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl md:flex-row md:items-center dark:border-white/10 dark:bg-white/[0.04]">
             {/* Search Input Widget */}
             <div className="relative flex-grow md:max-w-lg">
-              <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
+              <Search className="w-4 h-4 text-on-surface-variant absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search headlines, keywords, or topics..."
@@ -167,7 +166,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                   setSearchQuery(e.target.value);
                   setVisibleCount(9);
                 }}
-                className="w-full rounded-2xl border border-slate-200 bg-white py-3.5 pl-11 pr-10 text-base text-slate-800 shadow-sm transition-all placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-slate-900 dark:text-white"
+                className="journal-control w-full rounded-xl border py-3.5 pl-11 pr-12 text-base"
               />
               {searchQuery && (
                 <button
@@ -176,7 +175,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                     setVisibleCount(9);
                   }}
                   aria-label="Clear search"
-                  className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-slate-400 transition-colors hover:text-slate-600 dark:hover:text-white"
+                  className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-slate-600 dark:hover:text-white"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -190,23 +189,25 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                 aria-haspopup="listbox"
                 aria-expanded={isDropdownOpen}
                 aria-label="Filter by categories"
-                className="flex w-full items-center justify-between gap-3 rounded-2xl border border-slate-200 bg-white px-5 py-3.5 text-base font-semibold text-slate-700 shadow-sm transition-all hover:shadow-md dark:border-white/10 dark:bg-slate-900 dark:text-white/85 md:w-64"
+                className="journal-control flex w-full items-center justify-between gap-3 rounded-xl border px-5 py-3.5 text-base font-semibold md:w-64"
               >
                 <span className="flex items-center gap-2">
-                  <Filter className="w-4 h-4 text-slate-400" />
+                  <Filter className="w-4 h-4 text-on-surface-variant" />
                   {selectedCategories.length === 0
                     ? 'All Categories'
                     : `${selectedCategories.length} selected`}
                 </span>
                 <ChevronDown
-                  className={`w-4 h-4 text-slate-400 transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
+                  className={`w-4 h-4 text-on-surface-variant transition-transform duration-300 ${isDropdownOpen ? 'rotate-180' : ''}`}
                 />
               </button>
 
               {isDropdownOpen && (
                 <div
                   role="listbox"
-                  className="absolute right-0 mt-2 w-72 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-xl p-3 space-y-1 z-50 animate-in fade-in slide-in-from-top-3 duration-200"
+                  aria-label="Article categories"
+                  aria-multiselectable="true"
+                  className="journal-category-menu absolute right-0 mt-2 rounded-xl border p-3 space-y-1 z-50"
                 >
                   <button
                     role="option"
@@ -215,10 +216,10 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                       handleCategoryToggle('All');
                       setIsDropdownOpen(false);
                     }}
-                    className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-headline font-bold transition-all flex items-center justify-between ${
+                    className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-headline font-semibold transition-colors flex items-center justify-between ${
                       selectedCategories.length === 0
                         ? 'bg-accent/10 text-accent font-extrabold'
-                        : 'text-slate-600 dark:text-white/70 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white'
+                        : 'text-on-surface-variant hover:bg-accent/5 hover:text-primary'
                     }`}
                   >
                     <span>All Categories</span>
@@ -227,7 +228,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                     )}
                   </button>
 
-                  <div className="h-[1px] bg-slate-100 dark:bg-slate-800 my-1" />
+                  <div className="h-px bg-outline-variant my-1" />
 
                   <div className="max-h-60 overflow-y-auto pr-1 space-y-1">
                     {CATEGORIES.map((c) => {
@@ -238,10 +239,10 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                           role="option"
                           aria-selected={active}
                           onClick={() => handleCategoryToggle(c)}
-                          className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-headline font-bold transition-all flex items-center justify-between ${
+                          className={`w-full text-left px-4 py-2.5 rounded-lg text-sm font-headline font-semibold transition-colors flex items-center justify-between ${
                             active
                               ? 'bg-accent/10 text-accent font-extrabold'
-                              : 'text-slate-600 dark:text-white/70 hover:bg-slate-100 hover:text-slate-900 dark:hover:bg-white/10 dark:hover:text-white'
+                              : 'text-on-surface-variant hover:bg-accent/5 hover:text-primary'
                           }`}
                         >
                           <span>{c}</span>
@@ -263,7 +264,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
             <h3 className="font-headline font-bold text-xl text-slate-800 dark:text-white">
               No posts match your filters
             </h3>
-            <p className="font-body text-slate-500 dark:text-white/60 max-w-md mx-auto text-sm leading-relaxed">
+            <p className="font-body text-on-surface-variant dark:text-white/60 max-w-md mx-auto text-sm leading-relaxed">
               Try a different category mix or clear search to see everything again.
             </p>
             <button
@@ -272,7 +273,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                 setSearchQuery('');
                 setVisibleCount(9);
               }}
-              className="bg-accent text-primary dark:text-primary-container hover:bg-accent/90 font-headline font-bold text-xs h-10 px-6 rounded-xl transition-all active:scale-95 cursor-pointer shadow-md hover:shadow-[0_0_15px_rgba(16,185,129,0.3)]"
+              className="btn-accent font-headline font-semibold text-sm min-h-11 px-6 rounded-xl"
             >
               Clear Filters
             </button>
@@ -280,7 +281,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
         ) : (
           <div className="space-y-16 lg:space-y-20">
             {/* 1. DYNAMIC FEATURED HERO SECTION */}
-            {featuredPost && selectedCategories.length === 0 && searchQuery === '' && (
+            {shouldShowFeatured && featuredPost && (
               <div className="space-y-8">
                 <div className="flex items-center gap-4">
                   <span className="font-label text-xs uppercase tracking-[0.25em] text-accent font-bold flex items-center gap-2">
@@ -301,7 +302,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                       {featuredPost.categories.map((c) => (
                         <span
                           key={c}
-                          className="font-label text-[11px] uppercase tracking-wider font-[520] dark:font-[480] text-accent bg-accent/5 px-3 py-1 rounded-full border border-accent/20"
+                          className="font-label text-xs font-[520] dark:font-[480] text-accent bg-accent/5 px-3 py-1 rounded-full border border-accent/20"
                         >
                           {c}
                         </span>
@@ -328,7 +329,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                         </span>
                       </div>
 
-                      <div className="flex items-center gap-3 text-xs text-slate-500 font-label">
+                      <div className="flex items-center gap-3 text-xs text-on-surface-variant font-label">
                         <span>{featuredPost.date}</span>
                         <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700" />
                         <span className="text-accent flex items-center gap-1">
@@ -367,7 +368,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
               {/* Grid Divider line */}
               <div className="flex items-center gap-4">
                 <div className="h-[1px] bg-outline-variant dark:bg-white/10 flex-grow" />
-                <span className="font-label text-xs uppercase tracking-[0.25em] text-slate-400 font-bold">
+                <span className="font-label text-xs uppercase tracking-[0.25em] text-on-surface-variant font-bold">
                   Recent stories
                 </span>
                 <div className="h-[1px] bg-outline-variant dark:bg-white/10 flex-grow" />
@@ -411,7 +412,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                           {post.categories.map((c) => (
                             <span
                               key={c}
-                              className="font-label text-[10px] uppercase tracking-wider font-[520] dark:font-[480] text-accent bg-accent/5 px-2.5 py-1 rounded-full border border-accent/20"
+                              className="font-label text-xs font-[520] dark:font-[480] text-accent bg-accent/5 px-2.5 py-1 rounded-full border border-accent/20"
                             >
                               {c}
                             </span>
@@ -440,7 +441,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                           </span>
                         </div>
 
-                        <div className="flex items-center gap-2 text-xs font-label text-slate-500">
+                        <div className="flex items-center gap-2 text-xs font-label text-on-surface-variant">
                           <span>{post.date}</span>
                           <span className="text-accent font-semibold">{post.readTime}</span>
                         </div>
@@ -452,12 +453,13 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
 
               {/* Pagination Controls block */}
               <div className="flex flex-col items-center gap-4 border-t border-slate-200/50 pt-10 dark:border-white/10">
-                <p className="font-label text-xs text-slate-400 dark:text-slate-500 uppercase tracking-widest font-semibold">
-                  Showing {Math.min(visibleCount, sortedArticles.length)} of {sortedArticles.length}{' '}
-                  posts
+                <p className="font-label text-xs text-on-surface-variant dark:text-on-surface-variant uppercase tracking-widest font-semibold">
+                  Showing{' '}
+                  {Math.min(visibleCount + (shouldShowFeatured ? 1 : 0), sortedArticles.length)} of{' '}
+                  {sortedArticles.length} posts
                 </p>
 
-                {sortedArticles.length > visibleCount && (
+                {sortedArticles.length > visibleCount + (shouldShowFeatured ? 1 : 0) && (
                   <button
                     onClick={handleLoadMore}
                     className="btn-accent group relative flex h-12 cursor-pointer items-center justify-center gap-2.5 px-10 font-headline text-xs font-bold rounded-2xl"
@@ -497,7 +499,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                 </div>
               </div>
               <div className="lg:col-span-6">
-                <div className="rounded-[1.5rem] border border-slate-900/[0.08] bg-white/70 p-5 backdrop-blur-sm sm:p-7 dark:border-white/10 dark:bg-white/[0.04]">
+                <div className="rounded-2xl border border-outline-variant bg-canvas p-5 sm:p-7">
                   <p className="font-headline text-lg font-bold text-primary">Get Notes weekly</p>
                   <p className="mt-1.5 mb-5 font-body text-sm text-on-surface-variant">
                     Free · Sunday 19:00 in your timezone · unsubscribe anytime.

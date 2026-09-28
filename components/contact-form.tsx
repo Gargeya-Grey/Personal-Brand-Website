@@ -156,7 +156,7 @@ export function ContactForm() {
               placeholder="Your name"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-body text-base text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
+              className="h-12 w-full rounded-xl border border-outline-variant bg-surface px-4 font-body text-base text-primary placeholder:text-on-surface-variant transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             />
           </div>
 
@@ -176,7 +176,7 @@ export function ContactForm() {
               placeholder="you@company.com"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-              className="h-12 w-full rounded-xl border border-slate-200 bg-slate-50 px-4 font-body text-base text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
+              className="h-12 w-full rounded-xl border border-outline-variant bg-surface px-4 font-body text-base text-primary placeholder:text-on-surface-variant transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
             />
           </div>
         </div>
@@ -185,7 +185,11 @@ export function ContactForm() {
           <legend className="text-xs font-label uppercase tracking-wider text-primary font-extrabold block mb-3">
             Nature of Inquiry
           </legend>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" role="radiogroup" aria-label="Inquiry type">
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+            role="radiogroup"
+            aria-label="Inquiry type"
+          >
             {projectTypes.map((type) => {
               const selected = formData.projectType === type.id;
               return (
@@ -194,7 +198,7 @@ export function ContactForm() {
                   className={`flex min-h-12 cursor-pointer items-center justify-between rounded-xl border px-4 py-3 font-headline text-sm font-semibold transition-all focus-within:ring-2 focus-within:ring-accent ${
                     selected
                       ? 'bg-accent/10 text-primary dark:text-accent border-accent/40 dark:border-accent/60 shadow-sm'
-                      : 'border-slate-200 bg-slate-50 text-on-surface-variant hover:bg-slate-100 hover:text-primary dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.06]'
+                      : 'border-outline-variant bg-surface text-on-surface-variant hover:bg-slate-100 hover:text-primary dark:border-white/10 dark:bg-white/[0.03] dark:hover:bg-white/[0.06]'
                   }`}
                 >
                   <input
@@ -228,7 +232,7 @@ export function ContactForm() {
             placeholder="What are you building, timeline, constraints, or the problem you want to solve..."
             value={formData.details}
             onChange={(e) => setFormData({ ...formData, details: e.target.value })}
-            className="min-h-[140px] w-full resize-y rounded-xl border border-slate-200 bg-slate-50 p-4 font-body text-base text-primary placeholder-on-surface-variant/40 transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-white/[0.04]"
+            className="min-h-[140px] w-full resize-y rounded-xl border border-outline-variant bg-surface p-4 font-body text-base text-primary placeholder:text-on-surface-variant transition-colors focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent"
           />
         </div>
 
@@ -240,7 +244,10 @@ export function ContactForm() {
             <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
             <div>
               <p>{errorMessage}</p>
-              <a href={`mailto:${siteConfig.email}`} className="underline font-semibold mt-1 inline-block">
+              <a
+                href={`mailto:${siteConfig.email}`}
+                className="underline font-semibold mt-1 inline-block"
+              >
                 Email {siteConfig.email}
               </a>
             </div>

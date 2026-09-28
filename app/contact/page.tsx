@@ -17,8 +17,6 @@ export default function ContactPage() {
       <Navigation />
       <main id="page-main" tabIndex={-1} className="field-main">
         <PageIntro
-          number="06"
-          eyebrow="An open door"
           title={
             <>
               Something on

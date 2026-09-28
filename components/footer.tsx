@@ -25,7 +25,6 @@ export function Footer() {
       <div className="footer-inner">
         <div className="footer-top">
           <div>
-            <p className="field-label">Keep a little curiosity in your inbox</p>
             <h2>
               A note on <em>Sunday.</em>
             </h2>

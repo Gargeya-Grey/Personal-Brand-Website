@@ -16,8 +16,8 @@ The discovery sequence is person → current work → things to try → ideas to
 
 ## Visual system
 
-- Paper `#f5f2eb`, ink `#242721`, muted ink `#686b62`, persimmon `#b74326`; dark mode uses `#191c18`, warm white, and `#f3997c`.
-- Instrument Serif for expressive display headlines; Manrope for reading and controls. Mono labels mark section numbers and metadata. Unused display-font downloads are removed.
+- Palette follows the owner’s journal cover art: cool silver `#f0f5f6`, navy ink `#142936`, readable teal `#08796d`; dark mode uses midnight `#0b141f`, silver-white `#edf5f7`, and sea-glass mint `#83dfc1`. Supporting surfaces use muted blue and mint.
+- Instrument Serif for expressive display headlines; Manrope for reading and controls. Decorative section numbers and redundant eyebrow copy are removed; useful metadata stays at a readable size. Unused display-font downloads are removed.
 - Fine rules, generous whitespace, modest corner radii, offset paper objects, and one deliberate accent. Different content gets different composition; avoid an endless grid of identical cards.
 - Page width 1320px, fluid type, one-column phone layouts, wrapping controls, 44px primary touch targets. Content determines height.
 - Motion: one-time 8–16px section entrances, small pointer-only lifts, and a scroll-driven decorative orbit. Transform/opacity only, native scrolling, reduced-motion alternatives, content visible without JavaScript.

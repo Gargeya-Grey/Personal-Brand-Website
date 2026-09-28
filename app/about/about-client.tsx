@@ -32,8 +32,6 @@ export default function AboutClient() {
       <FieldMotion />
       <main id="page-main" tabIndex={-1} className="field-main">
         <PageIntro
-          number="00"
-          eyebrow="The person behind the work"
           title={
             <>
               Hi, I’m Gargeya.
@@ -58,7 +56,6 @@ export default function AboutClient() {
             />
           </div>
           <div className="about-story">
-            <p className="field-label">The thread running through it all</p>
             <h2>
               Output is cheap.
               <br />
@@ -97,7 +94,6 @@ export default function AboutClient() {
           <div className="principle-grid">
             {principles.map(([number, title, body]) => (
               <article key={number}>
-                <span className="field-label">{number}</span>
                 <h3>{title}</h3>
                 <p>{body}</p>
               </article>
@@ -106,7 +102,6 @@ export default function AboutClient() {
         </section>
         <section className="field-section elsewhere-spread" data-reveal>
           <div>
-            <p className="field-label">Follow a thread</p>
             <h2>
               There’s more
               <br />

@@ -25,7 +25,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     pathname.startsWith('/login');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [readingNavHidden, setReadingNavHidden] = useState(false);
-  const menuRef = useRef<HTMLDivElement>(null);
+  const menuRef = useRef<HTMLDialogElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   const linksList: NavLink[] = isAtelier
@@ -123,6 +123,12 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
   useEffect(() => {
     if (!mobileMenuOpen) return;
+    const dialog = menuRef.current;
+    if (!dialog) return;
+
+    // The browser's top layer escapes the animated header's containing block.
+    // showModal also makes the page behind the menu inert and manages focus.
+    dialog.showModal();
 
     const desktop = window.matchMedia(isAtelier ? '(min-width: 640px)' : '(min-width: 1024px)');
     const closeOnDesktop = () => {
@@ -130,42 +136,11 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     };
     desktop.addEventListener('change', closeOnDesktop);
 
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') {
-        setMobileMenuOpen(false);
-        buttonRef.current?.focus();
-        return;
-      }
-
-      if (e.key === 'Tab' && menuRef.current) {
-        const focusable = Array.from(
-          menuRef.current.querySelectorAll<HTMLElement>(
-            'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
-          ),
-        );
-        if (focusable.length === 0) return;
-
-        const first = focusable[0];
-        const last = focusable[focusable.length - 1];
-        if (e.shiftKey && document.activeElement === first) {
-          e.preventDefault();
-          last.focus();
-        } else if (!e.shiftKey && document.activeElement === last) {
-          e.preventDefault();
-          first.focus();
-        }
-      }
-    };
-    document.addEventListener('keydown', onKey);
-    window.requestAnimationFrame(() => {
-      menuRef.current?.querySelector<HTMLElement>('a[href], button:not([disabled])')?.focus();
-    });
-
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
 
     return () => {
-      document.removeEventListener('keydown', onKey);
+      dialog.close();
       document.body.style.overflow = prevOverflow;
       desktop.removeEventListener('change', closeOnDesktop);
     };
@@ -190,13 +165,13 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
   const mobileBtn = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)] text-[var(--atelier-ink)] hover:text-[var(--atelier-gold)]'
-    : 'border-white/60 bg-white/80 text-slate-700 shadow-sm hover:text-accent dark:border-white/10 dark:bg-white/15 dark:text-white/80';
+    : 'border-outline-variant bg-canvas text-primary hover:text-accent';
 
   const publicLinkIdle =
     'border-transparent text-on-surface-variant hover:border-white/80 hover:bg-white/70 hover:text-primary hover:shadow-sm dark:hover:border-white/20 dark:hover:bg-white/10';
 
   const publicMobileIdle =
-    'border-transparent text-slate-600 hover:bg-slate-50 dark:text-white/70 dark:hover:bg-white/5';
+    'border-transparent text-on-surface-variant hover:bg-accent/5 hover:text-primary';
 
   const onX =
     workspaceParam === 'x' ||
@@ -358,7 +333,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             ref={buttonRef}
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atelier-gold)] ${
+            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
               isAtelier ? 'sm:hidden' : 'lg:hidden'
             } ${mobileBtn}`}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
@@ -370,92 +345,85 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         </div>
       </nav>
 
-      {mobileMenuOpen && (
-        <>
+      <dialog
+        id="mobile-nav-panel"
+        ref={menuRef}
+        className={`mobile-nav-dialog pointer-events-auto rounded-xl border p-4 ${mobilePanel}`}
+        aria-label="Mobile navigation"
+        onCancel={(event) => {
+          event.preventDefault();
+          setMobileMenuOpen(false);
+        }}
+        onClick={(event) => {
+          if (event.target !== event.currentTarget) return;
+          const bounds = event.currentTarget.getBoundingClientRect();
+          const outsidePanel =
+            event.clientX < bounds.left ||
+            event.clientX > bounds.right ||
+            event.clientY < bounds.top ||
+            event.clientY > bounds.bottom;
+          if (outsidePanel) setMobileMenuOpen(false);
+        }}
+      >
+        <div className="flex flex-col gap-2">
           <button
             type="button"
-            className={`pointer-events-auto fixed inset-0 z-30 bg-slate-950/20 backdrop-blur-[2px] ${
-              isAtelier ? 'sm:hidden' : 'lg:hidden'
-            }`}
             onClick={() => {
               setMobileMenuOpen(false);
-              buttonRef.current?.focus();
             }}
-            aria-label="Close navigation menu"
-            tabIndex={-1}
-          />
-          <div
-            id="mobile-nav-panel"
-            ref={menuRef}
-            className={`pointer-events-auto absolute top-20 right-3 left-3 z-40 max-h-[calc(100dvh-8rem)] overflow-y-auto rounded-xl border p-4 sm:right-4 sm:left-4 ${
-              isAtelier ? 'sm:hidden' : 'lg:hidden'
-            } ${mobilePanel}`}
-            role="dialog"
-            aria-modal="true"
-            aria-label="Mobile navigation"
+            className="flex min-h-11 items-center justify-between rounded-lg px-4 text-sm font-semibold"
           >
-            <div className="flex flex-col gap-2">
-              <button
-                type="button"
-                onClick={() => {
+            Close menu <X className="h-4 w-4" />
+          </button>
+          {linksList.map((link) => {
+            const isActive = isLinkActive(link);
+            return (
+              <Link
+                key={link.name}
+                href={link.path}
+                scroll={!isAtelier}
+                prefetch={isAtelier ? false : undefined}
+                onClick={(e) => {
+                  handleSamePageNav(e, link.path, link.external);
                   setMobileMenuOpen(false);
-                  buttonRef.current?.focus();
                 }}
-                className="flex min-h-11 items-center justify-between rounded-lg px-4 text-sm font-semibold"
+                target={link.external ? '_blank' : undefined}
+                rel={link.external ? 'noopener noreferrer' : undefined}
+                aria-current={isActive ? 'page' : undefined}
+                className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
+                  isAtelier
+                    ? isActive
+                      ? atelierActive
+                      : 'border-transparent text-[var(--atelier-ink)] hover:bg-[var(--atelier-paper)]'
+                    : isActive
+                      ? 'border-accent/20 bg-accent/10 text-accent'
+                      : publicMobileIdle
+                }`}
               >
-                Close menu <X className="h-4 w-4" />
-              </button>
-              {linksList.map((link) => {
-                const isActive = isLinkActive(link);
-                return (
-                  <Link
-                    key={link.name}
-                    href={link.path}
-                    scroll={!isAtelier}
-                    prefetch={isAtelier ? false : undefined}
-                    onClick={(e) => {
-                      handleSamePageNav(e, link.path, link.external);
-                      setMobileMenuOpen(false);
-                    }}
-                    target={link.external ? '_blank' : undefined}
-                    rel={link.external ? 'noopener noreferrer' : undefined}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
-                      isAtelier
-                        ? isActive
-                          ? atelierActive
-                          : 'border-transparent text-[var(--atelier-ink)] hover:bg-[var(--atelier-paper)]'
-                        : isActive
-                          ? 'border-accent/20 bg-accent/10 text-accent'
-                          : publicMobileIdle
-                    }`}
-                  >
-                    {link.icon}
-                    {link.name}
-                  </Link>
-                );
-              })}
-              {isAtelier ? (
-                <Link
-                  href="/api/auth/logout"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="mt-2 w-full rounded-2xl border border-[var(--atelier-line)] py-3 text-center font-headline text-sm font-bold text-[var(--atelier-muted)]"
-                >
-                  Sign out
-                </Link>
-              ) : (
-                <Link
-                  href="/contact"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="btn-accent mt-2 w-full rounded-2xl py-3 text-center font-headline text-sm font-bold tracking-tight"
-                >
-                  Contact
-                </Link>
-              )}
-            </div>
-          </div>
-        </>
-      )}
+                {link.icon}
+                {link.name}
+              </Link>
+            );
+          })}
+          {isAtelier ? (
+            <Link
+              href="/api/auth/logout"
+              onClick={() => setMobileMenuOpen(false)}
+              className="mt-2 w-full rounded-2xl border border-[var(--atelier-line)] py-3 text-center font-headline text-sm font-bold text-[var(--atelier-muted)]"
+            >
+              Sign out
+            </Link>
+          ) : (
+            <Link
+              href="/contact"
+              onClick={() => setMobileMenuOpen(false)}
+              className="btn-accent mt-2 w-full rounded-2xl py-3 text-center font-headline text-sm font-bold tracking-tight"
+            >
+              Contact
+            </Link>
+          )}
+        </div>
+      </dialog>
     </div>
   );
 }

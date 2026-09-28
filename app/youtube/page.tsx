@@ -21,8 +21,6 @@ export default function YoutubePage() {
       <FieldMotion />
       <main id="page-main" tabIndex={-1} className="field-main">
         <PageIntro
-          number="04"
-          eyebrow="Moving pictures"
           title={
             <>
               Sometimes, you have

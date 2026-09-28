@@ -65,7 +65,6 @@ export default async function NotesPage() {
       >
         <section className="notes-cover" aria-label="About Notes">
           <div>
-            <p className="field-label">03 / A letter on Sunday</p>
             <NotesMasthead size="hero" />
             <p className="field-copy mt-6">
               A weekly letter from Gargeya on learning, judgment, and being human with AI in the
@@ -352,7 +351,7 @@ export default async function NotesPage() {
                 </ul>
               </div>
               <div className="lg:col-span-6">
-                <div className="rounded-[1.5rem] border border-slate-900/[0.08] bg-white/70 p-5 backdrop-blur-sm sm:p-7 dark:border-white/10 dark:bg-white/[0.04]">
+                <div className="rounded-2xl border border-outline-variant bg-canvas p-5 sm:p-7">
                   <p className="font-headline text-lg font-bold text-primary">Get the next one</p>
                   <p className="mt-1.5 mb-5 font-body text-sm text-on-surface-variant">
                     Free · Sunday 19:00 in your timezone · unsubscribe anytime.

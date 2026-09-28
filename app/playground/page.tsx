@@ -19,8 +19,6 @@ export default function PlaygroundPage() {
       <FieldMotion />
       <main id="page-main" tabIndex={-1} className="field-main">
         <PageIntro
-          number="01"
-          eyebrow="The playground"
           title={
             <>
               A place to make.
