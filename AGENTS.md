@@ -97,6 +97,10 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 - Vercel deploys this personal repo; wrong Vercel team/MCP credentials have caused confusion — use the personal project, not unrelated orgs.
 - Push often blocked for agent auto-mode; **user runs** `git push origin main` when needed.
 
+### Project covers
+- When adding a project, creating artwork, or revising a cover, read `DESIGN.md` for the creative brief and reusable prompt, then `docs/project-cover-system.md` for implementation and placement checks. Custom SVG remains the default; Edudojo has an owner-approved image exception.
+- Every project requires typed `cover` metadata. Use the shared `WorkVisual` renderer on home, Playground, and project pages. Run `node --experimental-strip-types scripts/check-project-covers.mjs` and inspect the collection in both themes before publishing.
+
 ### Brand
 - Nav short name: **Gargeya**.
 - Logos under `public/brand/sgargeya-logo-*` (light/dark png/svg).

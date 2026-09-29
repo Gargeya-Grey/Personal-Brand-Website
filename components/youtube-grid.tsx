@@ -2,15 +2,13 @@
 
 import { useState } from 'react';
 import * as motion from 'motion/react-client';
-import { Play, ExternalLink, Eye, Calendar, Film } from 'lucide-react';
+import { Play, ExternalLink, Film } from 'lucide-react';
 import Image from 'next/image';
 import { siteConfig } from '@/lib/site-config';
 
 interface VideoItem {
   id: string;
   title: string;
-  views: string;
-  date: string;
   duration: string;
   description: string;
 }
@@ -32,8 +30,6 @@ export const VIDEOS: VideoItem[] = [
   {
     id: 'bUk92KXUh1M',
     title: 'Travelling to my Dream Country : Japan🗾 (Part 1: ARRIVAL)',
-    views: '259 views',
-    date: '3 months ago',
     duration: '27:04',
     description:
       'Arrival and first impressions — transport systems, Tokyo texture, and the start of the Japan series.',
@@ -41,8 +37,6 @@ export const VIDEOS: VideoItem[] = [
   {
     id: 'CgmgDAWVdeo',
     title: 'Surviving Universal Studios Japan in Winter! 🎢 | Osaka Vlog Part 2',
-    views: '167 views',
-    date: '3 months ago',
     duration: '27:29',
     description:
       'Winter at Universal Studios Japan — crowd strategy, key attractions, and on-the-ground pacing.',
@@ -50,8 +44,6 @@ export const VIDEOS: VideoItem[] = [
   {
     id: 'TqrgjZOBYqc',
     title: "Osaka's Night Market & Exploring Nara | Vlog 03",
-    views: '222 views',
-    date: '2 months ago',
     duration: '27:04',
     description:
       'Osaka night food, Todai-ji Temple in Nara, and the iconic local deer — slower travel essay energy.',
@@ -120,14 +112,6 @@ export function YoutubeGrid() {
               <p className="text-sm text-on-surface-variant leading-relaxed line-clamp-2 flex-grow">
                 {video.description}
               </p>
-              <div className="flex flex-wrap items-center gap-3 text-[11px] font-label text-on-surface-variant/80 uppercase tracking-wider pt-1">
-                <span className="inline-flex items-center gap-1">
-                  <Eye className="w-3.5 h-3.5" /> {video.views}
-                </span>
-                <span className="inline-flex items-center gap-1">
-                  <Calendar className="w-3.5 h-3.5" /> {video.date}
-                </span>
-              </div>
             </div>
           </motion.article>
         ))}
@@ -135,11 +119,11 @@ export function YoutubeGrid() {
 
       <div className="cta-card-gradient relative overflow-hidden rounded-[2rem] p-6 sm:p-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <p className="font-headline text-xl font-bold tracking-tight text-primary sm:text-2xl">
+          <p className="font-headline text-xl font-bold tracking-tight text-white sm:text-2xl">
             More on the channel
           </p>
           <p className="max-w-md font-body text-sm leading-relaxed text-on-surface-variant">
-            Early films stay on the channel. New work starts here soon.
+            More films and the full collection, all in one place.
           </p>
           <a
             href={siteConfig.links.youtube}

@@ -1,4 +1,5 @@
 import type { MetadataRoute } from 'next';
+import { allWork } from '@/data/selected-work';
 import { getArticles } from '@/lib/blog-service';
 import { getPublicNotes } from '@/lib/newsletter-service';
 import { getSiteOrigin } from '@/lib/site-config';
@@ -8,6 +9,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticRoutes: MetadataRoute.Sitemap = [
     '',
     '/about',
+    '/playground',
+    ...allWork.map((work) => '/playground/' + work.id),
+    '/research',
     '/journal',
     '/notes',
     '/youtube',

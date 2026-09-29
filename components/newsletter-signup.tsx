@@ -86,7 +86,7 @@ export function NewsletterSignup({
           className={
             dark
               ? 'h-12 w-full min-w-0 rounded-full border border-white/10 bg-white/[0.03] px-5 font-body text-sm text-white placeholder-slate-500 transition-colors focus:border-accent/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 sm:flex-1'
-              : 'h-12 flex-grow rounded-2xl border border-slate-200 bg-slate-50 px-5 text-base text-slate-800 shadow-inner placeholder:text-slate-400 focus:border-accent focus:outline-none dark:border-white/10 dark:bg-white/[0.04] dark:text-white'
+              : 'h-12 min-w-0 flex-grow rounded-xl border border-outline-variant bg-surface px-5 text-base text-primary placeholder:text-on-surface-variant focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent'
           }
         />
         <button
@@ -103,12 +103,15 @@ export function NewsletterSignup({
         </button>
       </div>
       {error ? (
-        <p role="alert" className={`flex items-center gap-2 text-xs ${dark ? 'text-red-400' : 'text-red-600 dark:text-red-400'}`}>
+        <p
+          role="alert"
+          className={`flex items-center gap-2 text-xs ${dark ? 'text-red-400' : 'text-red-600 dark:text-red-400'}`}
+        >
           <AlertCircle className="h-3.5 w-3.5 shrink-0" />
           {error}
         </p>
       ) : (
-        <p className={`text-xs font-body ${dark ? 'text-slate-500' : 'text-slate-500 dark:text-slate-400'}`}>
+        <p className={`text-xs font-body ${dark ? 'text-slate-500' : 'text-on-surface-variant'}`}>
           Sunday evening. Unsubscribe anytime.
         </p>
       )}

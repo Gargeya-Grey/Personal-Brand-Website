@@ -142,6 +142,8 @@ components:
 
 # Edudojo.ai Design System Specification
 
+> Portfolio scope: the current personal-site philosophy is in [personal-world-design.md](docs/personal-world-design.md). For portfolio project artwork, use the [Project cover art direction](#project-cover-art-direction) section below. The earlier Edudojo product specification remains preserved here; its legacy fonts, palette, and layout rules do not override the current portfolio implementation.
+
 Welcome to the **Edudojo.ai Design System**. This document defines the visual architecture, design tokens, and user experience paradigms that represent our brand's digital identity. It acts as the single source of truth for both developers and AI-driven coding agents, ensuring that all UI generated across pages, components, and interactive environments maintains institutional elegance, extreme visual clarity, and brand consistency.
 
 ---
@@ -449,3 +451,109 @@ export default function SiteLayout({ children }) {
 - **Don't** use typewriter monospace fonts (`font-mono` falling back to Courier/Consolas) for technical status dashboard cards unless explicitly aiming for a low-fidelity retro CLI aesthetic.
 - **Don't** load heavy gradients across body containers. Gradients are only allowed as a 135-degree angle in primary CTAs and progress trackers.
 - **Don't** break the typography system by changing weights manually on body copy. Stick to the defined `350` and `240` values to safeguard elegance.
+
+---
+
+# Project cover art direction
+
+Use this blueprint when creating or revising portfolio project covers. It applies to the homepage, Playground, and individual project pages. It does not replace the separate blog-image specification in [post-design.md](post-design.md).
+
+For site philosophy, see [personal-world-design.md](docs/personal-world-design.md). For cover metadata, SVG components, image exceptions, and publishing checks, use [project-cover-system.md](docs/project-cover-system.md). This file owns the creative brief; that guide owns implementation.
+
+## The approved reference
+
+![Approved Edudojo cover](public/project-art/edudojo-gate.png)
+
+The owner approved this minimal gate illustration on 29 September 2026 after seeing it in the actual website. It was generated with ChatGPT Images using the original forest image and a screenshot of the project collection as references. The template below distills that successful prompt; it is not a verbatim transcript or a guarantee of identical output.
+
+What carries forward: one recognizable subject, generous space, restrained depth, soft light, muted color, and a clear silhouette at card size. What stays specific to Edudojo: the gate, steps, wood, stone, and journey metaphor. The illustration is not the exact company logo; the separate watermark uses the owner's mark.
+
+## Decisions before drawing
+
+1. Write the project's purpose and one visible action in plain language. Choose a subject that expresses that action. End with a sentence such as “A waveform becomes editable text.”
+2. Choose the medium. Custom SVG remains the default. Apply this brief through code and shared primitives; use the generation template for an authorized raster illustration or a concept study. A concept study does not automatically replace a published cover.
+3. Select references by role: subject/brand reference for identity, the approved cover for restraint, and a current page screenshot for context. Preserve exact logos through their source assets rather than trusting a generated approximation.
+4. Fill the template with project-specific decisions. Remove irrelevant materials and props. Keep the shared composition and lighting direction.
+5. Review the output in its actual placements using the acceptance checks below. Revise the specific failure; do not improve the score just because another image was generated.
+
+## Shared style, variable subject
+
+| Keep consistent | Let the project determine |
+| --- | --- |
+| One dominant subject or small related group | The object, action, and visual metaphor |
+| Muted sea, mist, or lilac background from the cover palette | Which palette best separates the subject |
+| Subtle dimensional depth and a soft grounding shadow | Flat, layered, or architectural construction |
+| Diffused light, open shadows, restrained highlights | Material that supports meaning: glass, paper, wood, stone, or simple drawn forms |
+| Generous margins and a legible silhouette | Orientation and arrangement within the shared frame |
+| Quiet illustration beside readable HTML titles | Short captions explaining the project's specific idea |
+
+Use the live color tokens in `app/project-media.css`. Raster references may approximate those colors; SVG scenes consume the tokens. Natural wood and stone are optional, not a new collection-wide requirement. Glass planes should carry meaning such as a layer, boundary, or surface; omit them when they only add decoration.
+
+## Reusable generation prompt
+
+Replace every bracketed field. Attach the references described in the prompt. Generate the artwork alone; keep website text and controls in the interface.
+
+```text
+Create one standalone project-cover illustration for [PROJECT], landscape 2:1.
+
+Purpose: [WHAT THE PROJECT HELPS SOMEONE DO].
+Visual idea: [ONE RECOGNIZABLE SUBJECT AND ONE MEANINGFUL ACTION].
+
+References:
+- Image 1 is the subject or brand reference: preserve [IDENTITY DETAILS].
+- Image 2 is the approved Edudojo cover: match its restraint, space, soft
+  lighting, and dimensional clarity; use this project's own subject.
+- Image 3 is the current website: the artwork must belong beside its quiet
+  sea-glass SVG covers in both cool-paper light mode and charcoal dark mode.
+
+Art direction: a carefully crafted editorial illustration with the clarity
+of a small physical model. Use [MATERIALS THAT SUPPORT THE IDEA], precise
+forms, subtle depth, and a soft grounding shadow. Keep surface detail quiet
+enough to read at thumbnail size.
+
+Composition: [SUBJECT ARRANGEMENT]. One dominant subject or a small related
+group, generous negative space, and a complete readable silhouette. Aim for
+the main subject inside the central 55–65% of the canvas width and 65–75%
+of its height. Leave essential features clear of every edge. Account for
+the actual wide and mobile crops shown in the website reference.
+
+Color and light: [SEA / MIST / LILAC BACKDROP AND RELEVANT TOKEN COLOR],
+desaturated teal or slate details, with [ONE RESTRAINED ACCENT IF NEEDED].
+Diffused daylight, open shadows, gentle highlights, and clean separation
+between subject and backdrop. The mood is thoughtful, welcoming, and calm.
+
+Deliver a single full-bleed artwork. No text, interface, border, watermark,
+invented logo, neon glow, floating particles, dense scenery, or unrelated
+props. Keep product demonstrations and factual claims out of the artwork.
+```
+
+The margin percentages are starting constraints, not proof of crop safety. Check the rendered result. The approved Edudojo image needed a full 2:1 detail frame because the previous shallow banner clipped the gate.
+
+## Example briefs
+
+| Project | Meaning to illustrate | Useful forms and materials |
+| --- | --- | --- |
+| Edudojo | Progress through learning | One pale wooden gate, ascending stone steps, quiet sea-green surroundings |
+| Odicto | Speech becoming text | A waveform resolving into a few aligned text strokes on one surface |
+| TwinAatma | Context carried forward under the user's control | A small group of memory layers with a deliberate review boundary |
+| Overlap lab | Comparing a prediction with a reference | Two precise outlines and one clearly visible intersection |
+| Idea mixer | Combining an audience and a constraint | Two distinct forms meeting in a useful pairing |
+| DataCleanOpenEnv | Inspecting and improving data | Irregular rows becoming ordered, with the change easy to trace |
+| This website | Turning work into something others can explore | A publishing surface connecting code, writing, and a destination |
+
+These are starting briefs, not mandatory compositions. Differentiate the project through its meaning, not a palette swap. Do not repeat gates, stone pedestals, or generic glass panels across every cover.
+
+## Acceptance in context
+
+Before recommending or publishing artwork:
+
+- Place it beside the existing covers on the actual page. Inspect light and dark modes at desktop and 320px. Check home, directory, and detail crops; confirm the complete subject and readable silhouette.
+- Compare cleanliness, palette fit, subject clarity, distinctiveness, and brand fidelity. Name the weakest criterion and the visible evidence. A beautiful standalone image can still fail as a cover.
+- Confirm the subject relates to what the project actually does. Label illustrative explanations separately from product screenshots or demonstrations.
+- Reject accidental clipping, unnecessary props, invented brand geometry, muddy material boundaries, or a dramatic contrast level that overwhelms adjacent cards.
+- Treat numerical scores as subjective review notes, not objective measurements or a target to inflate. Show the in-page comparison and disclose checks that were not performed.
+- When the visual changes are complete, follow the implementation and verification steps in [project-cover-system.md](docs/project-cover-system.md).
+
+## Current collection decision
+
+Keep the six existing SVG covers. They already share the approved direction's muted palette, limited forms, restrained depth, and meaningful subjects. When a cover next needs work, improve its specific metaphor and remove redundant detail before adding realism. A wholesale conversion to generated images or wood-and-stone scenes is not needed.
