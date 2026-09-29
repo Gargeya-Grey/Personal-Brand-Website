@@ -171,3 +171,17 @@ Author self-review, not independent user testing: light mode premium UI 8.5/10, 
 - Production build, TypeScript, changed-file lint, and cover validation passed. Browser checks confirm the optimized image loads in all three placements, with no 320px document overflow in either theme.
 - Visual review found the old wide detail frame clipped the top beam. The final CSS gives image detail covers their full 2:1 aspect ratio, capped at 800px wide; rechecked the complete gate at desktop and 320px. SVG detail frames are unchanged.
 - Screenshots checked on the actual local pages, without temporary image substitutions. No browser runtime errors observed. The local build includes concurrent article work; only cover-related files are included in this change.
+
+## Homepage writing section (29 September 2026)
+
+| Before | After |
+| --- | --- |
+| Half-width introduction beside a cramped article list | Compact introduction above three equally sized desktop stories; tablet lead row plus two stories; single column on phones |
+| 138px thumbnails cropped into narrow rectangles | Landscape covers fill their column, with `object-fit: contain` preserving the complete artwork and responsive image sizes matching each layout |
+| Notes promotion added weight to the right column | Separate full-width Notes row under the collection |
+
+- Scope is the homepage writing section and its new, scoped stylesheet. Article fetching, ordering, page links, other homepage sections, and journal reader behavior are unchanged.
+- PASS: production build/TypeScript, changed-file ESLint, and diff checks. Copy and image-sizing refinements followed the build. The local build included unrelated article work; that work is excluded from this commit.
+- PASS: 320, 700, 768, 1000, and 1363px widths fit without document overflow in both themes; all three covers load and retain their full images. Desktop light/dark, tablet, and narrow-phone compositions visually reviewed.
+- PASS: keyboard focus has a visible 2px outline; Enter on the first story navigates to its existing article. All three article URLs, Journal, and Notes links are preserved. Hover moves only the reading arrow by 3px; image transform remains none. Reduced-motion emulation removes the arrow transform and transition.
+- PASS: browser runtime errors list is empty. Empty-list fallback and optional-cover rendering retained and reviewed in code; a live empty database was not created. No form submissions or private-data writes.

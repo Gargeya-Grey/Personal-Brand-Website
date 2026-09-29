@@ -11,6 +11,7 @@ import { EdudojoMark } from '@/components/edudojo-mark';
 import { allWork, selectedWork } from '@/data/selected-work';
 import { publications } from '@/data/research';
 import { getPublishedArticlesLite } from '@/lib/blog-service';
+import './home-writing.css';
 
 export const revalidate = 60;
 export const metadata: Metadata = {
@@ -184,49 +185,56 @@ export default async function Home() {
           </div>
         </section>
 
-        <section className="field-section writing-spread" data-reveal>
-          <div>
-            <h2>Working things out in writing.</h2>
-            <p className="field-copy">
-              The questions behind the projects keep showing up here: what AI changes, how we learn,
-              and what it takes to build something useful.
-            </p>
-            <Link className="field-text-link" href="/journal">
-              Open the journal <ArrowUpRight size={16} />
-            </Link>
-          </div>
-          <div className="writing-index">
+        <section
+          className="field-section home-journal"
+          aria-labelledby="home-journal-title"
+          data-reveal
+        >
+          <header className="home-journal-heading">
+            <h2 id="home-journal-title">
+              Working things out
+              <br />
+              in writing.
+            </h2>
+            <div>
+              <p>Essays on AI, how we learn, and the craft of building useful things.</p>
+              <Link className="field-text-link" href="/journal">
+                Explore the journal <ArrowUpRight size={16} />
+              </Link>
+            </div>
+          </header>
+          <div className="home-journal-grid">
             {articles.length ? (
               articles.map((article) => (
                 <Link
                   key={article.id}
                   href={'/journal/' + article.slug}
-                  className={
-                    article.coverImage ? 'writing-row writing-row-illustrated' : 'writing-row'
-                  }
+                  className="home-journal-story"
                 >
                   {article.coverImage && (
-                    <div className="home-writing-image">
+                    <div className="home-journal-cover">
                       <Image
                         src={article.coverImage}
                         alt=""
                         fill
-                        sizes="(max-width: 700px) 96px, 150px"
+                        sizes="(max-width: 700px) 90vw, (max-width: 1000px) 45vw, (max-width: 1399px) 29vw, 420px"
                       />
                     </div>
                   )}
-                  <div>
-                    <p className="field-label">
+                  <div className="home-journal-story-copy">
+                    <p className="home-journal-category">
                       {article.categories.slice(0, 2).join(' / ') || 'Essay'}
                     </p>
                     <h3>{article.title}</h3>
-                    <p>{article.excerpt}</p>
+                    <p className="home-journal-excerpt">{article.excerpt}</p>
                   </div>
-                  <ArrowUpRight size={20} />
+                  <span className="home-journal-read">
+                    Read the story <ArrowUpRight size={18} />
+                  </span>
                 </Link>
               ))
             ) : (
-              <Link href="/journal" className="writing-row">
+              <Link href="/journal" className="home-journal-story home-journal-empty">
                 <div>
                   <p className="field-label">The journal</p>
                   <h3>Follow a thought a little further.</h3>
@@ -235,15 +243,14 @@ export default async function Home() {
                 <ArrowUpRight size={20} />
               </Link>
             )}
-            <Link href="/notes" className="letter-row">
-              <span aria-hidden="true">↳</span>
-              <div>
-                <h3>Notes, on Sunday.</h3>
-                <p>One argument. A little room to think.</p>
-              </div>
-              <ArrowUpRight size={20} />
-            </Link>
           </div>
+          <Link href="/notes" className="home-journal-letter">
+            <h3>Notes, on Sunday.</h3>
+            <p>One idea on learning, AI, and being human. A little room to think.</p>
+            <span>
+              Read a letter <ArrowUpRight size={18} />
+            </span>
+          </Link>
         </section>
         <section className="elsewhere-spread field-section" data-reveal>
           <div>
