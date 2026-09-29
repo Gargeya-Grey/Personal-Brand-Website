@@ -16,7 +16,7 @@ The discovery sequence is person → current work → things to try → ideas to
 
 ## Visual system
 
-- Palette follows the owner’s journal cover art: cool paper, navy ink, and teal in light mode; charcoal, graphite, softened silver, and sea-glass mint in dark mode. Current values live in the application theme tokens. Project artwork follows [design.md](../design.md), with implementation tokens in `app/project-media.css`.
+- Palette follows the owner’s journal cover art: cool paper, navy ink, and teal in light mode; charcoal, graphite, softened silver, and sea-glass mint in dark mode. Current values live in the application theme tokens. Project artwork follows [DESIGN.md](../DESIGN.md#project-cover-art-direction), with implementation tokens in `app/project-media.css`.
 - Instrument Serif for short, expressive page introductions; Manrope for long article/project titles, reading, and controls. Decorative section numbers and redundant eyebrow copy are removed; useful metadata stays at a readable size. Unused display-font downloads are removed.
 - Fine rules, generous whitespace, modest corner radii, offset paper objects, and one deliberate accent. Different content gets different composition; avoid an endless grid of identical cards.
 - Page width 1320px, fluid type, one-column phone layouts, wrapping controls, 44px primary touch targets. Content determines height.
