@@ -185,3 +185,14 @@ Author self-review, not independent user testing: light mode premium UI 8.5/10, 
 - PASS: 320, 700, 768, 1000, and 1363px widths fit without document overflow in both themes; all three covers load and retain their full images. Desktop light/dark, tablet, and narrow-phone compositions visually reviewed.
 - PASS: keyboard focus has a visible 2px outline; Enter on the first story navigates to its existing article. All three article URLs, Journal, and Notes links are preserved. Hover moves only the reading arrow by 3px; image transform remains none. Reduced-motion emulation removes the arrow transform and transition.
 - PASS: browser runtime errors list is empty. Empty-list fallback and optional-cover rendering retained and reviewed in code; a live empty database was not created. No form submissions or private-data writes.
+
+### Writing header refinement (29 September 2026)
+
+| Before | After |
+| --- | --- |
+| Long heading opposite a detached paragraph and action | Short “From the journal.” heading with one journal action; stacked together on phones |
+| Reading links pushed to the tallest card's baseline | Each reading link follows its own excerpt with 18px of spacing |
+
+- PASS: changed-file ESLint and scoped diff checks. Desktop light/dark, 768px tablet, and 320px phone layouts checked; tablet and phone fit in both themes without document overflow.
+- PASS: keyboard activation of the header action opens `/journal`. Full landscape covers, complete article titles, and the Notes row are retained.
+- This pass changes only the homepage section markup and its scoped stylesheet. Concurrent article-reader changes are excluded. Physical-device testing remains outstanding.

@@ -1,28 +1,23 @@
 /* Homepage writing only: shared image baseline, full artwork, quiet reading hierarchy. */
 .home-journal-heading {
-  display: grid;
-  grid-template-columns: 1.15fr 1fr;
-  align-items: end;
-  gap: 48px;
-  margin-bottom: 40px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px 32px;
+  margin-bottom: 32px;
 }
 .home-main .home-journal-heading h2 {
-  font-size: clamp(38px, 4.2vw, 60px);
+  font-size: clamp(36px, 3.8vw, 52px);
   line-height: 1.04;
   max-width: 650px;
   margin: 0;
-}
-.home-journal-heading p {
-  color: var(--color-text-muted);
-  font-size: 15px;
-  line-height: 1.8;
-  max-width: 440px;
-  margin: 0 0 18px;
 }
 .home-journal-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 30px;
+  align-items: start;
 }
 .home-journal-story {
   min-width: 0;
@@ -73,8 +68,7 @@
   gap: 12px;
   font-size: 13px;
   font-weight: 600;
-  padding-top: 24px;
-  margin-top: auto;
+  padding-top: 18px;
 }
 .home-journal-read svg,
 .home-journal-letter svg {
@@ -133,10 +127,6 @@
   }
 }
 @media (max-width: 1000px) {
-  .home-journal-heading {
-    align-items: start;
-    gap: 28px;
-  }
   .home-journal-grid {
     gap: 22px;
   }
@@ -172,14 +162,15 @@
   }
 }
 @media (max-width: 700px) {
-  .home-journal-heading,
   .home-journal-grid,
   .home-journal-letter {
     grid-template-columns: 1fr;
   }
   .home-journal-heading {
-    gap: 22px;
-    margin-bottom: 32px;
+    flex-direction: column;
+    align-items: start;
+    gap: 12px;
+    margin-bottom: 26px;
   }
   .home-journal-grid {
     gap: 36px;

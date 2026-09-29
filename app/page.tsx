@@ -191,17 +191,10 @@ export default async function Home() {
           data-reveal
         >
           <header className="home-journal-heading">
-            <h2 id="home-journal-title">
-              Working things out
-              <br />
-              in writing.
-            </h2>
-            <div>
-              <p>Essays on AI, how we learn, and the craft of building useful things.</p>
-              <Link className="field-text-link" href="/journal">
-                Explore the journal <ArrowUpRight size={16} />
-              </Link>
-            </div>
+            <h2 id="home-journal-title">From the journal.</h2>
+            <Link className="field-text-link" href="/journal">
+              Explore the journal <ArrowUpRight size={16} />
+            </Link>
           </header>
           <div className="home-journal-grid">
             {articles.length ? (
