@@ -72,6 +72,14 @@
 .project-detail-cover .work-visual {
   height: 300px;
 }
+.project-detail-cover:has([data-cover-kind='image']) {
+  max-width: 800px;
+  margin-inline: auto;
+}
+.project-detail-cover .project-cover[data-cover-kind='image'] {
+  height: auto;
+  aspect-ratio: 2 / 1;
+}
 .project-detail-cover .project-cover-drawing {
   max-width: 640px;
 }

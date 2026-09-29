@@ -164,3 +164,10 @@ Author self-review, not independent user testing: light mode premium UI 8.5/10, 
 - PASS: In your browser filter returns the two playable tools. Open & play navigates to the Idea mixer and mixing changes its prompt. Overlap Perfect match returns 1.000; Try it here lands 125px below the viewport top, clear of navigation.
 - PASS: no browser runtime errors observed. Browser demos remain on their project pages; directory samplers are replaced by covers. No form submissions, private data changes, or production merge.
 - Physical-device testing remains outstanding. Existing recordings/embed verification above is unchanged; no media playback logic was edited in this pass.
+
+## Approved Edudojo gate illustration (29 September 2026)
+
+- Replaced the current Edudojo cover metadata with the owner-approved minimal gate illustration at `/project-art/edudojo-gate.png`, centered on home, Playground, and the project page. Retained the original forest asset and separate exact-logo watermark.
+- Production build, TypeScript, changed-file lint, and cover validation passed. Browser checks confirm the optimized image loads in all three placements, with no 320px document overflow in either theme.
+- Visual review found the old wide detail frame clipped the top beam. The final CSS gives image detail covers their full 2:1 aspect ratio, capped at 800px wide; rechecked the complete gate at desktop and 320px. SVG detail frames are unchanged.
+- Screenshots checked on the actual local pages, without temporary image substitutions. No browser runtime errors observed. The local build includes concurrent article work; only cover-related files are included in this change.

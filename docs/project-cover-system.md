@@ -39,7 +39,9 @@ The scene catalog in `components/project-covers/scenes.tsx` is the executable re
 
 ## Approved image exception
 
-Edudojo retains `/edudojo.png` because the owner specifically requested that existing forest-gate image. Its homepage also uses the owner's gate mark as a watermark. The typed `image` variant records the approval and reason in the project record. Preserve this exception; another raster or generated image requires a new explicit owner request. The default for future projects remains custom SVG.
+Edudojo uses `/project-art/edudojo-gate.png`, the owner-approved minimal gate illustration: pale wood, ascending stone steps, and a sea-glass background. Use centered cropping. The owner chose this version after an in-page comparison with the forest artwork in both themes. The original `/edudojo.png` is retained as a source asset, not the current project cover. Its homepage also uses the owner's exact gate mark as a separate watermark; the illustration is not a replacement logo.
+
+The typed `image` variant records the approval and reason in the project record. Preserve this exception; another raster or generated image requires a new explicit owner request. The default for future projects remains custom SVG. This illustration was generated with the built-in ChatGPT Images tool using the original forest gate and the site's project grid as references. The direction was a single minimal architectural gate and ascending path, with restrained materials, generous space, a muted sea-green backdrop, and no text or dense foliage.
 
 ## Keep artwork and evidence distinct
 

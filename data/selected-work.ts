@@ -53,10 +53,10 @@ export const allWork: readonly WorkProject[] = [
     id: 'edudojo',
     cover: {
       kind: 'image',
-      src: '/edudojo.png',
-      position: '70% center',
+      src: '/project-art/edudojo-gate.png',
+      position: 'center',
       approvedBy: 'owner',
-      reason: 'The owner explicitly requested the existing forest-gate artwork and gate watermark.',
+      reason: 'The owner approved the minimal gate illustration after comparing it with the forest artwork in both themes; retain the separate gate-logo watermark.',
     },
     title: 'Edudojo',
     category: 'Startup',
