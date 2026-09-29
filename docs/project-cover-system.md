@@ -2,6 +2,8 @@
 
 Use custom SVG artwork as the default for every project. The owner expects one recognizable visual family across the homepage, Playground, and project pages. Odicto and TwinAatma established the direction; they are examples of the collection-wide standard, not the only projects that need artwork.
 
+Read [design.md](../design.md) for the approved Edudojo reference, reusable generation prompt, project-specific briefs, and visual acceptance criteria. This guide covers implementation; the prompt is not a change to the SVG default.
+
 ## Adding or changing a cover
 
 1. Read the project's purpose and choose one visual idea that explains it: voice becoming text, memory carried forward, overlapping predictions, or data being cleaned. Finish this step with a one-sentence description of the picture.
@@ -27,7 +29,7 @@ cover: {
 | --- | --- |
 | Canvas | Shared `640 × 320` viewBox. Keep the main shape approximately inside x=70–570, y=25–250; ground shadow near y=267. |
 | Composition | One dominant metaphor, a small number of related forms, room around them. A different color alone does not make a new project cover. |
-| Materials | Translucent planes, thin beveled edges, restrained dimensional offset, soft ground shadow. Reuse `GlassPanel`, `Ground`, and `Approval` where their meaning fits. |
+| Materials | Follow the art direction in [design.md](../design.md). Shared SVG primitives provide translucent planes, beveled edges, and soft shadows; use `GlassPanel`, `Ground`, and `Approval` only where their meaning fits. |
 | Color | `sea`, `mist`, or `lilac` backdrop; shared sea-glass material, ink, and highlight tokens in `app/project-media.css`. Theme changes belong there, not in individual scenes. |
 | Drawing | Code-authored SVG paths and shapes. Use CSS tokens and per-instance gradient IDs supplied by the frame. No external scripts, fonts, or assets inside SVG scenes. |
 | Words | Keep words in the HTML caption, not in the SVG. Two useful short phrases, each at most 32 characters. Project titles and longer explanations belong in card copy. |
