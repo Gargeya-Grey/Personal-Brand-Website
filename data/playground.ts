@@ -1,8 +1,10 @@
+import type { ProjectCover } from '@/lib/project-cover';
 import { allWork } from './selected-work';
 
 export type WorkKind = 'In your browser' | 'Software' | 'Experiments';
 export interface PlaygroundEntry {
   id: string;
+  cover: ProjectCover;
   title: string;
   description: string;
   kind: WorkKind;
@@ -28,6 +30,7 @@ const orderedWork = [...allWork].sort((a, b) => {
 
 export const playgroundEntries: PlaygroundEntry[] = orderedWork.map((work) => ({
   id: work.id,
+  cover: work.cover,
   title: work.title,
   description: work.description,
   kind: work.kind ?? (work.id === 'dataclean' ? 'Experiments' : 'Software'),

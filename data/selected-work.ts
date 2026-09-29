@@ -1,7 +1,9 @@
+import type { ProjectCover } from '@/lib/project-cover';
 import type { ProjectMedia } from '@/lib/project-media';
 
 export interface WorkProject extends ProjectMedia {
   id: string;
+  cover: ProjectCover;
   title: string;
   category: string;
   kind?: 'In your browser' | 'Software' | 'Experiments';
@@ -22,6 +24,13 @@ export interface WorkProject extends ProjectMedia {
 export const allWork: readonly WorkProject[] = [
   {
     id: 'odicto',
+    cover: {
+      kind: 'svg',
+      scene: 'voice',
+      palette: 'mist',
+      label: 'Voice → text',
+      detail: 'Desktop + Android',
+    },
     title: 'Odicto',
     category: 'Desktop + Android',
     subtitle: 'Your voice, in the app you’re already using.',
@@ -42,6 +51,13 @@ export const allWork: readonly WorkProject[] = [
   },
   {
     id: 'edudojo',
+    cover: {
+      kind: 'image',
+      src: '/edudojo.png',
+      position: '70% center',
+      approvedBy: 'owner',
+      reason: 'The owner explicitly requested the existing forest-gate artwork and gate watermark.',
+    },
     title: 'Edudojo',
     category: 'Startup',
     subtitle: 'Give teachers more to discuss than a finished answer.',
@@ -63,6 +79,13 @@ export const allWork: readonly WorkProject[] = [
   },
   {
     id: 'dataclean',
+    cover: {
+      kind: 'svg',
+      scene: 'data',
+      palette: 'sea',
+      label: 'Inspect → change → check',
+      detail: 'A cleaner dataset',
+    },
     title: 'DataCleanOpenEnv',
     category: 'Agent experiment',
     subtitle: 'Can an agent clean data without breaking it?',
@@ -83,6 +106,13 @@ export const allWork: readonly WorkProject[] = [
   },
   {
     id: 'twinaatma',
+    cover: {
+      kind: 'svg',
+      scene: 'memory',
+      palette: 'lilac',
+      label: 'Context → continuity',
+      detail: 'Memory, with your approval',
+    },
     title: 'TwinAatma',
     category: 'Personal AI memory',
     subtitle: 'Start the next conversation with some shared history.',
@@ -103,6 +133,13 @@ export const allWork: readonly WorkProject[] = [
   },
   {
     id: 'box-lab',
+    cover: {
+      kind: 'svg',
+      scene: 'overlap',
+      palette: 'mist',
+      label: 'Prediction → overlap',
+      detail: 'Find the shared area',
+    },
     title: 'The overlap lab',
     category: 'Computer vision experiment',
     kind: 'In your browser',
@@ -128,6 +165,13 @@ export const allWork: readonly WorkProject[] = [
   },
   {
     id: 'idea-mixer',
+    cover: {
+      kind: 'svg',
+      scene: 'ideas',
+      palette: 'sea',
+      label: 'Audience + constraint',
+      detail: 'Make an unlikely pairing',
+    },
     title: 'Idea mixer',
     category: 'Creative tool',
     kind: 'In your browser',
@@ -153,6 +197,13 @@ export const allWork: readonly WorkProject[] = [
   },
   {
     id: 'personal-brand',
+    cover: {
+      kind: 'svg',
+      scene: 'publishing',
+      palette: 'lilac',
+      label: 'Code → publish → explore',
+      detail: 'A home for the work',
+    },
     title: 'This website',
     category: 'Personal publishing system',
     kind: 'Experiments',

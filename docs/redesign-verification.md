@@ -149,3 +149,18 @@ Author self-review, not independent user testing: light mode premium UI 8.5/10, 
 - An isolated local development fixture verified both recording orientations, native controls, `preload=none`, inline playback, no autoplay, and the keyboard-operated written walkthrough. A locally generated VP8 WebM played with advancing time. Initial capture yielded no usable frames; explicit frame capture corrected the fixture, with no application-code change needed.
 - The same fixture verified no iframe before activation, sandboxed iframe after activation, removal on Close, and focus return to the launch button. The temporary route was removed before commit. No placeholder footage or external demo was published.
 - Actual owner recordings, deployed third-party app compatibility, cross-origin captions, and physical-device playback remain to be checked when assets/URLs are supplied. An external demo URL does not deploy its backend.
+
+## Collection-wide SVG cover system (29 September 2026)
+
+| Before | After |
+| --- | --- |
+| Odicto and TwinAatma had custom SVGs; other projects used unrelated panels or samplers | Six distinct SVG scenes share one material palette, frame, primitives, and caption treatment. Edudojo retains the owner-approved forest gate image. |
+| Cover choices were conditional on project IDs inside the renderer | Every project requires typed cover metadata; the scene registry is exhaustive. Home, Playground, and all seven project pages consume the same record. |
+| Future agents had no explicit cover specification | AGENTS.md points to the cover guide, with composition rules, extension steps, approved exception, and collection-wide verification requirements. |
+
+- PASS: production build and TypeScript, changed-file ESLint, metadata validation, and diff checks. A missing-cover negative fixture was rejected. The local build included unrelated article work in progress; this commit excludes those files.
+- PASS: home, Playground, and all seven project pages fit 320px in both themes. All caption bounds remain inside the cover. Each detail page renders exactly one intended cover. No duplicate SVG gradient IDs on the collection page.
+- PASS: desktop home and full Playground collection visually inspected in both themes; narrow covers inspected on home, Playground, and a project page. Shared artwork stays separate from actual product evidence.
+- PASS: In your browser filter returns the two playable tools. Open & play navigates to the Idea mixer and mixing changes its prompt. Overlap Perfect match returns 1.000; Try it here lands 125px below the viewport top, clear of navigation.
+- PASS: no browser runtime errors observed. Browser demos remain on their project pages; directory samplers are replaced by covers. No form submissions, private data changes, or production merge.
+- Physical-device testing remains outstanding. Existing recordings/embed verification above is unchanged; no media playback logic was edited in this pass.

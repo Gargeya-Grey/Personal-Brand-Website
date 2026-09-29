@@ -2,6 +2,10 @@
 
 `data/selected-work.ts` is the project registry. Every record generates a project page, a Playground listing, and a sitemap entry. Homepage selection is the short `selectedWork` list at the end of that file. The existing browser apps use the same `ProjectDetail` layout.
 
+## Required cover artwork
+
+Before adding a project or changing its art, follow `docs/project-cover-system.md`. Every record requires a deliberate `cover`; the shared renderer uses it on the homepage, Playground, and project page. The cover metadata check is part of publishing, alongside the demo checks below.
+
 ## Choose what visitors can do
 
 | Project | Visitor experience | What to add |

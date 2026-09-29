@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import { WorkVisual } from '@/components/work-visual';
 import Link from 'next/link';
 import { ArrowUpRight, ArrowLeft, Play } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
@@ -55,16 +55,9 @@ export function ProjectDetail({ work }: { work: WorkProject }) {
             </a>
           )}
         </header>
-        {work.id === 'edudojo' && (
-          <div className="project-gate-cover">
-            <Image
-              src="/edudojo.png"
-              alt="A path through forest gates toward the light — Edudojo cover artwork"
-              fill
-              sizes="(max-width: 700px) 100vw, 1200px"
-            />
-          </div>
-        )}
+        <div className="project-detail-cover">
+          <WorkVisual cover={work.cover} />
+        </div>
         <ProjectExperience demo={work.demo} recordings={work.recordings} />
         {!work.demo && <WorkExplainer id={work.id} />}
         {work.id === 'dataclean' && (

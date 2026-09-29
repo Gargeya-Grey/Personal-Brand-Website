@@ -1,5 +1,4 @@
 'use client';
-import { PlaygroundSampler } from '@/components/playground-sampler';
 import { WorkVisual } from '@/components/work-visual';
 import { useState } from 'react';
 import Link from 'next/link';
@@ -49,18 +48,14 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
             key={entry.id}
             className={entry.kind === 'In your browser' ? 'shelf-playable' : ''}
           >
-            {entry.id === 'box-lab' || entry.id === 'idea-mixer' ? (
-              <PlaygroundSampler id={entry.id} />
-            ) : (
-              <Link
-                href={entry.href}
-                aria-label={'Explore ' + entry.title}
-                target={entry.href.startsWith('https://') ? '_blank' : undefined}
-                rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
-              >
-                <WorkVisual id={entry.id} />
-              </Link>
-            )}
+            <Link
+              href={entry.href}
+              aria-label={'Explore ' + entry.title}
+              target={entry.href.startsWith('https://') ? '_blank' : undefined}
+              rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
+            >
+              <WorkVisual cover={entry.cover} />
+            </Link>
             <div className="shelf-copy">
               <p className="field-label">
                 {entry.kind} / {entry.status}

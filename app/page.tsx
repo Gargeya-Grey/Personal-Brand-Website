@@ -8,7 +8,7 @@ import { FieldMotion } from '@/components/field-notes';
 import { siteConfig } from '@/lib/site-config';
 import { WorkVisual } from '@/components/work-visual';
 import { EdudojoMark } from '@/components/edudojo-mark';
-import { selectedWork } from '@/data/selected-work';
+import { allWork, selectedWork } from '@/data/selected-work';
 import { publications } from '@/data/research';
 import { getPublishedArticlesLite } from '@/lib/blog-service';
 
@@ -93,7 +93,7 @@ export default async function Home() {
                   className="work-feature-art"
                   aria-label={'Explore ' + work.title}
                 >
-                  <WorkVisual id={work.id} />
+                  <WorkVisual cover={work.cover} />
                 </Link>
                 <div className="work-feature-copy">
                   {work.id === 'edudojo' && <EdudojoMark className="edudojo-watermark" />}
@@ -136,11 +136,7 @@ export default async function Home() {
           </div>
           <div className="play-preview-grid">
             <Link href="/playground/idea-mixer" className="experiment-preview">
-              <div className="mixer-art" aria-hidden="true">
-                <span>What if</span>
-                <span className="mix-disc">?</span>
-                <span>meets this?</span>
-              </div>
+              <WorkVisual cover={allWork.find((work) => work.id === 'idea-mixer')!.cover} />
               <div className="preview-caption">
                 <div>
                   <h3>Idea mixer</h3>
@@ -150,11 +146,7 @@ export default async function Home() {
               </div>
             </Link>
             <Link href="/playground/box-lab" className="experiment-preview">
-              <div className="overlap-cover" aria-hidden="true">
-                <span className="box-reference" />
-                <span className="box-prediction" />
-                <span className="overlap-caption">Two boxes. One moving target.</span>
-              </div>
+              <WorkVisual cover={allWork.find((work) => work.id === 'box-lab')!.cover} />
               <div className="preview-caption">
                 <div>
                   <h3>The overlap lab</h3>
