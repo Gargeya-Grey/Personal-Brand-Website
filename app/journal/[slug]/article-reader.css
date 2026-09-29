@@ -25,7 +25,11 @@ html:has(.article-reader), body:has(.article-reader) { min-width:0; }
 .reader-author > div > span:last-child > span { padding:0 5px; }
 .reader-actions { position:relative; display:flex; align-items:center; gap:3px; }
 .reader-actions > :is(a,button) { display:flex; align-items:center; justify-content:center; width:44px; height:44px; color:var(--color-text-muted); border:1px solid transparent; border-radius:50%; }
-.reader-actions > :is(a,button):hover,.reader-actions > button[aria-pressed="true"] { background:var(--color-canvas); border-color:var(--reader-rule); color:var(--color-accent); }
+.reader-actions > button[aria-pressed="true"] { background:var(--color-canvas); border-color:var(--reader-rule); color:var(--color-accent); }
+@media (hover: hover) and (pointer: fine) {
+  .reader-actions > :is(a,button):hover { color:var(--color-accent); }
+  .reader-actions > :is(a,button):not([aria-pressed]):hover { background:var(--color-canvas); border-color:var(--reader-rule); }
+}
 .reader-actions > button:active { transform:scale(.96); }
 .reader-linkedin { font-size:15px; font-weight:700; letter-spacing:-.04em; }
 .reader-copy-status { position:absolute; top:100%; right:0; z-index:3; min-width:180px; color:var(--color-accent); font-size:12px; text-align:right; }

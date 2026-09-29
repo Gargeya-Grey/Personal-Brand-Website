@@ -158,9 +158,9 @@ function IllustrationThumb({
     >
       {isCover ? (
         // eslint-disable-next-line @next/next/no-img-element
-        <img src={coverImage} alt="" className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105" />
+        <img src={coverImage} alt="" className="w-full h-full object-contain" />
       ) : (
-        <div className="w-full h-full origin-center opacity-90 transition-transform duration-500 group-hover:scale-105">
+        <div className="w-full h-full opacity-90">
           {renderIllustration(type === 'cover' ? 'diagram1' : type, false)}
         </div>
       )}
@@ -210,7 +210,7 @@ const ArticleCard = memo(function ArticleCard({
     <article
       className="group atelier-card p-4 sm:p-5 flex flex-col sm:flex-row gap-5 sm:items-center hover:shadow-[var(--atelier-shadow)] transition-shadow duration-300 [content-visibility:auto] [contain-intrinsic-size:auto_140px]"
     >
-      <div className="relative shrink-0 w-full sm:w-[148px] h-[110px] sm:h-[96px] rounded-[1.25rem] overflow-hidden border border-[var(--atelier-line)] bg-[var(--atelier-paper)] shadow-inner">
+      <div className="relative shrink-0 w-full aspect-video sm:w-[148px] sm:h-[96px] sm:aspect-auto rounded-[1.25rem] overflow-hidden border border-[var(--atelier-line)] bg-[var(--atelier-paper)] shadow-inner">
         <IllustrationThumb type={post.illustrationType} coverImage={post.coverImage} onPreview={onPreview} />
       </div>
 

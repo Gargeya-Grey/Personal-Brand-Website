@@ -145,20 +145,20 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
 
         {/* Filter & Search Bar Area — sticky instrument, not a loose row */}
         <section id="essays" className="sticky top-24 z-30 mb-12 scroll-mt-32 sm:mb-14">
-          <div className="flex flex-col items-stretch justify-between gap-3 rounded-[1.5rem] border border-white/50 bg-white/55 p-3 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl md:flex-row md:items-center dark:border-white/10 dark:bg-white/[0.04]">
+          <div className="flex flex-col items-stretch justify-between gap-2 rounded-[1.5rem] border border-white/50 bg-white/55 p-2 shadow-[0_8px_32px_rgba(0,0,0,0.06)] backdrop-blur-xl md:flex-row md:items-center md:gap-3 md:p-3 dark:border-white/10 dark:bg-white/[0.04]">
             {/* Search Input Widget */}
             <div className="relative flex-grow md:max-w-lg">
               <Search className="w-4 h-4 text-on-surface-variant absolute left-4 top-1/2 -translate-y-1/2 pointer-events-none" />
               <input
                 type="text"
-                placeholder="Search headlines, keywords, or topics..."
+                placeholder="Search essays..."
                 aria-label="Search articles"
                 value={searchQuery}
                 onChange={(e) => {
                   setSearchQuery(e.target.value);
                   setVisibleCount(9);
                 }}
-                className="journal-control w-full rounded-xl border py-3.5 pl-11 pr-12 text-base"
+                className="journal-control h-11 w-full rounded-lg border pl-11 pr-12 text-base md:h-14 md:rounded-xl"
               />
               {searchQuery && (
                 <button
@@ -181,7 +181,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                 aria-haspopup="listbox"
                 aria-expanded={isDropdownOpen}
                 aria-label="Filter by categories"
-                className="journal-control flex w-full items-center justify-between gap-3 rounded-xl border px-5 py-3.5 text-base font-semibold md:w-64"
+                className="journal-control flex h-11 w-full items-center justify-between gap-3 rounded-lg border px-4 text-sm font-semibold md:h-14 md:w-64 md:rounded-xl md:px-5 md:text-base"
               >
                 <span className="flex items-center gap-2">
                   <Filter className="w-4 h-4 text-on-surface-variant" />
@@ -466,7 +466,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
         )}
 
         {/* Closing — the short version lives in Notes */}
-        <section id="subscribe" className="scroll-mt-32">
+        <section id="subscribe" className="mt-16 scroll-mt-32 lg:mt-20">
           <div className="cta-card-gradient relative overflow-hidden rounded-[2rem] p-6 sm:p-10 md:rounded-[2.5rem] md:p-14">
             <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
               <div className="lg:col-span-6">

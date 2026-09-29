@@ -138,7 +138,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     // showModal also makes the page behind the menu inert and manages focus.
     dialog.showModal();
 
-    const desktop = window.matchMedia(isAtelier ? '(min-width: 640px)' : '(min-width: 1024px)');
+    const desktop = window.matchMedia('(min-width: 1024px)');
     const closeOnDesktop = () => {
       if (desktop.matches) setMobileMenuOpen(false);
     };
@@ -152,7 +152,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
       document.body.style.overflow = prevOverflow;
       desktop.removeEventListener('change', closeOnDesktop);
     };
-  }, [mobileMenuOpen, isAtelier]);
+  }, [mobileMenuOpen]);
 
   // Glass chrome — theme-aware
   const navShell = isAtelier
@@ -252,11 +252,9 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           </span>
         </Link>
 
-        {/* Desktop / tablet link rail */}
+        {/* Desktop link rail; smaller screens use the complete menu. */}
         <div
-          className={`hidden min-w-0 items-center gap-0.5 rounded-full border p-1 shadow-inner ${
-            isAtelier ? 'sm:flex' : 'lg:flex'
-          } ${linkRail}`}
+          className={`hidden min-w-0 items-center gap-0.5 rounded-full border p-1 shadow-inner lg:flex ${linkRail}`}
         >
           {linksList.map((link) => {
             const isActive = isLinkActive(link);
@@ -289,37 +287,6 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           })}
         </div>
 
-        {/* Phone: compact Blog / X switcher (atelier only) */}
-        {isAtelier && (
-          <div
-            className={`flex min-w-0 flex-1 items-center justify-center gap-0.5 rounded-full border p-1 shadow-inner sm:hidden ${linkRail}`}
-            role="navigation"
-            aria-label="Workspace"
-          >
-            {linksList
-              .filter((link) => link.key === 'blog' || link.key === 'x')
-              .map((link) => {
-                const isActive = isLinkActive(link);
-                return (
-                  <Link
-                    key={link.key}
-                    href={link.path}
-                    onClick={(e) => handleSamePageNav(e, link.path, link.external)}
-                    scroll={false}
-                    prefetch={false}
-                    aria-current={isActive ? 'page' : undefined}
-                    className={`inline-flex flex-1 items-center justify-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
-                      isActive ? atelierActive : atelierIdle
-                    }`}
-                  >
-                    {link.icon}
-                    {link.shortName ?? link.name}
-                  </Link>
-                );
-              })}
-          </div>
-        )}
-
         <div className="flex shrink-0 items-center gap-1.5 sm:gap-3">
           <ThemeToggle />
           {!isAtelier && (
@@ -333,7 +300,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           {isAtelier && (
             <Link
               href="/api/auth/logout"
-              className="hidden items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/80 px-4 py-2 font-headline text-sm font-semibold text-[var(--atelier-muted)] transition-colors hover:text-[var(--atelier-ink)] md:inline-flex"
+              className="hidden items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/80 px-4 py-2 font-headline text-sm font-semibold text-[var(--atelier-muted)] transition-colors hover:text-[var(--atelier-ink)] lg:inline-flex"
             >
               Sign out
             </Link>
@@ -343,9 +310,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             ref={buttonRef}
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-              isAtelier ? 'sm:hidden' : 'lg:hidden'
-            } ${mobileBtn}`}
+            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent lg:hidden ${mobileBtn}`}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-panel"
