@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { PageIntro } from '@/components/page-intro';
 import { ContactForm } from '@/components/contact-form';
 import { siteConfig } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = getPageMetadata({
   title: 'Say hello',
   description:
     'Talk with Gargeya about Edudojo, AI systems, a collaboration, or an interesting question.',
-  alternates: { canonical: '/contact' },
-};
+  path: '/contact',
+});
 export default function ContactPage() {
   return (
     <div className="field-site">

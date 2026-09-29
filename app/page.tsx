@@ -6,6 +6,7 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { FieldMotion } from '@/components/field-notes';
 import { siteConfig } from '@/lib/site-config';
+import { getPageMetadata } from '@/lib/page-metadata';
 import { WorkVisual } from '@/components/work-visual';
 import { EdudojoMark } from '@/components/edudojo-mark';
 import { allWork, selectedWork } from '@/data/selected-work';
@@ -15,14 +16,11 @@ import { getPublishedArticlesLite } from '@/lib/blog-service';
 import './home-writing.css';
 
 export const revalidate = 60;
-export const metadata: Metadata = {
-  title: {
-    absolute: 'Gargeya Sharma — Building, writing & following curiosity',
-  },
-  description:
-    'The personal corner of Gargeya Sharma. Building Edudojo, writing about learning and AI, and making small things you can play with.',
-  alternates: { canonical: '/' },
-};
+export const metadata: Metadata = getPageMetadata({
+  title: { absolute: siteConfig.title },
+  description: siteConfig.description,
+  path: '/',
+});
 
 export default async function Home() {
   const articles = (await getPublishedArticlesLite())

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import Link from 'next/link';
 import { ArrowUpRight } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
@@ -8,12 +9,12 @@ import { FieldMotion } from '@/components/field-notes';
 import { YoutubeGrid } from '@/components/youtube-grid';
 import { siteConfig } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = getPageMetadata({
   title: 'Films & videos',
   description:
     'Travel films and things seen through Gargeya’s lens. Watch the Japan series and follow the channel.',
-  alternates: { canonical: '/youtube' },
-};
+  path: '/youtube',
+});
 export default function YoutubePage() {
   return (
     <div className="field-site">

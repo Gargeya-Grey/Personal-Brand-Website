@@ -1,15 +1,24 @@
 import { Metadata } from 'next';
 import AboutClient from './about-client';
-import { clampMetaDescription } from '@/lib/meta';
+import { getPageMetadata } from '@/lib/page-metadata';
+import { getProfilePageJsonLd, serializeJsonLd } from '@/lib/structured-data';
 
-export const metadata: Metadata = {
-  title: { absolute: 'About Gargeya Sharma | Founder & Architect' },
-  description: clampMetaDescription(
-    'About Gargeya Sharma — Founder & Architect at Edudojo.ai, building AI for evaluation and education.'
-  ),
-  alternates: { canonical: '/about' },
-};
+export const metadata: Metadata = getPageMetadata({
+  title: { absolute: 'About Gargeya Sharma | AI engineer & Edudojo founder' },
+  description:
+    'Meet Gargeya Sharma, AI engineer and founder of Edudojo. Explore his work in learning tools, computer vision, writing, and travel films.',
+  path: '/about',
+  type: 'profile',
+});
 
 export default function AboutPage() {
-  return <AboutClient />;
+  return (
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(getProfilePageJsonLd()) }}
+      />
+      <AboutClient />
+    </>
+  );
 }

@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { siteConfig } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = getPageMetadata({
   title: 'Terms of Service',
   description:
     'Terms of use for sgargeya.com — Gargeya Sharma’s personal brand, editorial, and portfolio website.',
-  alternates: { canonical: '/terms' },
-};
+  path: '/terms',
+});
 
 export default function TermsPage() {
   return (

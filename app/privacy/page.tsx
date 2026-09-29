@@ -1,14 +1,15 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { siteConfig } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = getPageMetadata({
   title: 'Privacy Policy',
   description:
     'How sgargeya.com handles contact form data, analytics, and privacy for Gargeya Sharma’s personal site.',
-  alternates: { canonical: '/privacy' },
-};
+  path: '/privacy',
+});
 
 export default function PrivacyPage() {
   return (

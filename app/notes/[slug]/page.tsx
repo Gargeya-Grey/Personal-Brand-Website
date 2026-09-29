@@ -14,6 +14,8 @@ import { NotesReadProgress, NotesReadTracker } from '../notes-read-client';
 import { NotesMasthead } from '@/components/notes-masthead';
 import { notesBrand } from '@/lib/notes-brand';
 import { siteConfig } from '@/lib/site-config';
+import { getPageMetadata } from '@/lib/page-metadata';
+import { getBlogPostingJsonLd, serializeJsonLd } from '@/lib/structured-data';
 
 export const dynamic = 'force-dynamic';
 
@@ -27,11 +29,14 @@ export async function generateMetadata({
   if (!week || !publicWeek(week)) {
     return { title: notesBrand.name };
   }
-  return {
+  return getPageMetadata({
     title: week.title,
     description: week.dek || week.title,
-    alternates: { canonical: `/notes/${week.slug}` },
-  };
+    path: `/notes/${week.slug}`,
+    type: 'article',
+    publishedTime: week.sentAt || undefined,
+    modifiedTime: week.updatedAt,
+  });
 }
 
 export default async function NoteIssuePage({
@@ -48,9 +53,22 @@ export default async function NoteIssuePage({
   const idx = all.findIndex((w) => w.id === week.id);
   const newer = idx > 0 ? all[idx - 1] : null;
   const older = idx >= 0 && idx < all.length - 1 ? all[idx + 1] : null;
+  const jsonLd = getBlogPostingJsonLd({
+    title: week.title,
+    excerpt: week.dek || week.title,
+    slug: week.slug,
+    path: `/notes/${week.slug}`,
+    date: week.sentAt || undefined,
+    updatedAt: week.updatedAt,
+    author: siteConfig.name,
+  });
 
   return (
     <div className="relative flex min-h-screen flex-col">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
+      />
       <NotesReadTracker issueId={week.id} />
       <NotesReadProgress />
       <Navigation />

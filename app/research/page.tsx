@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import Link from 'next/link';
 import { ArrowUpRight, MoveUpRight } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
@@ -7,12 +8,12 @@ import { PageIntro } from '@/components/page-intro';
 import { FieldMotion } from '@/components/field-notes';
 import { publications } from '@/data/research';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = getPageMetadata({
   title: 'Research & publications',
   description:
     'Computer-vision research by Gargeya Sharma: surface-crack segmentation, object detection, and MSc work at Queen Mary University of London.',
-  alternates: { canonical: '/research' },
-};
+  path: '/research',
+});
 
 export default function ResearchPage() {
   return (

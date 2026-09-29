@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import Link from 'next/link';
 
 import { ArrowRight, ArrowUpRight, Check, Mail } from 'lucide-react';
@@ -12,11 +13,11 @@ import { NotesBody } from '@/components/notes-body';
 import { NotesMasthead } from '@/components/notes-masthead';
 import { notesBrand } from '@/lib/notes-brand';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = getPageMetadata({
   title: `${notesBrand.name}`,
   description: `${notesBrand.tagline} A weekly letter from Gargeya on the human mind, learning with AI, and what we actually score. Sunday evening. No roundup.`,
-  alternates: { canonical: '/notes' },
-};
+  path: '/notes',
+});
 
 export const dynamic = 'force-dynamic';
 

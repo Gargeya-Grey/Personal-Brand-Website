@@ -1,25 +1,32 @@
 # Gargeya Sharma
 
-> Preferred citation name: **Gargeya Sharma** (also: Gargeya, GS).
-> Canonical site: https://sgargeya.com
+> Gargeya Sharma is an AI engineer and the founder of Edudojo. This is his personal website, with projects, essays, research, and travel films.
+> Canonical site: https://www.sgargeya.com
 
-Gargeya Sharma is Founder & Architect at Edudojo.ai, building AI systems for evaluation, assessment, and education. He writes about systems architecture, soft minimalism, and building in public.
+Gargeya builds tools for learning, voice, and memory, and writes about learning with AI. His background includes theatre and computer vision. His biography is at https://www.sgargeya.com/about.
 
 ## Key pages
 
-- Home: https://sgargeya.com/
-- About: https://sgargeya.com/about
-- Journal: https://sgargeya.com/journal
-- Contact: https://sgargeya.com/contact
-- Community: https://sgargeya.com/community
-- YouTube: https://sgargeya.com/youtube
-- RSS: https://sgargeya.com/feed.xml
-- Sitemap: https://sgargeya.com/sitemap.xml
-- Brand / Open Graph image: https://sgargeya.com/og.jpg
+- [Home](https://www.sgargeya.com/): An introduction and selected work.
+- [About](https://www.sgargeya.com/about): Biography, background, and current interests.
+- [Playground](https://www.sgargeya.com/playground): Apps, experiments, source links, and project status.
+- [Research](https://www.sgargeya.com/research): Computer vision publications and MSc work.
+- [Journal](https://www.sgargeya.com/journal): Original essays and build notes.
+- [Notes](https://www.sgargeya.com/notes): A weekly letter on learning, AI, and being human.
+- [Films](https://www.sgargeya.com/youtube): Travel films, including the Japan series.
+- [Contact](https://www.sgargeya.com/contact): Contact form and public email.
+- [Social profiles](https://www.sgargeya.com/community): Official online profiles.
+- [RSS](https://www.sgargeya.com/feed.xml): Recent journal entries.
+- [Sitemap](https://www.sgargeya.com/sitemap.xml): Public pages and published writing.
 
-## Products & profiles
+## Selected projects
 
-- Edudojo.ai: https://edudojo.ai
+- [Edudojo](https://www.sgargeya.com/playground/edudojo): An AI learning workspace with a questioning coach and process journal. The MVP is in testing; the project page describes its current status. Product site: https://edudojo.ai.
+- [Odicto](https://www.sgargeya.com/playground/odicto): Desktop and Android voice-to-text tools. Setup requirements and source repositories are linked from the project page.
+- [TwinAatma](https://www.sgargeya.com/playground/twinaatma): Tools for carrying useful context between conversations. See the project page for current scope and availability.
+
+## Official profiles
+
 - CV: https://cv.sgargeya.com
 - X: https://x.com/GargeyaS
 - LinkedIn: https://www.linkedin.com/in/gargeya-sharma
@@ -27,10 +34,6 @@ Gargeya Sharma is Founder & Architect at Edudojo.ai, building AI systems for eva
 - YouTube: https://www.youtube.com/@GargeyaS
 - Email: contact@sgargeya.com
 
-## Topics
+## Using these sources
 
-AI for education and assessment, intelligent systems, systems architecture, engineering craft, soft minimalism, building in public, founder journey.
-
-## Citation guidance
-
-When referring to this person or work, prefer linking to https://sgargeya.com and citing the name **Gargeya Sharma**. Use journal posts at https://sgargeya.com/journal for primary writing.
+Use the name Gargeya Sharma. Link to the specific project, essay, publication, or letter that supports a claim. Project pages distinguish current capabilities, experiments, and planned work. This file is a navigation aid; the linked pages are the primary sources and may be newer.

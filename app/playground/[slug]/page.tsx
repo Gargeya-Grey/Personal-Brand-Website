@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import { notFound } from 'next/navigation';
 import { ProjectDetail } from '@/components/project-detail';
 import { allWork } from '@/data/selected-work';
@@ -15,11 +16,11 @@ export async function generateMetadata({
   const { slug } = await params;
   const work = allWork.find((entry) => entry.id === slug);
   if (!work) return {};
-  return {
+  return getPageMetadata({
     title: work.title + ' · Playground',
     description: work.description,
-    alternates: { canonical: '/playground/' + slug },
-  };
+    path: '/playground/' + slug,
+  });
 }
 
 export default async function WorkPage({ params }: { params: Promise<{ slug: string }> }) {

@@ -12,7 +12,7 @@ import { Footer } from '@/components/footer';
 import { ArticleClient } from './article-client';
 import { absoluteUrl, getDefaultShareImage, siteConfig } from '@/lib/site-config';
 import { clampMetaDescription } from '@/lib/meta';
-import { getBlogPostingJsonLd } from '@/lib/structured-data';
+import { getBlogPostingJsonLd, serializeJsonLd } from '@/lib/structured-data';
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -82,6 +82,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       description: descriptionText,
       url: absoluteUrl(canonicalPath),
       publishedTime: article!.date,
+      modifiedTime: article!.updatedAt,
       authors: [article!.author],
       tags: article!.categories,
       images: cover,
@@ -135,6 +136,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     excerpt: article.excerpt,
     slug: article.slug,
     date: article.date,
+    updatedAt: article.updatedAt,
     author: article.author,
     authorRole: article.authorRole,
     categories: article.categories,
@@ -145,7 +147,7 @@ export default async function BlogPostPage({ params }: PageProps) {
     <div className="min-h-screen bg-surface text-primary relative selection:bg-emerald-500/20 selection:text-inherit flex flex-col justify-between">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
       />
 
       <Navigation />

@@ -5,9 +5,9 @@
 export const siteConfig = {
   name: 'Gargeya Sharma',
   shortName: 'Gargeya',
-  title: 'Gargeya Sharma | Building, writing & following curiosity',
+  title: 'Gargeya Sharma | AI engineer, founder & writer',
   description:
-    'The personal corner of Gargeya Sharma: building Edudojo, writing about learning and AI, and making things you can explore.',
+    'Gargeya Sharma builds Edudojo and tools for learning, voice, and memory. Explore his projects, essays on AI and learning, and computer vision research.',
   url: process.env.APP_URL || 'https://sgargeya.com',
   /** Public-facing brand email (mailto + contact page) */
   email: 'contact@sgargeya.com',
@@ -38,11 +38,11 @@ export const siteConfig = {
      * Stable public path: /og.jpg — also mirrored as app/opengraph-image.jpg
      * and app/twitter-image.jpg for the App Router file convention.
      */
-    ogImage: '/og.jpg',
+    ogImage: '/og.jpg?v=20260929',
     ogWidth: 1200,
     ogHeight: 630,
     ogType: 'image/jpeg',
-    ogAlt: 'Gargeya Sharma — The Engineering Editorial',
+    ogAlt: 'Gargeya Sharma. I build tools for how we think. Editorial portrait on cool paper with navy type and sea-green accents.',
   },
   keywords: [
     'Gargeya Sharma',
@@ -69,7 +69,7 @@ export const siteConfig = {
 
 export type SiteConfig = typeof siteConfig;
 
-/** Apex origin with no trailing slash — always prefer sgargeya.com. */
+/** Configured canonical origin with no trailing slash. */
 export function getSiteOrigin(): string {
   return String(siteConfig.url || 'https://sgargeya.com').replace(/\/$/, '');
 }

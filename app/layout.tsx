@@ -13,7 +13,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
 import { getDefaultShareImage, getSiteOrigin, siteConfig } from '@/lib/site-config';
 import { clampMetaDescription } from '@/lib/meta';
-import { getSiteJsonLdGraph } from '@/lib/structured-data';
+import { getSiteJsonLdGraph, serializeJsonLd } from '@/lib/structured-data';
 
 const themeInitScript = `
 try {
@@ -122,7 +122,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         </Script>
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+          dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
         />
         <ThemeProvider>
           <a

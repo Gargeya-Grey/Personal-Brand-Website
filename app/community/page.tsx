@@ -1,16 +1,17 @@
 import type { Metadata } from 'next';
+import { getPageMetadata } from '@/lib/page-metadata';
 import Image from 'next/image';
 import { ArrowUpRight, Github, Linkedin, Youtube, Plus, MessageCircle } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { siteConfig } from '@/lib/site-config';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = getPageMetadata({
   title: 'Social profiles',
   description:
     'Explore Gargeya’s code, conversations, professional work, and travel films. Find the place you’d like to follow.',
-  alternates: { canonical: '/community' },
-};
+  path: '/community',
+});
 
 const channels = [
   {
