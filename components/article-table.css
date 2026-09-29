@@ -1,0 +1,74 @@
+.article-table-scroll {
+  --table-header: color-mix(in srgb, var(--color-surface-container-high) 55%, var(--color-canvas));
+  --table-stripe: color-mix(in srgb, var(--color-text-primary) 3%, var(--color-canvas));
+  width: 100%;
+  max-width: 100%;
+  margin: 32px 0;
+  overflow: auto;
+  overscroll-behavior-x: contain;
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 12px;
+  background: var(--color-canvas);
+  color: var(--color-text-muted);
+  font: 400 14px/1.65 var(--font-body), sans-serif;
+  font-variant-numeric: tabular-nums;
+}
+.article-table-scroll:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+.article-table-scroll table {
+  width: 100%;
+  margin: 0;
+  border-collapse: separate;
+  border-spacing: 0;
+  font: inherit;
+}
+.article-table-scroll[data-wide='true'] table { width: max-content; min-width: 100%; }
+.article-table-scroll tr { --table-row: var(--color-canvas); }
+.article-table-scroll tbody tr:nth-child(even) { --table-row: var(--table-stripe); }
+.article-table-scroll :is(th, td) {
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--color-outline-variant);
+  background: var(--table-row);
+  color: var(--color-text-muted);
+  font: inherit;
+  vertical-align: top;
+}
+.article-table-scroll th {
+  background: var(--table-header);
+  color: var(--color-text-primary);
+  font-weight: 600;
+  vertical-align: bottom;
+}
+.article-table-scroll tbody tr:last-child td { border-bottom: 0; }
+.article-table-scroll :is(th, td):first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  border-right: 1px solid var(--color-outline-variant);
+}
+.article-table-scroll td:first-child { font-weight: 500; }
+.article-table-scroll[data-wide='true'] :is(th, td) { white-space: nowrap; }
+.article-table-scroll[data-wide='true'] :is(th, td):first-child {
+  min-width: 160px;
+  max-width: 340px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+/* Leave the inline expand control clear of the final column's heading. */
+.article-table-scroll th:last-child { padding-right: 64px; }
+.article-lightbox .article-table-scroll th:last-child { padding-right: 20px; }
+.article-table-scroll strong { color: var(--color-text-primary); }
+.article-table-scroll em { color: inherit; }
+.article-table-scroll :is(a, code) { color: var(--color-accent); }
+.article-table-scroll a { text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent); }
+.article-table-scroll code { background: var(--color-accent-soft); }
+@media (max-width: 600px) {
+  .article-table-scroll :is(th, td) { padding: 12px 16px; }
+  .article-table-scroll[data-wide='true'] :is(th, td):first-child {
+    min-width: 128px;
+    max-width: 144px;
+  }
+  .article-lightbox .article-table-scroll th:last-child { padding-right: 16px; }
+}

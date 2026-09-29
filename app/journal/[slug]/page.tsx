@@ -155,7 +155,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         tabIndex={-1}
         className="relative z-10 flex-grow pb-24 pt-28 sm:pt-32 lg:pt-36"
       >
-        <ArticleClient article={article} related={related} />
+        <ArticleClient article={article} canonicalUrl={absoluteUrl(`/journal/${article.slug}`)} related={related} />
       </main>
 
       <Footer />

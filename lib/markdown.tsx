@@ -2,7 +2,12 @@
 
 import React from 'react';
 import { ExpandableFrame } from '@/components/article-expandable';
+import { ArticleInteractive } from '@/components/article-interactive';
+import { extractArticleHeadings, parseInteractiveInfo, readFencedBlock, slugify } from '@/lib/article-markdown';
 import { parseKickerLine } from '@/lib/newsletter-markdown';
+import '@/components/article-table.css';
+
+export { slugify } from '@/lib/article-markdown';
 
 /**
  * Custom inline markdown parser supporting **bold**, *italic*, _italic_, `inline code`, [links](url), and ![images](url)
@@ -124,85 +129,53 @@ export function parseInlineMarkdown(text: string): React.ReactNode[] {
   return parts;
 }
 
-export function slugify(text: string): string {
-  return text
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '')
-    .replace(/[\s_]+/g, '-')
-    .replace(/^-+|-+$/g, '');
-}
-
 const BODY =
   'font-body text-slate-700 dark:text-slate-300 text-base md:text-[1.0625rem] leading-[1.8] tracking-normal font-normal text-left';
 const H2 =
   'font-headline text-[1.35rem] md:text-[1.65rem] font-[520] dark:font-[480] text-slate-800 dark:text-slate-100 tracking-[-0.015em] mt-14 mb-5 scroll-mt-36';
 const H3 =
   'font-headline text-lg md:text-xl font-[520] dark:font-[480] text-slate-800 dark:text-slate-100 tracking-[-0.01em] mt-10 mb-4 scroll-mt-36';
-const DEK =
-  'font-headline text-[1.05rem] font-medium text-slate-600 dark:text-slate-400 tracking-[-0.01em] mt-1 mb-6 scroll-mt-36 leading-snug';
-
-
-
 /**
  * Custom block-level markdown parser converting MD text into premium React nodes
  * with consecutive list item and blockquote grouping.
  */
 export function renderMarkdown(
   markdown: string | undefined | null,
-  options?: { pageTitle?: string }
+  _options?: { pageTitle?: string }
 ): React.ReactNode {
   if (!markdown) return null;
-  const pageTitle = options?.pageTitle;
 
-  const lines = markdown.split('\n');
+  const lines = markdown.split(/\r?\n/);
+  const headings = new Map(extractArticleHeadings(markdown).map((heading) => [heading.line, heading]));
   const elements: React.ReactNode[] = [];
-  let inCodeBlock = false;
-  let codeLines: string[] = [];
-  let codeLang = '';
   let sawParagraph = false;
   let afterSourcesHeading = false;
   let i = 0;
   while (i < lines.length) {
     const line = lines[i];
 
-    // Code Block Check
-    if (line.trim().startsWith('```')) {
-      if (inCodeBlock) {
-        // Close code block
-        inCodeBlock = false;
-        const codeContent = codeLines.join('\n');
-        elements.push(
-          <div 
-            key={`code-block-${i}`} 
-            className="bg-[#0c1017] border border-slate-800 p-5 rounded-2xl font-mono text-[11px] md:text-xs text-accent overflow-x-auto my-6 shadow-inner"
-          >
-            <pre className="text-emerald-400 select-all leading-normal">{codeContent}</pre>
-          </div>
-        );
-        codeLines = [];
-      } else {
-        inCodeBlock = true;
-        codeLang = line.trim().slice(3);
-      }
-      i++;
-      continue;
-    }
-
-    if (inCodeBlock) {
-      codeLines.push(line);
-      i++;
+    const block = readFencedBlock(lines, i);
+    if (block) {
+      const interactive = block.closed ? parseInteractiveInfo(block.info) : null;
+      elements.push(interactive ? (
+        <ArticleInteractive key={`interactive-${i}`} source={block.content} {...interactive} />
+      ) : (
+        <div key={`code-block-${i}`} className="article-code-block my-6 max-w-full overflow-x-auto rounded-2xl border border-slate-800 bg-[#0c1017] p-5 font-mono text-xs text-emerald-400">
+          <pre className="leading-relaxed"><code>{block.content}</code></pre>
+        </div>
+      ));
+      i = block.nextIndex;
       continue;
     }
 
     // Headers
     if (line.startsWith('### ')) {
       const text = line.slice(4).trim();
-      const id = slugify(text);
+      const id = headings.get(i)?.id ?? slugify(text);
       afterSourcesHeading = false;
       elements.push(
-        <h3 key={`h3-${i}`} id={id} className={H3}>
-          {text}
+        <h3 key={`h3-${i}`} id={id} tabIndex={-1} className={H3}>
+          {parseInlineMarkdown(text)}
         </h3>
       );
       i++;
@@ -210,11 +183,11 @@ export function renderMarkdown(
     }
     if (line.startsWith('## ')) {
       const text = line.slice(3).trim();
-      const id = slugify(text);
+      const id = headings.get(i)?.id ?? slugify(text);
       afterSourcesHeading = id === 'sources';
       elements.push(
-        <h2 key={`h2-${i}`} id={id} className={H2}>
-          {text}
+        <h2 key={`h2-${i}`} id={id} tabIndex={-1} className={H2}>
+          {parseInlineMarkdown(text)}
         </h2>
       );
       i++;
@@ -361,6 +334,7 @@ export function renderMarkdown(
 
     // Paragraph
     if (line.trim() !== '') {
+      // Preserve the existing CMS preamble handling before the opening paragraph.
       if (!sawParagraph && !/[.!?]"?$/.test(line.trim())) {
         i++;
         continue;
@@ -444,25 +418,20 @@ function parseMarkdownTable(
   const wide = headerCells.length >= 4;
   const table = (
     <div
-      className="article-table-scroll my-8 w-full overflow-x-auto rounded-2xl border border-slate-200/90 dark:border-white/10 bg-white dark:bg-slate-950"
+      tabIndex={0}
+      role="region"
+      aria-label="Table, scroll horizontally for more columns"
+      className="article-table-scroll"
+      data-wide={wide}
     >
-      <table
-        className={`border-collapse text-left text-sm ${
-          wide ? 'w-max min-w-full' : 'w-full'
-        }`}
-      >
+      <table>
         <thead>
-          <tr className="bg-slate-100/90 dark:bg-white/[0.06]">
+          <tr>
             {headerCells.map((cell, idx) => (
               <th
                 key={idx}
-                className={`px-5 py-3.5 font-headline font-semibold text-slate-800 dark:text-slate-100 border-b border-slate-200 dark:border-white/10 align-bottom ${
-                  wide ? 'whitespace-nowrap' : 'text-pretty'
-                } ${
-                  idx === 0
-                    ? 'sticky left-0 z-[1] bg-slate-100/95 dark:bg-slate-900 border-r border-slate-200/70 dark:border-white/10'
-                    : ''
-                } ${alignClass(idx)}`}
+                scope="col"
+                className={alignClass(idx)}
               >
                 {parseInlineMarkdown(cell)}
               </th>
@@ -471,24 +440,11 @@ function parseMarkdownTable(
         </thead>
         <tbody>
           {bodyRows.map((row, rIdx) => (
-            <tr
-              key={rIdx}
-              className="border-b border-slate-100 dark:border-white/[0.06] last:border-0 odd:bg-white dark:odd:bg-slate-950 even:bg-slate-50/80 dark:even:bg-white/[0.03]"
-            >
+            <tr key={rIdx}>
               {headerCells.map((_, cIdx) => (
                 <td
                   key={cIdx}
-                  className={`px-5 py-3.5 font-body text-slate-700 dark:text-slate-300 align-top ${
-                    wide ? 'whitespace-nowrap' : ''
-                  } ${
-                    cIdx === 0
-                      ? `sticky left-0 z-[1] font-medium border-r border-slate-200/55 dark:border-white/[0.08] ${
-                          rIdx % 2 === 0
-                            ? 'bg-white dark:bg-slate-950'
-                            : 'bg-slate-50 dark:bg-[#0c1220]'
-                        }`
-                      : 'font-normal'
-                  } ${alignClass(cIdx)}`}
+                  className={alignClass(cIdx)}
                 >
                   {parseInlineMarkdown(row[cIdx] ?? '')}
                 </td>

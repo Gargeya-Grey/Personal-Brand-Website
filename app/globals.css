@@ -2191,12 +2191,6 @@ a.board-card {
 .article-table-scroll::-webkit-scrollbar-thumb:hover {
   background: color-mix(in srgb, var(--color-text-primary) 32%, transparent);
 }
-.dark .article-table-scroll {
-  scrollbar-color: rgba(241, 245, 249, 0.22) transparent;
-}
-.dark .article-table-scroll::-webkit-scrollbar-thumb {
-  background: rgba(241, 245, 249, 0.2);
-}
 
 .atelier-input {
   width: 100%;

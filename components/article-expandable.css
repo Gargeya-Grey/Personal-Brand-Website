@@ -2,12 +2,13 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 2.75rem;
+  height: 2.75rem;
   padding: 0;
   border: 0;
-  background: transparent;
-  color: #c4c4c4;
+  border-radius: 50%;
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
   cursor: pointer;
   filter:
     drop-shadow(0 1px 0.5px rgba(0, 0, 0, 0.08))
@@ -21,11 +22,132 @@
   width: 1rem;
   height: 1rem;
 }
-.article-expand:hover,
+.article-expand--text {
+  gap: 8px;
+  width: auto;
+  height: auto;
+  min-height: 44px;
+  margin: 6px 0 0 auto;
+  padding: 4px 2px;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: 500 12px/1.5 var(--font-body), sans-serif;
+  filter: none;
+}
+.article-expand--text svg { width: 13px; height: 13px; }
+.article-expand.article-expand--text:is(:hover, :active) { transform: none; }
 .article-expand:focus-visible {
   color: var(--color-accent);
-  transform: scale(1.15);
-  outline: none;
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .article-expand:hover { color:var(--color-accent); transform:scale(1.05); }
+}
+.article-lightbox {
+  position: fixed;
+  inset: 0;
+  margin: auto;
+  width: min(calc(100% - 32px), 1200px);
+  max-width: none;
+  max-height: calc(100dvh - 32px);
+  padding: 0;
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 18px;
+  background: var(--color-canvas);
+  color: var(--color-text-primary);
+  box-shadow: 0 24px 80px #0003;
+  overflow: hidden;
+}
+.article-lightbox::backdrop {
+  background: color-mix(in srgb, var(--color-bg-primary) 72%, transparent);
+  backdrop-filter: blur(8px);
+}
+.article-lightbox-panel {
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100dvh - 34px);
+}
+.article-lightbox-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 10px 20px;
+  border-bottom: 1px solid var(--color-outline-variant);
+}
+.article-lightbox-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  font: 500 14px/1.5 var(--font-body), sans-serif;
+  overflow-wrap: anywhere;
+}
+.article-lightbox-title svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+.article-lightbox-close {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid var(--color-outline-variant);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--color-text-muted);
+  font: 500 12px/1 var(--font-body), sans-serif;
+  cursor: pointer;
+  transition: color 160ms ease, background-color 160ms ease;
+}
+.article-lightbox-close svg { width: 16px; height: 16px; }
+.article-lightbox-close:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .article-lightbox-close:hover {
+    color: var(--color-text-primary);
+    background: var(--color-accent-soft);
+  }
+}
+.article-lightbox-body {
+  min-height: 0;
+  padding: 20px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.article-lightbox-body > .article-table-scroll { margin: 0; }
+.article-lightbox-body > img,
+.article-lightbox-body > .reader-cover-image {
+  display: block;
+  margin: 0 auto;
+  max-width: 100%;
+  border-radius: 10px;
+  border-color: var(--color-outline-variant);
+}
+.article-lightbox-body > .reader-cover-image { aspect-ratio: auto; }
+.article-lightbox-body > img,
+.article-lightbox-body > .reader-cover-image > img {
+  /* Next Image's fill styles must give way to the image's natural proportions. */
+  position: static !important;
+  width: 100% !important;
+  height: auto !important;
+  max-height: calc(100dvh - 142px);
+  object-fit: contain;
+}
+@media (max-width: 600px) {
+  .article-lightbox { width: calc(100% - 24px); border-radius: 14px; }
+  .article-lightbox-header { gap: 12px; padding: 8px 12px; }
+  .article-lightbox-body { padding: 12px; }
 }
 .article-expand:active {
   transform: scale(0.96);

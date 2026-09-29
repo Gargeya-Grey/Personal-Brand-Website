@@ -4,9 +4,11 @@ import {
   cloneElement,
   isValidElement,
   useEffect,
+  useRef,
   useState,
   type ReactElement,
   type ReactNode,
+  type MouseEvent,
 } from 'react';
 import { createPortal } from 'react-dom';
 import { Maximize2, X } from 'lucide-react';
@@ -15,17 +17,20 @@ import './article-expandable.css';
 function ExpandButton({
   onClick,
   label,
+  text,
 }: {
-  onClick: () => void;
+  onClick: (event: MouseEvent<HTMLButtonElement>) => void;
   label: string;
+  text?: string;
 }) {
   return (
     <button
       type="button"
       onClick={onClick}
       aria-label={label}
-      className="article-expand absolute top-2.5 right-2.5 z-10"
+      className={`article-expand ${text ? 'article-expand--text' : 'absolute top-2.5 right-2.5 z-10'}`}
     >
+      {text && <span>{text}</span>}
       <Maximize2 strokeWidth={2.25} />
     </button>
   );
@@ -40,49 +45,45 @@ function Lightbox({
   onClose: () => void;
   children: ReactNode;
 }) {
+  const dialogRef = useRef<HTMLDialogElement>(null);
   useEffect(() => {
-    const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') onClose();
-    };
-    document.addEventListener('keydown', onKey);
+    const dialog = dialogRef.current;
+    dialog?.showModal();
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     return () => {
-      document.removeEventListener('keydown', onKey);
+      dialog?.close();
       document.body.style.overflow = prev;
     };
-  }, [onClose]);
+  }, []);
 
   return (
-    <div className="fixed inset-0 z-[80] flex items-center justify-center p-3 sm:p-6">
-      <button
-        type="button"
-        aria-label="Close"
-        className="absolute inset-0 bg-slate-900/50 backdrop-blur-[2px]"
-        onClick={onClose}
-      />
-      <div
-        role="dialog"
-        aria-modal="true"
-        aria-label={label}
-        className="relative z-10 flex max-h-[92vh] w-full max-w-6xl flex-col overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-2xl dark:border-white/10 dark:bg-slate-950"
-      >
-        <div className="flex items-center justify-between border-b border-slate-200/80 px-4 py-2.5 dark:border-white/10">
-          <span className="font-label text-[0.65rem] uppercase tracking-[0.14em] text-slate-400">
+    <dialog
+      ref={dialogRef}
+      aria-label={label}
+      onCancel={(event) => { event.preventDefault(); onClose(); }}
+      onClick={(event) => { if (event.target === event.currentTarget) onClose(); }}
+      className="article-lightbox"
+    >
+      <div className="article-lightbox-panel">
+        <div className="article-lightbox-header">
+          <span className="article-lightbox-title">
+            <Maximize2 aria-hidden="true" />
             {label}
           </span>
           <button
             type="button"
             onClick={onClose}
             aria-label="Close"
-            className="rounded-full p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-800 dark:hover:bg-white/10 dark:hover:text-white"
+            className="article-lightbox-close"
           >
-            <X className="h-4 w-4" />
+            <span>Close</span>
+            <X aria-hidden="true" />
           </button>
         </div>
-        <div className="min-h-0 flex-1 overflow-auto p-3 sm:p-5">{children}</div>
+        <div className="article-lightbox-body">{children}</div>
       </div>
-    </div>
+    </dialog>
   );
 }
 
@@ -90,33 +91,43 @@ export function ExpandableFrame({
   label,
   children,
   as = 'div',
+  expandText,
+  expandedContent,
 }: {
   label: string;
   children: ReactElement;
   as?: 'div' | 'span';
+  expandText?: string;
+  expandedContent?: ReactNode;
 }) {
   const [open, setOpen] = useState(false);
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    // Mount-gate only: defers portal creation until after hydration.
-    // eslint-disable-next-line react-hooks/set-state-in-effect
-    setMounted(true);
-  }, []);
+  const openerRef = useRef<HTMLButtonElement>(null);
+  const close = () => {
+    setOpen(false);
+    requestAnimationFrame(() => openerRef.current?.focus({ preventScroll: true }));
+  };
 
   const clone = isValidElement(children) ? cloneElement(children) : children;
   const Wrap = as;
+  const expandButton = (
+    <ExpandButton
+      onClick={(event) => { openerRef.current = event.currentTarget; setOpen(true); }}
+      label={`Expand ${label}`}
+      text={expandText}
+    />
+  );
 
   return (
     <>
-      <Wrap className={`group relative ${as === 'span' ? 'inline-block max-w-full' : 'block'}`}>
-        <ExpandButton onClick={() => setOpen(true)} label={`Expand ${label}`} />
+      <Wrap className={`group relative min-w-0 max-w-full ${as === 'span' ? 'inline-block' : 'block'}`}>
+        {!expandText && expandButton}
         {children}
+        {expandText && expandButton}
       </Wrap>
-      {open && mounted
+      {open
         ? createPortal(
-            <Lightbox label={label} onClose={() => setOpen(false)}>
-              {clone}
+            <Lightbox label={label} onClose={close}>
+              {expandedContent ?? clone}
             </Lightbox>,
             document.body
           )

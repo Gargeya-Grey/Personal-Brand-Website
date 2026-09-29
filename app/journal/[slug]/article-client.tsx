@@ -1,423 +1,226 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
-import { ArrowLeft, Calendar, Clock, Check, Copy, Heart, List } from 'lucide-react';
+import { useState, useEffect, useMemo, useRef } from 'react';
+import { ArrowLeft, ArrowRight, ArrowUp, Bookmark, Check, ChevronDown, Clock, Copy, List, Type } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import * as motion from 'motion/react-client';
-import { renderMarkdown, slugify } from '@/lib/markdown';
+import { renderMarkdown } from '@/lib/markdown';
+import { extractArticleHeadings } from '@/lib/article-markdown';
 import { ExpandableFrame } from '@/components/article-expandable';
 import { renderIllustration } from '@/components/render-illustration';
 import { AuthorAvatar } from '@/components/author-avatar';
-import { Article } from '@/lib/blog-service';
+import type { Article } from '@/lib/blog-service';
 import { siteConfig } from '@/lib/site-config';
+import './article-reader.css';
 
-interface HeadingItem {
-  id: string;
-  text: string;
-  level: number;
+export type RelatedArticleCard = { slug: string; title: string; readTime: string };
+
+function CoverImage({ src, title, expanded = false }: { src: string; title: string; expanded?: boolean }) {
+  return (
+    <figure className="reader-cover-image">
+      <Image
+        src={src}
+        alt={title}
+        fill
+        preload={!expanded}
+        loading={expanded ? 'eager' : undefined}
+        sizes={expanded
+          ? '(max-width: 600px) calc(100vw - 50px), (max-width: 1232px) calc(100vw - 74px), 1158px'
+          : '(max-width: 767px) calc(100vw - 40px), (max-width: 879px) calc(100vw - 80px), (max-width: 1199px) 800px, 720px'}
+        className="object-contain"
+      />
+    </figure>
+  );
 }
 
-export type RelatedArticleCard = {
-  slug: string;
-  title: string;
-  readTime: string;
-};
-
-function extractHeadings(markdown: string | undefined | null): HeadingItem[] {
-  if (!markdown) return [];
-  const headings: HeadingItem[] = [];
-  markdown.split('\n').forEach((line) => {
-    if (line.startsWith('## ')) {
-      const text = line.slice(3).trim();
-      headings.push({ id: slugify(text), text, level: 2 });
-    } else if (line.startsWith('### ')) {
-      const text = line.slice(4).trim();
-      headings.push({ id: slugify(text), text, level: 3 });
-    }
-  });
-  return headings;
-}
-
-function minutesFromReadTime(readTime: string): number {
-  const n = parseInt(readTime, 10);
-  return Number.isFinite(n) && n > 0 ? n : 6;
-}
-
-function scrollToId(id: string) {
-  const element = document.getElementById(id);
-  if (!element) return;
-  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  element.scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth' });
-}
-
-interface ArticleClientProps {
-  article: Article;
-  related?: RelatedArticleCard[];
-}
-
-export function ArticleClient({ article, related = [] }: ArticleClientProps) {
-  const [copiedLink, setCopiedLink] = useState(false);
+export function ArticleClient({ article, canonicalUrl, related = [] }: { article: Article; canonicalUrl: string; related?: RelatedArticleCard[] }) {
+  const [copyStatus, setCopyStatus] = useState('');
   const [liked, setLiked] = useState(false);
+  const [largeText, setLargeText] = useState(false);
   const [activeHeadingId, setActiveHeadingId] = useState('');
   const [scrollProgress, setScrollProgress] = useState(0);
-  const [shareUrl, setShareUrl] = useState('');
+  const readingRef = useRef<HTMLDivElement>(null);
+  const railRef = useRef<HTMLElement>(null);
+  const copyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const headings = useMemo(() => extractArticleHeadings(article.content), [article.content]);
+  const content = useMemo(() => renderMarkdown(article.content, { pageTitle: article.title }), [article.content, article.title]);
+  const parsedMinutes = parseInt(article.readTime, 10);
+  const totalMinutes = Number.isFinite(parsedMinutes) && parsedMinutes > 0 ? parsedMinutes : 6;
+  const remainingMinutes = Math.max(0, Math.ceil(totalMinutes * (1 - scrollProgress / 100)));
+  const activeHeading = headings.find((heading) => heading.id === activeHeadingId);
+  const shareUrl = canonicalUrl;
 
   useEffect(() => {
-    const frameId = window.requestAnimationFrame(() => {
-      setShareUrl(window.location.href);
+    const frameId = requestAnimationFrame(() => {
       try {
         setLiked(localStorage.getItem(`liked:${article.slug}`) === '1');
-      } catch {
-        /* ignore */
-      }
+        setLargeText(localStorage.getItem('article:large-text') === '1');
+      } catch { /* Reading remains available when storage is disabled. */ }
     });
-    return () => window.cancelAnimationFrame(frameId);
+    return () => {
+      cancelAnimationFrame(frameId);
+      if (copyTimer.current) clearTimeout(copyTimer.current);
+    };
   }, [article.slug]);
-
-  const headings = useMemo(() => extractHeadings(article.content), [article.content]);
-  const totalMinutes = minutesFromReadTime(article.readTime);
-  const remainingMinutes = Math.max(1, Math.ceil(totalMinutes * (1 - scrollProgress / 100)));
-  const activeHeading = headings.find((h) => h.id === activeHeadingId) ?? headings[0];
 
   useEffect(() => {
     let frameId = 0;
-
-    const updateScrollState = () => {
+    const update = () => {
       frameId = 0;
-      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
-      setScrollProgress(totalHeight > 0 ? (window.scrollY / totalHeight) * 100 : 0);
-
-      if (headings.length === 0) return;
-      const scrollPosition = window.scrollY + 180;
-      let currentActiveId = headings[0].id;
-
-      if (window.innerHeight + window.scrollY >= document.documentElement.scrollHeight - 50) {
-        currentActiveId = headings[headings.length - 1].id;
-      } else {
-        for (const heading of headings) {
-          const element = document.getElementById(heading.id);
-          if (element && scrollPosition >= element.offsetTop) {
-            currentActiveId = heading.id;
-          } else if (element) {
-            break;
-          }
-        }
+      const body = readingRef.current;
+      if (!body) return;
+      const bounds = body.getBoundingClientRect();
+      const distance = Math.max(1, bounds.height - window.innerHeight + 160);
+      setScrollProgress(Math.min(100, Math.max(0, (140 - bounds.top) / distance * 100)));
+      let active = '';
+      for (const heading of headings) {
+        const element = document.getElementById(heading.id);
+        if (element && element.getBoundingClientRect().top <= 190) active = heading.id;
       }
-      setActiveHeadingId(currentActiveId);
+      setActiveHeadingId(active);
     };
-
-    const scheduleUpdate = () => {
-      if (!frameId) frameId = window.requestAnimationFrame(updateScrollState);
-    };
-
-    window.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate, { passive: true });
-    scheduleUpdate();
-
+    const schedule = () => { if (!frameId) frameId = requestAnimationFrame(update); };
+    const resizeObserver = new ResizeObserver(schedule);
+    if (readingRef.current) resizeObserver.observe(readingRef.current);
+    window.addEventListener('scroll', schedule, { passive: true });
+    window.addEventListener('resize', schedule, { passive: true });
+    schedule();
     return () => {
-      window.removeEventListener('scroll', scheduleUpdate);
-      window.removeEventListener('resize', scheduleUpdate);
-      if (frameId) window.cancelAnimationFrame(frameId);
+      resizeObserver.disconnect();
+      window.removeEventListener('scroll', schedule);
+      window.removeEventListener('resize', schedule);
+      if (frameId) cancelAnimationFrame(frameId);
     };
   }, [headings]);
 
-  const handleCopyLink = () => {
-    navigator.clipboard
-      .writeText(window.location.href)
-      .then(() => {
-        setCopiedLink(true);
-        setTimeout(() => setCopiedLink(false), 2000);
-      })
-      .catch((err) => console.error('Failed to copy link:', err));
+  useEffect(() => {
+    const nav = railRef.current;
+    const current = nav?.querySelector<HTMLElement>('[aria-current="location"]');
+    if (!nav || !current) return;
+    const item = current.getBoundingClientRect();
+    const viewport = nav.getBoundingClientRect();
+    if (item.top < viewport.top || item.bottom > viewport.bottom) {
+      nav.scrollTop += item.top - viewport.top - nav.clientHeight / 3;
+    }
+  }, [activeHeadingId]);
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopyStatus('Link copied');
+    } catch {
+      setCopyStatus('Copy the address from your browser');
+    }
+    if (copyTimer.current) clearTimeout(copyTimer.current);
+    copyTimer.current = setTimeout(() => setCopyStatus(''), 2500);
   };
 
-  const handleLikeToggle = () => {
+  const toggleBookmark = () => {
     const next = !liked;
     setLiked(next);
     try {
-      const key = `liked:${article.slug}`;
-      if (next) localStorage.setItem(key, '1');
-      else localStorage.removeItem(key);
-    } catch {
-      /* ignore */
-    }
+      if (next) localStorage.setItem(`liked:${article.slug}`, '1');
+      else localStorage.removeItem(`liked:${article.slug}`);
+    } catch { /* The current visit still reflects the choice. */ }
   };
 
-  const shareClass =
-    'flex h-11 w-11 items-center justify-center text-on-surface-variant hover:text-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent rounded-full active:scale-[0.97]';
+  const toggleTextSize = () => {
+    const next = !largeText;
+    setLargeText(next);
+    try { localStorage.setItem('article:large-text', next ? '1' : '0'); } catch { /* optional preference */ }
+  };
 
-  const renderToc = () =>
-    headings.map((heading) => (
-      <a
-        key={heading.id}
-        href={`#${heading.id}`}
-        title={heading.text}
-        aria-current={activeHeadingId === heading.id ? 'location' : undefined}
-        onClick={(e) => {
-          e.preventDefault();
-          scrollToId(heading.id);
-        }}
-        className={`article-toc-link relative flex min-w-0 items-start py-[0.4rem] pl-3.5 pr-2 text-[12px] font-normal leading-[1.35] tracking-[-0.01em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
-          heading.level === 3 ? 'pl-5' : ''
-        } ${
-          activeHeadingId === heading.id
-            ? 'text-accent'
-            : 'text-on-surface-variant hover:text-primary'
-        }`}
-      >
-        <span
-          className={`absolute left-[-1px] top-1 bottom-1 w-[2px] rounded-full ${
-            activeHeadingId === heading.id ? 'bg-accent' : 'bg-transparent'
-          }`}
-        />
-        <span className="min-w-0 text-pretty">{heading.text}</span>
-      </a>
-    ));
-
-  const shareCluster = (
-    <div className="flex items-center justify-center gap-0.5">
-      <button
-        type="button"
-        onClick={handleLikeToggle}
-        aria-label={liked ? 'Remove bookmark' : 'Save for later'}
-        aria-pressed={liked}
-        className={shareClass}
-      >
-        <Heart className={`h-3.5 w-3.5 ${liked ? 'fill-emerald-500 text-emerald-500' : ''}`} />
-      </button>
-      <button type="button" onClick={handleCopyLink} aria-label="Copy URL" className={shareClass}>
-        {copiedLink ? (
-          <Check className="h-3.5 w-3.5 text-emerald-500" />
-        ) : (
-          <Copy className="h-3.5 w-3.5" />
-        )}
-      </button>
-      <a
-        href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(shareUrl || '')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Share on X"
-        className={shareClass}
-      >
-        <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" aria-hidden>
-          <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
-        </svg>
-      </a>
-      <a
-        href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl || '')}`}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Share on LinkedIn"
-        className={shareClass}
-      >
-        <svg className="h-3.5 w-3.5 fill-current" viewBox="0 0 24 24" aria-hidden>
-          <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z" />
-        </svg>
-      </a>
-    </div>
-  );
+  const contents = () => headings.map((heading) => (
+    <a
+      key={heading.id}
+      href={`#${heading.id}`}
+      className="reader-toc-link"
+      data-level={heading.level}
+      aria-current={activeHeadingId === heading.id ? 'location' : undefined}
+      onClick={(event) => {
+        const details = event.currentTarget.closest('details');
+        if (details) details.open = false;
+      }}
+    >{heading.text}</a>
+  ));
 
   return (
-    <div className="relative mx-auto w-full max-w-[50.4rem] px-4 pb-24 sm:px-6">
-      <div className="fixed top-0 left-0 right-0 z-[60] h-0.5 bg-slate-200/80 dark:bg-white/10">
-        <div
-          className="h-full origin-left bg-emerald-600 dark:bg-emerald-400 transition-transform duration-75 ease-out"
-          style={{ transform: `scaleX(${scrollProgress / 100})` }}
-        />
-      </div>
-
-      <motion.div
-        initial={false}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
-        className="relative"
-      >
-        <header className="mx-auto w-full pt-4 text-center">
-          <div className="mb-8 flex flex-wrap justify-center gap-2">
-            {article.categories.map((c) => (
-              <span
-                key={c}
-                className="font-label text-xs font-medium text-accent bg-accent/5 px-3 py-1 rounded-full border border-accent/20"
-              >
-                {c}
-              </span>
-            ))}
+    <article className="article-reader" data-large-text={largeText} aria-labelledby="article-title">
+      <div className="reader-progress" aria-hidden="true"><div style={{ transform: `scaleX(${scrollProgress / 100})` }} /></div>
+      <header className="reader-header" id="article-top">
+        <div className="reader-breadcrumb">
+          <Link href="/journal"><ArrowLeft size={15} aria-hidden="true" /> All essays</Link>
+          <span>{article.categories.join(' / ')}</span>
+        </div>
+        <h1 id="article-title" className="article-title">{article.title}</h1>
+        {article.excerpt && <p className="reader-dek">{article.excerpt}</p>}
+        <div className="reader-byline">
+          <div className="reader-author">
+            <AuthorAvatar src={article.authorAvatar || siteConfig.authorAvatar} name={article.author || siteConfig.name} size="md" />
+            <div><span>{article.author || siteConfig.name}</span><span>{article.date} <span aria-hidden="true">·</span> {article.readTime}</span></div>
           </div>
-
-          <h1 className="article-title mb-8 font-headline text-3xl font-semibold leading-[1.15] tracking-[-0.025em] text-primary sm:text-4xl md:text-[2.75rem]">
-            {article.title}
-          </h1>
-
-          <div className="mb-12 flex flex-wrap items-center justify-center gap-x-5 gap-y-3 text-on-surface-variant">
-            <div className="flex items-center gap-2.5">
-              <AuthorAvatar
-                src={article.authorAvatar || siteConfig.authorAvatar}
-                name={article.author || siteConfig.name}
-                size="md"
-              />
-              <div className="text-left leading-tight">
-                <span className="font-label font-medium text-sm text-slate-700 dark:text-slate-200 block">
-                  {article.author || siteConfig.name}
-                </span>
-                {article.authorRole && (
-                  <span className="text-[0.7rem] text-on-surface-variant">
-                    {article.authorRole}
-                  </span>
-                )}
-              </div>
-            </div>
-            <span className="hidden h-3 w-px bg-slate-200 dark:bg-slate-700 sm:block" />
-            <span className="flex items-center gap-1.5 font-body text-sm">
-              <Calendar className="h-3.5 w-3.5 opacity-70" />
-              {article.date}
-            </span>
-            <span className="flex items-center gap-1.5 font-body text-sm">
-              <Clock className="h-3.5 w-3.5 opacity-70" />
-              {article.readTime}
-            </span>
-            <span className="hidden h-3 w-px bg-slate-200 dark:bg-slate-700 sm:block" />
-            {shareCluster}
+          <div className="reader-actions" aria-label="Article tools">
+            <button type="button" onClick={toggleTextSize} aria-label="Larger reading text" aria-pressed={largeText} title="Larger reading text"><Type size={18} /></button>
+            <button type="button" onClick={toggleBookmark} aria-label={liked ? 'Remove bookmark' : 'Bookmark on this device'} aria-pressed={liked} title={liked ? 'Bookmarked on this device' : 'Bookmark on this device'}><Bookmark size={17} fill={liked ? 'currentColor' : 'none'} /></button>
+            <button type="button" onClick={() => void handleCopyLink()} aria-label="Copy article link" title="Copy article link">{copyStatus === 'Link copied' ? <Check size={17} /> : <Copy size={17} />}</button>
+            <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(article.title)}&url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" aria-label="Share on X" title="Share on X">𝕏</a>
+            <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" aria-label="Share on LinkedIn" title="Share on LinkedIn"><span className="reader-linkedin">in</span></a>
+            <span className="reader-copy-status" role="status">{copyStatus}</span>
           </div>
-        </header>
-
-        <div className="relative">
-          <aside className="article-toc absolute top-0 bottom-0 right-full mr-6 hidden w-[18.5rem] max-w-[18.5rem] border-l border-slate-200/70 xl:block dark:border-white/10">
-            <div className="sticky top-28 space-y-8 pl-0">
-              <Link
-                href="/journal"
-                className="group flex items-center gap-2 pl-3.5 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-accent dark:text-slate-400 dark:hover:text-accent"
-              >
-                <ArrowLeft className="h-3.5 w-3.5" />
-                Essays
-              </Link>
-
-              {headings.length > 0 && (
-                <nav aria-label="On this page" className="flex flex-col">
-                  {renderToc()}
-                </nav>
-              )}
-            </div>
-          </aside>
-
-          <div className="min-w-0 pb-16 lg:pb-8 xl:pl-8">
-            <Link
-              href="/journal"
-              className="group mb-6 inline-flex items-center gap-2 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-accent dark:text-slate-400 xl:hidden"
+        </div>
+      </header>
+      <div className="reader-opening" data-has-brief={article.takeaways?.length > 0}>
+        <div className="reader-cover">
+          {article.illustrationType === 'cover' && article.coverImage ? (
+            <ExpandableFrame
+              label="Cover image"
+              expandText="View full image"
+              expandedContent={<CoverImage src={article.coverImage} title={article.title} expanded />}
             >
-              <ArrowLeft className="h-3.5 w-3.5" />
-              Essays
-            </Link>
-
-            {article.illustrationType === 'cover' && article.coverImage ? (
-              <ExpandableFrame label="Cover">
-                <figure className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl bg-slate-100 dark:bg-slate-900">
-                  <Image
-                    src={article.coverImage}
-                    alt={article.title}
-                    fill
-                    priority
-                    sizes="(max-width: 1024px) 100vw, 50.4rem"
-                    className="object-cover"
-                  />
-                </figure>
-              </ExpandableFrame>
-            ) : (
-              <ExpandableFrame label="Figure">
-                <div className="relative overflow-hidden rounded-2xl bg-slate-50 dark:bg-slate-900">
-                  {renderIllustration(
-                    article.illustrationType === 'cover' ? 'diagram1' : article.illustrationType,
-                    true,
-                  )}
-                </div>
-              </ExpandableFrame>
-            )}
-
-            {headings.length > 0 && (
-              <details className="mb-7 mt-6 rounded-2xl border border-slate-200/80 bg-white/70 p-4 dark:border-white/10 dark:bg-white/[0.03] xl:hidden">
-                <summary className="flex cursor-pointer list-none items-center gap-2 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500">
-                  <List className="h-3.5 w-3.5" />
-                  On this page
-                </summary>
-                <nav
-                  aria-label="On this page"
-                  className="mt-3 flex flex-col border-l border-slate-200 dark:border-slate-800"
-                >
-                  {renderToc()}
-                </nav>
-              </details>
-            )}
-
-            {article.takeaways && article.takeaways.length > 0 && (
-              <aside className="mt-10 border-l-2 border-emerald-500/45 pl-5 dark:border-emerald-400/40">
-                <p className="mb-3 font-label text-[0.7rem] uppercase tracking-[0.16em] text-on-surface-variant">
-                  In brief
-                </p>
-                <ol className="space-y-3.5">
-                  {article.takeaways.map((point, index) => (
-                    <li
-                      key={index}
-                      className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-baseline gap-3"
-                    >
-                      <span className="font-label text-[0.9375rem] leading-[1.75] tabular-nums text-slate-400">
-                        {String(index + 1).padStart(2, '0')}
-                      </span>
-                      <p className="font-body text-[0.9375rem] leading-[1.75] tracking-normal text-left text-slate-700 dark:text-slate-300">
-                        {point}
-                      </p>
-                    </li>
-                  ))}
-                </ol>
-              </aside>
-            )}
-
-            <div className="article-prose mt-14">
-              {renderMarkdown(article.content, { pageTitle: article.title })}
+              <CoverImage src={article.coverImage} title={article.title} />
+            </ExpandableFrame>
+          ) : (
+            <div className="reader-cover-illustration">{renderIllustration(article.illustrationType === 'cover' ? 'diagram1' : article.illustrationType, true)}</div>
+          )}
+        </div>
+        {article.takeaways?.length > 0 && (
+          <aside className="reader-brief" aria-labelledby="reader-brief-title">
+            <h2 id="reader-brief-title">The short version</h2>
+            <ul>{article.takeaways.map((point, index) => <li key={index}>{point}</li>)}</ul>
+          </aside>
+        )}
+      </div>
+      <div className="reader-layout">
+        <aside className="reader-rail" aria-label="Reading navigation">
+          <div className="reader-rail-inner">
+            <div className="reader-rail-label"><List size={15} aria-hidden="true" /> In this essay</div>
+            {headings.length > 0 && <nav ref={railRef} className="reader-toc" aria-label="On this page">{contents()}</nav>}
+            <div className="reader-remaining">
+              <div><Clock size={14} aria-hidden="true" /><span>{remainingMinutes > 0 ? `${remainingMinutes} min remaining` : 'You’ve reached the end'}</span></div>
+              <div className="reader-rail-progress" aria-hidden="true"><span style={{ transform: `scaleX(${scrollProgress / 100})` }} /></div>
+              <a href="#article-top"><ArrowUp size={13} aria-hidden="true" /> Back to top</a>
             </div>
-
-            <section className="mt-4 border-t border-slate-200/70 pt-12 dark:border-white/10">
-              <p className="font-label text-[0.65rem] uppercase tracking-[0.16em] text-slate-400">
-                Continue
-              </p>
-              {related.length > 0 ? (
-                <ul className="mt-2 divide-y divide-slate-200/80 dark:divide-white/10">
-                  {related.map((item) => (
-                    <li key={item.slug}>
-                      <Link
-                        href={`/journal/${item.slug}`}
-                        className="block py-4 text-slate-800 hover:text-accent dark:text-slate-100 dark:hover:text-accent"
-                      >
-                        <span className="font-headline text-lg font-medium">{item.title}</span>
-                        <span className="mt-1 block text-sm text-on-surface-variant">
-                          {item.readTime}
-                        </span>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              ) : (
-                <Link
-                  href="/journal"
-                  className="mt-3 inline-block font-headline text-lg font-medium text-slate-800 hover:text-accent dark:text-slate-100 dark:hover:text-accent"
-                >
-                  All essays
-                </Link>
-              )}
-            </section>
           </div>
-        </div>
-      </motion.div>
-
-      {activeHeading && scrollProgress > 8 && scrollProgress < 97 && (
-        <div className="pointer-events-none fixed bottom-5 left-1/2 z-40 w-[min(92vw,22rem)] -translate-x-1/2 lg:hidden">
-          <div className="flex items-center justify-center gap-1 rounded-full border border-slate-200/80 bg-white/90 px-4 py-2 text-center text-xs shadow-sm backdrop-blur-md dark:border-white/10 dark:bg-slate-900/90">
-            <span className="line-clamp-1 font-medium text-slate-700 dark:text-slate-200">
-              {activeHeading.text}
-            </span>
-            <span className="shrink-0 text-slate-400">· {remainingMinutes} min</span>
+        </aside>
+        <div className="reader-main">
+          {headings.length > 0 && (
+            <details className="reader-mobile-toc">
+              <summary><List size={16} aria-hidden="true" /><span>{activeHeading?.text || 'In this essay'}</span><ChevronDown size={16} aria-hidden="true" /></summary>
+              <nav aria-label="On this page">{contents()}</nav>
+            </details>
+          )}
+          <div ref={readingRef} className="reader-body">
+            <div className="article-prose reader-prose">{content}</div>
           </div>
+          <div className="reader-endnote"><span aria-hidden="true">✳</span><p>Thanks for reading.</p><button type="button" onClick={() => void handleCopyLink()}><Copy size={14} aria-hidden="true" /> Share this essay</button></div>
+          <section className="reader-next" aria-labelledby="reader-next-title">
+            <div className="reader-next-header"><h2 id="reader-next-title">Keep exploring</h2><Link href="/journal">All essays <ArrowRight size={15} aria-hidden="true" /></Link></div>
+            {related.length > 0 && <ul>{related.map((item) => (
+              <li key={item.slug}><Link href={`/journal/${item.slug}`}><div><span>{item.readTime}</span><h3>{item.title}</h3></div><ArrowRight size={20} aria-hidden="true" /></Link></li>
+            ))}</ul>}
+          </section>
         </div>
-      )}
-    </div>
+      </div>
+    </article>
   );
 }

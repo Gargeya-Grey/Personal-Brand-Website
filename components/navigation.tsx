@@ -7,6 +7,7 @@ import { Suspense, useState, useEffect, useRef, type ReactNode } from 'react';
 import { BrandMark } from '@/components/brand-mark';
 import { ThemeToggle } from '@/components/theme-provider';
 import { siteConfig } from '@/lib/site-config';
+import { useReadingNavigationMotion } from '@/components/use-reading-navigation-motion';
 
 type NavLink = {
   name: string;
@@ -27,6 +28,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
   const [readingNavHidden, setReadingNavHidden] = useState(false);
   const menuRef = useRef<HTMLDialogElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const navigationRef = useRef<HTMLDivElement>(null);
 
   const linksList: NavLink[] = isAtelier
     ? [
@@ -71,6 +73,11 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
       ];
 
   const isReadingArticle = !isAtelier && pathname.startsWith('/journal/');
+  useReadingNavigationMotion(navigationRef, {
+    enabled: isReadingArticle,
+    hidden: readingNavHidden && !mobileMenuOpen,
+    routeKey: pathname,
+  });
 
   const scrollToTop = () => {
     const reduce =
@@ -215,9 +222,11 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
   return (
     <div
-      className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center motion-safe:transition-transform motion-safe:duration-300 motion-safe:ease-out ${
+      ref={navigationRef}
+      data-reading-hidden={isReadingArticle && readingNavHidden && !mobileMenuOpen}
+      className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center ${
         isAtelier ? 'atelier-chrome' : ''
-      } ${readingNavHidden && !mobileMenuOpen ? '-translate-y-[120%]' : 'translate-y-0'}`}
+      }`}
     >
       <nav
         className={`field-nav pointer-events-auto isolate flex w-full max-w-[1320px] items-center justify-between gap-2 rounded-full border px-3 py-2.5 motion-safe:transition-[background-color,border-color,box-shadow,color] motion-safe:duration-300 sm:px-4 sm:py-3 ${navShell}`}

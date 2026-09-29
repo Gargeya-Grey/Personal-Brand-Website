@@ -61,10 +61,6 @@
   color: var(--color-accent-dark);
   text-decoration-color: currentColor;
 }
-.dark .article-prose :is(table, thead, th, td) {
-  background-color: var(--color-canvas);
-  border-color: var(--field-rule);
-}
 .dark .article-toc-link[aria-current='location'] {
   color: var(--color-accent);
 }

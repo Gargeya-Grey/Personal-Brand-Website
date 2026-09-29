@@ -18,7 +18,7 @@ import {
   Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
   HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
   Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2, ListTodo, BookOpen,
-  BarChart3, Compass, Mail,
+  BarChart3, Compass, Mail, SlidersHorizontal,
 } from 'lucide-react';
 import type { Article, ArticleLite } from '@/lib/blog-service';
 import type { NewsletterWeek } from '@/lib/newsletter-model';
@@ -27,6 +27,8 @@ import Link from 'next/link';
 import { CATEGORIES as CATEGORIES_LIST } from '@/lib/categories';
 import { renderIllustration } from '@/components/render-illustration';
 import { siteConfig } from '@/lib/site-config';
+import { INTERACTIVE_EXAMPLE } from '@/lib/article-interactive-example';
+import { articleWordCount } from '@/lib/article-markdown';
 
 const XStudioClient = dynamic(() => import('./x-studio-client').then((m) => m.XStudioClient), {
   ssr: false,
@@ -343,7 +345,8 @@ export function EditorialClient({
   const [formCategories, setFormCategories] = useState<string[]>([]);
   const [formTakeaways, setFormTakeaways] = useState<string[]>(['']);
   const [formContent, setFormContent] = useState('');
-  const formReadTime = `${Math.ceil(formContent.trim().split(/\s+/).filter(Boolean).length / 200) || 1} min read`;
+  const wordCount = useMemo(() => articleWordCount(formContent), [formContent]);
+  const formReadTime = `${Math.ceil(wordCount / 200) || 1} min read`;
   const [formFeatured, setFormFeatured] = useState(false);
   const [formStatus, setFormStatus] = useState<'draft' | 'published'>('draft');
   const [formCoverImage, setFormCoverImage] = useState('');
@@ -929,7 +932,6 @@ export function EditorialClient({
     a.remove();
   };
 
-  const wordCount = formContent.trim().split(/\s+/).filter(Boolean).length;
   const charCount = formContent.length;
 
   return (
@@ -1570,6 +1572,15 @@ export function EditorialClient({
                             <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="px-2 h-8 rounded-xl text-[0.6rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Block">{'{}'}</button>
                             <button
                               type="button"
+                              onMouseDown={(event) => event.preventDefault()}
+                              onClick={() => insertAtCursor(`\n\n${INTERACTIVE_EXAMPLE}\n\n`)}
+                              className="inline-flex min-h-9 items-center gap-1.5 rounded-xl px-2 text-xs text-[var(--atelier-gold)] hover:bg-[var(--atelier-gold-soft)]"
+                              title="Insert an interactive HTML example"
+                            >
+                              <SlidersHorizontal className="h-3.5 w-3.5" /> Interactive
+                            </button>
+                            <button
+                              type="button"
                               onClick={insertTableTemplate}
                               className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center"
                               title="Insert table"
@@ -1659,6 +1670,7 @@ export function EditorialClient({
                           { label: 'Quote', code: '> blockquote' },
                           { label: 'List', code: '- one\n- two' },
                           { label: 'Code', code: '```\ncode\n```' },
+                          { label: 'Interactive HTML', code: '```interactive title="Try this" description="What to explore" height=360\n<style>/* CSS */</style>\n<!-- HTML -->\n<script>/* JavaScript */</script>\n```\n\nUse Interactive in the toolbar for a working example. Self-contained HTML, CSS and JavaScript; external scripts and network requests are blocked. Regular html code blocks stay as code.' },
                           { label: 'Link', code: '[text](https://…)' },
                           { label: 'Image', code: '![alt text](/covers/…)\nor use the image button / drag & drop' },
                           {
