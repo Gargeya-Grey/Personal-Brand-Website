@@ -10,6 +10,7 @@ import { WorkVisual } from '@/components/work-visual';
 import { EdudojoMark } from '@/components/edudojo-mark';
 import { allWork, selectedWork } from '@/data/selected-work';
 import { publications } from '@/data/research';
+import { getHomeJournalPreview } from '@/data/home-journal';
 import { getPublishedArticlesLite } from '@/lib/blog-service';
 import './home-writing.css';
 
@@ -27,7 +28,8 @@ export default async function Home() {
   const articles = (await getPublishedArticlesLite())
     .slice()
     .sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime())
-    .slice(0, 3);
+    .slice(0, 3)
+    .map((article) => ({ ...article, ...getHomeJournalPreview(article) }));
   return (
     <div className="field-site">
       <Navigation />

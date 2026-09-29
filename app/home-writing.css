@@ -17,7 +17,7 @@
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 30px;
-  align-items: start;
+  align-items: stretch;
 }
 .home-journal-story {
   min-width: 0;
@@ -69,6 +69,7 @@
   font-size: 13px;
   font-weight: 600;
   padding-top: 18px;
+  margin-top: auto;
 }
 .home-journal-read svg,
 .home-journal-letter svg {

@@ -196,3 +196,15 @@ Author self-review, not independent user testing: light mode premium UI 8.5/10, 
 - PASS: changed-file ESLint and scoped diff checks. Desktop light/dark, 768px tablet, and 320px phone layouts checked; tablet and phone fit in both themes without document overflow.
 - PASS: keyboard activation of the header action opens `/journal`. Full landscape covers, complete article titles, and the Notes row are retained.
 - This pass changes only the homepage section markup and its scoped stylesheet. Concurrent article-reader changes are excluded. Physical-device testing remains outstanding.
+
+### Homepage journal copy and alignment (29 September 2026)
+
+| Before | After | Why |
+| --- | --- | --- |
+| Long published headlines and repetitive summaries | Three curated homepage headlines with one-sentence summaries in `data/home-journal.ts` | Communicate each story's subject with less reading and repetition |
+| Staggered reading actions and bottom rules | Cards stretch within their row; actions align after compact copy | Restore a shared baseline without fixed heights or clipped text |
+
+- PASS: scoped ESLint and diff checks; unlisted-slug fallback returns the complete published title and excerpt. Article ordering, destinations, artwork, and CMS records are unchanged.
+- PASS: desktop screenshots in both themes, light tablet and 320px phone screenshots visually reviewed. Overflow and text-clipping checks passed at 320, 700, and 1000px in both themes; tablet rows also fit at 768px.
+- PASS: at 1363px all three card bottoms align exactly, with 18px between excerpt text and reading action. Tablet's two lower cards share a baseline. No fixed text height or line clamping was added.
+- PASS: opening the first story confirms its original full headline remains on the article page. Browser error list is empty. Concurrent reader/editorial changes remain outside this commit.
