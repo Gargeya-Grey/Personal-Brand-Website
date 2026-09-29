@@ -1,5 +1,25 @@
-/** Curated from the owner's public repositories. Evidence links belong with the work. */
-export const allWork = [
+import type { ProjectMedia } from '@/lib/project-media';
+
+export interface WorkProject extends ProjectMedia {
+  id: string;
+  title: string;
+  category: string;
+  kind?: 'In your browser' | 'Software' | 'Experiments';
+  subtitle: string;
+  description: string;
+  purpose: string;
+  decision: string;
+  state: string;
+  steps: readonly string[];
+  tags: readonly string[];
+  source?: string;
+  action: string;
+  href: string;
+  missing?: string;
+}
+
+/** One record supplies the project page, Playground entry, and sitemap. */
+export const allWork: readonly WorkProject[] = [
   {
     id: 'odicto',
     title: 'Odicto',
@@ -81,7 +101,77 @@ export const allWork = [
     href: 'https://github.com/Gargeya-Grey/TwinAatma',
     missing: 'A recording of a memory proposal, approval, and retrieval in a later conversation.',
   },
-] as const;
+  {
+    id: 'box-lab',
+    title: 'The overlap lab',
+    category: 'Computer vision experiment',
+    kind: 'In your browser',
+    subtitle: 'How close is close enough?',
+    description:
+      'Move a prediction, resize it, and discover how computer vision measures a match. Try it on this page, with no account or installation.',
+    purpose:
+      'A computer can draw a box around an object. But did it find the right area? The lab makes one measure of that answer something you can see and change.',
+    decision:
+      'Intersection over union divides the shared area by the total area covered by both boxes. The threshold changes the verdict, not the overlap. Real benchmarks also consider classes, confidence, and missed or duplicate detections.',
+    state:
+      'A working geometric teaching tool. It is not a running AI model or a reproduction of my research results. All calculations happen in your browser.',
+    steps: [],
+    tags: ['Computer vision', 'Geometry', 'React'],
+    action: 'Read the related research',
+    href: '/research',
+    demo: {
+      kind: 'native',
+      app: 'box-lab',
+      title: 'Move the box. See the difference.',
+      description: 'Adjust the prediction and threshold. A perfect overlap is 1; no overlap is 0.',
+    },
+  },
+  {
+    id: 'idea-mixer',
+    title: 'Idea mixer',
+    category: 'Creative tool',
+    kind: 'In your browser',
+    subtitle: 'Good ideas have unlikely parents.',
+    description:
+      'Pair an audience with an unexpected constraint, then save the prompts you want to explore. A small creative tool you can use right here.',
+    purpose:
+      'An empty page can be harder to work with than a useful constraint. This mixer gives you a starting point small enough to build on.',
+    decision:
+      'Choose an audience and a constraint instead of asking a model for an answer. The combination leaves the interesting work to you.',
+    state:
+      'Works in your browser without an account or AI calls. Saved ideas stay in this browser on this device; they do not sync to a server.',
+    steps: [],
+    tags: ['Creative prompts', 'React', 'Local storage'],
+    action: 'Explore more projects',
+    href: '/playground',
+    demo: {
+      kind: 'native',
+      app: 'idea-mixer',
+      title: 'Make an unlikely pairing.',
+      description: 'Mix, save, and revisit the combinations that spark something.',
+    },
+  },
+  {
+    id: 'personal-brand',
+    title: 'This website',
+    category: 'Personal publishing system',
+    kind: 'Experiments',
+    subtitle: 'A home for things I make and think about.',
+    description:
+      'Projects, research, writing, and films in one place, with a private workspace for publishing.',
+    purpose:
+      'My work used to be scattered across repositories, articles, and social profiles. This site gives those pieces a shared starting point.',
+    decision:
+      'Public pages are built around the work. Browser experiments run here, project pages explain the decisions, and editorial tools stay behind authentication.',
+    state:
+      'You are using the public site. The source is available; the publishing workspace and personal tools are private.',
+    steps: [],
+    tags: ['Next.js', 'TypeScript', 'Editorial CMS'],
+    source: 'https://github.com/Gargeya-Grey/Personal-Brand-Website',
+    action: 'Read the source',
+    href: 'https://github.com/Gargeya-Grey/Personal-Brand-Website',
+  },
+];
 
 /** Homepage order is intentional; other experiments keep their existing routes. */
 export const selectedWork = ['edudojo', 'odicto', 'twinaatma'].map((id) =>

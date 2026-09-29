@@ -38,3 +38,16 @@ Show the preview to three people unfamiliar with the site. After ten seconds ask
 ## About story supplied
 
 On 29 September 2026 the owner supplied the personal account used for the six-part About timeline: school theatre, a 2018 cybersecurity/forensics degree start, pandemic self-study and reinforcement learning, research and paid writing, the QMUL MSc, and hospitality work in London. The published adaptation omits uncertain dates and academic superlatives. The favourite-film recollection remains optional.
+
+## Project media handoff
+
+The reusable project pages now accept playable demos and multiple video recordings through `data/selected-work.ts`. No recording placeholders are published. See `docs/publishing-experiments.md` for the exact fields and hosting workflow.
+
+Useful next inputs:
+
+- **Odicto desktop:** a landscape clip of the hotkey, speech, and text appearing in an everyday app.
+- **Odicto Android:** a portrait clip showing the keyboard microphone and final text. It can sit alongside the desktop clip on the same page.
+- **TwinAatma:** a clip showing a sample memory proposal, approval, and later retrieval.
+- **Edudojo:** a public sample walkthrough or an embeddable demo URL when one is ready.
+
+A 20–45 second clip, a cover frame, and a sentence explaining the outcome are enough to begin. Include captions for spoken explanation; a written walkthrough can accompany silent clips. Missing recordings do not prevent publishing a project page.

@@ -132,3 +132,20 @@ Validation on the final local production build:
 - Browser automation needed explicit instant scrolling before pointer interaction: automatic scrolling initially reported clicks without changing state. Rechecked with controls visible and with keyboard input; did not count the initial no-op clicks as passes.
 
 Author self-review, not independent user testing: light mode premium UI 8.5/10, clarity 9/10, generic/AI-slop feel 2/10 (lower is better); dark mode premium UI 8.5/10, clarity 9/10, generic/AI-slop feel 2/10. The new journey is more exploratory and Social has meaningful variety, but shared serif/italic typography remains familiar and actual product recordings are still missing. Physical-device and unfamiliar-visitor testing remain outstanding.
+
+## Project hosting, recordings, and covers (29 September 2026)
+
+| Before | After |
+| --- | --- |
+| Separate browser-app pages and source-only website entry | All seven Playground entries open project pages; shared layout supports story, playable demo, and recordings. |
+| Project pages needed custom markup for future media | Typed optional native/hosted demos and multiple recordings, with landscape/portrait layouts, captions, native controls, written walkthroughs, and direct-file fallback. |
+| Edudojo used a text diagram | Existing forest-gate image restored on home, Playground, and its project page; owner's gate mark becomes a subtle homepage watermark. |
+| Odicto and TwinAatma used flat process diagrams | Custom scalable SVG covers use translucent voice/text and layered-memory forms. They are cover art, not product screenshots. |
+
+- Production build and TypeScript passed; changed-file ESLint and diff checks passed. Browser checks used a local production build.
+- All seven project routes plus home and Playground fit 320px in both themes. Desktop covers checked visually in both themes; mobile Edudojo and Odicto inspected. The gate image loaded correctly.
+- Overlap lab remains playable inside the shared page: perfect match returns 1.000 and complete miss returns 0.000. The Try it here anchor lands below the fixed nav. Idea mixer changes prompts and keeps saved ideas after reload.
+- Missing recordings produce no player or Watch action. Existing illustrative explanations remain explicitly labelled.
+- An isolated local development fixture verified both recording orientations, native controls, `preload=none`, inline playback, no autoplay, and the keyboard-operated written walkthrough. A locally generated VP8 WebM played with advancing time. Initial capture yielded no usable frames; explicit frame capture corrected the fixture, with no application-code change needed.
+- The same fixture verified no iframe before activation, sandboxed iframe after activation, removal on Close, and focus return to the launch button. The temporary route was removed before commit. No placeholder footage or external demo was published.
+- Actual owner recordings, deployed third-party app compatibility, cross-origin captions, and physical-device playback remain to be checked when assets/URLs are supplied. An external demo URL does not deploy its backend.

@@ -10,8 +10,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     '',
     '/about',
     '/playground',
-    '/playground/idea-mixer',
-    '/playground/box-lab',
     ...allWork.map((work) => '/playground/' + work.id),
     '/research',
     '/journal',

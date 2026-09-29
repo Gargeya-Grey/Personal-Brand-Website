@@ -49,7 +49,7 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
             key={entry.id}
             className={entry.kind === 'In your browser' ? 'shelf-playable' : ''}
           >
-            {entry.kind === 'In your browser' ? (
+            {entry.id === 'box-lab' || entry.id === 'idea-mixer' ? (
               <PlaygroundSampler id={entry.id} />
             ) : (
               <Link

@@ -1,4 +1,4 @@
-import { allWork, selectedWork } from './selected-work';
+import { allWork } from './selected-work';
 
 export type WorkKind = 'In your browser' | 'Software' | 'Experiments';
 export interface PlaygroundEntry {
@@ -12,48 +12,35 @@ export interface PlaygroundEntry {
   source?: string;
 }
 
-/** Add a working route/deployment and a truthful destination label to publish a project. */
-export const playgroundEntries: PlaygroundEntry[] = [
-  {
-    id: 'box-lab',
-    title: 'The overlap lab',
-    kind: 'In your browser',
-    status: 'Interactive · no account',
-    href: '/playground/box-lab',
-    action: 'Try the experiment',
-    description:
-      'When does a predicted box count as a match? Move it, resize it, and see how computer vision measures overlap.',
-  },
-  {
-    id: 'idea-mixer',
-    title: 'Idea mixer',
-    kind: 'In your browser',
-    status: 'Creative tool · no account',
-    href: '/playground/idea-mixer',
-    action: 'Mix an idea',
-    description:
-      'Combine an audience with an unexpected constraint. Save the prompts that spark something and turn one into an experiment.',
-  },
-  ...[...selectedWork, ...allWork.filter((work) => work.id === 'dataclean')].map(
-    (work): PlaygroundEntry => ({
-      id: work.id,
-      title: work.title,
-      description: work.description,
-      kind: work.id === 'dataclean' ? 'Experiments' : 'Software',
-      status: work.category,
-      href: '/playground/' + work.id,
-      action: 'Explore the project',
-      source: work.source,
-    }),
-  ),
-  {
-    id: 'personal-brand',
-    title: 'This website',
-    kind: 'Experiments',
-    status: 'Public source',
-    description:
-      'The code behind the journal, publishing workspace, and these browser experiments. A growing home for the work.',
-    href: 'https://github.com/Gargeya-Grey/Personal-Brand-Website',
-    action: 'Read the source',
-  },
+const order = [
+  'box-lab',
+  'idea-mixer',
+  'edudojo',
+  'odicto',
+  'twinaatma',
+  'dataclean',
+  'personal-brand',
 ];
+const orderedWork = [...allWork].sort((a, b) => {
+  const rank = (id: string) => (order.includes(id) ? order.indexOf(id) : order.length);
+  return rank(a.id) - rank(b.id);
+});
+
+export const playgroundEntries: PlaygroundEntry[] = orderedWork.map((work) => ({
+  id: work.id,
+  title: work.title,
+  description: work.description,
+  kind: work.kind ?? (work.id === 'dataclean' ? 'Experiments' : 'Software'),
+  status: work.demo
+    ? 'Playable demo'
+    : work.recordings?.length
+      ? 'Video walkthrough'
+      : work.category,
+  href: '/playground/' + work.id,
+  action: work.demo
+    ? 'Open & play'
+    : work.recordings?.length
+      ? 'See it in action'
+      : 'Explore the project',
+  source: work.source,
+}));

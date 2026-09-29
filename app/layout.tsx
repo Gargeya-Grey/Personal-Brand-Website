@@ -7,6 +7,7 @@ import './field.css';
 import './work.css';
 import './discovery.css';
 import './explore.css';
+import './project-media.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';

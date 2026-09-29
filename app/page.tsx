@@ -7,6 +7,7 @@ import { Footer } from '@/components/footer';
 import { FieldMotion } from '@/components/field-notes';
 import { siteConfig } from '@/lib/site-config';
 import { WorkVisual } from '@/components/work-visual';
+import { EdudojoMark } from '@/components/edudojo-mark';
 import { selectedWork } from '@/data/selected-work';
 import { publications } from '@/data/research';
 import { getPublishedArticlesLite } from '@/lib/blog-service';
@@ -95,6 +96,7 @@ export default async function Home() {
                   <WorkVisual id={work.id} />
                 </Link>
                 <div className="work-feature-copy">
+                  {work.id === 'edudojo' && <EdudojoMark className="edudojo-watermark" />}
                   <span className="work-category">{work.category}</span>
                   <h3>
                     <Link href={'/playground/' + work.id}>{work.title}</Link>
