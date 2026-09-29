@@ -108,3 +108,27 @@ The owner approved a neutral charcoal and sea-glass direction after comparing th
 - Light-mode home was visually checked. Computed background/headings remain `#f0f5f6` / `#142936`; work artwork retains zero inset and 260px height. The light-mode inverted Notes panel remains `#102633`.
 - Main reading ink contrast is 9.00:1 on the page, 7.66:1 on cards, and at least 6.09:1 across the tested tinted dark surfaces. Small artwork labels are at least 4.52:1. These are selected token checks, not a complete accessibility audit or a measure of subjective comfort.
 - Local production build was used for visual checks. No real forms submitted, private content changed, or production merge performed.
+
+## Annotation completion: hover, Social, and About (29 September 2026)
+
+This pass was interrupted before publication. The following implementation and checks complete that local work; the production domain does not receive these changes until the PR is merged.
+
+| Before | After |
+| --- | --- |
+| Journal cards reverted to blue on hover | Shared semantic surface colors in card, ink-card, and glass hover rules; the featured Journal card stays graphite in dark mode. Article focus/active/hover states use the theme accent. |
+| Social repeated four large colored cards | Ruled platform rows with native disclosure previews: real repository links, a personal question, professional context, and an existing Japan film. Direct profile links remain available without expanding. |
+| Large decorative arrow in the Social header | Removed. Platform marks identify each destination. |
+| About stacked six lengthy timeline cards | A winding six-stop route with selectable chapters, individual SVG scenes, and previous/next controls. The owner's story remains in full. |
+
+Validation on the final local production build:
+
+- PASS: production build, TypeScript, changed-file ESLint, and `git diff --check`.
+- PASS: all six About selections update the heading and maintain exactly one selected stop; first/last navigation boundaries; keyboard chapter selection and previous/next.
+- PASS: native Social disclosures open and close, keep at most one preview open, and work with Enter. Visible focus rings, 44px mobile direct-link targets, all four destinations, and the existing film thumbnail checked.
+- PASS: Journal search empty/reset states. Dark featured-card hover is `rgb(36, 42, 45)`; light hover is `rgb(251, 253, 253)`. Dark category-menu surface is graphite, its selected option is sea glass, and the search surface is charcoal.
+- PASS: Social pointer hover moves the platform mark 3px; reduced-motion emulation produces no transform. Chapter content does not autoplay or animate.
+- PASS: nine public routes have no document overflow at 320px in either theme: home, Playground, Journal, article, Notes, About, Social, Research, Contact. About and Social also fit 768px. Desktop light/dark home, Social, and About and narrow mobile layouts were visually inspected.
+- PASS: no browser runtime errors observed. No form submissions, private-data writes, or production merge.
+- Browser automation needed explicit instant scrolling before pointer interaction: automatic scrolling initially reported clicks without changing state. Rechecked with controls visible and with keyboard input; did not count the initial no-op clicks as passes.
+
+Author self-review, not independent user testing: light mode premium UI 8.5/10, clarity 9/10, generic/AI-slop feel 2/10 (lower is better); dark mode premium UI 8.5/10, clarity 9/10, generic/AI-slop feel 2/10. The new journey is more exploratory and Social has meaningful variety, but shared serif/italic typography remains familiar and actual product recordings are still missing. Physical-device and unfamiliar-visitor testing remain outstanding.

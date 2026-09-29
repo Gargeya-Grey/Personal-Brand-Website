@@ -167,7 +167,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                     setVisibleCount(9);
                   }}
                   aria-label="Clear search"
-                  className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-slate-600 dark:hover:text-white"
+                  className="absolute right-1 top-1/2 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:text-primary"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -252,11 +252,11 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
         {/* Results Listings Content — single rhythm: featured, grid, closing */}
         {sortedArticles.length === 0 ? (
           <div className="board-card mx-auto max-w-xl space-y-6 rounded-[2.5rem] p-8 py-24 text-center">
-            <BookOpen className="w-12 h-12 text-slate-300 dark:text-slate-600 mx-auto" />
-            <h3 className="font-headline font-bold text-xl text-slate-800 dark:text-white">
+            <BookOpen className="w-12 h-12 text-on-surface-variant mx-auto" />
+            <h3 className="font-headline font-bold text-xl text-primary">
               No posts match your filters
             </h3>
-            <p className="font-body text-on-surface-variant dark:text-white/60 max-w-md mx-auto text-sm leading-relaxed">
+            <p className="font-body text-on-surface-variant max-w-md mx-auto text-sm leading-relaxed">
               Try a different category mix or clear search to see everything again.
             </p>
             <button

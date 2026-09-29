@@ -783,6 +783,7 @@ body {
 }
 .board-card:hover,
 .dark .board-card:hover {
+  background: var(--color-canvas);
   box-shadow: none;
   border-color: var(--color-text-muted);
 }

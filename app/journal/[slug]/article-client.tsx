@@ -158,17 +158,17 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
           e.preventDefault();
           scrollToId(heading.id);
         }}
-        className={`article-toc-link relative flex min-w-0 items-start py-[0.4rem] pl-3.5 pr-2 text-[12px] font-normal leading-[1.35] tracking-[-0.01em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${
+        className={`article-toc-link relative flex min-w-0 items-start py-[0.4rem] pl-3.5 pr-2 text-[12px] font-normal leading-[1.35] tracking-[-0.01em] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent ${
           heading.level === 3 ? 'pl-5' : ''
         } ${
           activeHeadingId === heading.id
-            ? 'text-emerald-700 dark:text-emerald-400'
-            : 'text-on-surface-variant hover:text-slate-700 dark:hover:text-slate-200'
+            ? 'text-accent'
+            : 'text-on-surface-variant hover:text-primary'
         }`}
       >
         <span
           className={`absolute left-[-1px] top-1 bottom-1 w-[2px] rounded-full ${
-            activeHeadingId === heading.id ? 'bg-emerald-500 dark:bg-emerald-400' : 'bg-transparent'
+            activeHeadingId === heading.id ? 'bg-accent' : 'bg-transparent'
           }`}
         />
         <span className="min-w-0 text-pretty">{heading.text}</span>
@@ -286,7 +286,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
             <div className="sticky top-28 space-y-8 pl-0">
               <Link
                 href="/journal"
-                className="group flex items-center gap-2 pl-3.5 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-emerald-700 dark:text-slate-400 dark:hover:text-emerald-400"
+                className="group flex items-center gap-2 pl-3.5 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-accent dark:text-slate-400 dark:hover:text-accent"
               >
                 <ArrowLeft className="h-3.5 w-3.5" />
                 Essays
@@ -303,7 +303,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
           <div className="min-w-0 pb-16 lg:pb-8 xl:pl-8">
             <Link
               href="/journal"
-              className="group mb-6 inline-flex items-center gap-2 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-emerald-700 dark:text-slate-400 xl:hidden"
+              className="group mb-6 inline-flex items-center gap-2 font-label text-[0.7rem] uppercase tracking-[0.14em] text-slate-500 hover:text-accent dark:text-slate-400 xl:hidden"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Essays
@@ -385,7 +385,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
                     <li key={item.slug}>
                       <Link
                         href={`/journal/${item.slug}`}
-                        className="block py-4 text-slate-800 hover:text-emerald-700 dark:text-slate-100 dark:hover:text-emerald-400"
+                        className="block py-4 text-slate-800 hover:text-accent dark:text-slate-100 dark:hover:text-accent"
                       >
                         <span className="font-headline text-lg font-medium">{item.title}</span>
                         <span className="mt-1 block text-sm text-on-surface-variant">
@@ -398,7 +398,7 @@ export function ArticleClient({ article, related = [] }: ArticleClientProps) {
               ) : (
                 <Link
                   href="/journal"
-                  className="mt-3 inline-block font-headline text-lg font-medium text-slate-800 hover:text-emerald-700 dark:text-slate-100 dark:hover:text-emerald-400"
+                  className="mt-3 inline-block font-headline text-lg font-medium text-slate-800 hover:text-accent dark:text-slate-100 dark:hover:text-accent"
                 >
                   All essays
                 </Link>
