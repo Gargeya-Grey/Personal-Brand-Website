@@ -73,6 +73,7 @@ export type NewsletterWeek = {
   stage: NewsletterStage;
   autoPublish: boolean;
   acknowledgedAt: string | null;
+  curatorEditedAt?: string | null;
   bodyMd: string;
   draftMd: string;
   links: NewsletterLink[];
@@ -424,6 +425,7 @@ export function sanitizeWeek(raw: unknown, now = new Date()): NewsletterWeek {
     stage,
     autoPublish: asBoolean(raw.autoPublish, false),
     acknowledgedAt: ack || null,
+    curatorEditedAt: asString(raw.curatorEditedAt).trim() || null,
     bodyMd,
     draftMd: draftMd || bodyMd,
     links: Array.isArray(raw.links)
@@ -452,7 +454,8 @@ export function sanitizeWeek(raw: unknown, now = new Date()): NewsletterWeek {
 }
 
 function curatorEdited(week: NewsletterWeek): boolean {
-  return week.bodyMd.trim() !== week.draftMd.trim() && week.bodyMd.trim().length > 0;
+  return Boolean(week.curatorEditedAt) || week.events.some(event => event.kind === 'edited') ||
+    (week.bodyMd.trim() !== week.draftMd.trim() && week.bodyMd.trim().length > 0);
 }
 
 function terminalStage(stage: NewsletterStage): boolean {
@@ -474,8 +477,15 @@ export function mergeIngest(
       ...incoming,
       draftMd: incoming.draftMd || incoming.bodyMd,
       bodyMd: incoming.bodyMd || incoming.draftMd,
-      autoPublish: incoming.autoPublish,
-      stage: incoming.stage === 'skipped' || incoming.stage === 'sent' ? 'draft' : incoming.stage,
+      autoPublish: false,
+      stage: 'draft' as const,
+      acknowledgedAt: null,
+      curatorEditedAt: null,
+      sentTo: [],
+      resendBroadcastIds: [],
+      sentAt: null,
+      completedAt: null,
+      events: [],
       createdAt: now.toISOString(),
       updatedAt: now.toISOString(),
     };
@@ -492,18 +502,7 @@ export function mergeIngest(
   if (existing.stage === 'skipped') {
     return existing;
   }
-  if (existing.stage === 'sent') {
-    return {
-      ...existing,
-      title: incoming.title || existing.title,
-      dek: incoming.dek || existing.dek,
-      subject: incoming.subject || existing.subject,
-      bodyMd: incoming.bodyMd || existing.bodyMd,
-      draftMd: incoming.draftMd || existing.draftMd,
-      links: incoming.links.length ? incoming.links : existing.links,
-      updatedAt: now.toISOString(),
-    };
-  }
+  if (existing.stage === 'sent' || existing.stage === 'sending') return existing;
 
   const keepBody = Boolean(existing.acknowledgedAt) || curatorEdited(existing);
   const nextBody = keepBody ? existing.bodyMd : incoming.bodyMd || incoming.draftMd || existing.bodyMd;
@@ -535,14 +534,15 @@ export function mergeIngest(
 
   return {
     ...existing,
-    title: incoming.title || existing.title,
-    dek: incoming.dek || existing.dek,
-    subject: incoming.subject || incoming.title || existing.subject,
-    slug: incoming.slug && incoming.slug !== incoming.weekOf ? incoming.slug : existing.slug,
+    curatorEditedAt: curatorEdited(existing) ? existing.curatorEditedAt || now.toISOString() : null,
+    title: keepBody ? existing.title : incoming.title || existing.title,
+    dek: keepBody ? existing.dek : incoming.dek || existing.dek,
+    subject: keepBody ? existing.subject : incoming.subject || incoming.title || existing.subject,
+    slug: keepBody ? existing.slug : incoming.slug && incoming.slug !== incoming.weekOf ? incoming.slug : existing.slug,
     draftMd: nextDraft,
     bodyMd: nextBody,
-    links: incoming.links.length ? incoming.links : existing.links,
-    sources: incoming.sources.length ? incoming.sources : existing.sources,
+    links: keepBody ? existing.links : incoming.links.length ? incoming.links : existing.links,
+    sources: keepBody ? existing.sources : incoming.sources.length ? incoming.sources : existing.sources,
     topics,
     events: events.slice(-40),
     autoPublish: existing.autoPublish,
@@ -551,7 +551,7 @@ export function mergeIngest(
     resendBroadcastIds: existing.resendBroadcastIds,
     sentAt: existing.sentAt,
     completedAt: existing.completedAt,
-    stage: existing.stage === 'approved' || existing.stage === 'sending' ? existing.stage : 'draft',
+    stage: existing.stage === 'approved' ? existing.stage : 'draft',
     updatedAt: now.toISOString(),
   };
 }
@@ -676,6 +676,7 @@ export function applyCuratorEdit(
   return {
     ...week,
     title,
+    curatorEditedAt: now.toISOString(),
     dek: patch.dek != null ? patch.dek.trim().slice(0, 280) : week.dek,
     subject: patch.subject != null ? patch.subject.trim().slice(0, 180) : week.subject,
     bodyMd,

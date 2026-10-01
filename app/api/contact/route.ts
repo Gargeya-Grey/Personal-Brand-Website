@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import fs from 'fs/promises';
 import path from 'path';
 import { siteConfig } from '@/lib/site-config';
+import { admitPublicIntake, releasePublicIntake } from '@/lib/security-state';
 
 const PROJECT_TYPES = new Set([
   'ai-development',
@@ -21,6 +22,8 @@ function isValidEmail(email: string): boolean {
  * returns a mailto URI so the client never silently drops messages.
  */
 export async function POST(request: Request) {
+  let identity: string | undefined;
+  let reserved = false;
   try {
     const body = await request.json();
     const name = String(body.name || '').trim();
@@ -44,6 +47,14 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid inquiry type.' }, { status: 400 });
     }
 
+    let admission;
+    identity = `contact:${email}:${projectType}:${details}`;
+    try { admission = await admitPublicIntake(request, email, identity, 2); }
+    catch { return NextResponse.json({ error: 'Contact form is temporarily unavailable. Please email me directly.' }, { status: 503 }); }
+    if (admission === 'denied') return NextResponse.json({ error: 'Too many requests. Please try later.' },
+      { status: 429, headers: { 'Retry-After': '3600' } });
+    if (admission === 'duplicate') return NextResponse.json({ success: true, message: 'This message was already received. Please allow time for a reply.' });
+    reserved = true;
     const payload = {
       name,
       email,
@@ -130,6 +141,8 @@ export async function POST(request: Request) {
       `From: ${name} <${email}>\n\n${details}`
     )}`;
 
+    if (delivery === 'mailto') await releasePublicIntake(identity);
+    reserved = false;
     return NextResponse.json({
       success: true,
       delivery,
@@ -140,6 +153,7 @@ export async function POST(request: Request) {
           : 'Message received. I typically reply within 24–48 hours.',
     });
   } catch (error: unknown) {
+    if (reserved && identity) await releasePublicIntake(identity).catch(() => undefined);
     const message = error instanceof Error ? error.message : 'Unknown error';
     return NextResponse.json({ error: `Failed to process contact: ${message}` }, { status: 500 });
   }

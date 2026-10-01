@@ -41,7 +41,21 @@ export async function extractPdfText(file: File, maxPages = 6): Promise<string> 
 }
 
 export function fileLooksLikePdf(file: File): boolean {
-  return file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf');
+  return file.type === 'application/pdf';
+}
+
+/** Extension is only a hint; contradictory active MIME never reaches preview. */
+export async function validateInvoiceFile(file: File): Promise<File> {
+  if (file.size > 6 * 1024 * 1024) throw new Error('Invoice must be at most 6MB.');
+  const pdfName = file.name.toLowerCase().endsWith('.pdf');
+  if (file.type === 'application/pdf' || pdfName) {
+    if (file.type && file.type !== 'application/pdf' && file.type !== 'application/octet-stream') throw new Error('PDF has an incompatible file type.');
+    const prefix = new Uint8Array(await file.slice(0, 5).arrayBuffer());
+    if (String.fromCharCode(...prefix) !== '%PDF-') throw new Error('This file is not a valid PDF.');
+    return new File([file], file.name, { type: 'application/pdf' });
+  }
+  if (!['image/jpeg','image/png','image/webp'].includes(file.type)) throw new Error('Use a PDF, JPEG, PNG, or WEBP invoice.');
+  return file;
 }
 
 /** First page as JPEG when the PDF has no usable text layer (scans). */

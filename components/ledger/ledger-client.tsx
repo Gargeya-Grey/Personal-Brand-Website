@@ -30,7 +30,7 @@ import {
 } from '@/lib/ledger-schema';
 import { generateEntryForMonth, indianFyFromDate, monthNeedsTruncation, parseFyStartYear } from '@/lib/ledger-engine';
 import type { LedgerSettingsPublic } from '@/lib/ledger-types';
-import { extractPdfText, fileLooksLikePdf, renderPdfPreviewImage } from '@/lib/ledger-pdf-client';
+import { extractPdfText, fileLooksLikePdf, renderPdfPreviewImage, validateInvoiceFile } from '@/lib/ledger-pdf-client';
 import { harvestDocumentSignals } from '@/lib/ledger-parse';
 import { LedgerSelect } from '@/components/ledger/ledger-select';
 
@@ -166,9 +166,21 @@ export function LedgerClient({
     };
   }, [previewUrl]);
 
-  const onDrop = useCallback((accepted: File[]) => {
-    const next = accepted[0];
-    if (!next) return;
+  const fileImportVersion = useRef(0);
+  const onDrop = useCallback(async (accepted: File[]) => {
+    const candidate = accepted[0];
+    if (!candidate) return;
+    const version = ++fileImportVersion.current;
+    let next: File;
+    let preview: string | null;
+    try {
+      next = await validateInvoiceFile(candidate);
+      preview = fileLooksLikePdf(next) ? (await renderPdfPreviewImage(next))?.dataUrl || null : URL.createObjectURL(next);
+    } catch (error) {
+      if (version === fileImportVersion.current) setError(error instanceof Error ? error.message : 'Invalid invoice.');
+      return;
+    }
+    if (version !== fileImportVersion.current) { if (preview) URL.revokeObjectURL(preview); return; }
     setFile(next);
     setExtracted(null);
     setSuccess(null);
@@ -177,7 +189,7 @@ export function LedgerClient({
     setSelectedMonths([]);
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
-      return URL.createObjectURL(next);
+      return preview;
     });
   }, []);
 
@@ -209,6 +221,7 @@ export function LedgerClient({
   };
 
   const resetInvoice = () => {
+    fileImportVersion.current += 1;
     setFile(null);
     setExtracted(null);
     setExtraDetails('');
@@ -611,6 +624,7 @@ export function LedgerClient({
                   type="button"
                   className="atelier-icon-btn"
                   onClick={() => {
+                    fileImportVersion.current += 1;
                     setFile(null);
                     setPreviewUrl((prev) => {
                       if (prev) URL.revokeObjectURL(prev);
@@ -641,12 +655,9 @@ export function LedgerClient({
               {isExtracting ? 'Reading invoice + notes…' : 'Extract with notes'}
             </button>
 
-            {previewUrl && file && !fileLooksLikePdf(file) && (
+            {previewUrl && file && (
               // eslint-disable-next-line @next/next/no-img-element
               <img src={previewUrl} alt="Invoice preview" className="w-full h-auto max-h-[220px] object-contain rounded-2xl border border-[var(--atelier-line)] p-2" />
-            )}
-            {previewUrl && file && fileLooksLikePdf(file) && (
-              <iframe title="Invoice PDF" src={previewUrl} className="w-full h-[220px] rounded-2xl border border-[var(--atelier-line)] bg-[var(--atelier-paper)]" />
             )}
           </div>
         </section>

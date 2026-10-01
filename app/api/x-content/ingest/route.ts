@@ -64,9 +64,7 @@ export async function POST(request: Request) {
     if (!pack.skipList) pack.skipList = [];
     if (!pack.schedule) pack.schedule = [];
 
-    const saved = await upsertXContentPack(pack, {
-      preserveStatuses: body.preserveStatuses !== false,
-    });
+    const saved = await upsertXContentPack(pack);
 
     return NextResponse.json({
       ok: true,

@@ -4,7 +4,6 @@ import {
   canRelease,
   markComplete,
   markSent,
-  NEWSLETTER_TZ,
   activeRecipients,
   shouldSendToTimezone,
   type NewsletterRecipientSend,
@@ -92,11 +91,17 @@ export async function sendWeekNow(
       unsub,
     };
   };
-  let recipients = await resolveRecipients();
+  // A private preview must never become a campaign receipt or public issue.
   if (options?.onlyEmail) {
     const email = options.onlyEmail.trim().toLowerCase();
-    recipients = [{ email, timezone: NEWSLETTER_TZ }];
-  } else if (!options?.forceAll) {
+    const rendered = renderFor(email);
+    const result = await sendResendEmail({ to: email, subject: rendered.subject,
+      html: rendered.html, text: rendered.text, replyTo: notesReplyTo() });
+    return { attempted: 1, sent: result.ok ? 1 : 0, skipped: result.ok ? 0 : 1,
+      complete: false, error: result.error, week };
+  }
+  let recipients = await resolveRecipients();
+  if (!options?.forceAll) {
     recipients = uniqueEmails(week, recipients).filter((row) =>
       shouldSendToTimezone(week, row.timezone, now)
     );
@@ -181,6 +186,8 @@ export async function sendWeekNow(
     }
   }
 
+  if (!sentRows.length) return { attempted: recipients.length, sent: 0,
+    skipped: recipients.length, complete: false, error, week };
   let next = markSent(week, sentRows, now);
   if (ids.length) {
     next = {

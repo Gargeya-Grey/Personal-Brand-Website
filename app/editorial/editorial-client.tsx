@@ -474,7 +474,7 @@ export function EditorialClient({
 
   const uploadInlineImageFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
-      alert('Please drop or pick an image file (JPEG, PNG, WEBP, GIF, SVG).');
+      alert('Please drop or pick a JPEG, PNG, WEBP, or GIF image.');
       return;
     }
     if (file.size > 5 * 1024 * 1024) {
@@ -1394,7 +1394,7 @@ export function EditorialClient({
                                 </span>
                               </button>
                             )}
-                            <input id="local-cover-upload" type="file" accept="image/*" className="hidden" onChange={handleLocalImageUpload} />
+                            <input id="local-cover-upload" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleLocalImageUpload} />
                           </div>
                         </div>
                       </div>
@@ -1554,7 +1554,7 @@ export function EditorialClient({
                       <input
                         id="inline-content-image-upload"
                         type="file"
-                        accept="image/jpeg,image/png,image/webp,image/gif,image/svg+xml"
+                        accept="image/jpeg,image/png,image/webp,image/gif"
                         className="hidden"
                         onChange={(e) => void handleInlineImageInput(e)}
                       />

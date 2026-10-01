@@ -2,6 +2,7 @@ import 'server-only';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { withLocalContentLock } from './content-lock';
 import {
   buildTaste,
   emptyWeek,
@@ -127,6 +128,10 @@ export async function getCurrentWeek(now = new Date()): Promise<NewsletterWeek> 
 }
 
 export async function upsertNewsletterWeek(week: NewsletterWeek): Promise<NewsletterWeek> {
+  return withLocalContentLock(() => upsertNewsletterWeekUnlocked(week));
+}
+async function upsertNewsletterWeekUnlocked(week: NewsletterWeek): Promise<NewsletterWeek> {
+  if (!isSupabaseConfigured()) cachedWeeks = null;
   const clean = sanitizeWeek(week);
   clean.updatedAt = new Date().toISOString();
 
@@ -159,7 +164,24 @@ export async function upsertNewsletterWeek(week: NewsletterWeek): Promise<Newsle
 }
 
 export async function ingestNewsletterWeek(incoming: unknown): Promise<NewsletterWeek> {
+  return withLocalContentLock(() => ingestNewsletterWeekUnlocked(incoming));
+}
+async function ingestNewsletterWeekUnlocked(incoming: unknown): Promise<NewsletterWeek> {
   const incomingWeek = sanitizeWeek(incoming);
+  if (isSupabaseConfigured()) {
+    for (let attempt=0; attempt<3; attempt++) {
+      const { data: row, error } = await supabase.from('newsletter_weeks').select('*').eq('id', incomingWeek.id).maybeSingle();
+      if (error) throw new Error('Could not load authoritative newsletter state.');
+      const merged = mergeIngest(row ? rowToWeek(row) : null, incoming);
+      const { data: saved, error: saveError } = await supabase.rpc('security_ingest_cas', {
+        p_table: 'newsletter_weeks', p_id: incomingWeek.id, p_expected: row?.payload ?? null, p_next: merged,
+      });
+      if (saveError) throw new Error('Could not preserve newsletter curator state.');
+      if (saved) { cachedWeeks = null; return merged; }
+    }
+    throw new Error('Newsletter changed during ingestion. Please retry.');
+  }
+  cachedWeeks = null;
   const existing = await getNewsletterWeek(incomingWeek.id);
   const merged = mergeIngest(existing, incoming);
   return upsertNewsletterWeek(merged);
@@ -191,18 +213,26 @@ export async function upsertSubscriberTimezone(input: {
     timezone,
     source,
     subscribed_at: now,
-    unsubscribed: false,
-    unsubscribed_at: null,
   };
-  const { error } = await supabase.from('newsletter_subscribers').upsert(full, { onConflict: 'email' });
+  const { error } = await supabase.from('newsletter_subscribers').upsert(full, { onConflict: 'email', ignoreDuplicates: true });
   if (!error) return;
   const { error: fallback } = await supabase.from('newsletter_subscribers').upsert(
     { email, timezone, source, subscribed_at: now },
-    { onConflict: 'email' }
+    { onConflict: 'email', ignoreDuplicates: true }
   );
   if (fallback) {
     console.warn('[newsletter] subscriber upsert failed:', fallback);
   }
+}
+
+/** Only the consumed mailbox-confirmation capability may reactivate a subscriber. */
+export async function confirmSubscriber(input: { email: string; timezone: string; source: string }): Promise<void> {
+  if (!isSupabaseUsable()) throw new Error('Subscriber storage is unavailable.');
+  const { error } = await supabase.from('newsletter_subscribers').upsert({
+    email: input.email.trim().toLowerCase(), timezone: normalizeTimeZone(input.timezone), source: input.source.slice(0,64),
+    subscribed_at: new Date().toISOString(), unsubscribed: false, unsubscribed_at: null,
+  }, { onConflict: 'email' });
+  if (error) throw new Error('Subscriber confirmation could not be saved.');
 }
 
 /** Flag the row. Never delete it. */
