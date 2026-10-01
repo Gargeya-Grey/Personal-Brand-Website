@@ -1,5 +1,6 @@
 import 'server-only';
 import { Client } from '@notionhq/client';
+import { humanizeNotionError } from '@/lib/ledger-notion-errors';
 import { MAX_LEDGER_BATCH } from '@/lib/ledger-schema';
 import { validateLedgerEntry } from '@/lib/ledger-engine';
 import type { LedgerEntry } from '@/lib/ledger-schema';
@@ -122,18 +123,4 @@ export async function saveLedgerEntries(
     urls: results.map((row) => row.url),
     results,
   };
-}
-
-function humanizeNotionError(error: unknown): string {
-  const message = error instanceof Error ? error.message : String(error);
-  if (message.includes('multiple data sources')) {
-    return 'That ID looks like a linked or synced Notion database. Open the original database, copy its URL, and use that ID.';
-  }
-  if (message.includes('Could not find database with ID')) {
-    return 'Notion could not find that database. Open the database → ⋯ → Connections → add your integration.';
-  }
-  if (message.includes('unauthorized') || message.includes('API token is invalid')) {
-    return 'Notion rejected the integration token. Create a new internal integration and share the database with it.';
-  }
-  return message;
 }
