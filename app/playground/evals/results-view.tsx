@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { ArrowDownRight, ScanLine } from 'lucide-react';
 import {
   evalGroups,
+  evalHistory,
   evalSetupLabel,
   evalSummary,
   evalTaskTypes,
@@ -33,10 +34,7 @@ export function ResultsView({ report }: { report: EvalReport }) {
   const groups = evalGroups(runs);
   const setups = [...new Map(report.runs.map((run) => [run.setup, evalSetupLabel(run)])).entries()];
   const suites = [...new Set(report.runs.map((run) => run.suite_version))].sort();
-  const history = [...runs].sort(
-    (a, b) =>
-      (b.date_utc ?? '').localeCompare(a.date_utc ?? '') || a.run_id.localeCompare(b.run_id),
-  );
+  const history = evalHistory(runs);
   const metrics = [
     [
       'Verified completed runs',

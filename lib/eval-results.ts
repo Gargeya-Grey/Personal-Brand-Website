@@ -117,6 +117,30 @@ export function evalSetupLabel(run: EvalRun): string {
     : `Undisclosed setup · ${run.setup}`;
 }
 
+/** Known instants first, newest first; missing dates last, with reproducible ties. */
+export function evalHistory(runs: readonly EvalRun[]): EvalRun[] {
+  const dated = runs.map((run) => {
+    const date = run.date_utc;
+    // V2 permits up to six fractional digits. Parse whole seconds, then retain the
+    // exact fractional microseconds rather than truncating them to Date's milliseconds.
+    const instant =
+      date === null
+        ? null
+        : BigInt(Date.parse(`${date.slice(0, 19)}Z`)) * BigInt(1000) +
+          BigInt(date.slice(19, -1).replace('.', '').padEnd(6, '0'));
+    return { run, instant };
+  });
+  dated.sort((a, b) => {
+    if (a.instant === null && b.instant !== null) return 1;
+    if (a.instant !== null && b.instant === null) return -1;
+    if (a.instant !== null && b.instant !== null && a.instant !== b.instant) {
+      return a.instant > b.instant ? -1 : 1;
+    }
+    return a.run.run_id < b.run.run_id ? -1 : a.run.run_id > b.run.run_id ? 1 : 0;
+  });
+  return dated.map(({ run }) => run);
+}
+
 export function evalSummary(runs: readonly EvalRun[]) {
   const completed = runs.filter((r) => r.verification === 'verified' && r.status !== 'blocked');
   const successful = completed.filter((r) => r.status === 'success').length;

@@ -14,7 +14,7 @@ import { ResultsView } from './results-view';
 export const metadata = getPageMetadata({
   title: 'Eval dashboard',
   description:
-    'Public, read-only AI evaluation results. Inspect verified evidence, compare runs, and understand the limits. No verified results are published yet.',
+    'Public, read-only AI evaluation results. Inspect published evidence, compare runs, and understand the conditions and limits behind each result.',
   path: '/playground/evals',
 });
 

@@ -9,6 +9,7 @@ import {
   parseEvalReport,
   evalSummary,
   evalGroups,
+  evalHistory,
   evalSetupLabel,
   PUBLIC_EVAL_WARNING,
 } from '../lib/eval-results.ts';
@@ -140,6 +141,37 @@ assert.equal(
   1,
 );
 const siteData = new URL('../data/eval-results.json', import.meta.url);
+const orderingInput = parseEvalReport({
+  ...input,
+  runs: [
+    row(1, { date_utc: '2026-01-01T12:00:00Z' }),
+    row(2, { date_utc: '2026-01-01T12:00:00.000001Z' }),
+    row(3, { date_utc: '2026-01-01T12:00:00.123456Z' }),
+    row(4, { date_utc: '2026-01-01T12:00:00.123455Z' }),
+    row(5, { date_utc: '2026-01-01T12:00:00.500000Z' }),
+    row(6, { date_utc: '2026-01-01T12:00:00.5Z' }),
+    row(7, { date_utc: null }),
+    row(8, { date_utc: null }),
+  ],
+}).runs;
+const orderingBefore = orderingInput.map((run) => run.run_id);
+assert.deepEqual(
+  evalHistory(orderingInput).map((run) => run.run_id),
+  [5, 6, 3, 4, 2, 1, 7, 8].map((n) => `run-${n.toString(16).padStart(20, '0')}`),
+  'Newest numeric UTC instants first, preserving microseconds, stable equal-instant IDs, null last',
+);
+assert.deepEqual(
+  orderingInput.map((run) => run.run_id),
+  orderingBefore,
+  'History sort cannot mutate source records',
+);
+const pageSource = readFileSync(
+  new URL('../app/playground/evals/page.tsx', import.meta.url),
+  'utf8',
+);
+const metadataDescription = pageSource.match(/description:\s*'([^']+)'/)[1];
+assert(!metadataDescription.includes('No verified results are published yet'));
+assert(metadataDescription.includes('published evidence'));
 const before = readFileSync(siteData, 'utf8');
 const temp = mkdtempSync(path.join(tmpdir(), 'eval-import-rejection-'));
 const unapproved = path.join(temp, 'unapproved.json');
