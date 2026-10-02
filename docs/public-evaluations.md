@@ -10,8 +10,15 @@ No verified model runs are published. The page deliberately renders zero verifie
 unavailable measurements. Illustrative examples, setup checks, and blocked attempts are not
 performance evidence. There is no seeded leaderboard or synthetic score.
 
-The initial page has no result import. Data integration is pending a finalized, reviewed
-sanitized export contract. Do not substitute raw runner output or a private dashboard bundle.
+The page validates the reviewed V2 static export in `data/eval-results.json` on the server.
+Unsupported versions, unknown fields, or invalid records fail the build. The current reviewed
+export has no runs. Do not substitute raw runner output or a private dashboard bundle.
+
+For an approved update, keep the supplied export outside the website checkout first. Run
+`node --experimental-strip-types --import ./scripts/security-test-register.mjs scripts/import-eval-results.mjs <reviewed-export.json>`.
+This validates before replacing site data and writes only the approved projection. Invalid
+input is rejected with a generic error, without copying it into the public repository. Review
+the diff and public build output before committing. Importing records does not run evaluations.
 
 ## Publication boundary
 
@@ -33,11 +40,11 @@ Before adding results:
 ## Importer preparation
 
 `lib/eval-export-validation.ts` provides exact nested object validation, approved value choices,
-bounded identifiers/arrays/numbers, explicit null preservation, and version dispatch. No schema
-version is registered and this module is not imported by the public route yet. The future adapter
-must supply the finalized contract's exact fields and cross-field rules, including count consistency,
-verification eligibility, valid dates, unique public run IDs, and reviewed public labels. Unknown
-versions/fields fail publication; they must not be silently treated as an empty successful report.
+bounded identifiers/arrays/numbers, explicit null preservation, and version dispatch. The V2
+adapter in `lib/eval-results.ts` registers exact reviewed fields, canonical case/type pairing,
+count consistency, valid UTC dates, unique public run IDs, and constrained approved labels.
+Withheld metadata must use the contract's unknown values. Unknown versions/fields fail
+publication; they must not be silently treated as an empty successful report.
 
 Free text is not a safe label allowlist. Use reviewed choices for model/version/effort/harness
 labels and website-owned contextual copy. Validators build a fresh projection and use generic
@@ -45,6 +52,22 @@ errors that do not echo untrusted keys, values, or paths.
 
 Run `node --experimental-strip-types scripts/test-eval-export-validation.mjs` for synthetic
 adversarial validation checks. These test inputs are not result data or the publication contract.
+
+Run `node --experimental-strip-types --import ./scripts/security-test-register.mjs scripts/test-eval-results.mjs`
+for V2 adapter and aggregation checks. Its optional output path writes a synthetic fixture for
+local browser testing only. Never publish that fixture as measured model results.
+
+## Reading metrics
+
+Summary success rates use only evaluator-verified completed success/fail runs. Blocked and
+self-reported records appear in history and sample counts, but do not enter that denominator.
+Mean elapsed time uses only observed durations for verified completed runs; null stays missing,
+while measured zero remains zero. Counts show the observed duration denominator explicitly.
+Task comparisons are separated by suite, task type, setup ID, and published label metadata.
+Filters select task, suite, or setup without altering the underlying history. Dated history shows
+stable public run IDs and UTC dates; unknown dates remain unavailable. Details reveal only the
+approved summary fields, including check counts, interventions, and usage visibility, not logs.
+The contract exports no token quantities or cost; the dashboard does not invent these.
 
 ## Verification
 

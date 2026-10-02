@@ -1,11 +1,15 @@
 import Link from 'next/link';
-import { ArrowLeft, ArrowDownRight, LockKeyhole, Scale, ScanLine } from 'lucide-react';
+import { ArrowLeft, ArrowDownRight, LockKeyhole, Scale } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { WorkVisual } from '@/components/work-visual';
 import { allWork } from '@/data/selected-work';
 import { getPageMetadata } from '@/lib/page-metadata';
 import './evals.css';
+import './results.css';
+import publishedExport from '@/data/eval-results.json';
+import { parseEvalReport } from '@/lib/eval-results';
+import { ResultsView } from './results-view';
 
 export const metadata = getPageMetadata({
   title: 'Eval dashboard',
@@ -14,8 +18,9 @@ export const metadata = getPageMetadata({
   path: '/playground/evals',
 });
 
-// Deliberately empty until the owner's sanitized export contract is finalized and reviewed.
-// Never import the private runner, task definitions, prompts, logs, or execution credentials.
+// Only the reviewed static sanitized export is allowed here. Validation fails the build
+// on unsupported versions or unapproved fields; no private runner assets are imported.
+const report = parseEvalReport(publishedExport);
 export default function EvalDashboardPage() {
   const work = allWork.find((entry) => entry.id === 'evals')!;
   return (
@@ -46,48 +51,7 @@ export default function EvalDashboardPage() {
           <span>Read-only results. Evaluations run privately; this page never starts a run.</span>
         </div>
 
-        <section className="eval-metrics" aria-label="Published evaluation summary">
-          {[
-            ['Verified runs', '0', 'No completed results published'],
-            ['Evaluated setups', '—', 'Available after the first verified run'],
-            ['Task coverage', '—', 'Available after the first verified run'],
-            ['Success rate', '—', 'No evidence to calculate a rate'],
-          ].map(([label, value, detail]) => (
-            <div key={label}>
-              <h2>{label}</h2>
-              <p className="eval-metric-value">{value}</p>
-              <p>{detail}</p>
-            </div>
-          ))}
-        </section>
-
-        <section className="eval-results" aria-labelledby="results-title">
-          <div className="eval-section-heading">
-            <div>
-              <p className="field-label">The record</p>
-              <h2 id="results-title">Results & comparisons</h2>
-            </div>
-            <span className="eval-status">
-              <span aria-hidden="true" /> Awaiting first publication
-            </span>
-          </div>
-          <div className="eval-empty">
-            <div className="eval-empty-mark" aria-hidden="true">
-              <ScanLine size={34} strokeWidth={1.2} />
-            </div>
-            <h3>No verified results published yet.</h3>
-            <p>
-              The first reviewed run will start the record. Until then, there is no leaderboard,
-              success rate, or winning setup to report.
-            </p>
-            <p className="eval-empty-footnote">
-              Example records and setup checks do not count as model evaluations.
-            </p>
-            <a href="#reading-results" className="field-text-link">
-              How to read future results <ArrowDownRight size={16} />
-            </a>
-          </div>
-        </section>
+        <ResultsView report={report} />
 
         <section id="reading-results" className="eval-reading" aria-labelledby="reading-title">
           <div className="eval-reading-intro">
