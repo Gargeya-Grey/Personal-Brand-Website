@@ -30,6 +30,22 @@ Before adding results:
   limitations; do not treat unlike runs as a model ranking.
 - Keep the route permanent, and verify public output as well as source files before release.
 
+## Importer preparation
+
+`lib/eval-export-validation.ts` provides exact nested object validation, approved value choices,
+bounded identifiers/arrays/numbers, explicit null preservation, and version dispatch. No schema
+version is registered and this module is not imported by the public route yet. The future adapter
+must supply the finalized contract's exact fields and cross-field rules, including count consistency,
+verification eligibility, valid dates, unique public run IDs, and reviewed public labels. Unknown
+versions/fields fail publication; they must not be silently treated as an empty successful report.
+
+Free text is not a safe label allowlist. Use reviewed choices for model/version/effort/harness
+labels and website-owned contextual copy. Validators build a fresh projection and use generic
+errors that do not echo untrusted keys, values, or paths.
+
+Run `node --experimental-strip-types scripts/test-eval-export-validation.mjs` for synthetic
+adversarial validation checks. These test inputs are not result data or the publication contract.
+
 ## Verification
 
 Run the project-cover check, lint, production build, and existing ledger/newsletter checks.
