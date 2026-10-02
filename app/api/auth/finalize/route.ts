@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { isEmailAllowed, signJWT, verifyJWT } from '@/lib/auth';
+import { isEmailAllowed, signJWT } from '@/lib/auth';
+import { consumeSignInTicket } from '@/lib/sign-in-ticket';
 import { isTrustedOrigin } from '@/lib/csrf';
 import { setAuthSessionCookie } from '@/lib/session-cookie';
 
@@ -19,7 +20,9 @@ export async function POST(request: Request) {
     ticket = '';
   }
 
-  const pendingUser = ticket ? await verifyJWT(ticket) : null;
+  let pendingUser;
+  try { pendingUser = ticket ? await consumeSignInTicket(ticket) : null; }
+  catch { return NextResponse.json({ error: 'Sign-in is temporarily unavailable. Please retry.', reason: 'ticket-storage' }, { status: 503 }); }
   if (!pendingUser || !isEmailAllowed(pendingUser.email)) {
     return NextResponse.json(
       { error: 'Invalid or expired sign-in ticket', reason: 'invalid-ticket' },
@@ -31,6 +34,7 @@ export async function POST(request: Request) {
     email: pendingUser.email,
     name: pendingUser.name,
     picture: pendingUser.picture,
+    exp: pendingUser.exp,
   });
 
   const response = NextResponse.json({ success: true });

@@ -63,7 +63,7 @@ export function NewsletterSignup({
             : 'rounded-2xl border border-emerald-200 bg-emerald-50 p-4 font-headline text-sm font-bold text-accent shadow-sm dark:border-emerald-500/30 dark:bg-emerald-950/20'
         }
       >
-        You&apos;re on the Sunday letter. The mind stays in the picture.
+        Check your inbox and confirm your subscription to the Sunday letter.
       </p>
     );
   }

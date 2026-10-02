@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { requireAllowedSession } from '@/lib/auth';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import fs from 'fs/promises';
-import path from 'path';
+import { storeCoverImage } from '@/lib/cover-images';
 
 export async function POST(request: Request) {
   try {
@@ -31,48 +29,21 @@ export async function POST(request: Request) {
     }
 
     // 4. Validate MIME Type
-    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml'];
+    const allowedMimeTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowedMimeTypes.includes(file.type)) {
-      return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, WEBP, GIF, and SVG are allowed.' }, { status: 400 });
+      return NextResponse.json({ error: 'Invalid file type. Only JPEG, PNG, WEBP, and GIF are allowed.' }, { status: 400 });
     }
 
     // 5. Read File Content as Buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // 6. Save File to Supabase Storage (if configured) or public/covers/ (local fallback)
-    const ext = path.extname(file.name) || '.png';
-    const cleanSlug = slug.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
-    const fileName = `${cleanSlug}-${Date.now()}${ext}`;
-
-    if (isSupabaseConfigured()) {
-      const { error: uploadError } = await supabase.storage
-        .from('covers')
-        .upload(fileName, buffer, {
-          contentType: file.type,
-          upsert: true
-        });
-
-      if (uploadError) {
-        throw new Error('Supabase Storage upload failed: ' + uploadError.message);
-      }
-
-      // Retrieve public URL
-      const { data: { publicUrl } } = supabase.storage
-        .from('covers')
-        .getPublicUrl(fileName);
-
-      return NextResponse.json({ success: true, url: publicUrl });
+    try {
+      const url = await storeCoverImage(buffer, slug);
+      return NextResponse.json({ success: true, url });
+    } catch {
+      return NextResponse.json({ error: 'Could not save image. Use a valid JPEG, PNG, WEBP, or GIF of at most 5MB.' }, { status: 400 });
     }
-
-    // Local Fallback
-    const coversDir = path.join(process.cwd(), 'public', 'covers');
-    const filePath = path.join(coversDir, fileName);
-
-    await fs.mkdir(coversDir, { recursive: true });
-    await fs.writeFile(filePath, buffer);
-
-    return NextResponse.json({ success: true, url: `/covers/${fileName}` });
   } catch (error: any) {
     return NextResponse.json({ error: 'Failed to upload image: ' + error.message }, { status: 500 });
   }

@@ -2,6 +2,7 @@ import fs from 'fs/promises';
 import path from 'path';
 import { supabase, isSupabaseConfigured } from './supabase';
 import { siteConfig } from './site-config';
+import { deleteOwnedLocalCover } from './cover-images';
 
 export interface Article {
   id: number;
@@ -442,17 +443,9 @@ async function cleanupOrphanedImages(oldArticles: Article[], newArticles: Articl
     }
   } else {
     // Local fallback disk cleanup
-    const coversDir = path.join(process.cwd(), 'public', 'covers');
     for (const imgUrl of orphanedImages) {
-      if (imgUrl.startsWith('/covers/')) {
-        const filename = imgUrl.replace('/covers/', '').split('?')[0].split('#')[0];
-        const filePath = path.join(coversDir, filename);
-        try {
-          await fs.unlink(filePath);
-        } catch (err: any) {
-          if (err.code !== 'ENOENT') console.error('Failed to delete local image:', filePath, err);
-        }
-      }
+      try { await deleteOwnedLocalCover(imgUrl); }
+      catch (error) { console.error('Failed to delete owned cover:', error); }
     }
   }
 }

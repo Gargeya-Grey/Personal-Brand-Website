@@ -3,6 +3,9 @@ export interface UserSession {
   name: string;
   picture: string;
   exp?: number;
+  purpose?: 'session' | 'sign-in';
+  nonce?: string;
+  sessionExpiresAt?: number;
 }
 
 const DEFAULT_SECRET = 'default-dev-jwt-secret-do-not-use-in-production-1234567890';
@@ -77,6 +80,9 @@ export async function signJWT(
     name: (payload.name || '').slice(0, 80),
     picture: compactPicture(payload.picture),
     exp,
+    purpose: payload.purpose || 'session',
+    ...(payload.nonce ? { nonce: payload.nonce } : {}),
+    ...(payload.sessionExpiresAt ? { sessionExpiresAt: payload.sessionExpiresAt } : {}),
   };
 
   const encodedHeader = base64UrlEncode(JSON.stringify(header));
@@ -102,7 +108,8 @@ export async function signJWT(
  */
 export async function verifyJWT(
   token: string,
-  secret: string = getJwtSecret()
+  secret: string = getJwtSecret(),
+  purpose: 'session' | 'sign-in' = 'session'
 ): Promise<UserSession | null> {
   try {
     const parts = token.split('.');
@@ -135,7 +142,9 @@ export async function verifyJWT(
 
     const payload = JSON.parse(base64UrlDecode(encodedPayload)) as UserSession;
 
-    if (payload.exp && Date.now() > payload.exp * 1000) {
+    // Existing session cookies predate the purpose claim. They cannot be sign-in tickets.
+    if ((payload.purpose || 'session') !== purpose ||
+        !Number.isFinite(payload.exp) || Date.now() >= payload.exp! * 1000) {
       return null;
     }
 
@@ -146,6 +155,9 @@ export async function verifyJWT(
       name: payload.name || payload.email,
       picture: payload.picture || '',
       exp: payload.exp,
+      purpose: payload.purpose,
+      nonce: payload.nonce,
+      sessionExpiresAt: payload.sessionExpiresAt,
     };
   } catch (error) {
     console.error('JWT Verification Error:', error);
@@ -299,9 +311,12 @@ export async function requireAllowedSession(
 export function sanitizeRedirect(url: string | null | undefined): string {
   if (!url) return '/editorial';
 
-  if (url.startsWith('/') && !url.startsWith('//')) {
-    return url;
-  }
+  if (!url.startsWith('/') || url.startsWith('//') || /[\\\u0000-\u0020\u007f]/.test(url)) return '/editorial';
+  try {
+    const origin = 'https://redirect.invalid';
+    const destination = new URL(url, origin);
+    if (destination.origin === origin && !destination.pathname.startsWith('//')) return destination.pathname + destination.search + destination.hash;
+  } catch { /* invalid destination */ }
 
   return '/editorial';
 }

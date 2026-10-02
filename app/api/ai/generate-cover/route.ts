@@ -1,9 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { requireAllowedSession } from '@/lib/auth';
-import { supabase, isSupabaseConfigured } from '@/lib/supabase';
-import fs from 'fs/promises';
-import path from 'path';
+import { storeCoverImage } from '@/lib/cover-images';
 
 // Helper to call OpenRouter for image generation — model id must come from env only
 async function generateCoverImage(apiKey: string, prompt: string, imageModel: string): Promise<string | null> {
@@ -55,35 +53,7 @@ async function saveBase64Image(imageUrl: string, slug: string): Promise<string |
     const data = matches[2];
     const buffer = Buffer.from(data, 'base64');
     
-    const cleanSlug = slug.replace(/[^a-z0-9-]/gi, '-').toLowerCase();
-    const fileName = `${cleanSlug || 'cover'}-${Date.now()}.png`;
-
-    if (isSupabaseConfigured()) {
-      const { error: uploadError } = await supabase.storage
-        .from('covers')
-        .upload(fileName, buffer, {
-          contentType: 'image/png',
-          upsert: true
-        });
-
-      if (uploadError) {
-        console.error('Supabase Storage upload failed for generated image:', uploadError.message);
-        return null;
-      }
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('covers')
-        .getPublicUrl(fileName);
-
-      return publicUrl;
-    }
-    
-    const coversDir = path.join(process.cwd(), 'public', 'covers');
-    await fs.mkdir(coversDir, { recursive: true });
-    const filePath = path.join(coversDir, fileName);
-    
-    await fs.writeFile(filePath, buffer);
-    return `/covers/${fileName}`;
+    return await storeCoverImage(buffer, slug);
   } catch (error) {
     console.error('Failed to save generated image:', error);
     return null;

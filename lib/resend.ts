@@ -58,14 +58,14 @@ export async function addResendContact(input: {
       url: '/contacts',
       body: {
         email: input.email,
-        unsubscribed: false,
+        unsubscribed: input.unsubscribed === true,
       },
     },
   ];
   if (segmentId) {
     attempts.push({
       url: `/audiences/${segmentId}/contacts`,
-      body: { email: input.email, unsubscribed: false },
+      body: { email: input.email, unsubscribed: input.unsubscribed === true },
     });
   }
 
@@ -151,8 +151,9 @@ export async function setResendUnsubscribed(
   unsubscribed: boolean
 ): Promise<{ ok: boolean; error?: string }> {
   const target = email.trim().toLowerCase();
-  const contacts = await listAllResendContacts();
-  const match = contacts.find((c) => c.email === target);
+  const lookup = await resendFetch(`/contacts/${encodeURIComponent(target)}`);
+  if (!lookup.ok && lookup.status !== 404) return { ok: false, error: 'Could not read subscription state.' };
+  const match: ResendContact | null = lookup.ok ? await lookup.json() : null;
   if (match && match.unsubscribed === unsubscribed) return { ok: true };
 
   const attempts: Array<{ path: string; body: Record<string, unknown> }> = [];

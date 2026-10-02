@@ -4,9 +4,9 @@ import {
   getGoogleTokens,
   getGoogleUserProfile,
   isEmailAllowed,
-  signJWT,
   sanitizeRedirect,
 } from '@/lib/auth';
+import { createSignInTicket } from '@/lib/sign-in-ticket';
 import {
   clearOauthCookies,
 } from '@/lib/session-cookie';
@@ -51,11 +51,10 @@ export async function GET(request: Request) {
       return res;
     }
 
-    const completionTicket = await signJWT({
+    const completionTicket = await createSignInTicket({
       email: profile.email,
       name: profile.name,
       picture: profile.picture,
-      exp: Math.floor(Date.now() / 1000) + 60,
     });
 
     const targetPath = sanitizeRedirect(storedCallbackUrl);

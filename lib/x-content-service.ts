@@ -2,6 +2,7 @@ import 'server-only';
 import fs from 'fs/promises';
 import path from 'path';
 import { supabase, isSupabaseConfigured } from './supabase';
+import { withLocalContentLock } from './content-lock';
 import {
   DEFAULT_SESSIONS,
   defaultEstimatedSeconds,
@@ -104,18 +105,24 @@ export function mergePreservedDraftStatuses(
   const byExact = new Map(prevList.map((d) => [d.id, d]));
   const byBare = new Map(prevList.map((d) => [bareDraftId(d.id, packId), d]));
 
-  return incoming.map((d) => {
+  const merged: XDraftItem[] = incoming.map((d): XDraftItem => {
     const prev = byExact.get(d.id) || byBare.get(bareDraftId(d.id, packId));
-    if (!prev) return { ...d, status: d.status || 'ready' };
+    if (!prev) return { ...d, status: 'ready' };
     // User already cleared this task — never re-open on scout re-ingest / polish.
     if (prev.status === 'posted' || prev.status === 'skipped') {
       return { ...d, status: prev.status };
     }
     if (prev.status === 'ready' || !prev.status) {
-      return { ...d, status: d.status || 'ready' };
+      return { ...d, status: 'ready' };
     }
     return { ...d, status: prev.status || d.status || 'ready' };
   });
+  // Omission is not permission to erase the only record of a curator decision.
+  for (const previous of prevList) {
+    if ((previous.status === 'posted' || previous.status === 'skipped') &&
+      !merged.some(draft => draftIdsEqual(draft.id, previous.id, packId))) merged.push(previous);
+  }
+  return merged;
 }
 
 export function findDraftInPack(
@@ -441,12 +448,31 @@ export async function saveXContentPacks(packs: XContentPack[]): Promise<void> {
 
 export async function upsertXContentPack(
   pack: XContentPack,
-  options?: { preserveStatuses?: boolean }
+  _options?: { preserveStatuses?: boolean }
 ): Promise<XContentPack> {
+  return withLocalContentLock(() => upsertXContentPackUnlocked(pack));
+}
+async function upsertXContentPackUnlocked(pack: XContentPack): Promise<XContentPack> {
+  if (isSupabaseConfigured()) {
+    for (let attempt=0; attempt<3; attempt++) {
+      const { data: row, error } = await supabase.from('x_content_packs').select('*').eq('id', pack.id).maybeSingle();
+      if (error) throw new Error('Could not load authoritative X draft decisions.');
+      const existing = row ? hydratePack(rowToPack(row)) : null;
+      const next = hydratePack({ ...pack, createdAt: existing?.createdAt || pack.createdAt || new Date().toISOString(),
+        updatedAt: new Date().toISOString(), drafts: mergePreservedDraftStatuses(pack.drafts, existing?.drafts, pack.id) });
+      const { data: saved, error: saveError } = await supabase.rpc('security_ingest_cas', {
+        p_table: 'x_content_packs', p_id: pack.id, p_expected: row?.payload ?? null, p_next: next,
+      });
+      if (saveError) throw new Error('Could not preserve X draft decisions.');
+      if (saved) { cachedPacks = null; return next; }
+    }
+    throw new Error('X pack changed during ingestion. Please retry.');
+  }
+  cachedPacks = null;
   let packs = await getXContentPacks();
   packs = await maybePrune(packs);
   const idx = packs.findIndex((p) => p.id === pack.id);
-  const preserve = options?.preserveStatuses !== false;
+  // Only updateDraftStatus may change curator decisions. Machine flags have no authority.
   let next: XContentPack = hydratePack({
     ...pack,
     updatedAt: new Date().toISOString(),
@@ -454,18 +480,14 @@ export async function upsertXContentPack(
 
   if (idx >= 0) {
     const existing = packs[idx];
-    if (preserve) {
-      // Keep posted/skipped even when scout polishes body text (Done must survive re-ingest).
-      next = {
-        ...next,
-        createdAt: existing.createdAt || next.createdAt,
-        drafts: mergePreservedDraftStatuses(next.drafts, existing.drafts, next.id),
-      };
-    } else {
-      next = { ...next, createdAt: existing.createdAt || next.createdAt };
-    }
+    next = {
+      ...next,
+      createdAt: existing.createdAt || next.createdAt,
+      drafts: mergePreservedDraftStatuses(next.drafts, existing.drafts, next.id),
+    };
     packs[idx] = next;
   } else {
+    next = { ...next, drafts: mergePreservedDraftStatuses(next.drafts, [], next.id) };
     if (!next.createdAt) next.createdAt = new Date().toISOString();
     packs.unshift(next);
   }
@@ -474,24 +496,6 @@ export async function upsertXContentPack(
     const d = toDateOnly(p.date);
     return d && d >= packRetentionCutoffDate();
   });
-
-  if (isSupabaseUsable()) {
-    try {
-      const { error } = await supabase.from('x_content_packs').upsert(toRow(next), { onConflict: 'id' });
-      if (error) throw error;
-      supabaseFailureLogged = false;
-      cachedPacks = packs;
-      cacheLoadedAt = Date.now();
-      await saveLocalSafe(packs);
-      return next;
-    } catch (e) {
-      markSupabaseUnavailable(e);
-      // On Vercel, do not fall back to a read-only local file write
-      if (process.env.VERCEL || isSupabaseConfigured()) {
-        throw e instanceof Error ? e : new Error(String(e));
-      }
-    }
-  }
 
   await saveXContentPacks(packs);
   return next;
@@ -502,6 +506,9 @@ export async function updateDraftStatus(
   draftId: string,
   status: XDraftStatus
 ): Promise<XContentPack | null> {
+  return withLocalContentLock(() => updateDraftStatusUnlocked(packId, draftId, status));
+}
+async function updateDraftStatusUnlocked(packId: string, draftId: string, status: XDraftStatus): Promise<XContentPack | null> {
   // Bypass short cache so we never patch a stale snapshot after scout ingest
   cacheLoadedAt = 0;
   const packs = await getXContentPacks();
