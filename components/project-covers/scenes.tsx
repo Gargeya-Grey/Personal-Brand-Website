@@ -244,6 +244,51 @@ function Publishing(props: CoverSceneProps) {
   );
 }
 
+/** Two aligned measuring rails: compare evidence on the same scale, without invented scores. */
+function Evaluation(props: CoverSceneProps) {
+  return (
+    <>
+      <Ground width={205} />
+      <g transform="translate(120 70) skewY(-7)">
+        <GlassPanel {...props} width={400} height={168}>
+          <path d="M40 42H356M40 126H356" stroke="var(--cover-ink)" strokeWidth="3" opacity=".5" />
+          {[66, 112, 158, 204, 250, 296, 342].map((x) => (
+            <path
+              key={x}
+              d={`M${x} 34V50M${x} 118V134`}
+              stroke="var(--cover-accent)"
+              strokeWidth="2"
+            />
+          ))}
+          <path
+            d="M204 21V147"
+            stroke="var(--cover-accent)"
+            strokeWidth="2"
+            strokeDasharray="4 6"
+            opacity=".6"
+          />
+          <circle
+            cx="204"
+            cy="42"
+            r="10"
+            fill="var(--cover-highlight)"
+            stroke="var(--cover-accent)"
+            strokeWidth="3"
+          />
+          <circle
+            cx="204"
+            cy="126"
+            r="10"
+            fill="var(--cover-highlight)"
+            stroke="var(--cover-ink)"
+            strokeWidth="3"
+          />
+        </GlassPanel>
+      </g>
+    </>
+  );
+}
+
 /** Add a deliberately composed scene here; a new project must choose one explicitly. */
 export const coverScenes: Record<CoverSceneName, ComponentType<CoverSceneProps>> = {
   voice: Voice,
@@ -252,4 +297,5 @@ export const coverScenes: Record<CoverSceneName, ComponentType<CoverSceneProps>>
   ideas: Ideas,
   data: Data,
   publishing: Publishing,
+  evaluation: Evaluation,
 };

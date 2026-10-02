@@ -15,9 +15,10 @@ export interface PlaygroundEntry {
 }
 
 const order = [
+  'edudojo',
+  'evals',
   'box-lab',
   'idea-mixer',
-  'edudojo',
   'odicto',
   'twinaatma',
   'dataclean',
@@ -34,16 +35,22 @@ export const playgroundEntries: PlaygroundEntry[] = orderedWork.map((work) => ({
   title: work.title,
   description: work.description,
   kind: work.kind ?? (work.id === 'dataclean' ? 'Experiments' : 'Software'),
-  status: work.demo
-    ? 'Playable demo'
-    : work.recordings?.length
-      ? 'Video walkthrough'
-      : work.category,
+  status:
+    work.id === 'evals'
+      ? 'Public results'
+      : work.demo
+        ? 'Playable demo'
+        : work.recordings?.length
+          ? 'Video walkthrough'
+          : work.category,
   href: '/playground/' + work.id,
-  action: work.demo
-    ? 'Open & play'
-    : work.recordings?.length
-      ? 'See it in action'
-      : 'Explore the project',
+  action:
+    work.id === 'evals'
+      ? 'View the dashboard'
+      : work.demo
+        ? 'Open & play'
+        : work.recordings?.length
+          ? 'See it in action'
+          : 'Explore the project',
   source: work.source,
 }));
