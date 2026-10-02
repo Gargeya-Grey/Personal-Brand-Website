@@ -23,6 +23,32 @@ export interface WorkProject extends ProjectMedia {
 /** One record supplies the project page, Playground entry, and sitemap. */
 export const allWork: readonly WorkProject[] = [
   {
+    id: 'evals',
+    cover: {
+      kind: 'svg',
+      scene: 'evaluation',
+      palette: 'sea',
+      label: 'Evidence, on the same scale',
+      detail: 'Public evaluation results',
+    },
+    title: 'Eval dashboard',
+    category: 'AI evaluation',
+    kind: 'Experiments',
+    subtitle: 'Compare the evidence behind the answer.',
+    description:
+      'A public, read-only record for AI task evaluations. See the publication status and how verified results will be compared.',
+    purpose:
+      'Choosing an AI setup needs more than a convincing answer. This dashboard is a place to inspect published evidence from repeatable task evaluations.',
+    decision:
+      'Runs happen privately. Only reviewed, sanitized result summaries belong on the public site.',
+    state:
+      'No verified evaluation results are published yet. Examples and setup checks are not model results.',
+    steps: [],
+    tags: ['Evaluation', 'Evidence', 'Read-only results'],
+    action: 'View the dashboard',
+    href: '/playground/evals',
+  },
+  {
     id: 'odicto',
     cover: {
       kind: 'svg',

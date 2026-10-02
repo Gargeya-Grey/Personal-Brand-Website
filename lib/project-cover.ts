@@ -5,6 +5,7 @@ export const coverSceneNames = [
   'ideas',
   'data',
   'publishing',
+  'evaluation',
 ] as const;
 export type CoverSceneName = (typeof coverSceneNames)[number];
 export type CoverPalette = 'sea' | 'mist' | 'lilac';
