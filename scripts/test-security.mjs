@@ -88,6 +88,43 @@ const req = (endpoint,body,client='client-1') => new Request(`https://site.examp
 const resetBudget = () => db.exec('truncate public.security_budgets, public.security_requests');
 const user={email:'owner@example.com',name:'Owner',picture:''};
 
+const sessionCookies = await import('../lib/session-cookie.ts');
+const previousCookieDomain = process.env.COOKIE_DOMAIN;
+const previousAppUrl = process.env.APP_URL;
+try {
+  process.env.APP_URL = 'https://www.sgargeya.com';
+  for (const domain of [undefined, '.sgargeya.com']) {
+    if (domain === undefined) delete process.env.COOKIE_DOMAIN;
+    else process.env.COOKIE_DOMAIN = domain;
+    for (const host of ['preview.vercel.app', 'PREVIEW.VERCEL.APP.', 'branch-alias.vercel.app', 'localhost', '127.0.0.1']) {
+      const url = `https://${host}/api/auth/finalize`;
+      assert.equal(sessionCookies.getSessionCookieOptions(60, url).domain, undefined);
+      assert.equal(sessionCookies.getOauthCookieOptions(url).domain, undefined);
+      assert.equal(sessionCookies.getSessionCookieOptions(undefined, url).maxAge, 60 * 60 * 24 * 30);
+      assert.equal(sessionCookies.getOauthCookieOptions(url).maxAge, 600);
+      const response = new (await import('next/server')).NextResponse();
+      sessionCookies.setAuthSessionCookie(response, 'test-only', url);
+      sessionCookies.setOauthCookie(response, 'oauth_state', 'test-only', url);
+      assert.doesNotMatch(response.headers.get('set-cookie'), /Domain=/i);
+      sessionCookies.clearAuthSessionCookies(response, url);
+      sessionCookies.clearOauthCookies(response, url);
+      assert.doesNotMatch(response.headers.get('set-cookie'), /Domain=/i);
+    }
+    for (const host of ['sgargeya.com', 'www.sgargeya.com']) {
+      assert.equal(sessionCookies.getSessionCookieOptions(60, `https://${host}`).domain, 'sgargeya.com');
+      assert.equal(sessionCookies.getOauthCookieOptions(`https://${host}`).domain, 'sgargeya.com');
+    }
+  }
+  process.env.COOKIE_DOMAIN = '.custom.example';
+  assert.equal(sessionCookies.resolveCookieDomain('https://www.custom.example'), 'custom.example');
+} finally {
+  if (previousCookieDomain === undefined) delete process.env.COOKIE_DOMAIN;
+  else process.env.COOKIE_DOMAIN = previousCookieDomain;
+  if (previousAppUrl === undefined) delete process.env.APP_URL;
+  else process.env.APP_URL = previousAppUrl;
+}
+console.log('PASS: host-only preview session/OAuth cookies and production domain precedence');
+
 for (const value of ['/\\attacker.example/x','//attacker.example','/\t/attacker.example','https://attacker.example','\\attacker.example','/a/..//attacker.example/path','/a/%2e%2e//attacker.example/path']) {
   assert.equal(auth.sanitizeRedirect(value),'/editorial');
 }
