@@ -91,11 +91,11 @@ export const allWork: readonly WorkProject[] = [
     category: 'Android keyboard',
     subtitle: 'Speak, type, or ask AI, anywhere on Android.',
     description:
-      'An Android keyboard with four ways to write: type, dictate, ask AI to edit or write, or watch your speech turn into polished text live. A floating icon keeps it a tap away.',
+      'An Android keyboard with four ways to write: type, dictate, ask AI to edit or write, or watch your speech turn into polished text live. It can also show a floating icon.',
     purpose:
       'A thought often arrives faster than I can type it, on a phone most of all. The keyboard opens collapsed, so the first instinct is to speak your mind. The full keyboard is one tap away for small edits, a crowded room, or a day you’d rather not talk.',
     decision:
-      'Four modes, one keyboard. Dictation keeps your words as spoken. AI mode selects your text by default and does what you ask; with nothing selected, it writes at the cursor, and you can give it your own system prompt. Live transcription polishes as you speak. A separate smart polish button tidies whatever you are writing, most useful after typing.',
+      'Four modes, one keyboard. Dictation keeps your words as spoken. AI mode selects all your text by default and does what you ask; with nothing selected, it writes at the cursor, and you can give it your own system prompt. Live transcription polishes as you speak. A separate smart polish button tidies whatever you are writing, most useful after typing.',
     state:
       'A public repository with setup instructions. Voice goes directly to the provider you configure, with your own keys; there is no Odicto backend. Android only; iOS is not available.',
     stage: 'Public repository',
@@ -220,7 +220,7 @@ export const allWork: readonly WorkProject[] = [
   },
 ];
 
-/** Homepage order is intentional; other experiments keep their existing routes. */
-export const selectedWork = ['edudojo', 'odicto', 'twinaatma'].map((id) =>
+/** The homepage's Selected work, in this order. Every project, these included, has a page at /playground/[id]. */
+export const selectedWork = ['edudojo', 'odicto', 'personal-brand'].map((id) =>
   allWork.find((work) => work.id === id)!,
 );

@@ -13,6 +13,7 @@ import {
   MessagesSquare,
   Sprout,
 } from 'lucide-react';
+import { ChapterHeading } from './chapter-morph';
 import { journeyChapters } from './journey-chapters';
 import './journey.css';
 
@@ -235,118 +236,137 @@ export function JourneyMap() {
     >
       <div className="journey-track" ref={trackRef}>
         <div className="journey-stage" ref={stageRef}>
-          <header className="journey-atlas-heading">
-            <h2 id="journey-title">A few unexpected turns.</h2>
-            <p>
-              I didn’t set out to work in AI. Follow the stops that brought me here. Choose any
-              chapter.
-            </p>
-          </header>
-          <nav className="journey-map-nav" aria-label="Chapters of my journey">
-            <svg
-              className="journey-route"
-              viewBox="0 0 600 240"
-              preserveAspectRatio="none"
-              aria-hidden="true"
-            >
-              <defs>
-                <mask
-                  id="journey-route-mask"
-                  maskUnits="userSpaceOnUse"
-                  x="-20"
-                  y="-20"
-                  width="640"
-                  height="280"
-                >
-                  <path
-                    ref={revealRef}
-                    className="journey-route-reveal"
-                    d={routePath}
-                    pathLength={1}
-                  />
-                </mask>
-              </defs>
-              <path ref={routeRef} className="journey-route-base" d={routePath} />
-              <path
-                className="journey-route-progress"
-                d={routePath}
-                mask="url(#journey-route-mask)"
-              />
-            </svg>
-            <ol className="journey-stops">
-              {journeyChapters.map((stop, index) => {
-                const Icon = chapterIcons[index];
-                return (
-                  <li key={stop.scene}>
-                    <button
-                      type="button"
-                      aria-current={selected === index ? 'step' : undefined}
-                      data-passed={index < selected}
-                      aria-controls="journey-chapter"
-                      onClick={() => goToChapter(index)}
-                      aria-label={`Chapter ${index + 1}: ${stop.label}`}
+          <div className="journey-panel">
+            <header className="journey-atlas-heading">
+              <h2 id="journey-title">A few unexpected turns.</h2>
+              <p>
+                I didn’t set out to work in AI. Follow the stops that brought me here. Choose any
+                chapter.
+              </p>
+            </header>
+            <nav className="journey-map-nav" aria-label="Chapters of my journey">
+              <svg
+                className="journey-route"
+                viewBox="0 0 600 240"
+                preserveAspectRatio="none"
+                aria-hidden="true"
+              >
+                <defs>
+                  <mask
+                    id="journey-route-mask"
+                    maskUnits="userSpaceOnUse"
+                    x="-20"
+                    y="-20"
+                    width="640"
+                    height="280"
+                  >
+                    <path
+                      ref={revealRef}
+                      className="journey-route-reveal"
+                      d={routePath}
+                      pathLength={1}
+                    />
+                  </mask>
+                </defs>
+                <path ref={routeRef} className="journey-route-base" d={routePath} />
+                <path
+                  className="journey-route-progress"
+                  d={routePath}
+                  mask="url(#journey-route-mask)"
+                />
+              </svg>
+              <ol className="journey-stops">
+                {journeyChapters.map((stop, index) => {
+                  const Icon = chapterIcons[index];
+                  return (
+                    <li key={stop.scene}>
+                      <button
+                        type="button"
+                        aria-current={selected === index ? 'step' : undefined}
+                        data-passed={index < selected}
+                        aria-controls="journey-chapter"
+                        onClick={() => goToChapter(index)}
+                        aria-label={`Chapter ${index + 1}: ${stop.label}`}
+                      >
+                        <span className="journey-stop-icon">
+                          <Icon size={22} aria-hidden="true" />
+                        </span>
+                        <span>
+                          <small aria-hidden="true">{index + 1}.</small> {stop.label}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+            </nav>
+            <div className="journey-reader" data-changed={hasChanged}>
+              <div key={`scene-${selected}`} className="journey-scene journey-slide">
+                <ChapterScene chapter={selected} />
+              </div>
+              <article id="journey-chapter" aria-labelledby="journey-chapter-title">
+                <p key={`era-${selected}`} className="journey-era journey-slide">
+                  {chapter.era}
+                </p>
+                {/* One heading for every chapter: it morphs through dots instead of re-mounting. */}
+                <ChapterHeading text={chapter.title} />
+                <div key={`body-${selected}`} className="journey-slide">
+                  {chapter.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {link && (
+                    <Link
+                      href={link.href}
+                      className="field-text-link"
+                      {...(link.href.startsWith('https:')
+                        ? { target: '_blank', rel: 'noopener noreferrer' }
+                        : {})}
                     >
-                      <span className="journey-stop-icon">
-                        <Icon size={22} aria-hidden="true" />
-                      </span>
-                      <span>
-                        <small aria-hidden="true">{index + 1}.</small> {stop.label}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
-            </ol>
-          </nav>
-          <div className="journey-reader" data-changed={hasChanged}>
-            <div key={`scene-${selected}`} className="journey-scene journey-slide">
-              <ChapterScene chapter={selected} />
-            </div>
-            <article
-              key={`chapter-${selected}`}
-              id="journey-chapter"
-              className="journey-slide"
-              aria-labelledby="journey-chapter-title"
-            >
-              <p className="journey-era">{chapter.era}</p>
-              <h3 id="journey-chapter-title">{chapter.title}</h3>
-              {chapter.paragraphs.map((paragraph) => (
-                <p key={paragraph}>{paragraph}</p>
+                      {link.label}
+                      <ArrowUpRight size={16} />
+                    </Link>
+                  )}
+                </div>
+              </article>
+              {/* Unseen copies of every chapter. In the pinned panel they stack in the article's cell, so the
+                reader is as tall as the tallest chapter and the panel never changes height between chapters. */}
+              {journeyChapters.map((stop) => (
+                <div key={`size-${stop.scene}`} className="journey-sizer" aria-hidden="true" inert>
+                  <p className="journey-era">{stop.era}</p>
+                  <h3>{stop.title}</h3>
+                  {stop.paragraphs.map((paragraph) => (
+                    <p key={paragraph}>{paragraph}</p>
+                  ))}
+                  {'link' in stop && (
+                    <span className="field-text-link">
+                      {stop.link.label}
+                      <ArrowUpRight size={16} />
+                    </span>
+                  )}
+                </div>
               ))}
-              {link && (
-                <Link
-                  href={link.href}
-                  className="field-text-link"
-                  {...(link.href.startsWith('https:')
-                    ? { target: '_blank', rel: 'noopener noreferrer' }
-                    : {})}
-                >
-                  {link.label}
-                  <ArrowUpRight size={16} />
-                </Link>
-              )}
-            </article>
-          </div>
-          <div className="journey-reader-controls">
-            <button
-              type="button"
-              onClick={() => selected > 0 && goToChapter(selected - 1)}
-              aria-disabled={selected === 0}
-              aria-label="Previous chapter"
-            >
-              <ArrowLeft size={18} /> Previous
-            </button>
-            <span role="status" aria-live="polite">
-              Chapter {selected + 1} of {chapterCount}
-            </span>
-            <button
-              type="button"
-              onClick={() => selected < chapterCount - 1 && goToChapter(selected + 1)}
-              aria-disabled={selected === chapterCount - 1}
-              aria-label="Next chapter"
-            >
-              Next chapter <ArrowRight size={18} />
-            </button>
+            </div>
+            <div className="journey-reader-controls">
+              <button
+                type="button"
+                onClick={() => selected > 0 && goToChapter(selected - 1)}
+                aria-disabled={selected === 0}
+                aria-label="Previous chapter"
+              >
+                <ArrowLeft size={18} /> Previous
+              </button>
+              <span role="status" aria-live="polite">
+                Chapter {selected + 1} of {chapterCount}
+              </span>
+              <button
+                type="button"
+                onClick={() => selected < chapterCount - 1 && goToChapter(selected + 1)}
+                aria-disabled={selected === chapterCount - 1}
+                aria-label="Next chapter"
+              >
+                Next chapter <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
         </div>
       </div>

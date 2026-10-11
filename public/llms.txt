@@ -23,7 +23,7 @@ Gargeya builds tools for learning, voice, and memory, and writes about learning 
 
 - [Edudojo](https://www.sgargeya.com/playground/edudojo): An AI learning workspace with a questioning coach and process journal. The MVP is in testing; the project page describes its current status. Product site: https://edudojo.ai.
 - [Odicto](https://www.sgargeya.com/playground/odicto): Hotkey dictation for Mac, Windows, and Linux: dictation (local Whisper or an optional cloud provider), AI mode, and live transcription. Setup and source are linked from the project page.
-- [Odicto Mobile](https://www.sgargeya.com/playground/odicto-mobile): An Android keyboard with four modes: type, dictate, AI mode (edits selected text or writes at the cursor, with a custom system prompt), and live transcription that polishes as you speak. A smart polish button tidies typed text. Uses the provider you configure; no Odicto backend.
+- [Odicto Mobile](https://www.sgargeya.com/playground/odicto-mobile): An Android keyboard with four modes: type, dictate, AI mode (selects all text by default and edits it as asked, or writes at the cursor; custom system prompt), and live transcription that polishes as you speak. A separate smart polish button polishes whatever you are writing. Uses the provider you configure; no Odicto backend.
 - [TwinAatma](https://www.sgargeya.com/playground/twinaatma): Tools for carrying useful context between conversations. See the project page for current scope and availability.
 
 ## Official profiles

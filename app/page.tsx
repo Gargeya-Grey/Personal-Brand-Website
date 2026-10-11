@@ -54,8 +54,8 @@ export default async function Home() {
     .map((article) => ({ ...article, ...getHomeJournalPreview(article) }));
   const latestArticle = articles[0];
   const [leadWork, ...moreWork] = selectedWork;
-  // Smaller tools, both with public source: the Android dictation keyboard and this site itself.
-  const alsoBuilt = ['odicto-mobile', 'personal-brand']
+  // Smaller tools, both with public source. Odicto Mobile sits here, apart from its desktop sibling above.
+  const alsoBuilt = ['odicto-mobile', 'twinaatma']
     .map((id) => allWork.find((work) => work.id === id))
     .filter((work): work is WorkProject => Boolean(work));
 

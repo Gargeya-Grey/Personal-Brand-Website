@@ -70,7 +70,7 @@ const examples = {
         speaker: '“Make it polite.”',
         text: 'I’m running about ten minutes late. Please start without me; I’ll catch up.',
         detail:
-          'AI mode selects your text by default and does what you ask. With nothing selected, it writes at the cursor. You can give it your own system prompt.',
+          'AI mode selects all your text by default and does what you ask. With nothing selected, it writes at the cursor. You can give it your own system prompt.',
       },
       {
         label: 'Live',
