@@ -60,18 +60,18 @@ export const allWork: readonly WorkProject[] = [
       detail: 'Desktop',
     },
     title: 'Odicto',
-    category: 'Desktop dictation',
+    category: 'Mac, Windows, Linux',
     subtitle: 'Your voice, in the app you’re already using.',
     description:
-      'Press a hotkey and speak. Odicto turns your voice into text where you’re already writing, and keeps your current app in focus.',
+      'Press a hotkey and speak, in whatever app you’re writing in on Mac, Windows, or Linux. Dictate as you speak, ask AI to edit or write, or watch your words appear live.',
     purpose:
       'A thought often arrives faster than I can type it. Odicto is a way to get it down without opening another editor: a hotkey on the computer.',
     decision:
-      'Dictation can run locally with Whisper, or use an optional cloud transcription provider. Transcription stays separate from optional AI assistance.',
+      'The same modes as Odicto Mobile, without the keyboard: dictation, AI mode, and live transcription. Dictation can run locally with Whisper or use an optional cloud provider. The smart polish button is on mobile only.',
     state:
       'A public repository with setup instructions for Windows, macOS, and Linux. An Android version, Odicto Mobile, has its own repository.',
     stage: 'Public repository',
-    steps: ['Press the hotkey', 'Speak', 'Transcribe', 'Keep writing'],
+    steps: ['Press the hotkey', 'Dictate', 'Ask AI', 'Transcribe live'],
     tags: ['Whisper', 'Python / Qt'],
     source: 'https://github.com/Gargeya-Grey/Odicto',
     action: 'Desktop source & setup',
@@ -89,17 +89,17 @@ export const allWork: readonly WorkProject[] = [
     },
     title: 'Odicto Mobile',
     category: 'Android keyboard',
-    subtitle: 'A microphone in the keyboard you already type with.',
+    subtitle: 'Speak, type, or ask AI, anywhere on Android.',
     description:
-      'Speak through the Android keyboard. Your voice goes to the transcription provider you configure, and the text lands in the app you’re writing in.',
+      'An Android keyboard with four ways to write: type, dictate, ask AI to edit or write, or watch your speech turn into polished text live. A floating icon keeps it a tap away.',
     purpose:
-      'A thought often arrives faster than I can type it, on a phone most of all. Odicto Mobile puts the microphone in the keyboard, so any app can take dictation.',
+      'A thought often arrives faster than I can type it, on a phone most of all. The keyboard opens collapsed, so the first instinct is to speak your mind. The full keyboard is one tap away for small edits, a crowded room, or a day you’d rather not talk.',
     decision:
-      'No Odicto backend. Voice requests go directly to the provider you configure, and transcription stays separate from optional AI assistance.',
+      'Four modes, one keyboard. Dictation keeps your words as spoken. AI mode selects your text by default and does what you ask; with nothing selected, it writes at the cursor, and you can give it your own system prompt. Live transcription polishes as you speak. A separate smart polish button tidies whatever you are writing, most useful after typing.',
     state:
-      'A public repository with setup instructions. The Android build requires your own provider keys. iOS is not available.',
+      'A public repository with setup instructions. Voice goes directly to the provider you configure, with your own keys; there is no Odicto backend. Android only; iOS is not available.',
     stage: 'Public repository',
-    steps: ['Open the keyboard', 'Speak', 'Transcribe', 'Keep writing'],
+    steps: ['Type', 'Dictate', 'Ask AI', 'Transcribe live'],
     tags: ['Android / Kotlin', 'Your provider keys'],
     source: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
     action: 'Android source & setup',
