@@ -22,7 +22,8 @@ Gargeya builds tools for learning, voice, and memory, and writes about learning 
 ## Selected projects
 
 - [Edudojo](https://www.sgargeya.com/playground/edudojo): An AI learning workspace with a questioning coach and process journal. The MVP is in testing; the project page describes its current status. Product site: https://edudojo.ai.
-- [Odicto](https://www.sgargeya.com/playground/odicto): Desktop and Android voice-to-text tools. Setup requirements and source repositories are linked from the project page.
+- [Odicto](https://www.sgargeya.com/playground/odicto): Desktop voice-to-text with a hotkey; local Whisper or an optional cloud provider. Setup and source are linked from the project page.
+- [Odicto Mobile](https://www.sgargeya.com/playground/odicto-mobile): Android keyboard dictation through the provider you configure; no Odicto backend. Setup and source are linked from the project page.
 - [TwinAatma](https://www.sgargeya.com/playground/twinaatma): Tools for carrying useful context between conversations. See the project page for current scope and availability.
 
 ## Official profiles

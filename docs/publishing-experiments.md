@@ -20,9 +20,11 @@ These fields are reviewed code, not an upload CMS. Do not publish placeholder UR
 
 ## A browser app hosted here
 
+No browser app is hosted today: the overlap lab and Idea mixer were retired in October 2026 (their URLs redirect to `/playground`), and the `native` demo kind and the `In your browser` kind were removed with them. To host one again:
+
 1. Create a client component under `app/playground/your-app/`. Keep the app separate from page navigation and footer.
-2. Add its key to `ProjectDemo` in `lib/project-media.ts` and a dynamic import/render branch in `components/project-experience.tsx`. The overlap lab and idea mixer are working examples.
-3. Add a `WorkProject` record to `data/selected-work.ts`, with a unique URL-safe `id`, accurate copy and evidence links, `kind: 'In your browser'`, and:
+2. Add a `native` variant with its key to `ProjectDemo` in `lib/project-media.ts`, a dynamic import/render branch in `components/project-experience.tsx`, and `'In your browser'` back to `WorkKind` (`data/playground.ts`) and `WorkProject.kind` (`data/selected-work.ts`). The Playground shows a filter only for kinds that have projects.
+3. Add a `WorkProject` record to `data/selected-work.ts`, with a unique URL-safe `id`, accurate copy and evidence links, `kind: 'In your browser'`, a `DotGlyph` shape in `lib/stipple.ts`, and:
 
 ```ts
 demo: {

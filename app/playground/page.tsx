@@ -13,7 +13,7 @@ import { leadEntryId, playgroundEntries } from '@/data/playground';
 export const metadata: Metadata = getPageMetadata({
   title: 'Playground',
   description:
-    'Apps, experiments, and things made out of curiosity by Gargeya Sharma. Open one and try it.',
+    'Apps, experiments, and things made out of curiosity by Gargeya Sharma, with source and evidence.',
   path: '/playground',
 });
 
@@ -21,7 +21,6 @@ export const metadata: Metadata = getPageMetadata({
 const marginSections: readonly { id: string; symbol: MarginSymbol }[] = [
   { id: 'playground-title', symbol: 'path' },
   { id: 'playground-software', symbol: 'torii' },
-  { id: 'playground-browser', symbol: 'idea-mixer' },
   { id: 'playground-experiments', symbol: 'evals' },
 ];
 
@@ -52,8 +51,8 @@ export default function PlaygroundPage() {
           }
         >
           <p>
-            Explore what I&apos;m building for learning, see the evidence behind my AI experiments,
-            or try a small tool right in your browser.
+            Explore what I&apos;m building for learning, voice, and memory, and see the evidence
+            behind my AI experiments.
           </p>
         </PageIntro>
         <PlaygroundIndex

@@ -10,12 +10,12 @@
  */
 
 export type GlyphName =
-  | 'edudojo' | 'odicto' | 'twinaatma' | 'dataclean' | 'box-lab' | 'idea-mixer' | 'evals' | 'personal-brand'
+  | 'edudojo' | 'odicto' | 'odicto-mobile' | 'twinaatma' | 'dataclean' | 'evals' | 'personal-brand'
   | 'research' | 'journal' | 'notes' | 'films' | 'social';
 export type MarginSymbol = GlyphName | 'torii' | 'page' | 'path' | 'graph' | 'ginkgo';
 
 export const GLYPH_NAMES: readonly GlyphName[] = [
-  'edudojo', 'odicto', 'twinaatma', 'dataclean', 'box-lab', 'idea-mixer', 'evals', 'personal-brand',
+  'edudojo', 'odicto', 'odicto-mobile', 'twinaatma', 'dataclean', 'evals', 'personal-brand',
   'research', 'journal', 'notes', 'films', 'social',
 ];
 export const MARGIN_SYMBOLS: readonly MarginSymbol[] = [...GLYPH_NAMES, 'torii', 'page', 'path', 'graph', 'ginkgo'];
@@ -429,25 +429,18 @@ const SHAPES: Record<MarginSymbol, () => Prim[]> = {
     stroke([0.26, 0.66, 0.92, 0.66], 0.065, 0.5),
     disc(0.86, 0.66, 0.06, 0.8, true),
   ],
-  // Two boxes overlap; the overlap is a small box of its own, with a denser tint.
-  'box-lab': () => [
-    poly(rect(-0.84, -0.72, 0.16, 0.3).slice(0, -2), 0.1, 0.4),
-    poly(rect(-0.16, -0.3, 0.84, 0.72).slice(0, -2), 0.1, 0.4),
-    poly(rect(-0.16, -0.3, 0.16, 0.3).slice(0, -2), 0.24, 1),
-    stroke(rect(-0.84, -0.72, 0.16, 0.3), 0.045, 0.48),
-    stroke(rect(-0.16, -0.3, 0.84, 0.72), 0.045, 0.48),
-    stroke(rect(-0.16, -0.3, 0.16, 0.3), 0.03, 0.4),
-    disc(0, 0, 0.055, 0.8, true),
-  ],
-  // Two different forms, a circle and a triangle, with a small plus where they meet.
-  'idea-mixer': () => [
-    poly(circle(-0.56, 0, 0.36, 28).slice(0, -2), 0.1, 0.4),
-    stroke(circle(-0.56, 0, 0.36), 0.05, 0.5),
-    poly([0.56, -0.4, 0.92, 0.3, 0.2, 0.3], 0.1, 0.4),
-    stroke([0.56, -0.4, 0.92, 0.3, 0.2, 0.3, 0.56, -0.4], 0.05, 0.5),
-    stroke([-0.12, 0, 0.12, 0], 0.06, 0.8, true),
-    stroke([0, -0.12, 0, 0.12], 0.06, 0.8, true),
-  ],
+  // A phone: a short voice wave at the top, three keyboard rows below, a leaf microphone key.
+  'odicto-mobile': () => {
+    const wave = [0.1, 0.24, 0.34, 0.2, 0.08];
+    return [
+      stroke(rect(-0.5, -0.94, 0.5, 0.94), 0.045, 0.48),
+      ...wave.map((h, i) => stroke([-0.28 + i * 0.14, -0.44 - h, -0.28 + i * 0.14, -0.44 + h], 0.05, 0.46)),
+      stroke([-0.32, 0.2, 0.32, 0.2], 0.05, 0.4),
+      stroke([-0.32, 0.4, 0.32, 0.4], 0.05, 0.4),
+      stroke([-0.2, 0.6, 0.2, 0.6], 0.05, 0.4),
+      disc(0, 0.8, 0.07, 0.8, true),
+    ];
+  },
   // Two parallel scales; the markers stand at the same point on both.
   evals: () => {
     const ticks: Prim[] = [];

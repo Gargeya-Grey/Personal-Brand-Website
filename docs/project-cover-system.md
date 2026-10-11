@@ -1,12 +1,12 @@
 # Project cover system
 
-Use custom SVG artwork as the default for every project. Covers appear on each project's own page. The homepage and the Playground index use dot glyphs instead (owner decision, 11 October 2026: image cards made the indexes heavy). Every project still needs a cover, and every index entry needs a glyph in `lib/stipple.ts`. Odicto and TwinAatma established the direction; they are examples of the collection-wide standard, not the only projects that need artwork.
+Owner decision, 11 October 2026: the illustrated SVG covers no longer render. Indexes show dot glyphs, and project pages show the glyph on a sage plate captioned with the cover's `label` and `detail`, until a real demo recording replaces it. Only an owner-approved image cover (Edudojo's gate) still renders. Every project still needs `cover` metadata (the check below enforces it) and a glyph in `lib/stipple.ts`. The guidance that follows applies if SVG covers return. Odicto and TwinAatma established the direction; they are examples of the collection-wide standard, not the only projects that need artwork.
 
 Read [DESIGN.md](../DESIGN.md#project-cover-art-direction) for the approved Edudojo reference, reusable generation prompt, project-specific briefs, and visual acceptance criteria. This guide covers implementation; the prompt is not a change to the SVG default.
 
 ## Adding or changing a cover
 
-1. Read the project's purpose and choose one visual idea that explains it: voice becoming text, memory carried forward, overlapping predictions, or data being cleaned. Finish this step with a one-sentence description of the picture.
+1. Read the project's purpose and choose one visual idea that explains it: voice becoming text, memory carried forward, evidence on one scale, or data being cleaned. Finish this step with a one-sentence description of the picture.
 2. Use an existing scene only when its meaning fits. Otherwise add a named scene to `components/project-covers/scenes.tsx` and its typed key in `lib/project-cover.ts`. Compose it from the shared primitives; keep project-specific drawing out of the page and shared frame.
 3. Add the required `cover` field to the project's record in `data/selected-work.ts`. All public placements consume that same field through `WorkVisual`. A new project must not silently inherit a generic fallback.
 4. Check the whole collection, not just the new card. Run `node --experimental-strip-types scripts/check-project-covers.mjs`, changed-file lint, and the production build. Inspect the covers in both themes at 320px and desktop, including their project-page placement. Completion means intentional artwork, readable unclipped captions, no overflow, and unchanged demo access.
@@ -37,7 +37,7 @@ cover: {
 | Accessibility | Cover is decorative beside the labelled project link/title. Keep controls in the demo, not inside an aria-hidden drawing. |
 | Resizing | Preserve the composition rather than stretching it. Shared frames handle card, homepage, and detail-page dimensions. Inspect narrow captions for wrapping and clipping. |
 
-The scene catalog in `components/project-covers/scenes.tsx` is the executable reference. Its examples span voice, memory, overlap, creative pairing, data cleaning, and publishing. Extend the vocabulary instead of multiplying ad hoc card implementations.
+The scene catalog in `components/project-covers/scenes.tsx` is the executable reference. Its examples span voice, memory, data cleaning, publishing, and evaluation. Extend the vocabulary instead of multiplying ad hoc card implementations.
 
 ## Approved image exception
 
@@ -47,4 +47,4 @@ The typed `image` variant records the approval and reason in the project record.
 
 ## Keep artwork and evidence distinct
 
-Covers express a project's idea; they are not screenshots or demonstrations of the running product. Playable apps and real recordings use the separate media system described in `docs/publishing-experiments.md`. Each project remains one click from its demo page, and browser tools stay interactive there.
+Covers express a project's idea; they are not screenshots or demonstrations of the running product. Playable apps and real recordings use the separate media system described in `docs/publishing-experiments.md`. Each project remains one click from its project page.

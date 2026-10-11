@@ -100,7 +100,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### Design and project covers
 - Styling any public page: read `DESIGN.md`. The site shares Edudojo's v3 design family (tokens in the `app/field.css` token block, index grammar in `app/index-list.css`, dot motion via `InkWord`, `MarginDots`, `DotGlyph`).
 - Adding a project, creating artwork, or revising a cover: read `DESIGN.md` (cover brief and prompt), then `docs/project-cover-system.md`. Custom SVG remains the default; Edudojo has an owner-approved image exception.
-- Every project needs typed `cover` metadata, shown through `WorkVisual` on its own project page only. Indexes (home, Playground) show a `DotGlyph`, so a new project also needs a glyph in `lib/stipple.ts`. Run `node --experimental-strip-types scripts/check-project-covers.mjs` and inspect both themes before publishing.
+- Every project needs typed `cover` metadata and a glyph in `lib/stipple.ts`. Indexes (home, Playground) show the `DotGlyph`. A project page shows the glyph on a sage plate, captioned with the cover's `label`/`detail`; only an owner-approved image cover (Edudojo) renders through `WorkVisual`. Real demo recordings (`recordings`) are the planned replacement for plates. Run `node --experimental-strip-types scripts/check-project-covers.mjs` and inspect both themes before publishing.
 
 ### Brand
 - Nav short name: **Gargeya**.

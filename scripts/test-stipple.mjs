@@ -63,10 +63,10 @@ const parsePath = (d) => {
   return dots;
 };
 
-// The names match the contract: 13 glyphs and 5 margin-only symbols.
-assert.equal(GLYPH_NAMES.length, 13);
-assert.equal(MARGIN_SYMBOLS.length, 18);
-assert.equal(new Set(MARGIN_SYMBOLS).size, 18);
+// The names match the contract: 12 glyphs and 5 margin-only symbols.
+assert.equal(GLYPH_NAMES.length, 12);
+assert.equal(MARGIN_SYMBOLS.length, 17);
+assert.equal(new Set(MARGIN_SYMBOLS).size, 17);
 
 // Determinism: the same name gives the same dots, run after run (no Math.random behind a glyph).
 for (const name of MARGIN_SYMBOLS) {

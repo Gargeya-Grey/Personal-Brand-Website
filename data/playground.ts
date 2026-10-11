@@ -1,7 +1,7 @@
 import type { ProjectCover } from '@/lib/project-cover';
 import { allWork } from './selected-work';
 
-export type WorkKind = 'In your browser' | 'Software' | 'Experiments';
+export type WorkKind = 'Software' | 'Experiments';
 export interface PlaygroundEntry {
   id: string;
   /** Kept for the project pages and the cover check; the Playground index shows dot glyphs instead. */
@@ -22,15 +22,15 @@ export interface PlaygroundEntry {
 /** The entry that opens the index at a larger size, as Edudojo does on the homepage. */
 export const leadEntryId = 'edudojo';
 
+// Software first (the startup leads), then the experiments.
 const order = [
   'edudojo',
-  'evals',
-  'box-lab',
-  'idea-mixer',
   'odicto',
+  'odicto-mobile',
   'twinaatma',
-  'dataclean',
   'personal-brand',
+  'evals',
+  'dataclean',
 ];
 const orderedWork = [...allWork].sort((a, b) => {
   const rank = (id: string) => (order.includes(id) ? order.indexOf(id) : order.length);

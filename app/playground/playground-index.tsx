@@ -12,16 +12,7 @@ const groups: readonly { kind: WorkKind; id: string; heading: ReactNode }[] = [
     id: 'playground-software',
     heading: (
       <>
-        Software. <em>Tools for learning, voice, and memory.</em>
-      </>
-    ),
-  },
-  {
-    kind: 'In your browser',
-    id: 'playground-browser',
-    heading: (
-      <>
-        Playable. <em>Open one and try it, with no account.</em>
+        Software. <em>Tools for learning, voice, memory, and publishing.</em>
       </>
     ),
   },
@@ -81,6 +72,10 @@ export function PlaygroundIndex({
   rowGlyphs: Record<string, ReactNode>;
 }) {
   const [kind, setKind] = useState<WorkKind | 'All'>('All');
+  // A filter appears only for a kind that has projects: an empty filter would lead nowhere.
+  const filterKinds = groups
+    .map((group) => group.kind)
+    .filter((groupKind) => entries.some((entry) => entry.kind === groupKind));
   const [query, setQuery] = useState('');
   const normalizedQuery = query.trim().toLowerCase();
   const visible = entries.filter(
@@ -94,7 +89,7 @@ export function PlaygroundIndex({
     <>
       <div className="playground-toolbar">
         <div className="playground-filters" role="group" aria-label="Filter projects">
-          {(['All', 'In your browser', 'Software', 'Experiments'] as const).map((value) => (
+          {(['All', ...filterKinds] as const).map((value) => (
             <button
               type="button"
               key={value}

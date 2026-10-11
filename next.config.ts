@@ -61,6 +61,9 @@ const nextConfig: NextConfig = {
     return [
       { source: '/blog', destination: '/journal', permanent: true },
       { source: '/blog/:slug', destination: '/journal/:slug', permanent: true },
+      // Two browser demos were retired from the Playground; old links land on the Playground.
+      { source: '/playground/box-lab', destination: '/playground', permanent: true },
+      { source: '/playground/idea-mixer', destination: '/playground', permanent: true },
     ];
   },
   turbopack: {},

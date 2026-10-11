@@ -32,8 +32,7 @@
 .work-index-row > p,
 .work-story p,
 .research-background p,
-.history-rows p,
-.lab-explainer p {
+.history-rows p {
   color: var(--color-text-muted);
   font-size: 16px;
   line-height: 1.85;
@@ -46,8 +45,7 @@
   color: var(--color-accent);
 }
 .research-background,
-.personal-history,
-.lab-explainer {
+.personal-history {
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
   gap: 60px;
@@ -226,138 +224,6 @@
   font-size: 13px;
   margin-top: 14px;
 }
-.box-lab {
-  display: grid;
-  grid-template-columns: minmax(0, 1.5fr) minmax(290px, 1fr);
-  border: 1px solid var(--field-rule);
-  border-radius: 8px;
-  overflow: hidden;
-  margin: 12px 0 48px;
-  background: var(--color-canvas);
-}
-.lab-canvas {
-  padding: 28px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background: var(--field-soft);
-}
-.lab-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  font-size: 13px;
-}
-.lab-legend > span {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-}
-.lab-legend i {
-  width: 16px;
-  height: 16px;
-  display: inline-block;
-}
-.reference-key {
-  border: 2px solid var(--color-accent);
-}
-.prediction-key {
-  border: 2px dashed var(--color-text-primary);
-}
-.lab-canvas svg {
-  width: 100%;
-  height: auto;
-  min-height: 140px;
-  margin: auto 0;
-}
-.reference-rect {
-  stroke: var(--color-accent);
-  fill: var(--color-accent-soft);
-  stroke-width: 2;
-}
-.prediction-rect {
-  stroke: var(--color-text-primary);
-  fill: none;
-  stroke-width: 2;
-  stroke-dasharray: 8 5;
-}
-.overlap-hatch-line {
-  stroke: var(--color-accent);
-  stroke-width: 1;
-}
-.lab-presets {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-}
-.lab-presets button {
-  min-height: 44px;
-  border: 1px solid var(--field-rule);
-  border-radius: 5px;
-  padding: 10px 14px;
-  font-size: 13px;
-  background: var(--color-canvas);
-  cursor: pointer;
-}
-.lab-presets button:hover {
-  border-color: var(--color-accent);
-}
-.lab-hint {
-  color: var(--color-text-muted);
-  font-size: 13px;
-  line-height: 1.7;
-  margin-top: 16px;
-}
-.lab-controls {
-  padding: 30px;
-}
-.lab-score > span {
-  font-size: 14px;
-  color: var(--color-text-muted);
-}
-.lab-score strong {
-  display: block;
-  font-size: clamp(60px, 7vw, 88px);
-  font-weight: 450;
-  line-height: 1.2;
-  letter-spacing: -0.07em;
-  color: var(--color-accent);
-  font-variant-numeric: tabular-nums;
-}
-.lab-score p {
-  font-size: 14px;
-  margin: 6px 0 26px;
-}
-.lab-sliders label {
-  display: block;
-}
-.lab-sliders label > span {
-  display: flex;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 14px;
-}
-.lab-sliders output {
-  font-variant-numeric: tabular-nums;
-  color: var(--color-text-muted);
-}
-.lab-sliders input {
-  display: block;
-  width: 100%;
-  height: 44px;
-  accent-color: var(--color-accent);
-  cursor: pointer;
-}
-.lab-calculation {
-  font-size: 13px;
-  line-height: 1.6;
-  color: var(--color-text-muted);
-  margin-top: 12px;
-  font-variant-numeric: tabular-nums;
-}
-.lab-explainer p {
-  margin-bottom: 20px;
-}
 @media (hover: hover) and (prefers-reduced-motion: no-preference) {
   .work-index-row > svg {
     transition: transform 180ms ease-out;
@@ -368,8 +234,7 @@
 }
 @media (max-width: 900px) {
   .research-background,
-  .personal-history,
-  .lab-explainer {
+  .personal-history {
     gap: 32px;
   }
   .work-index-row {
@@ -382,17 +247,10 @@
   .work-story {
     gap: 36px;
   }
-  .box-lab {
-    grid-template-columns: 1fr;
-  }
-  .lab-canvas svg {
-    max-height: 300px;
-  }
 }
 @media (max-width: 700px) {
   .research-background,
   .personal-history,
-  .lab-explainer,
   .work-story {
     grid-template-columns: 1fr;
   }
@@ -440,46 +298,8 @@
     gap: 8px 20px;
     flex-wrap: wrap;
   }
-  .lab-canvas,
-  .lab-controls {
-    padding: 20px;
-  }
-  .lab-presets button {
-    flex: 1 1 auto;
-  }
-  .lab-controls {
-    border-top: 1px solid var(--field-rule);
-  }
 }
 
-@media (max-width: 700px) {
-  .lab-canvas svg {
-    margin: 12px 0;
-    max-height: 160px;
-  }
-  .lab-score {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr) auto;
-    align-items: center;
-    gap: 4px 16px;
-    margin-bottom: 20px;
-  }
-  .lab-score > span {
-    grid-column: 1;
-  }
-  .lab-score strong {
-    grid-column: 2;
-    grid-row: 1 / 3;
-    font-size: 44px;
-  }
-  .lab-score p {
-    grid-column: 1;
-    margin: 0;
-  }
-  .lab-hint {
-    margin-top: 12px;
-  }
-}
 
 .playground-toolbar {
   gap: 12px;
@@ -584,87 +404,6 @@
   flex-direction: column;
   justify-content: center;
 }
-.sampler-mixer {
-  background: var(--field-mint);
-}
-.sampler-mixer > div {
-  display: grid;
-  gap: 12px;
-  text-align: center;
-}
-.sampler-mixer span {
-  font-size: 15px;
-}
-.sampler-mixer i {
-  font:
-    28px/1 var(--font-instrument-sans),
-    serif;
-  color: var(--color-accent);
-}
-.sampler-mixer strong {
-  font:
-    400 clamp(26px, 3vw, 36px)/1.2 var(--font-instrument-sans),
-    serif;
-  min-height: 86px;
-  max-width: 420px;
-  margin: auto;
-}
-.sampler-mixer button {
-  align-self: center;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-height: 44px;
-  font-size: 13px;
-  border-bottom: 1px solid var(--field-rule);
-}
-.sampler-overlap {
-  background: var(--field-blue);
-}
-.sampler-boxes {
-  position: relative;
-  width: 100%;
-  max-width: 360px;
-  aspect-ratio: 2.5;
-  align-self: center;
-}
-.sampler-boxes span {
-  position: absolute;
-  top: 10%;
-  left: 15%;
-  width: 30%;
-  aspect-ratio: 1;
-  border: 2px solid var(--color-accent);
-  background: var(--color-accent-soft);
-}
-.sampler-boxes span + span {
-  border: 2px dashed var(--color-text-primary);
-  background: transparent;
-}
-.sampler-readout {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 16px;
-  font-size: 14px;
-}
-.sampler-readout output {
-  font:
-    400 32px/1.2 var(--font-instrument-sans),
-    serif;
-  font-variant-numeric: tabular-nums;
-}
-.sampler-overlap label {
-  font-size: 13px;
-  margin: 6px 0;
-  color: var(--color-text-muted);
-}
-.sampler-overlap input {
-  width: 100%;
-  min-height: 28px;
-  accent-color: var(--color-accent);
-  cursor: ew-resize;
-}
 .work-explainer {
   border: 1px solid var(--field-rule);
   background: var(--color-canvas);
@@ -732,11 +471,6 @@
 }
 .platform-link {
   margin: 14px 0 0 24px;
-}
-@media (hover: hover) and (pointer: fine) {
-  .sampler-mixer button:hover {
-    color: var(--color-accent);
-  }
 }
 .work-explainer button:active,
 .sampler button:active {

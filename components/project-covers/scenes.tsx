@@ -62,91 +62,6 @@ function Memory(props: CoverSceneProps) {
   );
 }
 
-function Overlap(props: CoverSceneProps) {
-  return (
-    <>
-      <Ground />
-      <g transform="translate(156 57) skewY(-8)">
-        <GlassPanel {...props} width={325} height={188}>
-          <path
-            d="M20 26H305M20 162H305M37 15V174M289 15V174"
-            stroke="var(--cover-ink)"
-            opacity=".15"
-          />
-          <rect
-            x="55"
-            y="35"
-            width="143"
-            height="108"
-            rx="4"
-            fill="var(--cover-highlight)"
-            fillOpacity=".5"
-            stroke="var(--cover-accent)"
-            strokeWidth="3"
-          />
-          <rect
-            x="115"
-            y="64"
-            width="143"
-            height="108"
-            rx="4"
-            fill="var(--cover-accent)"
-            fillOpacity=".18"
-            stroke="var(--cover-ink)"
-            strokeWidth="3"
-          />
-          <path d="M115 64H198V143H115Z" fill="var(--cover-accent)" opacity=".32" />
-          <path
-            d="M124 76H189M124 90H189M124 104H189M124 118H189M124 132H189"
-            stroke="var(--cover-highlight)"
-            strokeWidth="2"
-          />
-        </GlassPanel>
-      </g>
-    </>
-  );
-}
-
-function Ideas(props: CoverSceneProps) {
-  return (
-    <>
-      <Ground width={195} />
-      <g transform="translate(112 80) rotate(-12 82 85)">
-        <GlassPanel {...props} width={170} height={170}>
-          <circle cx="85" cy="58" r="22" stroke="var(--cover-accent)" strokeWidth="3" />
-          <path
-            d="M42 120Q42 84 85 84Q128 84 128 120M48 140H122"
-            stroke="var(--cover-ink)"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        </GlassPanel>
-      </g>
-      <g transform="translate(360 57) rotate(10 82 85)">
-        <GlassPanel {...props} width={170} height={170}>
-          <rect
-            x="36"
-            y="36"
-            width="98"
-            height="98"
-            rx="8"
-            stroke="var(--cover-accent)"
-            strokeWidth="3"
-          />
-          <path
-            d="M61 60H109M61 78H109M61 96H88M109 110V122M103 116H115"
-            stroke="var(--cover-ink)"
-            strokeWidth="3"
-            strokeLinecap="round"
-          />
-        </GlassPanel>
-      </g>
-      <circle cx="319" cy="143" r="24" fill="var(--cover-highlight)" stroke="var(--cover-accent)" />
-      <path d="M308 143H330M319 132V154" stroke="var(--cover-accent)" strokeWidth="3" />
-    </>
-  );
-}
-
 function Data(props: CoverSceneProps) {
   return (
     <>
@@ -293,8 +208,6 @@ function Evaluation(props: CoverSceneProps) {
 export const coverScenes: Record<CoverSceneName, ComponentType<CoverSceneProps>> = {
   voice: Voice,
   memory: Memory,
-  overlap: Overlap,
-  ideas: Ideas,
   data: Data,
   publishing: Publishing,
   evaluation: Evaluation,

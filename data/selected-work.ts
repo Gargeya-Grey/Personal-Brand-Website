@@ -6,7 +6,7 @@ export interface WorkProject extends ProjectMedia {
   cover: ProjectCover;
   title: string;
   category: string;
-  kind?: 'In your browser' | 'Software' | 'Experiments';
+  kind?: 'Software' | 'Experiments';
   subtitle: string;
   description: string;
   purpose: string;
@@ -57,26 +57,54 @@ export const allWork: readonly WorkProject[] = [
       scene: 'voice',
       palette: 'mist',
       label: 'Voice → text',
-      detail: 'Desktop + Android',
+      detail: 'Desktop',
     },
     title: 'Odicto',
-    category: 'Desktop + Android',
+    category: 'Desktop dictation',
     subtitle: 'Your voice, in the app you’re already using.',
     description:
-      'Speak into a desktop hotkey or an Android keyboard. Odicto turns your voice into text where you’re already writing.',
+      'Press a hotkey and speak. Odicto turns your voice into text where you’re already writing, and keeps your current app in focus.',
     purpose:
-      'A thought often arrives faster than I can type it. Odicto is a way to get it down without opening another editor: a hotkey on the computer, a microphone in the keyboard on Android.',
+      'A thought often arrives faster than I can type it. Odicto is a way to get it down without opening another editor: a hotkey on the computer.',
     decision:
-      'One idea, two implementations. Desktop dictation can run locally with Whisper. Android sends voice requests directly to the provider you configure, without an Odicto backend. Both separate transcription from optional AI assistance.',
+      'Dictation can run locally with Whisper, or use an optional cloud transcription provider. Transcription stays separate from optional AI assistance.',
     state:
-      'Two public repositories, each with its own setup instructions. Desktop covers Windows, macOS, and Linux; the mobile app targets Android. The Android build requires your own provider keys. iOS is not available.',
-    stage: 'Two public repositories',
-    steps: ['Choose desktop or Android', 'Speak', 'Transcribe', 'Keep writing'],
-    tags: ['Whisper', 'Python / Qt', 'Android / Kotlin'],
+      'A public repository with setup instructions for Windows, macOS, and Linux. An Android version, Odicto Mobile, has its own repository.',
+    stage: 'Public repository',
+    steps: ['Press the hotkey', 'Speak', 'Transcribe', 'Keep writing'],
+    tags: ['Whisper', 'Python / Qt'],
     source: 'https://github.com/Gargeya-Grey/Odicto',
     action: 'Desktop source & setup',
     href: 'https://github.com/Gargeya-Grey/Odicto',
     missing: 'A short screen recording showing dictation inside an everyday app.',
+  },
+  {
+    id: 'odicto-mobile',
+    cover: {
+      kind: 'svg',
+      scene: 'voice',
+      palette: 'sea',
+      label: 'Voice → keyboard',
+      detail: 'Android',
+    },
+    title: 'Odicto Mobile',
+    category: 'Android keyboard',
+    subtitle: 'A microphone in the keyboard you already type with.',
+    description:
+      'Speak through the Android keyboard. Your voice goes to the transcription provider you configure, and the text lands in the app you’re writing in.',
+    purpose:
+      'A thought often arrives faster than I can type it, on a phone most of all. Odicto Mobile puts the microphone in the keyboard, so any app can take dictation.',
+    decision:
+      'No Odicto backend. Voice requests go directly to the provider you configure, and transcription stays separate from optional AI assistance.',
+    state:
+      'A public repository with setup instructions. The Android build requires your own provider keys. iOS is not available.',
+    stage: 'Public repository',
+    steps: ['Open the keyboard', 'Speak', 'Transcribe', 'Keep writing'],
+    tags: ['Android / Kotlin', 'Your provider keys'],
+    source: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
+    action: 'Android source & setup',
+    href: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
+    missing: 'A portrait recording showing the keyboard microphone and the final text.',
   },
   {
     id: 'edudojo',
@@ -163,72 +191,6 @@ export const allWork: readonly WorkProject[] = [
     missing: 'A recording of a memory proposal, approval, and retrieval in a later conversation.',
   },
   {
-    id: 'box-lab',
-    cover: {
-      kind: 'svg',
-      scene: 'overlap',
-      palette: 'mist',
-      label: 'Prediction → overlap',
-      detail: 'Find the shared area',
-    },
-    title: 'The overlap lab',
-    category: 'Computer vision experiment',
-    kind: 'In your browser',
-    subtitle: 'How close is close enough?',
-    description:
-      'Move a prediction, resize it, and discover how computer vision measures a match. Try it on this page, with no account or installation.',
-    purpose:
-      'A computer can draw a box around an object. But did it find the right area? The lab makes one measure of that answer something you can see and change.',
-    decision:
-      'Intersection over union divides the shared area by the total area covered by both boxes. The threshold changes the verdict, not the overlap. Real benchmarks also consider classes, confidence, and missed or duplicate detections.',
-    state:
-      'A working geometric teaching tool. It is not a running AI model or a reproduction of my research results. All calculations happen in your browser.',
-    stage: 'Playable in your browser',
-    steps: [],
-    tags: ['Computer vision', 'Geometry', 'React'],
-    action: 'Read the related research',
-    href: '/research',
-    demo: {
-      kind: 'native',
-      app: 'box-lab',
-      title: 'Move the box. See the difference.',
-      description: 'Adjust the prediction and threshold. A perfect overlap is 1; no overlap is 0.',
-    },
-  },
-  {
-    id: 'idea-mixer',
-    cover: {
-      kind: 'svg',
-      scene: 'ideas',
-      palette: 'sea',
-      label: 'Audience + constraint',
-      detail: 'Make an unlikely pairing',
-    },
-    title: 'Idea mixer',
-    category: 'Creative tool',
-    kind: 'In your browser',
-    subtitle: 'Good ideas have unlikely parents.',
-    description:
-      'Pair an audience with an unexpected constraint, then save the prompts you want to explore. A small creative tool you can use right here.',
-    purpose:
-      'An empty page can be harder to work with than a useful constraint. This mixer gives you a starting point small enough to build on.',
-    decision:
-      'Choose an audience and a constraint instead of asking a model for an answer. The combination leaves the interesting work to you.',
-    state:
-      'Works in your browser without an account or AI calls. Saved ideas stay in this browser on this device; they do not sync to a server.',
-    stage: 'Playable in your browser',
-    steps: [],
-    tags: ['Creative prompts', 'React', 'Local storage'],
-    action: 'Explore more projects',
-    href: '/playground',
-    demo: {
-      kind: 'native',
-      app: 'idea-mixer',
-      title: 'Make an unlikely pairing.',
-      description: 'Mix, save, and revisit the combinations that spark something.',
-    },
-  },
-  {
     id: 'personal-brand',
     cover: {
       kind: 'svg',
@@ -239,14 +201,15 @@ export const allWork: readonly WorkProject[] = [
     },
     title: 'This website',
     category: 'Personal publishing system',
-    kind: 'Experiments',
+    kind: 'Software',
+    stage: 'Live, with public source',
     subtitle: 'A home for things I make and think about.',
     description:
       'Projects, research, writing, and films in one place, with a private workspace for publishing.',
     purpose:
       'My work used to be scattered across repositories, articles, and social profiles. This site gives those pieces a shared starting point.',
     decision:
-      'Public pages are built around the work. Browser experiments run here, project pages explain the decisions, and editorial tools stay behind authentication.',
+      'Public pages are built around the work. Project pages explain the decisions, and editorial tools stay behind authentication.',
     state:
       'You are using the public site. The source is available; the publishing workspace and personal tools are private.',
     steps: [],

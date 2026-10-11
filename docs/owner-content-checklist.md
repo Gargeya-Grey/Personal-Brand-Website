@@ -29,8 +29,6 @@ Checked 29 September 2026:
 - [Analytics Vidhya author page](https://www.analyticsvidhya.com/blog/author/gargeya/): deep-learning and computer-vision tutorials.
 - [Edudojo](https://edudojo.ai): questions, process journals, and feedback. No efficacy claims or student counts added.
 
-The overlap lab is a new geometric teaching example built for this site. It is explicitly labelled as an illustration, not a research result or a live AI model.
-
 ## Final review to earn a 9, not merely assign one
 
 Show the preview to three people unfamiliar with the site. After ten seconds ask what Gargeya does. Then ask them to find a browser experiment, a publication, and a way to contact him. Record where they hesitate. Check one actual phone, including the menu and theme switch. Do not count this checklist as completed user research.

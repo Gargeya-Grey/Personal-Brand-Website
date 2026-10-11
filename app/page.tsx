@@ -29,7 +29,7 @@ export const metadata: Metadata = getPageMetadata({
 const marginSections: readonly { id: string; symbol: MarginSymbol }[] = [
   { id: 'home-title', symbol: 'path' },
   { id: 'work-title', symbol: 'torii' },
-  { id: 'try-title', symbol: 'idea-mixer' },
+  { id: 'also-title', symbol: 'odicto-mobile' },
   { id: 'research-title', symbol: 'research' },
   { id: 'journal-title', symbol: 'page' },
   { id: 'notes-title', symbol: 'ginkgo' },
@@ -54,7 +54,8 @@ export default async function Home() {
     .map((article) => ({ ...article, ...getHomeJournalPreview(article) }));
   const latestArticle = articles[0];
   const [leadWork, ...moreWork] = selectedWork;
-  const experiments = ['idea-mixer', 'box-lab']
+  // Smaller tools, both with public source: the Android dictation keyboard and this site itself.
+  const alsoBuilt = ['odicto-mobile', 'personal-brand']
     .map((id) => allWork.find((work) => work.id === id))
     .filter((work): work is WorkProject => Boolean(work));
 
@@ -225,17 +226,17 @@ export default async function Home() {
           </ul>
         </section>
 
-        <section className="home-section" aria-labelledby="try-title" data-reveal>
+        <section className="home-section" aria-labelledby="also-title" data-reveal>
           <header className="home-section-head">
-            <h2 id="try-title">
-              Small things to try. <em>In this browser, with no account.</em>
+            <h2 id="also-title">
+              Also built. <em>Smaller tools, with the source in the open.</em>
             </h2>
             <Link href="/playground" className="field-text-link">
-              All the experiments <ArrowUpRight size={16} />
+              All the software <ArrowUpRight size={16} />
             </Link>
           </header>
           <div className="try-grid">
-            {experiments.map((work) => (
+            {alsoBuilt.map((work) => (
               <Link key={work.id} href={workHref(work)} className="try-card glyph-host">
                 <DotGlyph name={work.id as GlyphName} size={88} />
                 <span className="try-card-title">{work.subtitle}</span>

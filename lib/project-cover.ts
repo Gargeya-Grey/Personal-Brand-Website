@@ -1,8 +1,6 @@
 export const coverSceneNames = [
   'voice',
   'memory',
-  'overlap',
-  'ideas',
   'data',
   'publishing',
   'evaluation',

@@ -86,7 +86,7 @@ Lists of work and writing read like a table of contents:
 
 ## Images
 
-- Cover artwork appears only on a project's own page (`/playground/[slug]`), where it has room to mean something. Indexes (the homepage, the Playground) use dot glyphs.
+- Indexes (the homepage, the Playground) use dot glyphs. A project page (`/playground/[slug]`) shows the same glyph large on a sage plate, until a real demo recording replaces it. The owner found the illustrated SVG covers generic (11 October 2026); only Edudojo's owner-approved gate image still renders as a cover.
 - The portrait is the one photograph in the homepage's first view.
 - An essay's own cover image is part of the writing: it shows as a small thumbnail in essay lists (`.ledger-thumb`), never as a large card.
 - No decorative stock imagery. A screenshot must be a real product screen, labelled with what it is.
@@ -200,8 +200,7 @@ The margin percentages are starting constraints, not proof of crop safety. Check
 | Edudojo | Progress through learning | One pale wooden gate, ascending stone steps, quiet sea-green surroundings |
 | Odicto | Speech becoming text | A waveform resolving into a few aligned text strokes on one surface |
 | TwinAatma | Context carried forward under the user's control | A small group of memory layers with a deliberate review boundary |
-| Overlap lab | Comparing a prediction with a reference | Two precise outlines and one clearly visible intersection |
-| Idea mixer | Combining an audience and a constraint | Two distinct forms meeting in a useful pairing |
+| Odicto Mobile | Speech becoming text inside a phone keyboard | A phone outline, a short waveform, and keyboard rows with one microphone key |
 | DataCleanOpenEnv | Inspecting and improving data | Irregular rows becoming ordered, with the change easy to trace |
 | This website | Turning work into something others can explore | A publishing surface connecting code, writing, and a destination |
 
