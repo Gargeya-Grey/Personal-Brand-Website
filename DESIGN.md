@@ -75,6 +75,15 @@ The inverted band (Notes on the homepage) uses its own ink: `#14201C` in light m
 - Separate with 1px `--rule` hairlines and space, not with boxes. Shadows are rare and soft.
 - One bright object per view.
 
+## Controls and navigation
+
+- Header (public pages): Edudojo's full-width paper bar with one hairline. Its content lines up with the page column (1320px, 44/30/22px gutters, safe-area aware), so the logo sits above the headline.
+- Links: muted ink (`--ink-2`), full ink on hover, and one 4px leaf dot under the active link. No pills. The private atelier nav keeps its own style.
+- Filters (Playground): the same grammar as the header links, a leaf dot under the one in use. A filter appears only for a kind that has entries.
+- Controls (theme toggle, menu button): 6px squares with a hairline. Filled buttons (`.btn-accent`) are always forest.
+- Focus rings: `--leaf-ink` on paper (3:1 or better); `--leaf` only on the dark bands.
+- Favicon: the masked G (no tile) in `app/icon.svg`; its ink follows `prefers-color-scheme`. The iOS icon keeps the tile.
+
 ## The index grammar (`app/index-list.css`)
 
 Lists of work and writing read like a table of contents:
@@ -86,7 +95,8 @@ Lists of work and writing read like a table of contents:
 
 ## Images
 
-- Indexes (the homepage, the Playground) use dot glyphs. A project page (`/playground/[slug]`) shows the same glyph large on a sage plate, until a real demo recording replaces it. The owner found the illustrated SVG covers generic (11 October 2026); only Edudojo's owner-approved gate image still renders as a cover.
+- Indexes (the homepage, the Playground) use dot glyphs. A project page (`/playground/[slug]`) shows the same glyph large on a sage plate, captioned with the cover's `label` and `detail`, until a real demo recording replaces it. The owner found the illustrated SVG covers generic (11 October 2026).
+- Edudojo is the one project with a photograph (its owner-approved gate image). On purpose: it is the startup, not a side project, so it should stand apart.
 - The portrait is the one photograph in the homepage's first view.
 - An essay's own cover image is part of the writing: it shows as a small thumbnail in essay lists (`.ledger-thumb`), never as a large card.
 - No decorative stock imagery. A screenshot must be a real product screen, labelled with what it is.
@@ -100,7 +110,10 @@ Everything that moves is made of dots, as on Edudojo.
 | `InkWord` (`components/ink-word.tsx`) | The hero word "think" | Hollow letters fill with falling ink dots once, in about 2.6s. The word stays real text. |
 | `MarginDots` (`components/margin-dots.tsx`) | Side margins of wide screens, out to the screen edge | Particles drift and gather into a stippled symbol for the section being read. Nothing is drawn when the margins are too narrow. |
 | `DotWordmark` (`components/dot-wordmark.tsx`) | The footer name | Dots gather into "Gargeya" when the footer enters view, then breathe in a slow, slight wave and part around the cursor. The owner asked for this loop; it is the one exception to the rule below. |
-| `DotGlyph` (`components/dot-glyph.tsx`) | Index entries | A static stippled figure per project, rendered on the server. It re-gathers once on hover or focus. |
+| `DotGlyph` (`components/dot-glyph.tsx`) | Index entries, project-page plates | A static stippled figure per project, rendered on the server. It re-gathers once on hover or focus. |
+| `ChapterMorph` (`app/about/chapter-morph.tsx`) | The About journey's chapter heading | On a chapter change the old heading dissolves into ink dots that re-gather as the new one (about 0.7s). The heading stays real text for readers. |
+
+The About journey pins below the header and is centred in the space left; scrolling walks its six chapters, and a leaf line fills the route. Narrow or short windows, and pages without JavaScript, get the compact click-through.
 
 Shapes live in one library, `lib/stipple.ts`. Rules:
 - One focal motion per view. Nothing loops for attention, except the footer wordmark's slow wave (owner's request), which stops off screen.
@@ -219,4 +232,4 @@ Before recommending or publishing artwork:
 
 ## Current collection decision
 
-Keep the six existing SVG covers. They already share the approved direction's muted palette, limited forms, restrained depth, and meaningful subjects. When a cover next needs work, improve its specific metaphor and remove redundant detail before adding realism. A wholesale conversion to generated images or wood-and-stone scenes is not needed.
+11 October 2026: SVG covers no longer render (see Images above). Project pages show glyph plates until the owner's demo recordings replace them; Edudojo keeps its gate image. Every project still carries `cover` metadata, which the cover check enforces, and the guidance in this section applies if illustrated covers return.
