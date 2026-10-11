@@ -1,0 +1,31 @@
+/* Dot glyphs. At rest the figure is assembled and still; the gather plays only on hover or keyboard
+   focus inside a `.glyph-host`, and never under reduced motion. */
+.dot-glyph {
+  display: inline-block;
+  flex: none;
+  /* Scattered dots travel a few units past the box while they gather. */
+  overflow: visible;
+  color: inherit;
+}
+.dot-glyph .dg-leaf {
+  stroke: var(--leaf, #10b981);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /* Each path (one draw-order slot of one tone) arrives from its own small offset, --x and --y, in SVG
+     units (the markup sets them, fixed per path, so every visit looks the same). Its delay is its
+     draw-order slot, --o (0 to 1), times 340ms: the longest path is done in about 800ms. */
+  @keyframes dg-gather {
+    from {
+      transform: translate(calc(var(--x, 0) * 1px), calc(var(--y, 0) * 1px));
+      opacity: 0.2;
+    }
+  }
+
+  /* The host may be the focusable element itself (a link) or hold one. :is() ignores a :has() it cannot
+     parse, so hover and direct focus still work in an old browser. */
+  .glyph-host:is(:hover, :focus-visible, :has(:focus-visible)) .dot-glyph path {
+    animation: dg-gather 460ms cubic-bezier(0.2, 0.7, 0.2, 1) backwards;
+    animation-delay: calc(var(--o, 0) * 340ms);
+  }
+}

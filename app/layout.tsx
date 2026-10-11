@@ -1,13 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Manrope, Instrument_Serif } from 'next/font/google';
+import { Instrument_Sans, Literata, IBM_Plex_Mono } from 'next/font/google';
 import Script from 'next/script';
 
 import './globals.css';
 import './field.css';
 import './work.css';
-import './discovery.css';
-import './explore.css';
 import './project-media.css';
+import './index-list.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
@@ -25,17 +24,26 @@ try {
 } catch (_) {}
 `;
 
-const manrope = Manrope({
+// Same type family as Edudojo. Instrument Sans carries headings, text and UI. Literata is for a
+// person's long writing (journal and Notes). IBM Plex Mono marks real data only: dates, versions, steps.
+const instrumentSans = Instrument_Sans({
   subsets: ['latin'],
-  variable: '--font-manrope',
+  variable: '--font-instrument-sans',
   display: 'swap',
 });
 
-const editorialSerif = Instrument_Serif({
+const literata = Literata({
   subsets: ['latin'],
-  weight: '400',
   style: ['normal', 'italic'],
-  variable: '--font-editorial',
+  axes: ['opsz'],
+  variable: '--font-literata',
+  display: 'swap',
+});
+
+const plexMono = IBM_Plex_Mono({
+  subsets: ['latin'],
+  weight: ['400', '500'],
+  variable: '--font-plex-mono',
   display: 'swap',
 });
 const origin = getSiteOrigin();
@@ -99,8 +107,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f0f5f6' },
-    { media: '(prefers-color-scheme: dark)', color: '#0b141f' },
+    { media: '(prefers-color-scheme: light)', color: '#f6f7f4' },
+    { media: '(prefers-color-scheme: dark)', color: '#0e1412' },
   ],
 };
 
@@ -110,7 +118,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html
       lang="en"
-      className={`${manrope.variable} ${editorialSerif.variable}`}
+      className={`${instrumentSans.variable} ${literata.variable} ${plexMono.variable}`}
       suppressHydrationWarning
     >
       <body
@@ -131,9 +139,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           >
             Skip to content
           </a>
-          {/* Layered atmosphere: CSS mesh + grain */}
-          <div className="site-atmosphere" aria-hidden="true" />
-          <div className="site-grain" aria-hidden="true" />
           <div className="relative z-0">{children}</div>
         </ThemeProvider>
         <SpeedInsights />

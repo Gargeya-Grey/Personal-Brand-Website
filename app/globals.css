@@ -87,12 +87,14 @@
   --color-outline-variant: var(--color-outline-variant);
   --color-cta-glow: var(--color-cta-glow);
 
-  /* Display = Stack Sans Notch; headline/body = clean sans; label = technical small caps */
-  --font-display: var(--font-editorial), Georgia, serif;
-  --font-headline: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
-  --font-body: var(--font-manrope), "Google Sans Flex", ui-sans-serif, sans-serif;
-  --font-label: var(--font-manrope), ui-sans-serif, sans-serif;
-  --font-ui: var(--font-manrope), ui-sans-serif, sans-serif;
+  /* One sans for headings, text and UI (as on Edudojo); a reading serif for long writing; mono for real data */
+  --font-display: var(--font-instrument-sans), system-ui, sans-serif;
+  --font-reading: var(--font-literata), Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, monospace;
+  --font-headline: var(--font-instrument-sans), ui-sans-serif, sans-serif;
+  --font-body: var(--font-instrument-sans), ui-sans-serif, sans-serif;
+  --font-label: var(--font-instrument-sans), ui-sans-serif, sans-serif;
+  --font-ui: var(--font-instrument-sans), ui-sans-serif, sans-serif;
 
   --shadow-ambient: var(--color-elevation-shadow);
   --radius-soft: 1.5rem;
@@ -382,67 +384,6 @@ a.board-card {
  * Premium atmosphere: wet paper, cool depth + vignette.
  * Accent lives in type, CTAs, and editorial surfaces.
  */
-.site-atmosphere {
-  position: fixed;
-  inset: 0;
-  z-index: -3;
-  pointer-events: none;
-  overflow: hidden;
-  background-color: var(--color-surface);
-}
-
-.site-atmosphere::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    radial-gradient(ellipse 62% 48% at 92% 2%, rgba(16, 185, 129, 0.1), transparent 68%),
-    radial-gradient(ellipse 48% 42% at 4% 72%, rgba(14, 116, 144, 0.07), transparent 72%),
-    radial-gradient(ellipse 90% 70% at 50% -10%, #ffffff 0%, transparent 58%),
-    linear-gradient(180deg, #fbfefc 0%, #f3f9f6 52%, #edf4f2 100%);
-}
-
-.site-atmosphere::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background:
-    radial-gradient(ellipse 120% 80% at 50% 120%, rgba(15, 23, 42, 0.045), transparent 55%),
-    radial-gradient(ellipse 55% 40% at 78% 55%, rgba(5, 150, 105, 0.035), transparent 70%);
-  opacity: 1;
-}
-
-.dark .site-atmosphere::before {
-  background:
-    radial-gradient(ellipse 62% 48% at 92% 2%, rgba(52, 211, 153, 0.11), transparent 68%),
-    radial-gradient(ellipse 80% 55% at 50% -15%, rgba(51, 65, 85, 0.35), transparent 55%),
-    radial-gradient(ellipse 45% 35% at 85% 20%, rgba(30, 41, 59, 0.5), transparent 60%),
-    linear-gradient(180deg, #0b1220 0%, #0f172a 52%, #0a101c 100%);
-}
-
-.dark .site-atmosphere::after {
-  background:
-    radial-gradient(ellipse 100% 70% at 50% 110%, rgba(2, 6, 23, 0.55), transparent 50%),
-    radial-gradient(ellipse 55% 40% at 78% 55%, rgba(16, 185, 129, 0.035), transparent 70%);
-}
-
-/* Fine film grain for depth (CSS-only, no image request) */
-.site-grain {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  opacity: 0.035;
-  mix-blend-mode: multiply;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-}
-
-.dark .site-grain {
-  opacity: 0.03;
-  mix-blend-mode: soft-light;
-}
-
 /* Editorial hero field — a light paper surface with a dark-mode counterpart. */
 .home-hero {
   background: linear-gradient(125deg, #f9fffc 0%, #edf9f4 52%, #dcefe9 120%);
@@ -993,13 +934,13 @@ a.board-card {
 
 /* Label / UI font utilities — backed by the self-hosted next/font Manrope face */
 .google-sans-flex {
-  font-family: var(--font-manrope), ui-sans-serif, sans-serif;
+  font-family: var(--font-instrument-sans), ui-sans-serif, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
 
 .stack-sans-text {
-  font-family: var(--font-manrope), ui-sans-serif, sans-serif;
+  font-family: var(--font-instrument-sans), ui-sans-serif, sans-serif;
   font-optical-sizing: auto;
   font-style: normal;
 }
@@ -2043,15 +1984,6 @@ a.board-card {
   overflow-wrap: anywhere;
 }
 
-.notes-masthead-rule {
-  display: block;
-  width: 2.75rem;
-  height: 2px;
-  margin-top: 1.35rem;
-  background: var(--color-accent, #059669);
-  border-radius: 999px;
-}
-
 .notes-prose p {
   margin: 0 0 1.35em;
   font-size: 1.125rem;
@@ -2153,15 +2085,6 @@ a.board-card {
 .article-prose li,
 .article-takeaway {
   text-align: start;
-}
-
-/* Letter reading on an open canvas: body ink stays primary, dek stays muted. */
-.notes-unboxed p {
-  color: var(--color-primary, #0f172a);
-}
-.notes-unboxed .letter-lead,
-.notes-unboxed > div > p:first-of-type {
-  color: var(--color-primary, #0f172a);
 }
 
 /* TOC: pin inline size so a long heading cannot shove the rail left. */

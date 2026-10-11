@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { notesBrand } from '@/lib/notes-brand';
 
+/** The letter's name. The hero is the page title in two tones; the letter size is a small running head. */
 export function NotesMasthead({
   size = 'letter',
   href,
@@ -8,30 +9,25 @@ export function NotesMasthead({
   size?: 'hero' | 'letter';
   href?: string;
 }) {
-  const hero = size === 'hero';
-  const TitleTag = hero ? 'h1' : 'p';
-  const titleClass = hero
-    ? 'font-display text-5xl font-medium tracking-[-0.035em] text-primary sm:text-6xl'
-    : 'font-display text-[2rem] font-medium tracking-[-0.03em] text-primary sm:text-4xl';
+  const isHero = size === 'hero';
+
+  if (isHero) {
+    return (
+      <div className="notes-masthead notes-masthead-hero">
+        <p className="notes-eyebrow">
+          <span className="status-dot" aria-hidden="true" /> {notesBrand.kicker}
+        </p>
+        <h1 id="notes-title">
+          {notesBrand.name}. <em>{notesBrand.tagline}</em>
+        </h1>
+      </div>
+    );
+  }
 
   return (
-    <div className="notes-masthead">
-      <p className="font-label text-[0.65rem] font-bold uppercase tracking-[0.22em] text-accent">
-        {notesBrand.kicker}
-      </p>
-      <TitleTag className={`${hero ? 'mt-3' : 'mt-2'} ${titleClass}`}>
-        {href ? <Link href={href}>{notesBrand.name}</Link> : notesBrand.name}
-      </TitleTag>
-      <p
-        className={
-          hero
-            ? 'mt-4 max-w-xl font-headline text-xl font-medium italic tracking-[-0.02em] text-on-surface-variant sm:text-2xl'
-            : 'mt-2 font-headline text-base italic tracking-[-0.015em] text-on-surface-variant sm:text-lg'
-        }
-      >
-        {notesBrand.tagline}
-      </p>
-      <span className="notes-masthead-rule" aria-hidden="true" />
-    </div>
+    <p className="notes-masthead notes-masthead-letter">
+      {href ? <Link href={href}>{notesBrand.name}</Link> : <span>{notesBrand.name}</span>}
+      <span>{notesBrand.kicker}</span>
+    </p>
   );
 }

@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useRef, useState, type CSSProperties } from 'react';
 import Link from 'next/link';
 import {
   ArrowLeft,
@@ -14,8 +14,44 @@ import {
   Sprout,
 } from 'lucide-react';
 import { journeyChapters } from './journey-chapters';
+import './journey.css';
 
 const chapterIcons = [Drama, Mountain, ScanEye, GraduationCap, MessagesSquare, Sprout];
+const chapterCount = journeyChapters.length;
+const routePath =
+  'M100 38C160 0 240 0 300 38S440 76 500 38C590 -10 590 210 500 158S360 112 300 158S160 204 100 158';
+// Where each stop sits on the route, in the route SVG's viewBox units (matches the stops grid).
+const routeStopPoints = [
+  [100, 38],
+  [300, 38],
+  [500, 38],
+  [500, 158],
+  [300, 158],
+  [100, 158],
+] as const;
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value));
+
+/** Finds how far along the route (0 to 1) each stop lies, walking forward so no stop is matched twice. */
+function measureRouteStops(route: SVGPathElement) {
+  const totalLength = route.getTotalLength();
+  const sampleCount = 600;
+  let searchFrom = 0;
+  return routeStopPoints.map(([stopX, stopY]) => {
+    let nearestSample = searchFrom;
+    let nearestDistance = Infinity;
+    for (let sample = searchFrom; sample <= sampleCount; sample += 1) {
+      const point = route.getPointAtLength((totalLength * sample) / sampleCount);
+      const distance = Math.hypot(point.x - stopX, point.y - stopY);
+      if (distance < nearestDistance) {
+        nearestDistance = distance;
+        nearestSample = sample;
+      }
+    }
+    searchFrom = nearestSample;
+    return nearestSample / sampleCount;
+  });
+}
 
 function ChapterScene({ chapter }: { chapter: number }) {
   return (
@@ -89,94 +125,230 @@ function ChapterScene({ chapter }: { chapter: number }) {
 
 export function JourneyMap() {
   const [selected, setSelected] = useState(0);
+  const [hasChanged, setHasChanged] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
+  const stageRef = useRef<HTMLDivElement>(null);
+  const routeRef = useRef<SVGPathElement>(null);
+  const revealRef = useRef<SVGPathElement>(null);
+  const selectedRef = useRef(0);
+  const isPinnedRef = useRef(false);
+  const redrawRef = useRef<(() => void) | null>(null);
   const chapter = journeyChapters[selected];
   const link = 'link' in chapter ? chapter.link : undefined;
 
+  function selectChapter(next: number) {
+    if (next === selectedRef.current) return;
+    selectedRef.current = next;
+    setSelected(next);
+    setHasChanged(true);
+  }
+
+  /** Reads the pinned track: where the panel sticks and how much scroll each chapter owns. */
+  function measureTrack() {
+    const track = trackRef.current;
+    const stage = stageRef.current;
+    if (!track || !stage) return null;
+    const stickyTop = parseFloat(getComputedStyle(stage).top) || 0;
+    const trackRect = track.getBoundingClientRect();
+    const step = (trackRect.height - stage.offsetHeight) / chapterCount;
+    return { stickyTop, step, trackRect };
+  }
+
+  function goToChapter(index: number) {
+    const measured = measureTrack();
+    if (!isPinnedRef.current || !measured) {
+      selectChapter(index);
+      return;
+    }
+    // Aim at the middle of the chapter's span so rounding never lands on a neighbour.
+    // The scroll listener then selects the chapter, so scroll and state stay one thing.
+    const trackTop = measured.trackRect.top + window.scrollY;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    window.scrollTo({
+      top: trackTop - measured.stickyTop + (index + 0.5) * measured.step,
+      behavior: prefersReducedMotion ? 'instant' : 'smooth',
+    });
+  }
+
+  useEffect(() => {
+    const route = routeRef.current;
+    const reveal = revealRef.current;
+    const stage = stageRef.current;
+    if (!route || !reveal || !stage) return;
+    const stops = measureRouteStops(route);
+    const lastChapter = chapterCount - 1;
+    let frame = 0;
+
+    const drawRoute = (fraction: number) => {
+      reveal.style.strokeDashoffset = String(1 - fraction);
+    };
+
+    const syncToScroll = () => {
+      frame = 0;
+      // The stylesheet decides whether the panel pins; ask it rather than repeat its media query.
+      isPinnedRef.current = getComputedStyle(stage).position === 'sticky';
+      if (!isPinnedRef.current) {
+        drawRoute(stops[selectedRef.current]);
+        return;
+      }
+      const measured = measureTrack();
+      if (!measured) return;
+      const position = clamp(
+        (measured.stickyTop - measured.trackRect.top) / measured.step,
+        0,
+        chapterCount - 0.001,
+      );
+      const index = Math.floor(position);
+      selectChapter(index);
+      // The dotted line reaches stop n as chapter n begins and travels on toward stop n + 1.
+      const from = stops[index];
+      const to = stops[Math.min(index + 1, lastChapter)];
+      drawRoute(from + (to - from) * (position - index));
+    };
+
+    const requestSync = () => {
+      if (!frame) frame = requestAnimationFrame(syncToScroll);
+    };
+
+    // The click-through mode has no scroll to follow, so it redraws on selection through this hook.
+    redrawRef.current = syncToScroll;
+    syncToScroll();
+    window.addEventListener('scroll', requestSync, { passive: true });
+    window.addEventListener('resize', requestSync);
+    return () => {
+      redrawRef.current = null;
+      window.removeEventListener('scroll', requestSync);
+      window.removeEventListener('resize', requestSync);
+      if (frame) cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  useEffect(() => {
+    redrawRef.current?.();
+  }, [selected]);
+
   return (
-    <section className="journey-atlas field-section" aria-labelledby="journey-title">
-      <header className="journey-atlas-heading">
-        <h2 id="journey-title">A few unexpected turns.</h2>
-        <p>
-          I didn’t set out to work in AI. Follow the stops that brought me here. Choose any chapter.
-        </p>
-      </header>
-      <nav className="journey-map-nav" aria-label="Chapters of my journey">
-        <svg
-          className="journey-route"
-          viewBox="0 0 600 240"
-          preserveAspectRatio="none"
-          aria-hidden="true"
-        >
-          <path d="M100 38C160 0 240 0 300 38S440 76 500 38C590 -10 590 210 500 158S360 112 300 158S160 204 100 158" />
-        </svg>
-        <ol className="journey-stops">
-          {journeyChapters.map((stop, index) => {
-            const Icon = chapterIcons[index];
-            return (
-              <li key={stop.scene}>
-                <button
-                  type="button"
-                  aria-pressed={selected === index}
-                  aria-controls="journey-chapter"
-                  onClick={() => setSelected(index)}
-                  aria-label={`Chapter ${index + 1}: ${stop.label}`}
-                >
-                  <span className="journey-stop-icon">
-                    <Icon size={22} aria-hidden="true" />
-                  </span>
-                  <span>
-                    <small aria-hidden="true">{index + 1}.</small> {stop.label}
-                  </span>
-                </button>
-              </li>
-            );
-          })}
-        </ol>
-      </nav>
-      <div className="journey-reader">
-        <div className="journey-scene">
-          <ChapterScene chapter={selected} />
-        </div>
-        <article id="journey-chapter" aria-labelledby="journey-chapter-title">
-          <p className="journey-era">{chapter.era}</p>
-          <h3 id="journey-chapter-title">{chapter.title}</h3>
-          {chapter.paragraphs.map((paragraph) => (
-            <p key={paragraph}>{paragraph}</p>
-          ))}
-          {link && (
-            <Link
-              href={link.href}
-              className="field-text-link"
-              {...(link.href.startsWith('https:')
-                ? { target: '_blank', rel: 'noopener noreferrer' }
-                : {})}
+    <section
+      className="journey-atlas field-section"
+      aria-labelledby="journey-title"
+      style={{ '--journey-chapters': chapterCount } as CSSProperties}
+    >
+      <div className="journey-track" ref={trackRef}>
+        <div className="journey-stage" ref={stageRef}>
+          <header className="journey-atlas-heading">
+            <h2 id="journey-title">A few unexpected turns.</h2>
+            <p>
+              I didn’t set out to work in AI. Follow the stops that brought me here. Choose any
+              chapter.
+            </p>
+          </header>
+          <nav className="journey-map-nav" aria-label="Chapters of my journey">
+            <svg
+              className="journey-route"
+              viewBox="0 0 600 240"
+              preserveAspectRatio="none"
+              aria-hidden="true"
             >
-              {link.label}
-              <ArrowUpRight size={16} />
-            </Link>
-          )}
-        </article>
-      </div>
-      <div className="journey-reader-controls">
-        <button
-          type="button"
-          onClick={() => setSelected(selected - 1)}
-          disabled={selected === 0}
-          aria-label="Previous chapter"
-        >
-          <ArrowLeft size={18} /> Previous
-        </button>
-        <span role="status" aria-live="polite">
-          Chapter {selected + 1} of {journeyChapters.length}
-        </span>
-        <button
-          type="button"
-          onClick={() => setSelected(selected + 1)}
-          disabled={selected === journeyChapters.length - 1}
-          aria-label="Next chapter"
-        >
-          Next chapter <ArrowRight size={18} />
-        </button>
+              <defs>
+                <mask
+                  id="journey-route-mask"
+                  maskUnits="userSpaceOnUse"
+                  x="-20"
+                  y="-20"
+                  width="640"
+                  height="280"
+                >
+                  <path
+                    ref={revealRef}
+                    className="journey-route-reveal"
+                    d={routePath}
+                    pathLength={1}
+                  />
+                </mask>
+              </defs>
+              <path ref={routeRef} className="journey-route-base" d={routePath} />
+              <path
+                className="journey-route-progress"
+                d={routePath}
+                mask="url(#journey-route-mask)"
+              />
+            </svg>
+            <ol className="journey-stops">
+              {journeyChapters.map((stop, index) => {
+                const Icon = chapterIcons[index];
+                return (
+                  <li key={stop.scene}>
+                    <button
+                      type="button"
+                      aria-current={selected === index ? 'step' : undefined}
+                      data-passed={index < selected}
+                      aria-controls="journey-chapter"
+                      onClick={() => goToChapter(index)}
+                      aria-label={`Chapter ${index + 1}: ${stop.label}`}
+                    >
+                      <span className="journey-stop-icon">
+                        <Icon size={22} aria-hidden="true" />
+                      </span>
+                      <span>
+                        <small aria-hidden="true">{index + 1}.</small> {stop.label}
+                      </span>
+                    </button>
+                  </li>
+                );
+              })}
+            </ol>
+          </nav>
+          <div className="journey-reader" data-changed={hasChanged}>
+            <div key={`scene-${selected}`} className="journey-scene journey-slide">
+              <ChapterScene chapter={selected} />
+            </div>
+            <article
+              key={`chapter-${selected}`}
+              id="journey-chapter"
+              className="journey-slide"
+              aria-labelledby="journey-chapter-title"
+            >
+              <p className="journey-era">{chapter.era}</p>
+              <h3 id="journey-chapter-title">{chapter.title}</h3>
+              {chapter.paragraphs.map((paragraph) => (
+                <p key={paragraph}>{paragraph}</p>
+              ))}
+              {link && (
+                <Link
+                  href={link.href}
+                  className="field-text-link"
+                  {...(link.href.startsWith('https:')
+                    ? { target: '_blank', rel: 'noopener noreferrer' }
+                    : {})}
+                >
+                  {link.label}
+                  <ArrowUpRight size={16} />
+                </Link>
+              )}
+            </article>
+          </div>
+          <div className="journey-reader-controls">
+            <button
+              type="button"
+              onClick={() => selected > 0 && goToChapter(selected - 1)}
+              aria-disabled={selected === 0}
+              aria-label="Previous chapter"
+            >
+              <ArrowLeft size={18} /> Previous
+            </button>
+            <span role="status" aria-live="polite">
+              Chapter {selected + 1} of {chapterCount}
+            </span>
+            <button
+              type="button"
+              onClick={() => selected < chapterCount - 1 && goToChapter(selected + 1)}
+              aria-disabled={selected === chapterCount - 1}
+              aria-label="Next chapter"
+            >
+              Next chapter <ArrowRight size={18} />
+            </button>
+          </div>
+        </div>
       </div>
     </section>
   );

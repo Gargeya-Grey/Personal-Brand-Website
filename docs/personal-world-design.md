@@ -16,18 +16,20 @@ The discovery sequence is person → current work → things to try → ideas to
 
 ## Visual system
 
-- Palette follows the owner’s journal cover art: cool paper, navy ink, and teal in light mode; charcoal, graphite, softened silver, and sea-glass mint in dark mode. Current values live in the application theme tokens. Project artwork follows [DESIGN.md](../DESIGN.md#project-cover-art-direction), with implementation tokens in `app/project-media.css`.
-- Instrument Serif for short, expressive page introductions; Manrope for long article/project titles, reading, and controls. Decorative section numbers and redundant eyebrow copy are removed; useful metadata stays at a readable size. Unused display-font downloads are removed.
-- Fine rules, generous whitespace, modest corner radii, offset paper objects, and one deliberate accent. Different content gets different composition; avoid an endless grid of identical cards.
-- Page width 1320px, fluid type, one-column phone layouts, wrapping controls, 44px primary touch targets. Content determines height.
-- Motion: one-time 8–16px section entrances, small pointer-only lifts, and a scroll-driven decorative orbit. Transform/opacity only, native scrolling, reduced-motion alternatives, content visible without JavaScript.
+The full system is in [DESIGN.md](../DESIGN.md). It is the Edudojo family (v3), so the owner's sites read as one umbrella. In short:
+
+- Warm paper, green-black ink, 1px hairlines, one forest button, leaf green only as a signal. Tokens live in the token block of `app/field.css`.
+- Instrument Sans for headings, text and UI; Literata for a person's long writing; IBM Plex Mono for dates and data. A heading's `<em>` is an upright grey second tone.
+- Indexes read like a table of contents: a proposition, a dotted process path, a stage. Dot glyphs name entries instead of pictures. Cover artwork stays on project pages.
+- Motion is made of dots: the hero word fills with ink dots, the margins gather into a symbol per section, glyphs re-gather on hover. Reduced motion shows the final figure, still. Native scrolling, content visible without JavaScript.
+- Page width 1320px, fluid type, one-column phone layouts, 44px primary touch targets.
 
 ## Route plan
 
 | Surface | Treatment |
 | --- | --- |
-| Home | Personal cover, featured venture, Playground preview, writing and video doors |
-| Playground | Filterable registry of apps, websites, and advisory work; an actual local interactive experiment |
+| Home | Headline, a "now" card, an index of work and experiments, research and essay ledgers, the Notes band, elsewhere |
+| Playground | Filterable index of apps and experiments (dot glyphs, propositions, process); covers on each project page |
 | About | Human introduction and existing beliefs/work, shared editorial typography |
 | Journal + articles | Preserve live data, search, filters, publishing, and reader tools; restyle shared surfaces |
 | Notes + archive + unsubscribe | Preserve subscription and publication behavior; same paper, ink, and form system |

@@ -1,6 +1,6 @@
 # Project cover system
 
-Use custom SVG artwork as the default for every project. The owner expects one recognizable visual family across the homepage, Playground, and project pages. Odicto and TwinAatma established the direction; they are examples of the collection-wide standard, not the only projects that need artwork.
+Use custom SVG artwork as the default for every project. Covers appear on each project's own page. The homepage and the Playground index use dot glyphs instead (owner decision, 11 October 2026: image cards made the indexes heavy). Every project still needs a cover, and every index entry needs a glyph in `lib/stipple.ts`. Odicto and TwinAatma established the direction; they are examples of the collection-wide standard, not the only projects that need artwork.
 
 Read [DESIGN.md](../DESIGN.md#project-cover-art-direction) for the approved Edudojo reference, reusable generation prompt, project-specific briefs, and visual acceptance criteria. This guide covers implementation; the prompt is not a change to the SVG default.
 
@@ -41,7 +41,7 @@ The scene catalog in `components/project-covers/scenes.tsx` is the executable re
 
 ## Approved image exception
 
-Edudojo uses `/project-art/edudojo-gate.png`, the owner-approved minimal gate illustration: pale wood, ascending stone steps, and a sea-glass background. Use centered cropping. The owner chose this version after an in-page comparison with the forest artwork in both themes. The original `/edudojo.png` is retained as a source asset, not the current project cover. Its homepage also uses the owner's exact gate mark as a separate watermark; the illustration is not a replacement logo.
+Edudojo uses `/project-art/edudojo-gate.png`, the owner-approved minimal gate illustration: pale wood, ascending stone steps, and a sea-glass background. Use centered cropping. The owner chose this version after an in-page comparison with the forest artwork in both themes. The original `/edudojo.png` is retained as a source asset, not the current project cover. The illustration is not a replacement logo.
 
 The typed `image` variant records the approval and reason in the project record. Preserve this exception; another raster or generated image requires a new explicit owner request. The default for future projects remains custom SVG. This illustration was generated with the built-in ChatGPT Images tool using the original forest gate and the site's project grid as references. The direction was a single minimal architectural gate and ascending path, with restrained materials, generous space, a muted sea-green backdrop, and no text or dense foliage.
 

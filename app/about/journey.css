@@ -1,0 +1,353 @@
+/* The journey: six stops, one chapter at a time.
+ * Wide and tall screens pin the panel under the header and let scroll choose the chapter.
+ * Everything else keeps a plain click-through. journey-map.tsx reads `position: sticky` from
+ * the stage to know which mode is active, so this file is the only place that decides. */
+.journey-atlas {
+  --journey-top: 72px; /* the fixed header's height */
+  --journey-step: 80svh; /* scroll distance given to each chapter while pinned */
+  --journey-row: 120px;
+  /* Centres each icon on the route's stops, which the SVG places in viewBox units (row / 120). */
+  --journey-pad: calc(var(--journey-row) * 0.3167 - 20px);
+}
+.journey-stage {
+  display: flex;
+  flex-direction: column;
+}
+.journey-atlas-heading {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 50px;
+  align-items: end;
+}
+.journey-atlas-heading p {
+  color: var(--ink-2);
+  font-size: 17px;
+  line-height: 1.8;
+  max-width: 440px;
+}
+.journey-map-nav {
+  position: relative;
+  height: calc(var(--journey-row) * 2);
+  max-width: 900px;
+  width: 100%;
+  margin: 35px auto 20px;
+}
+.journey-route {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  inset: 0;
+  fill: none;
+  pointer-events: none;
+}
+.journey-route-base,
+.journey-route-progress {
+  stroke-dasharray: 3 5;
+  vector-effect: non-scaling-stroke;
+}
+.journey-route-base {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+/* The same dotted line in leaf green, revealed up to the reader's place by the mask below. */
+.journey-route-progress {
+  stroke: var(--leaf);
+  stroke-width: 2;
+}
+.journey-route-reveal {
+  stroke: #fff;
+  stroke-width: 18;
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+}
+.journey-stops {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, var(--journey-row));
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.journey-stops li:nth-child(4) {
+  grid-column: 3;
+  grid-row: 2;
+}
+.journey-stops li:nth-child(5) {
+  grid-column: 2;
+  grid-row: 2;
+}
+.journey-stops li:nth-child(6) {
+  grid-column: 1;
+  grid-row: 2;
+}
+.journey-stops button {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: var(--journey-pad) 6px 8px;
+  border-radius: 8px;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.journey-stops button > span:last-child {
+  font-size: 14px;
+  line-height: 1.4;
+  background: var(--paper);
+  padding: 2px 6px;
+}
+.journey-stops small {
+  font-size: inherit;
+}
+.journey-stop-icon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  background: var(--paper);
+  box-shadow: 0 0 0 6px var(--paper);
+}
+/* Stops already passed keep a quiet mark, so the route reads as progress. */
+.journey-stops button[data-passed='true'] .journey-stop-icon {
+  border-color: var(--leaf-ink);
+  color: var(--ink);
+}
+.journey-stops button[aria-current='step'] {
+  color: var(--ink);
+}
+.journey-stops button[aria-current='step'] .journey-stop-icon {
+  background: var(--paper-raised);
+  color: var(--leaf-ink);
+  border-color: var(--leaf);
+  box-shadow:
+    0 0 0 6px var(--paper),
+    0 0 0 7px var(--leaf);
+}
+.journey-stops button:focus-visible,
+.journey-reader-controls button:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+.journey-reader {
+  display: grid;
+  grid-template-columns: 0.65fr 1.35fr;
+  gap: 50px;
+  align-items: start;
+  border-top: 1px solid var(--rule);
+  padding: 32px 0;
+  min-height: 360px;
+}
+.journey-scene {
+  color: var(--leaf-ink);
+  max-width: 280px;
+  width: 100%;
+  margin: 15px auto 0;
+}
+.scene-wash {
+  fill: var(--color-accent-soft);
+}
+.journey-reader .journey-era {
+  color: var(--leaf-ink);
+  font-size: 14px;
+  font-weight: 550;
+  margin-top: 0;
+}
+.journey-reader h3 {
+  font-family: var(--font-instrument-sans), system-ui, sans-serif;
+  font-size: clamp(25px, 3vw, 37px);
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  font-weight: 500;
+  margin: 12px 0 20px;
+}
+.journey-reader p {
+  color: var(--ink-2);
+  font-size: 16px;
+  line-height: 1.85;
+  margin-top: 16px;
+  max-width: 720px;
+}
+.journey-reader .field-text-link {
+  margin-top: 16px;
+}
+/* A chapter change slides and fades in; only after the first change, so the page load stays still. */
+@keyframes journey-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.journey-reader[data-changed='true'] .journey-slide {
+  animation: journey-slide-in 300ms var(--ease-out, ease-out) both;
+}
+.journey-reader-controls {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  border-top: 1px solid var(--rule);
+  padding-top: 16px;
+}
+.journey-reader-controls button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 44px;
+  padding: 8px 12px;
+  border-radius: 5px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.journey-reader-controls button[aria-disabled='true'] {
+  opacity: 0.35;
+  cursor: default;
+}
+.journey-reader-controls > span {
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* Pinned: a tall track, and a sticky panel that holds the map and the chapter while it is read.
+ * Each chapter gets one --journey-step of scroll; the last also gets one, then the panel lets go.
+ * Needs room: a narrow, short window cannot hold the whole panel, so it falls back to click-through. */
+@media (scripting: enabled) and (min-width: 900px) and (min-height: 760px),
+  (scripting: enabled) and (min-width: 1200px) and (min-height: 700px) {
+  .journey-atlas {
+    --journey-row: 100px;
+  }
+  .journey-track {
+    height: calc(
+      100svh - var(--journey-top) + var(--journey-chapters) * var(--journey-step)
+    );
+  }
+  .journey-stage {
+    position: sticky;
+    top: var(--journey-top);
+    height: calc(100svh - var(--journey-top));
+    padding: 28px 0 20px;
+    /* Same colour as the page, so nothing scrolling behind the panel shows through. */
+    background: var(--paper);
+  }
+  .journey-map-nav {
+    margin: 36px auto 18px;
+  }
+  /* The reader takes the leftover height, so the map and controls never move between chapters. */
+  .journey-reader {
+    flex: 1 1 auto;
+    align-content: start;
+    min-height: 0;
+    padding: 24px 0;
+  }
+  .journey-reader h3 {
+    margin-bottom: 14px;
+  }
+  .journey-reader p {
+    font-size: 15px;
+    line-height: 1.75;
+    margin-top: 12px;
+  }
+}
+/* Tighter spacing for the pinned panel in a short or narrow window. */
+@media (min-width: 900px) and (max-width: 1199px) and (min-height: 760px),
+  (min-width: 900px) and (min-height: 760px) and (max-height: 820px),
+  (min-width: 1200px) and (min-height: 700px) and (max-height: 820px) {
+  .journey-atlas {
+    --journey-row: 84px;
+  }
+  .journey-atlas-heading p {
+    font-size: 15px;
+    line-height: 1.6;
+  }
+  .journey-map-nav {
+    margin: 14px auto 8px;
+  }
+  .journey-stops button > span:last-child {
+    font-size: 13px;
+  }
+  .journey-reader {
+    padding: 16px 0;
+    gap: 40px;
+  }
+  .journey-scene {
+    max-width: 210px;
+    margin-top: 0;
+  }
+  .journey-reader h3 {
+    font-size: clamp(22px, 2.6vw, 30px);
+    margin: 8px 0 10px;
+  }
+  .journey-reader p {
+    font-size: 14.5px;
+    line-height: 1.65;
+    margin-top: 10px;
+  }
+  .journey-reader .field-text-link {
+    margin-top: 6px;
+  }
+  .journey-reader-controls {
+    padding-top: 8px;
+  }
+}
+@media (hover: hover) and (pointer: fine) {
+  .journey-stops button:hover .journey-stop-icon {
+    border-color: var(--leaf-ink);
+  }
+  .journey-reader-controls button:not(:disabled):hover {
+    background: var(--color-accent-soft);
+    color: var(--leaf-ink);
+  }
+}
+@media (max-width: 700px) {
+  .journey-atlas-heading {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .journey-atlas-heading p {
+    font-size: 16px;
+  }
+  .journey-map-nav {
+    margin: 24px -6px 0;
+    width: auto;
+  }
+  .journey-stops button > span:last-child {
+    font-size: 12px;
+    max-width: 100px;
+  }
+  .journey-reader {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px 0 24px;
+    min-height: 0;
+  }
+  .journey-scene {
+    max-width: 150px;
+    margin-top: 0;
+  }
+  .journey-reader p {
+    font-size: 15px;
+  }
+  .journey-reader-controls button {
+    font-size: 13px;
+    gap: 6px;
+    padding: 8px 0;
+  }
+  .journey-reader-controls > span {
+    font-size: 12px;
+  }
+}
+/* Pinning stays: it is layout, not motion. Only the slide-in and smooth scroll are dropped. */
+@media (prefers-reduced-motion: reduce) {
+  .journey-reader[data-changed='true'] .journey-slide {
+    animation: none;
+  }
+}

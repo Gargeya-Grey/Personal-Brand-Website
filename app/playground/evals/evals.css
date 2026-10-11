@@ -59,7 +59,7 @@
   border-left: 0;
 }
 .eval-main .eval-metrics h2 {
-  font-family: var(--font-manrope), sans-serif;
+  font-family: var(--font-instrument-sans), sans-serif;
   font-size: 13px;
   font-weight: 500;
   color: var(--color-text-muted);

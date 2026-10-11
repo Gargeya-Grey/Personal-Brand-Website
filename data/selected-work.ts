@@ -12,6 +12,8 @@ export interface WorkProject extends ProjectMedia {
   purpose: string;
   decision: string;
   state: string;
+  /** A few words on where the project stands, for indexes. Shortened from `state`, never beyond it. */
+  stage?: string;
   steps: readonly string[];
   tags: readonly string[];
   source?: string;
@@ -68,6 +70,7 @@ export const allWork: readonly WorkProject[] = [
       'One idea, two implementations. Desktop dictation can run locally with Whisper. Android sends voice requests directly to the provider you configure, without an Odicto backend. Both separate transcription from optional AI assistance.',
     state:
       'Two public repositories, each with its own setup instructions. Desktop covers Windows, macOS, and Linux; the mobile app targets Android. The Android build requires your own provider keys. iOS is not available.',
+    stage: 'Two public repositories',
     steps: ['Choose desktop or Android', 'Speak', 'Transcribe', 'Keep writing'],
     tags: ['Whisper', 'Python / Qt', 'Android / Kotlin'],
     source: 'https://github.com/Gargeya-Grey/Odicto',
@@ -95,6 +98,7 @@ export const allWork: readonly WorkProject[] = [
       'The coach asks students to explain and revisit their ideas. A process journal records activity for teacher review; it does not score understanding or prove who wrote an answer. The teacher retains that judgment.',
     state:
       'I’m the founder and chief architect. The MVP is in testing, with a planned usability pilot in Jaipur. The public site includes illustrative product walkthroughs and the pilot plan.',
+    stage: 'MVP in testing, pilot planned',
     steps: ['Draft', 'Question', 'Revise', 'Review the process'],
     tags: ['Education', 'Socratic AI', 'Process journals'],
     source: undefined,
@@ -150,6 +154,7 @@ export const allWork: readonly WorkProject[] = [
       'Memory should be inspectable. Notes live in Markdown, and changes to the model of your preferences are proposed for approval. A lesson from one conversation can inform the next without silently rewriting who you are.',
     state:
       'A public, local-first toolkit with an MCP memory interface and optional Obsidian or Notion workflows. It needs a compatible AI host and initial setup; this is a developer tool, not a hosted chat service.',
+    stage: 'Public, local-first toolkit',
     steps: ['Load context', 'Have a conversation', 'Review a proposed memory', 'Carry it forward'],
     tags: ['Markdown', 'Python', 'MCP'],
     source: 'https://github.com/Gargeya-Grey/TwinAatma',
@@ -178,6 +183,7 @@ export const allWork: readonly WorkProject[] = [
       'Intersection over union divides the shared area by the total area covered by both boxes. The threshold changes the verdict, not the overlap. Real benchmarks also consider classes, confidence, and missed or duplicate detections.',
     state:
       'A working geometric teaching tool. It is not a running AI model or a reproduction of my research results. All calculations happen in your browser.',
+    stage: 'Playable in your browser',
     steps: [],
     tags: ['Computer vision', 'Geometry', 'React'],
     action: 'Read the related research',
@@ -210,6 +216,7 @@ export const allWork: readonly WorkProject[] = [
       'Choose an audience and a constraint instead of asking a model for an answer. The combination leaves the interesting work to you.',
     state:
       'Works in your browser without an account or AI calls. Saved ideas stay in this browser on this device; they do not sync to a server.',
+    stage: 'Playable in your browser',
     steps: [],
     tags: ['Creative prompts', 'React', 'Local storage'],
     action: 'Explore more projects',

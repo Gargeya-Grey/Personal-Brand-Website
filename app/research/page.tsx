@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { getPageMetadata } from '@/lib/page-metadata';
-import Link from 'next/link';
-import { ArrowUpRight, MoveUpRight } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { PageIntro } from '@/components/page-intro';
@@ -24,7 +23,7 @@ export default function ResearchPage() {
         <PageIntro
           title={
             <>
-              Research & <em>publications.</em>
+              Research. <em>Where it started: how machines see.</em>
             </>
           }
         >
@@ -62,27 +61,6 @@ export default function ResearchPage() {
             </article>
           ))}
         </div>
-        <section className="research-invitation field-section" data-reveal>
-          <div>
-            <h2>A little less abstract.</h2>
-            <p className="field-copy">
-              One concept you can try for yourself: intersection over union. Adjust two boxes and
-              see what “a good match” actually means.
-            </p>
-            <Link href="/playground/box-lab" className="field-button">
-              Open the overlap lab <MoveUpRight size={18} />
-            </Link>
-          </div>
-          <Link
-            href="/playground/box-lab"
-            className="overlap-cover"
-            aria-label="Try the overlap lab"
-          >
-            <span className="box-reference" />
-            <span className="box-prediction" />
-            <span className="overlap-caption">Two boxes. How close is close enough?</span>
-          </Link>
-        </section>
         <section className="research-background field-section" data-reveal>
           <h2>Beyond the papers.</h2>
           <div>

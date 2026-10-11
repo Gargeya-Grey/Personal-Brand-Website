@@ -10,6 +10,7 @@
     "clean": "next clean",
     "test:ledger": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/test-ledger-engine.mjs",
     "test:newsletter": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/test-newsletter.mjs",
+    "test:dots": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/test-stipple.mjs",
     "test:articles": "node --experimental-strip-types --disable-warning=ExperimentalWarning scripts/test-article-content.mjs",
     "test:security": "node scripts/run-security-tests.mjs"
   },

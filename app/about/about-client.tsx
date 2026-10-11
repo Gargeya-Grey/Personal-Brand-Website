@@ -17,7 +17,9 @@ export default function AboutClient() {
         <PageIntro
           title={
             <>
-              Hi, I’m <em>Gargeya.</em>
+              Hi, I’m Gargeya.
+              <br />
+              <em>I build, write, and film.</em>
             </>
           }
         >

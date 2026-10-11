@@ -136,11 +136,14 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
         tabIndex={-1}
         className="field-main reading-index relative z-10 w-full flex-grow pb-20"
       >
-        <PageIntro title="The journal.">
-          <p>
-            Essays on systems, AI, learning, and the craft of building. Some ideas need more than a
-            post, so I work them out here.
-          </p>
+        <PageIntro
+          title={
+            <>
+              The journal. <em>Ideas that need more than a post.</em>
+            </>
+          }
+        >
+          <p>Essays on systems, AI, learning, and the craft of building.</p>
         </PageIntro>
 
         {/* Filter & Search Bar Area — sticky instrument, not a loose row */}

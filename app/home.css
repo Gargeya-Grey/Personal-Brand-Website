@@ -1,0 +1,495 @@
+/* Homepage, in Edudojo's order for the first seconds: who it is, the idea in two tones, one action,
+ * then one real object at full width: a small "now" page with the person and what is in motion.
+ * Below it the site reads as an index of ideas, not a gallery: propositions, processes, dates. */
+.home-hero {
+  position: relative;
+  isolation: isolate;
+  padding: 48px 0 128px;
+}
+/* The sage wash Edudojo uses at the top of its hero, so both sites open in the same light. */
+.home-hero-wash {
+  position: absolute;
+  inset: -200px 0 auto;
+  height: 820px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(60% 52% at 50% 18%, var(--sage), transparent 75%);
+}
+.home-hero-hello {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--leaf-ink);
+}
+.home-hero-hello .status-dot {
+  background: var(--leaf);
+}
+.home-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: end;
+}
+.home-hero h1 {
+  font-size: clamp(2.75rem, 5.6vw, 5.25rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+.home-hero-stance {
+  max-width: 34ch;
+  margin-top: 28px;
+  font-size: clamp(1.15rem, 1.7vw, 1.45rem);
+  line-height: 1.4;
+  letter-spacing: -0.015em;
+  color: var(--ink-2);
+}
+.field-main .home-hero-stance strong {
+  font-weight: 500;
+  color: var(--ink);
+}
+/* Break at the turn, so the claim and its second tone start on their own lines. */
+.home-hero-turn {
+  display: block;
+  text-wrap: balance;
+}
+/* The support column ends on the column's right edge, as the "now" card below does. */
+.home-hero-side {
+  justify-self: end;
+  padding-bottom: 10px;
+}
+.home-hero-side > p {
+  max-width: 32rem;
+  margin-bottom: 28px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.home-hero-side > p a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--leaf);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+
+/* The one bright object of the first view: raised paper on paper, a hairline, no heavy shadow. */
+.home-notebook {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 56px;
+  margin-top: 96px;
+  padding: 28px 48px 28px 28px;
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  box-shadow: 0 24px 48px -32px #14201c33;
+}
+.home-portrait {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  color: var(--ink);
+}
+.home-portrait-photo {
+  position: relative;
+  aspect-ratio: 0.86;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--sage);
+}
+.home-portrait-photo img {
+  object-fit: cover;
+  object-position: center 30%;
+  filter: saturate(0.7);
+  transition: filter 400ms var(--ease-out);
+}
+.home-portrait-name {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 4px;
+  font-size: 14px;
+  font-weight: 500;
+}
+.home-now-wrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.home-now-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 15px;
+  font-weight: 600;
+}
+.home-now-head .home-now-data {
+  color: var(--ink-2);
+}
+.home-now {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.home-now li + li {
+  border-top: 1px solid var(--rule);
+}
+.home-now a {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr) auto 20px;
+  align-items: baseline;
+  gap: 24px;
+  padding: 22px 0;
+  color: var(--ink);
+}
+.home-now a > svg {
+  align-self: center;
+  color: var(--ink-2);
+  transition:
+    transform 200ms var(--ease-out),
+    color 200ms ease;
+}
+.home-now-label {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.home-now-title {
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.25;
+}
+/* An essay title is a person's writing, so it takes the reading serif. */
+.home-now-essay {
+  font-family: var(--font-reading);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+.home-now-note {
+  font-size: 14px;
+  color: var(--ink-2);
+  text-align: right;
+}
+.home-now-data {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+}
+
+/* ── Sections: a hairline, a two-tone heading, generous space ───────────────────────────── */
+.home-section {
+  padding: 144px 0 16px;
+  scroll-margin-top: 100px;
+}
+.home-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 24px 48px;
+  padding-bottom: 56px;
+}
+.home-section-head h2 {
+  max-width: 22ch;
+}
+.home-section-head .field-text-link {
+  flex-shrink: 0;
+  color: var(--ink-2);
+}
+/* Lead entry: the glyph on its own, then the proposition as the headline. */
+.work-lead {
+  display: grid;
+  grid-template-columns: 240px minmax(0, 1fr);
+  gap: 72px;
+  align-items: center;
+  padding: 64px 0 72px;
+  border-top: 1px solid var(--rule);
+}
+.work-lead-glyph {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  border-radius: 20px;
+  background: radial-gradient(closest-side, var(--sage), transparent);
+  color: var(--ink);
+}
+.work-lead-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.work-lead h3 {
+  max-width: 24ch;
+  font-size: clamp(1.75rem, 3vw, 2.6rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  text-wrap: balance;
+}
+.work-lead-description {
+  max-width: 40rem;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+
+/* Experiments: two open cells, a glyph and the question each one lets you test. */
+.try-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+/* Each cell is a quiet surface: on hover or focus it warms to sage while its glyph re-gathers. */
+.try-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 22px;
+  padding: 56px 40px;
+  color: var(--ink);
+  transition: background-color 300ms var(--ease-out);
+}
+.try-card + .try-card {
+  border-left: 1px solid var(--rule);
+}
+.try-card:focus-visible {
+  background: color-mix(in srgb, var(--sage) 70%, transparent);
+}
+.try-card-title {
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.try-card-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ink-2);
+  transition: color 200ms ease;
+}
+
+/* The inverted band: its own ink, so it reads as one calm object, not a heavy block. */
+.home-band {
+  --band-bg: #14201c;
+  --band-ink: #f3f1ea;
+  --band-ink-2: #b9c4be;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px;
+  gap: 48px;
+  align-items: center;
+  margin: 168px 0 0;
+  padding: 72px 80px;
+  border-radius: 20px;
+  background: var(--band-bg);
+  color: var(--band-ink);
+}
+.dark .home-band {
+  --band-bg: #1f2d27;
+}
+.field-main .home-band h2 {
+  max-width: 20ch;
+  color: var(--band-ink);
+}
+.field-main .home-band h2 em {
+  color: var(--band-ink-2);
+}
+.home-band p {
+  max-width: 34rem;
+  margin: 20px 0 28px;
+  font-size: 17px;
+  color: var(--band-ink-2);
+}
+.home-band-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 48px;
+  padding: 12px 22px;
+  border-radius: 6px;
+  background: var(--band-ink);
+  color: var(--band-bg);
+  font-size: 14px;
+  font-weight: 500;
+}
+.home-band :focus-visible {
+  outline-color: var(--leaf);
+}
+.home-band-glyph {
+  justify-self: center;
+  color: var(--band-ink);
+}
+
+.home-elsewhere {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 48px;
+  padding-bottom: 160px;
+}
+.elsewhere-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 20px;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+.elsewhere-row > svg:last-child {
+  color: var(--ink-2);
+  transition: color 200ms ease;
+}
+.elsewhere-row strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+}
+.elsewhere-row small {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .home-portrait:hover .home-portrait-photo img {
+    filter: saturate(1);
+  }
+  .home-now a:hover > svg {
+    color: var(--leaf-ink);
+    transform: translate(2px, -2px);
+  }
+  .try-card:hover {
+    background: color-mix(in srgb, var(--sage) 70%, transparent);
+  }
+  .home-now a:hover .home-now-title,
+  .work-lead h3 a:hover,
+  .try-card:hover .try-card-name,
+  .elsewhere-row:hover > svg:last-child {
+    color: var(--leaf-ink);
+  }
+}
+
+@media (max-width: 1000px) {
+  .home-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .home-notebook {
+    grid-template-columns: 200px minmax(0, 1fr);
+    gap: 32px;
+  }
+  .home-now a {
+    grid-template-columns: minmax(0, 1fr) 20px;
+    gap: 4px 16px;
+  }
+  .home-now-label {
+    grid-column: 1 / -1;
+  }
+  .home-now-note {
+    text-align: left;
+  }
+  .home-now a > svg {
+    grid-column: 2;
+    grid-row: 2 / span 2;
+  }
+  .work-lead {
+    grid-template-columns: 160px minmax(0, 1fr);
+    gap: 32px;
+  }
+  .home-band {
+    grid-template-columns: minmax(0, 1fr) 140px;
+    padding: 48px 40px;
+  }
+}
+
+/* Phones: the portrait becomes a small avatar row; every index becomes a single column. */
+@media (max-width: 760px) {
+  .home-hero {
+    padding: 16px 0 56px;
+  }
+  .home-notebook {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    margin-top: 44px;
+    padding: 16px 20px 4px;
+    border-radius: 16px;
+  }
+  .home-portrait {
+    flex-direction: row;
+    align-items: center;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--rule);
+  }
+  .home-portrait-photo {
+    width: 56px;
+    flex-shrink: 0;
+    aspect-ratio: 1;
+    border-radius: 50%;
+  }
+  .home-portrait-name {
+    flex: 1;
+  }
+  .home-now-head {
+    padding-top: 8px;
+  }
+  .home-now a {
+    padding: 18px 0;
+  }
+  .home-section {
+    padding-top: 88px;
+  }
+  .home-section-head {
+    flex-direction: column;
+    align-items: flex-start;
+    padding-bottom: 24px;
+  }
+  .work-lead {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    padding-top: 28px;
+  }
+  .work-lead-glyph {
+    width: 136px;
+  }
+  .work-lead-glyph svg {
+    width: 120px;
+    height: 120px;
+  }
+  .try-grid {
+    grid-template-columns: 1fr;
+  }
+  .try-card,
+  .try-card + .try-card {
+    padding: 28px 16px;
+    border-left: 0;
+  }
+  .try-card + .try-card {
+    border-top: 1px solid var(--rule);
+  }
+  .home-band {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-top: 104px;
+    padding: 36px 24px;
+    border-radius: 16px;
+  }
+  .home-band-glyph {
+    justify-self: start;
+    width: 96px;
+    height: 96px;
+  }
+  .home-elsewhere {
+    grid-template-columns: 1fr;
+    padding-bottom: 96px;
+  }
+  .elsewhere-row + .elsewhere-row {
+    border-top: 0;
+  }
+}

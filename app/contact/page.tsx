@@ -17,11 +17,14 @@ export default function ContactPage() {
     <div className="field-site">
       <Navigation />
       <main id="page-main" tabIndex={-1} className="field-main">
-        <PageIntro title="Let’s talk.">
-          <p>
-            A project, a question, a shared curiosity. Tell me a little about it, and let’s see
-            where the conversation goes.
-          </p>
+        <PageIntro
+          title={
+            <>
+              Let’s talk. <em>A project, a question, a shared curiosity.</em>
+            </>
+          }
+        >
+          <p>Tell me a little about it, and let’s see where the conversation goes.</p>
         </PageIntro>
         <section className="contact-layout">
           <div className="contact-details">

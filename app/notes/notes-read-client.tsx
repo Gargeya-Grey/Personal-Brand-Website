@@ -29,7 +29,7 @@ export function NotesReadProgress() {
   return (
     <div className="fixed top-0 left-0 right-0 z-[60] h-0.5 bg-slate-200/80 dark:bg-white/10" aria-hidden="true">
       <div
-        className="h-full origin-left bg-emerald-600 transition-transform duration-75 ease-out dark:bg-emerald-400"
+        className="h-full origin-left bg-[var(--leaf)] transition-transform duration-75 ease-out"
         style={{ transform: `scaleX(${progress})` }}
       />
     </div>

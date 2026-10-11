@@ -77,31 +77,35 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  const shell =
-    'border-white/60 bg-white/40 text-primary shadow-sm hover:text-accent dark:border-white/10 dark:bg-white/5 dark:text-white/85 dark:shadow-none dark:hover:text-white';
+  // Edudojo's control: a 6px square with a hairline, muted ink that darkens on hover.
+  const shell = 'rounded-[6px] border-[var(--rule)] bg-transparent text-[var(--ink-2)] hover:text-[var(--ink)]';
 
-  const iconTone = 'text-on-surface-variant dark:text-white/80';
 
+  // Before hydration the theme state is unknown, so the html.dark class (set by the init script)
+  // picks the icon. The button never shows as an empty circle.
   if (!mounted) {
     return (
       <div
         aria-hidden="true"
-        className={`h-10 w-10 rounded-full border backdrop-blur-xl ${shell}`}
-      />
+        className={`flex h-10 w-10 items-center justify-center border ${shell}`}
+      >
+        <Moon className="h-[18px] w-[18px] dark:hidden" strokeWidth={2} />
+        <Sun className="hidden h-[18px] w-[18px] dark:block" strokeWidth={2} />
+      </div>
     );
   }
 
   return (
     <button
       onClick={toggleTheme}
-      className={`pointer-events-auto flex h-10 w-10 cursor-pointer items-center justify-center rounded-full border backdrop-blur-xl motion-safe:transition-transform motion-safe:duration-200 motion-safe:hover:scale-105 motion-safe:active:scale-95 focus-visible:ring-2 focus-visible:ring-accent ${shell}`}
+      className={`pointer-events-auto flex h-10 w-10 cursor-pointer items-center justify-center border motion-safe:transition-colors motion-safe:duration-200 ${shell}`}
       aria-label="Toggle theme"
       type="button"
     >
       {theme === 'dark' ? (
-        <Sun className={`h-5 w-5 ${iconTone}`} strokeWidth={2.25} />
+        <Sun className="h-[18px] w-[18px]" strokeWidth={2} />
       ) : (
-        <Moon className={`h-5 w-5 ${iconTone}`} strokeWidth={2.25} />
+        <Moon className="h-[18px] w-[18px]" strokeWidth={2} />
       )}
     </button>
   );
