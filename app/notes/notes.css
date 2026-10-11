@@ -1,0 +1,853 @@
+/* Notes, the Sunday letter. Same family as the homepage: warm paper, hairlines, one raised object.
+ * The letter is shown as a letter: raised paper, Literata for the writing, a mono date, a signature.
+ * Everything is scoped under .notes-page so the editorial preview (which shares .notes-prose) is untouched. */
+
+.notes-page .notes-data {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+
+/* ── Hero: the idea in two tones, one way to subscribe, the one figure ─────────────────────── */
+.notes-hero {
+  position: relative;
+  isolation: isolate;
+  padding: 48px 0 112px;
+}
+.notes-hero-wash {
+  position: absolute;
+  inset: -200px 0 auto;
+  height: 780px;
+  z-index: -1;
+  pointer-events: none;
+  background: radial-gradient(60% 52% at 50% 18%, var(--sage), transparent 75%);
+}
+.notes-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: end;
+}
+.notes-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 24px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--leaf-ink);
+}
+.notes-eyebrow .status-dot {
+  background: var(--leaf);
+}
+.notes-page .notes-masthead-hero h1 {
+  margin: 0;
+  font-size: clamp(3rem, 6vw, 5.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+}
+/* Break at the turn, so the name and its second tone each start a line. */
+.notes-page .notes-masthead-hero h1 em {
+  display: block;
+}
+.notes-hero-side {
+  justify-self: end;
+  width: 100%;
+  max-width: 30rem;
+  padding-bottom: 8px;
+}
+.notes-hero-glyph {
+  margin-bottom: 28px;
+  color: var(--ink);
+}
+.notes-hero-side > p {
+  margin: 0 0 28px;
+  font-size: 18px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.notes-hero-links {
+  margin-top: 16px;
+  gap: 4px 28px;
+}
+.notes-hero-links .field-text-link {
+  color: var(--ink-2);
+}
+
+/* The one subscribe button of the page's content: forest, flat, as everywhere in the family.
+   Beats the older .btn-accent shine and shadow without touching them. */
+.notes-page .btn-accent.notes-signup-button {
+  background: var(--forest);
+  color: var(--on-forest);
+  border-color: transparent;
+  box-shadow: none;
+}
+.notes-page .btn-accent.notes-signup-button::after {
+  display: none;
+}
+.notes-page .btn-accent.notes-signup-button:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--forest) 88%, var(--paper));
+}
+
+/* ── The letter: raised paper beside a quiet rail ───────────────────────────────────────────── */
+.notes-letter {
+  display: grid;
+  grid-template-columns: minmax(0, 820px) 300px;
+  grid-template-areas: 'paper rail';
+  justify-content: space-between;
+  gap: 40px 72px;
+  align-items: start;
+  padding-bottom: 144px;
+  scroll-margin-top: 100px;
+}
+.notes-paper {
+  grid-area: paper;
+  min-width: 0;
+  padding: clamp(28px, 5vw, 64px);
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  box-shadow: 0 24px 48px -32px #14201c33;
+}
+.notes-paper-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  margin-bottom: 40px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--rule);
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+/* The title of a person's writing takes the reading face, as essay titles do. */
+.notes-page .notes-paper h2 {
+  max-width: 24ch;
+  margin: 0 0 18px;
+  font-family: var(--font-reading);
+  font-size: clamp(1.9rem, 3.2vw, 2.7rem);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.02em;
+}
+.notes-paper-dek {
+  max-width: 36rem;
+  margin: 0 0 40px;
+  font-family: var(--font-reading);
+  font-size: 1.1875rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.notes-paper-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.notes-signature {
+  font-family: var(--font-reading);
+  font-size: 1.375rem;
+  font-style: italic;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.notes-sample-note {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.notes-more {
+  margin-top: 8px;
+}
+.notes-more > summary {
+  display: flex;
+  align-items: center;
+  min-height: 44px;
+  cursor: pointer;
+  list-style: none;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.notes-more > summary::-webkit-details-marker {
+  display: none;
+}
+.notes-more > summary::after {
+  content: '+';
+  margin-left: 12px;
+  font-size: 20px;
+  line-height: 1;
+  color: var(--leaf-ink);
+  transition: transform 200ms var(--ease-out);
+}
+.notes-more[open] > summary::after {
+  transform: rotate(45deg);
+}
+.notes-more[open] > summary {
+  margin-bottom: 12px;
+}
+
+/* The rail: what the letter follows, and where it came from, in the process-path grammar. */
+.notes-rail {
+  grid-area: rail;
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+  padding-top: 8px;
+}
+.notes-page .notes-rail-title {
+  margin: 0 0 14px;
+  font-family: var(--font-body), sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0;
+  color: var(--ink);
+}
+.notes-steps {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.notes-steps li {
+  position: relative;
+  padding: 0 0 18px 26px;
+  font-size: 15px;
+  line-height: 1.45;
+  color: var(--ink-2);
+}
+.notes-steps li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 5px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  border: 1.5px solid var(--leaf-ink);
+}
+.notes-steps li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 2.5px;
+  top: 18px;
+  bottom: 4px;
+  border-left: 2px dotted var(--rule);
+}
+.notes-steps li:last-child {
+  padding-bottom: 0;
+}
+.notes-steps li:last-child::before {
+  background: var(--leaf);
+  border-color: var(--leaf);
+}
+.notes-sources {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+.notes-sources li {
+  border-top: 1px solid var(--rule);
+}
+.notes-sources a {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 44px;
+  padding: 10px 0;
+  font-size: 15px;
+  line-height: 1.4;
+  color: var(--ink);
+}
+.notes-sources a svg {
+  flex-shrink: 0;
+  color: var(--ink-2);
+  transition:
+    transform 200ms var(--ease-out),
+    color 200ms ease;
+}
+
+/* ── Archive: dated issues in the shared ledger ─────────────────────────────────────────────── */
+.notes-archive {
+  padding-bottom: 144px;
+  scroll-margin-top: 100px;
+}
+.notes-section-head {
+  padding-bottom: 48px;
+}
+.notes-section-head h2 {
+  max-width: 22ch;
+}
+/* A letter's title is the person's own writing. */
+.notes-page .notes-ledger-row {
+  grid-template-columns: 140px minmax(0, 1fr) 90px 20px;
+  align-items: start;
+}
+.notes-page .notes-ledger-row .ledger-data {
+  padding-top: 6px;
+}
+.notes-page .notes-ledger-row .ledger-note {
+  padding-top: 5px;
+}
+.notes-page .notes-ledger-row > svg {
+  align-self: start;
+  margin-top: 5px;
+}
+.notes-page .notes-ledger-row .ledger-title {
+  font-family: var(--font-reading);
+  font-size: clamp(1.25rem, 1.8vw, 1.55rem);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+}
+
+/* ── The one inverted band, as on the homepage ─────────────────────────────────────────────── */
+.notes-band {
+  --band-bg: #14201c;
+  --band-ink: #f3f1ea;
+  --band-ink-2: #b9c4be;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
+  gap: 64px;
+  align-items: center;
+  margin-bottom: 160px;
+  padding: 72px 80px;
+  border-radius: 20px;
+  background: var(--band-bg);
+  color: var(--band-ink);
+}
+.dark .notes-band {
+  --band-bg: #1f2d27;
+}
+.field-main .notes-band h2 {
+  max-width: 14ch;
+  margin: 0;
+  color: var(--band-ink);
+}
+.field-main .notes-band h2 em {
+  color: var(--band-ink-2);
+}
+.notes-band-copy ul {
+  display: grid;
+  gap: 14px;
+  margin: 32px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.notes-band-copy li {
+  position: relative;
+  max-width: 32rem;
+  padding-left: 22px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: var(--band-ink-2);
+}
+.notes-band-copy li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.6em;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--leaf);
+}
+.notes-band-label {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+.notes-band-note {
+  margin: 6px 0 20px;
+  font-size: 14px;
+  color: var(--band-ink-2);
+}
+.notes-band-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin-top: 8px;
+  font-size: 14px;
+  color: var(--band-ink-2);
+  transition: color 160ms ease;
+}
+.notes-band :focus-visible {
+  outline-color: var(--leaf);
+}
+
+/* ── Reading a letter ──────────────────────────────────────────────────────────────────────── */
+.notes-back {
+  color: var(--ink-2);
+  margin-bottom: 24px;
+}
+.notes-issue {
+  display: grid;
+  grid-template-columns: minmax(0, 760px) 300px;
+  justify-content: space-between;
+  gap: 56px 80px;
+  align-items: start;
+  padding-bottom: 144px;
+}
+.notes-issue-article {
+  min-width: 0;
+}
+.notes-masthead-letter {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 0 0 40px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.notes-masthead-letter > :first-child {
+  font-weight: 600;
+  color: var(--ink);
+}
+.notes-masthead-letter > span + span::before,
+.notes-masthead-letter > a + span::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin: 0 12px 3px 0;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+.notes-issue-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 0;
+  margin: 0 0 16px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.notes-issue-meta > span + span::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin: 0 10px 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+.notes-page .notes-issue-head h1 {
+  max-width: 20ch;
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: clamp(2.2rem, 4.4vw, 3.4rem);
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.025em;
+}
+.notes-issue-dek {
+  max-width: 38rem;
+  margin: 20px 0 0;
+  font-family: var(--font-reading);
+  font-size: 1.25rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.notes-issue-byline {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin: 32px 0 40px;
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.notes-issue-author {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.notes-share-compact {
+  display: flex;
+  gap: 4px;
+}
+.notes-share-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 6px;
+  color: var(--ink-2);
+  transition:
+    color 160ms ease,
+    background-color 160ms ease;
+}
+.notes-share-list {
+  border-bottom: 1px solid var(--rule);
+}
+.notes-share-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 44px;
+  padding: 10px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  background: none;
+  font: inherit;
+  font-size: 15px;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+}
+.notes-share-row > span {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.notes-share-row svg {
+  color: var(--ink-2);
+}
+.notes-paper-reading {
+  padding: clamp(28px, 5vw, 56px);
+}
+.notes-paper-reading .notes-paper-head {
+  margin-bottom: 36px;
+}
+.notes-deeper {
+  margin-top: 56px;
+}
+.notes-pager {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin-top: 56px;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.notes-pager-link {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 28px 24px 28px 0;
+  color: var(--ink);
+}
+.notes-pager-next {
+  padding: 28px 0 28px 24px;
+  border-left: 1px solid var(--rule);
+  text-align: right;
+}
+.notes-pager-label {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.notes-pager-title {
+  font-family: var(--font-reading);
+  font-size: 1.15rem;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.notes-issue-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  padding-top: 8px;
+}
+.notes-aside-copy {
+  margin: 0 0 16px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.notes-facts {
+  margin: 0;
+  border-bottom: 1px solid var(--rule);
+}
+.notes-facts > div {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 12px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 15px;
+}
+.notes-facts dt {
+  color: var(--ink-2);
+}
+.notes-facts dd {
+  margin: 0;
+}
+
+/* ── The letter's prose, in the family: Literata, hairlines, one leaf mark ─────────────────── */
+.notes-page .notes-prose :is(p, li, ul, ol) {
+  font-family: var(--font-reading);
+}
+.notes-page .notes-prose p {
+  margin: 0 0 1.35em;
+  font-size: 1.1875rem;
+  line-height: 1.8;
+  color: var(--ink);
+}
+/* The opening line is set a little larger, like a letter's first sentence. */
+.notes-page .notes-prose .letter-lead {
+  font-size: 1.3rem;
+  font-weight: 400;
+  line-height: 1.65;
+  color: var(--ink);
+}
+.notes-page .notes-prose-continued .letter-lead {
+  font-size: 1.1875rem;
+  line-height: 1.8;
+}
+.notes-page .notes-prose h2,
+.notes-page .notes-prose h3 {
+  font-family: var(--font-instrument-sans), system-ui, sans-serif;
+  font-weight: 500;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.notes-page .notes-prose h2 {
+  margin: 3rem 0 1rem;
+  padding-top: 1.75rem;
+  border-top: 1px solid var(--rule);
+  font-size: 1.5rem;
+  line-height: 1.2;
+  letter-spacing: -0.03em;
+}
+.notes-page .notes-prose h3 {
+  margin: 2rem 0 0.75rem;
+  font-size: 1.2rem;
+  line-height: 1.25;
+  letter-spacing: -0.02em;
+}
+.notes-page .notes-prose strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.notes-page .notes-prose a {
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--leaf);
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 4px;
+}
+.notes-page .notes-prose a:hover {
+  color: var(--leaf-ink);
+}
+.notes-page .notes-prose blockquote {
+  margin: 2.4rem 0;
+  padding: 0.1rem 0 0.1rem 1.5rem;
+  border-left: 2px solid var(--leaf);
+  font-family: var(--font-reading);
+  font-size: 1.4rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.notes-page .notes-prose blockquote p {
+  margin: 0;
+  font-size: inherit;
+  line-height: inherit;
+  color: inherit;
+}
+/* A numbered technique reads as steps on hairlines, with the number in mono. */
+.notes-page .notes-prose ol {
+  margin: 1.8rem 0 2.2rem;
+  padding: 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  border-radius: 0;
+  background: none;
+}
+.notes-page .notes-prose ol > li {
+  margin: 0;
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.notes-page .notes-prose ol > li > span:first-child {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--ink-2);
+}
+.notes-page .notes-prose ol strong {
+  color: var(--ink);
+}
+.notes-page .notes-prose :is(ul, ol) {
+  font-size: 1.1875rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.notes-page .notes-prose hr::after {
+  color: var(--ink-2);
+}
+.notes-page .notes-prose .notes-kicker {
+  border-left: 2px solid var(--leaf);
+}
+.notes-page .notes-prose .notes-kicker-label {
+  color: var(--leaf-ink);
+}
+/* Dark mode keeps the softer reading ink the family uses for long text. */
+.dark .notes-page .notes-prose :is(p, ul, ol, blockquote, blockquote p) {
+  color: var(--color-text-reading);
+}
+.dark .notes-page .notes-prose a {
+  color: var(--ink);
+  text-decoration-color: var(--leaf);
+}
+.dark .notes-page .notes-prose a:hover {
+  color: var(--leaf-ink);
+}
+.dark .notes-page .notes-prose blockquote,
+.dark .notes-page .notes-prose blockquote p {
+  color: var(--ink);
+}
+.dark .notes-paper {
+  box-shadow: 0 24px 48px -32px #00000080;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .notes-sources a:hover,
+  .notes-share-row:hover,
+  .notes-pager-link:hover .notes-pager-title,
+  .notes-band-link:hover {
+    color: var(--leaf-ink);
+  }
+  .notes-band-link:hover {
+    color: var(--band-ink);
+  }
+  .notes-sources a:hover svg,
+  .notes-share-row:hover svg {
+    color: var(--leaf-ink);
+    transform: translate(2px, -2px);
+  }
+  .notes-share-btn:hover {
+    color: var(--leaf-ink);
+    background: var(--sage);
+  }
+}
+
+@media (max-width: 1100px) {
+  .notes-letter {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 40px;
+  }
+  .notes-issue {
+    grid-template-columns: minmax(0, 1fr) 260px;
+    gap: 48px;
+  }
+  .notes-band {
+    gap: 40px;
+    padding: 56px 48px;
+  }
+}
+
+@media (max-width: 1000px) {
+  .notes-hero-grid {
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  .notes-hero-side {
+    justify-self: start;
+  }
+  .notes-letter,
+  .notes-issue {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas: none;
+  }
+  .notes-letter > .notes-paper,
+  .notes-letter > .notes-rail {
+    grid-area: auto;
+  }
+  .notes-rail {
+    padding-top: 0;
+  }
+  .notes-band {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .notes-page .notes-ledger-row {
+    grid-template-columns: 110px minmax(0, 1fr) 20px;
+  }
+}
+
+/* Phones: a letter fills the screen; the dates sit on their own line. */
+@media (max-width: 760px) {
+  .notes-hero {
+    padding: 16px 0 64px;
+  }
+  .notes-hero-glyph svg {
+    width: 80px;
+    height: 80px;
+  }
+  .notes-hero-glyph {
+    margin-bottom: 20px;
+  }
+  .notes-hero-side > p {
+    font-size: 17px;
+  }
+  .notes-letter,
+  .notes-archive {
+    padding-bottom: 88px;
+  }
+  .notes-issue {
+    padding-bottom: 88px;
+  }
+  .notes-paper,
+  .notes-paper-reading {
+    padding: 28px 22px;
+    border-radius: 16px;
+  }
+  .notes-paper-head {
+    margin-bottom: 28px;
+  }
+  .notes-page .notes-prose :is(p, ul, ol) {
+    font-size: 1.125rem;
+  }
+  .notes-page .notes-prose .letter-lead {
+    font-size: 1.2rem;
+  }
+  .notes-page .notes-prose blockquote {
+    font-size: 1.25rem;
+  }
+  .notes-page .notes-ledger-row {
+    grid-template-columns: minmax(0, 1fr) 20px;
+  }
+  .notes-page .notes-ledger-row .ledger-data {
+    padding-top: 0;
+  }
+  .notes-band {
+    margin-bottom: 96px;
+    padding: 36px 24px;
+    border-radius: 16px;
+  }
+  .notes-pager {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .notes-pager-link,
+  .notes-pager-next {
+    padding: 20px 0;
+    border-left: 0;
+    text-align: left;
+  }
+  .notes-pager-next {
+    border-top: 1px solid var(--rule);
+  }
+  .notes-masthead-letter {
+    margin-bottom: 28px;
+  }
+}

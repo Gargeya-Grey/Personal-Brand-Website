@@ -1,0 +1,13 @@
+/* The canvas sits exactly over the real word; the word stays text for readers and search. */
+.ink-word {
+  position: relative;
+}
+.ink-word-canvas {
+  position: absolute;
+  /* The base styles cap canvases at 100% of their container. This canvas is wider than the word it
+     covers (it has room for overhanging ink), so the cap squeezed the dots and left a gap before
+     the next character. */
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}

@@ -1,462 +1,139 @@
 ---
-name: Edudojo.ai Design System
-description: The official design system for Edudojo.ai, balancing traditional academic authority (The Digital Sensei) with modern high-end editorial clarity and AI-driven innovation.
-version: 1.0.0
+name: Gargeya, in the Edudojo design family
+description: The personal site's design system. It shares Edudojo's v3 language (warm paper, one sans, hairlines, dot motion) so the owner's sites read as one umbrella.
+version: 3.0.0
+family: edudojo.ai (source: W:\Edudojo.ai\Website, src/app/globals.css and layout.tsx; the code is the reference when its DESIGN.md lags)
 
-# Base design tokens mapped to the Google design.md specification
 modes:
   light:
-    colors:
-      background:
-        primary: "#f3fcf9"           # "Wet" or "fluid" canvas white background
-        canvas: "#FFFFFF"            # Secondary crisp background
-      text:
-        primary: "#0F172A"           # Pedagogical Navy: Deep, academic ink
-        muted: "#475569"             # Soft slate for subtext
-      accent:
-        primary: "#10B981"           # Algorithmic Mint: AI-driven growth
-        accent-dark: "#065F46"       # Dark mint for high-contrast focus
-        glass-border: "rgba(183, 234, 217, 0.3)" # Original brand mint translucent stroke
-      elevation:
-        shadow: "rgba(15, 23, 42, 0.05)"
-        shadow-hover: "rgba(16, 185, 129, 0.12)"
+    paper: "#F6F7F4"
+    paper-raised: "#FFFFFF"
+    sage: "#E2EDE6"
+    ink: "#14201C"
+    ink-2: "#53615B"
+    rule: "#DDE2DC"
+    forest: "#1E5B49"
+    on-forest: "#FAF9F5"
+    leaf: "#10B981"
+    leaf-ink: "#0B7A55"
+    clay: "#B4472F"
   dark:
-    colors:
-      background:
-        primary: "#1F2938"           # Slate Container: Deep, stable UI base
-        canvas: "#111827"            # Extremely dark canvas
-      text:
-        primary: "#EDEDED"           # Institutional Ash: Premium contrast
-        muted: "#9CA3AF"             # Soft grey for secondary text
-      accent:
-        primary: "#10B981"           # Algorithmic Mint: Maintained for brand parity
-        accent-dark: "#059669"       # Muted mint
-        glass-border: "rgba(255, 255, 255, 0.1)" # Soft frosted border
-      elevation:
-        shadow: "rgba(0, 0, 0, 0.2)"
-        shadow-hover: "rgba(16, 185, 129, 0.15)"
+    paper: "#0E1412"
+    paper-raised: "#151D1A"
+    sage: "#17261F"
+    ink: "#ECEEEA"
+    ink-2: "#A3B0AA"
+    rule: "#26302C"
+    forest: "#ECEEEA"
+    on-forest: "#0E1412"
+    leaf: "#10B981"
+    leaf-ink: "#3DDC9F"
+    clay: "#E5866B"
 
-# Shared typography system (The 3-Tier Hierarchy)
 typography:
-  families:
-    branding: Lato
-    ui: Rethink Sans
-    editorial: Google Sans Flex
-  
-  # Google Sans Flex variable axis standards
-  axes:
-    GRAD: 25   # subtle ink-spread weight boost
-    ROND: 25   # soft letterforms to reduce visual friction
-    WDTH: 100  # standard width
-  
-  # Responsive Hierarchy & Weights
-  hierarchy:
-    display-lg:
-      fontFamily: "{typography.families.editorial}"
-      fontSize: 3.5rem
-      fontWeight: 550
-      lineHeight: "1.1"
-      letterSpacing: "-0.02em"
-    headline-lg:
-      fontFamily: "{typography.families.editorial}"
-      fontSize: 2.5rem
-      fontWeight: 480
-      lineHeight: "1.2"
-    title-lg:
-      fontFamily: "{typography.families.editorial}"
-      fontSize: 2.0rem
-      fontWeight: 480
-      lineHeight: "1.3"
-    body-lg:
-      fontFamily: "{typography.families.editorial}"
-      fontSize: 1.125rem
-      fontWeight: 350 # Editorial Medium
-      lineHeight: "1.6"
-    body-md:
-      fontFamily: "{typography.families.editorial}"
-      fontSize: 1.0rem
-      fontWeight: 350
-      lineHeight: "1.6"
-    ui-text:
-      fontFamily: "{typography.families.ui}"
-      fontSize: 1.0rem
-      fontWeight: 200 # Refined UI weight
-      lineHeight: "1.4"
-    ui-text-bold:
-      fontFamily: "{typography.families.ui}"
-      fontSize: 1.0rem
-      fontWeight: 400
-      lineHeight: "1.4"
-    wordmark:
-      fontFamily: "{typography.families.branding}"
-      fontSize: 1.25rem
-      fontWeight: 700 # Structural Authority
-
-# Spacing System
-spacing:
-  base: 8px
-  scale:
-    xs: 4px
-    sm: 8px
-    md: 16px
-    lg: 24px
-    xl: 32px
-    xxl: 48px
-    layout-lg: 88px  # 11 * 8px: Roomy gaps for premium editorial breathing
-    layout-xl: 112px # 14 * 8px
-
-# Border Radii
-rounded:
-  sm: 4px
-  md: 8px
-  lg: 12px
-  xl: 16px
-  xxl: 24px
-  full: 9999px
-
-# High-End Glassmorphism Utilities
-components:
-  liquid-glass:
-    background-light: "rgba(255, 255, 255, 0.1)"
-    background-dark: "rgba(255, 255, 255, 0.02)"
-    blur: 24px
-    border-light: "{modes.light.colors.accent.glass-border}"
-    border-dark: "{modes.dark.colors.accent.glass-border}"
-    shadow-light: "inset 0 2px 1px rgb(241, 251, 247)"
-    shadow-dark: "inset 0 2px 1px rgba(255, 255, 255, 0.15)"
-  
-  liquid-glass-sm:
-    background-light: "rgba(255, 255, 255, 0.03)"
-    background-dark: "rgba(255, 255, 255, 0.01)"
-    blur: 16px
-    border-light: "{modes.light.colors.accent.glass-border}"
-    border-dark: "{modes.dark.colors.accent.glass-border}"
-    shadow-light: "inset 0 1px 0.5px rgb(241, 251, 247)"
-    shadow-dark: "inset 0 1px 0.5px rgba(255, 255, 255, 0.1)"
-
-  hover-card:
-    transition: "transform 0.28s cubic-bezier(0.4, 0, 0.2, 1), border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1)"
-    lift: "translateY(-2px) translateZ(0)"
-    shadow-blur: "0 10px 30px"
+  sans: Instrument Sans     # headings, text, UI
+  reading: Literata         # a person's long writing: essays, letters, essay titles
+  mono: IBM Plex Mono       # real data only: dates, versions, steps
 ---
 
-# Edudojo.ai Design System Specification
+# Design system: the Edudojo family
 
-> Portfolio scope: the current personal-site philosophy is in [personal-world-design.md](docs/personal-world-design.md). For portfolio project artwork, use the [Project cover art direction](#project-cover-art-direction) section below. The earlier Edudojo product specification remains preserved here; its legacy fonts, palette, and layout rules do not override the current portfolio implementation.
+This site and edudojo.ai share one design language. Edudojo is the company; this is the person. They share type, colour, spacing and motion. Content, the portrait, the G mark and the dot symbols make each one distinct.
 
-Welcome to the **Edudojo.ai Design System**. This document defines the visual architecture, design tokens, and user experience paradigms that represent our brand's digital identity. It acts as the single source of truth for both developers and AI-driven coding agents, ensuring that all UI generated across pages, components, and interactive environments maintains institutional elegance, extreme visual clarity, and brand consistency.
+## Idea
 
----
+Edudojo's idea is "the stroke shows the hand": show how the work was made, not only the result. Here, every tool is shown as the question it answers and the process it supports. The site reads as an index of ideas, not a gallery of pictures. It is calm and literary, and precise like an instrument.
 
-## 1. Design Philosophy & Creative North Star: "The Digital Sensei"
+## Tokens
 
-In elite educational technology, authority and credibility are not projected through aggressive colors, heavy cards, or standard templates. Instead, we project confidence through **Quiet Academic Presence**, **Translucent Depth**, and **Generous Negative Space**. 
+Tokens are CSS variables in the token block of `app/field.css`, with an `html.dark` override. The site's older `--color-*` names point at these tokens, so every page follows them. Change a value there, never in a component.
 
-Our style is defined as **Editorial Glassmorphism**. We treat UI surfaces not as flat boards, but as stacked layers of premium, refractive glass floating over a rich, fluid backdrop. 
+| Token | Use |
+|---|---|
+| `--paper` / `--paper-raised` | Page / the one raised object in a view (the hero's "now" card) |
+| `--sage` | The wash at the top of the hero; the soft field behind a lead glyph |
+| `--ink` / `--ink-2` | Text / muted text and a heading's second tone |
+| `--rule` | 1px hairlines between rows and sections |
+| `--forest` / `--on-forest` | The filled button: one in the content of a view, plus the header's Contact (as on Edudojo). In dark mode it becomes light ink with dark text |
+| `--leaf` | A signal: dots, the last step of a process, focus. Never small text |
+| `--leaf-ink` | Green text, link hover |
+| `--clay` | Corrections and warnings only |
 
-### Core Design Rules:
-1. **The Asymmetry Rule:** We reject rigid, perfectly centered templates. Hero sections, navigation chips, and grids should leverage asymmetrical layouts—shifting content subtly to the left or right to feel like a high-end academic journal or modern editorial piece.
-2. **The "No-Line" Rule:** Standard solid, high-opacity `1px` borders for dividing layouts are **strictly prohibited**. Visual boundaries must instead be achieved through:
-   - **Tonal Shifts:** Transitioning smoothly between backgrounds (e.g., `#f3fcf9` to `#FFFFFF` on Light mode).
-   - **High-Blur Separation:** Using generous shadows with up to `30px` blur.
-   - **Ethereal Glass borders:** Using high-translucency accents (such as a 30% opacity brand mint border).
-3. **The Power Gap:** We employ a non-standard typography system where bold, oversized displays are contrasted against dense, ultra-light editorial copy, letting text breathe using spacing scales like `88px` or `112px`.
+The inverted band (Notes on the homepage) uses its own ink: `#14201C` in light mode, `#1F2D27` in dark mode.
 
----
+## Type
 
-## 2. Dual-Theme Color System
+- Instrument Sans for headings, text and UI. Headings are weight 500 with -0.035em to -0.04em tracking. Body text is 400; 500 to 600 only for short labels.
+- An `<em>` inside an h1 or h2 is the sentence's second tone: upright, in `--ink-2`. It is never an italic accent. Example: "Selected work. *Software that gives your ideas somewhere to go.*"
+- Literata is for a person's writing: article and Notes prose, essay titles, quotes.
+- IBM Plex Mono is for real data only: dates, months, years.
+- Do not reintroduce Instrument Serif or Manrope.
 
-To support both **Light Mode** (Daytime learning focus) and **Dark Mode** (Deep coding and nighttime focus) seamlessly, we use semantic names that map to their respective visual roles.
+## Shape
 
-### Light Mode (Daytime Focus)
-- **Primary Background:** `#f3fcf9` — A custom, "wet" fluid mint white that acts as a soothing, glare-free canvas.
-- **Surface Canvas:** `#FFFFFF` — Used for cards and elevated container backgrounds.
-- **Pedagogical Navy:** `#0F172A` — Deep, academic midnight ink used for primary typography, wordmarks, and foundational structures.
-- **Algorithmic Mint:** `#10B981` — Highly saturated emerald mint used exclusively for CTAs, success states, and the `.ai` wordmark extension.
-- **Glass Border:** `rgba(183, 234, 217, 0.3)` — Ultra-soft mint border to outline translucent containers without adding visual noise.
+- Radii: 6px buttons, 12px small cards and the portrait, 20px stages (the "now" card, the inverted band).
+- Separate with 1px `--rule` hairlines and space, not with boxes. Shadows are rare and soft.
+- One bright object per view.
 
-### Dark Mode (Nighttime Deep Work)
-- **Primary Background:** `#1F2938` — Slate Container: A calm, mid-depth charcoal slate that prevents high-contrast eye strain.
-- **Surface Canvas:** `#111827` — Deep charcoal grey used for primary panels and containers.
-- **Institutional Ash:** `#EDEDED` — Premium warm off-white that replaces Pedagogical Navy for typography, ensuring perfect WCAG accessibility.
-- **Algorithmic Mint:** `#10B981` — Maintained identically across both themes to retain immediate brand recognition.
-- **Glass Border:** `rgba(255, 255, 255, 0.1)` — Soft white frosted stroke for dark containers.
+## Controls and navigation
 
-### Safety & Validation Accents (Red Team Protocol)
-For safety and security pages, active error warnings, and adversarial audit simulations (such as `/platform/red-team`), we utilize a dedicated high-fidelity crimson palette:
-- **Red Team Crimson (Light Mode):** `#DC2626` (Red-600) / `#B91C1C` (Red-700). Applied over desaturated glowing background layers (`bg-red-500/[0.08]` to `bg-red-600/[0.03]`) and outlined with thin borders (`border-red-500/35`). Highlighting text utilizes a high-contrast crimson (`text-red-700`) with matching glass badges (`bg-red-500/[0.05]`) for premium aesthetic restraint.
-- **Red Team Coral (Dark Mode):** `#F87171` (Red-400) / `#EF4444` (Red-500). Replaces light mode crimson to ensure strict WCAG compliance and high-contrast glowing elements (`dark:text-red-400` and `dark:text-red-500`) over dark canvas panels (`bg-white/[0.02]` or dark gradient combinations).
+- Header (public pages): Edudojo's full-width paper bar with one hairline. Its content lines up with the page column (1320px, 44/30/22px gutters, safe-area aware), so the logo sits above the headline.
+- Links: muted ink (`--ink-2`), full ink on hover, and one 4px leaf dot under the active link. No pills. The private atelier nav keeps its own style.
+- Filters (Playground): the same grammar as the header links, a leaf dot under the one in use. A filter appears only for a kind that has entries.
+- Controls (theme toggle, menu button): 6px squares with a hairline. Filled buttons (`.btn-accent`) are always forest.
+- Focus rings: `--leaf-ink` on paper (3:1 or better); `--leaf` only on the dark bands.
+- Favicon: the masked G (no tile) in `app/icon.svg`; its ink follows `prefers-color-scheme`. The iOS icon keeps the tile.
 
----
+## The index grammar (`app/index-list.css`)
 
-## 3. The 3-Tier Typography System
+Lists of work and writing read like a table of contents:
+- `.work-meta`: name, kind and stage, separated by fine dots.
+- A proposition as the title. Use the project's `subtitle` ("How close is close enough?"), not only its name.
+- `ProcessPath` (`components/process-path.tsx`): the project's `steps`, joined by a dotted line. The last step has a filled leaf dot.
+- `.ledger-row`: a mono date, a title, a note, an arrow.
+- A `DotGlyph` names an entry instead of a picture.
 
-Edudojo utilizes a three-tier typography hierarchy to establish authority and reading comfort.
+## Images
 
-| Tier | Font Family | Usage Context | Aesthetic Role | Implementation Notes |
-| :--- | :--- | :--- | :--- | :--- |
-| **Tier I: Branding** | **Lato** | Wordmarks, Logo Marks, Core Identity | Structural Authority | Use Lato Bold for "Edudojo" and Lato Medium for the ".ai" suffix. |
-| **Tier II: UI Framework** | **Rethink Sans** | Navbar, Footer, Navigation Controls, Dashboard Labels | Modern Professionalism | Use ultra-light weights (`200` to `400`) to keep navigation refined. |
-| **Tier III: Pedagogical** | **Google Sans Flex** | Hero Headlines, Section Titles, Body Copy, Articles | Adaptive Clarity | Variable font fine-tuned with exact axes for high density. |
+- Indexes (the homepage, the Playground) use dot glyphs. A project page (`/playground/[slug]`) shows the same glyph large on a sage plate, captioned with the cover's `label` and `detail`, until a real demo recording replaces it. The owner found the illustrated SVG covers generic (11 October 2026).
+- Edudojo is the one project with a photograph (its owner-approved gate image). On purpose: it is the startup, not a side project, so it should stand apart.
+- The portrait is the one photograph in the homepage's first view.
+- An essay's own cover image is part of the writing: it shows as a small thumbnail in essay lists (`.ledger-thumb`), never as a large card.
+- No decorative stock imagery. A screenshot must be a real product screen, labelled with what it is.
 
-### Variable Font Axes (Tier III - Google Sans Flex)
-To achieve the premium "editorial" look, you **MUST** configure the variable axes exactly as follows:
-- **GRAD (Grade):** `25` — subtle ink-spread weight boost that improves high-density reading contrast.
-- **ROND (Rounded):** `25` — softens character corners slightly to minimize visual fatigue.
-- **WDTH (Width):** `100` — standard proportional letter width.
+## Dots (the shared motion)
 
-### Weight Scale Hierarchy
-To maintain consistent visual weight and accessibility across different canvases (due to the "halation effect" where light text on a dark background appears thicker than dark text on a light background), the system employs dynamic weight-scale profiles:
+Everything that moves is made of dots, as on Edudojo.
 
-| Context | Light Mode Weight (Dynamic Boost) | Dark Mode Weight (Standard Specs) | Aesthetic/Readability Rationale |
-| :--- | :--- | :--- | :--- |
-| **Hero Title** | `600` | `550` | Maximum structural headline impact |
-| **Global Headings & Bold** | `580` | `480` | High-contrast, clear anchor weights |
-| **Main Content / Articles** | `390` | `350` | Comfort and long-duration legibility |
-| **Home Page Content & Paragraphs**| `360` | `240` | Breezy, elegant editorial narrative |
-| **UI Framework Controls** | `200` base, `400` bold | `200` base, `400` bold | Refined, thin navbar and badge widgets |
+| Piece | Where | Behaviour |
+|---|---|---|
+| `InkWord` (`components/ink-word.tsx`) | The hero word "think" | Hollow letters fill with falling ink dots once, in about 2.6s. The word stays real text. |
+| `MarginDots` (`components/margin-dots.tsx`) | Side margins of wide screens, out to the screen edge | Particles drift and gather into a stippled symbol for the section being read. Nothing is drawn when the margins are too narrow. |
+| `DotWordmark` (`components/dot-wordmark.tsx`) | The footer name | Dots gather into "Gargeya" when the footer enters view, then breathe in a slow, slight wave and part around the cursor. The owner asked for this loop; it is the one exception to the rule below. |
+| `DotGlyph` (`components/dot-glyph.tsx`) | Index entries, project-page plates | A static stippled figure per project, rendered on the server. It re-gathers once on hover or focus. |
+| `ChapterMorph` (`app/about/chapter-morph.tsx`) | The About journey's chapter heading | On a chapter change the old heading dissolves into ink dots that re-gather as the new one (about 0.7s). The heading stays real text for readers. |
 
+The About journey pins below the header and is centred in the space left; scrolling walks its six chapters, and a leaf line fills the route. Narrow or short windows, and pages without JavaScript, get the compact click-through.
 
----
+Shapes live in one library, `lib/stipple.ts`. Rules:
+- One focal motion per view. Nothing loops for attention, except the footer wordmark's slow wave (owner's request), which stops off screen.
+- Every motion has a reduced-motion state that shows the final figure, still.
+- Pause when the page is hidden or the element is off screen. Do no work when there is nothing to show.
+- Dots never sit under text.
 
-## 4. Spacing & Rhythm
+## Do and don't
 
-All spacing values are multiples of the standard `8px` base unit, ensuring mathematical rhythm.
-- **Micro-interactions (Chips, Steppers):** `4px` to `8px` (`spacing.xs` to `spacing.sm`).
-- **Component Internal Padding:** `16px` to `24px` (`spacing.md` to `spacing.lg`).
-- **Standard Card Margins:** `32px` (`spacing.xl`).
-- **Oversized Layout Gaps:** `88px` (`layout-lg`) and `112px` (`layout-xl`). Large, empty margins are the secret to Edudojo's premium, airy layout.
-
----
-
-## 5. UI Elements & Premium Utilities
-
-### Liquid Glass Containers (`.liquid-glass`)
-Used for primary page wrappers, large hero containers, and main cards. It simulates frosted, highly-refractive glass.
-
-```css
-.liquid-glass {
-  /* Dynamic Backgrounds based on theme */
-  background-color: rgba(255, 255, 255, 0.1); 
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  
-  /* Semi-transparent mint stroke for light mode, soft white for dark */
-  border: 1px solid rgba(183, 234, 217, 0.3);
-  
-  /* Double shadow formula: subtle outer ambient shadow + sharp inner highlight */
-  box-shadow: 
-    0 10px 30px -10px rgba(0, 0, 0, 0.1),
-    inset 0 2px 1px rgb(241, 251, 247);
-}
-
-/* Dark Mode Override */
-.dark .liquid-glass {
-  background-color: rgba(255, 255, 255, 0.02);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 
-    0 10px 30px -10px rgba(0, 0, 0, 0.2),
-    inset 0 2px 1px rgba(255, 255, 255, 0.15);
-}
-```
-
-### UI Sub-Elements (`.liquid-glass-sm`)
-Used for nested chips, small navigation bars, badge tags, and icons.
-
-```css
-.liquid-glass-sm {
-  background-color: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(183, 234, 217, 0.3);
-  box-shadow: 
-    0 4px 20px -5px rgba(0, 0, 0, 0.05),
-    inset 0 1px 0.5px rgb(241, 251, 247);
-}
-
-/* Dark Mode Override */
-.dark .liquid-glass-sm {
-  background-color: rgba(255, 255, 255, 0.01);
-  border-color: rgba(255, 255, 255, 0.1);
-  box-shadow: 
-    0 4px 20px -5px rgba(0, 0, 0, 0.1),
-    inset 0 1px 0.5px rgba(255, 255, 255, 0.1);
-}
-```
-
-### Transparent Readability Blur Shield (`backdrop-blur-[3px]`)
-When overlaying heavy editorial typography directly on top of active, moving background canvases (such as the `FluidConstructionBackground`), colored background boxes or gradient vignettes will cause visible color banding and boxy cloud artifacts on dark screens due to GPU layer-blending limits. 
-
-To solve this, we employ a **100% transparent backdrop-blur container**:
-* **Aesthetic Role:** Defocuses and softens background particles as they drift behind text, maintaining absolute typography legibility without any color boundaries or smudges.
-* **Implementation:** Apply `absolute pointer-events-none -z-10 -inset-6 backdrop-blur-[3px] rounded-3xl` on a container with no background color.
-
-```css
-.readability-shield {
-  position: absolute;
-  pointer-events: none;
-  z-index: -10;
-  inset: -24px; /* Expand slightly beyond text margins */
-  backdrop-filter: blur(3px);
-  -webkit-backdrop-filter: blur(3px);
-  border-radius: 24px; /* Curved squircle aesthetic */
-}
-```
-
-### High-Performance Hover Cards (`.hover-card`)
-To prevent "animation stutter" and text blurring during translation, we implement **GPU Acceleration** from the start and avoid animating properties that cause layout repaints (like `box-shadow` directly).
-
-```css
-.hover-card {
-  position: relative;
-  border: 1px solid rgba(226, 232, 240, 1); /* slate-200 */
-  will-change: transform;
-  transform: translateZ(0); /* Promotes layer to GPU */
-  backface-visibility: hidden;
-  -webkit-backface-visibility: hidden;
-  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.dark .hover-card {
-  border-color: rgba(255, 255, 255, 0.05);
-}
-
-.hover-card:hover {
-  transform: translateY(-2px) translateZ(0);
-  border-color: #10B981; /* Algorithmic Mint focus */
-}
-
-/* Shadow transitions via opacity on pseudo-element (zero repaint cost) */
-.hover-card::after {
-  content: "";
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.12);
-  opacity: 0;
-  transition: opacity 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-  pointer-events: none;
-}
-
-.hover-card:hover::after {
-  opacity: 1;
-}
-```
-
-### Premium Icon Hover Card Micro-interactions
-Standard cards with custom icons (such as in `/company/about`, `/platform/dashboard`, `/pilot`, `/methodology/process-over-product`, and the home page's flagship Bento grid) must follow a cohesive, delightful hover interaction:
-1. **Parent Container:** Must be marked with the `group` class to orchestrate child hover states.
-2. **Icon Container Shift:** The icon container starts with a light accent background (e.g. `bg-algorithmic-mint/10 border border-algorithmic-mint/20 text-algorithmic-mint`) and transitions gracefully on hover to a **solid accent background with a high-contrast icon** (e.g., `group-hover:bg-algorithmic-mint group-hover:text-pedagogical-navy`).
-3. **Refined Physics:** The icon itself undergoes an elastic, multi-axis transform: a scale-up (`group-hover:scale-110`) and a subtle rotation (`group-hover:rotate-3`) backed by a fluid ease-out transition (`transition-all duration-500 ease-out`). This dynamic visual response makes UI tiles feel satisfying and reactive.
-
-### Dynamic Scrollspy Table of Contents (TOC)
-Long editorial and legal pages (such as `/company/privacy`) utilize a sticky, self-updating Table of Contents panel. To maintain perfect mechanical reliability and avoid jarring state jumping:
-1. **Consistent Scroll Spacing:** Apply native CSS `scroll-mt-32` (`128px` offset) on all section headers to clear sticky headers comfortably.
-2. **Mathematical Viewport Tracking:** Instead of fragile intersection observers, run a lightweight window scroll listener that polls `getBoundingClientRect()`. Apply a strict coordinate threshold of `rect.top <= 160` (160px from viewport top) to detect the current section, completely preventing jumping bugs where click-to-anchor transitions skip items.
-3. **Bottom-of-Page Safeguard:** Implement a DOM-height check (`Math.ceil(window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight`) to automatically force the final navigation highlight active when the user hits the footer.
-4. **Visual Highlights:** The active TOC anchor receives a prominent accent highlight (`text-algorithmic-mint font-semibold`) and a sharp vertical border stroke (`border-l-2 border-algorithmic-mint/50`), while inactive links transition gracefully to a muted opacity.
-
-### Asymmetrical Flex Grid Column Alignment
-When building asymmetrical columns (such as the `/company/contact` page's two-column grid where form input heights differ from support channel details), avoid crooked bottom alignment:
-1. **Flex Box Stretch:** Configure both grid columns to stretch to the maximum grid height on desktop and act as vertical flex containers (`flex flex-col justify-between`).
-2. **Push to Boundaries:** Group all standard upper page elements inside a nested div, and place the final card (e.g., the **Support Card** on the left and the **Founder's Note Card** on the right) at the absolute root of the column.
-3. **Symmetric Bottom Edge:** The `justify-between` utility will naturally push both cards to align pixel-perfectly at the bottom edge, maintaining a clean visual baseline across asymmetrical screens.
-
-### Unified Outline Typography & Scroll-Driven Border Shine
-When rendering oversized structural text with hollow/outlined styling, follow these implementation rules:
-1. **Unifying Intersecting Contours:** Standard CSS `-webkit-text-stroke` with transparent backgrounds causes internal path overlaps to show through (e.g. crossbars on characters like `A`, `R`, and `M`). To solve this, render the text using SVG `<text>`, fill it with a solid color identical to the background (e.g., `fill="#020617"`), and specify `paintOrder="stroke fill"` (or `paint-order: stroke fill`). This draws the stroke first and paints the fill on top, masking all overlapping intersections.
-2. **Viewport-Linked Shine Sweep:** Rather than static outline shades, animate the stroke using a linear gradient mapping coordinates (`x1`, `x2`) directly to the viewport scroll position. Bind `scrollYProgress` using Framer Motion's `useScroll` relative to the component itself, and animate gradient offsets from `-100%` to `200%` over a precise scroll range of `[0.70, 1.10]` to sweep highlights across character contours as the user scrolls to the bottom.
-3. **Responsive Scaling:** SVG text scales dynamically inside a `viewBox` using fluid `w-full h-auto` dimensions, eliminating font size wrapping and layout fractures common with viewport units (`vw`) under extreme user zoom levels.
-
-
----
-
-## 6. How to Replicate Everywhere (Next.js, React, CSS, Tailwind)
-
-To implement this design system in any project, follow these structural configurations:
-
-### A. Custom CSS Variables Setup (`index.css` / `globals.css`)
-Inject the core tokens at the root level of your project style sheet:
-
-```css
-@import "tailwindcss";
-
-@theme {
-  --color-pedagogical-navy: #0F172A;
-  --color-algorithmic-mint: #10B981;
-  --color-algorithmic-mint-dark: #065F46;
-  --color-canvas-white: #FFFFFF;
-  --color-slate-container: #1F2938;
-  --color-institutional-ash: #EDEDED;
-  
-  --font-sans: var(--font-lato), sans-serif;
-  --font-google-sans-flex: var(--font-google-sans-flex);
-  --font-rethink-sans: var(--font-rethink-sans);
-  --font-lato: var(--font-lato);
-}
-
-@custom-variant dark (&:is(.dark *));
-
-@layer base {
-  :root {
-    --text-primary: var(--color-pedagogical-navy);
-    --bg-primary: #f3fcf9;
-    --accent: var(--color-algorithmic-mint);
-  }
-  
-  html.dark {
-    --text-primary: var(--color-institutional-ash);
-    --bg-primary: var(--color-slate-container);
-  }
-
-  body {
-    background-color: var(--bg-primary);
-    color: var(--text-primary);
-    transition: color 150ms ease, background-color 150ms ease;
-  }
-}
-```
-
-### B. Applying Variable Font Axis Globally
-Ensure that any container rendering Pedagogical content incorporates the exact flexible settings. In Next.js, configure the main content wrapper:
-
-```jsx
-// React Component Layout Wrapper
-export default function SiteLayout({ children }) {
-  return (
-    <main className="site-content" style={{
-      fontFamily: "var(--font-google-sans-flex)",
-      fontVariationSettings: '"slnt" 0, "wdth" 100, "GRAD" 25, "ROND" 25',
-    }}>
-      {children}
-    </main>
-  );
-}
-```
-
----
-
-## 7. Do's and Don'ts
-
-### Do:
-- **Do** leverage large background blur filters (`backdrop-blur-2xl`) combined with highly-diluted background opacity values (`10%` light, `2%` dark) to simulate premium structural refraction.
-- **Do** use pure transparent backdrop-blur layers (`backdrop-blur-[3px] rounded-3xl`) to isolate text from moving background elements/particles rather than colored vignette boxes, which cause banding and visual blocks in dark mode.
-- **Do** use premium modern sans-serifs (like `Rethink Sans` with high-tracking uppercase labels) for active status panels, dashboards, and router controls instead of standard system monospace fonts.
-- **Do** allow content spaces to expand. Give headings and titles massive padding-bottoms (`mb-8` to `mb-12`) to keep the workspace "roomy" and calm.
-- **Do** tint all drop shadows with the primary text color (navy or ash) instead of generic pure black `#000000` to prevent cheap styling.
-
-### Don't:
-- **Don't** use standard 1px borders between lists or cards. Let white space or alternating backgrounds act as separators.
-- **Don't** use typewriter monospace fonts (`font-mono` falling back to Courier/Consolas) for technical status dashboard cards unless explicitly aiming for a low-fidelity retro CLI aesthetic.
-- **Don't** load heavy gradients across body containers. Gradients are only allowed as a 135-degree angle in primary CTAs and progress trackers.
-- **Don't** break the typography system by changing weights manually on body copy. Stick to the defined `350` and `240` values to safeguard elegance.
+- Do lead with an idea or a question; follow with the name.
+- Do keep each section to a heading in two tones, one list, one onward link.
+- Don't add image cards to an index.
+- Don't use leaf green for small text, or more than one filled button in a view's content.
+- Don't animate layout properties; use transform and opacity only.
 
 ---
 
 # Project cover art direction
 
-Use this blueprint when creating or revising portfolio project covers. It applies to the homepage, Playground, and individual project pages. It does not replace the separate blog-image specification in [post-design.md](post-design.md).
+Use this blueprint when creating or revising portfolio project covers. It applies to each project's own page (`/playground/[slug]`); indexes use dot glyphs instead (see Images above). It does not replace the separate blog-image specification in [post-design.md](post-design.md).
 
 For site philosophy, see [personal-world-design.md](docs/personal-world-design.md). For cover metadata, SVG components, image exceptions, and publishing checks, use [project-cover-system.md](docs/project-cover-system.md). This file owns the creative brief; that guide owns implementation.
 
@@ -504,7 +181,7 @@ References:
 - Image 2 is the approved Edudojo cover: match its restraint, space, soft
   lighting, and dimensional clarity; use this project's own subject.
 - Image 3 is the current website: the artwork must belong beside its quiet
-  sea-glass SVG covers in both cool-paper light mode and charcoal dark mode.
+  sea-glass SVG covers in both warm-paper light mode and green-black dark mode.
 
 Art direction: a carefully crafted editorial illustration with the clarity
 of a small physical model. Use [MATERIALS THAT SUPPORT THE IDEA], precise
@@ -536,8 +213,7 @@ The margin percentages are starting constraints, not proof of crop safety. Check
 | Edudojo | Progress through learning | One pale wooden gate, ascending stone steps, quiet sea-green surroundings |
 | Odicto | Speech becoming text | A waveform resolving into a few aligned text strokes on one surface |
 | TwinAatma | Context carried forward under the user's control | A small group of memory layers with a deliberate review boundary |
-| Overlap lab | Comparing a prediction with a reference | Two precise outlines and one clearly visible intersection |
-| Idea mixer | Combining an audience and a constraint | Two distinct forms meeting in a useful pairing |
+| Odicto Mobile | Speech becoming text inside a phone keyboard | A phone outline, a short waveform, and keyboard rows with one microphone key |
 | DataCleanOpenEnv | Inspecting and improving data | Irregular rows becoming ordered, with the change easy to trace |
 | This website | Turning work into something others can explore | A publishing surface connecting code, writing, and a destination |
 
@@ -547,7 +223,7 @@ These are starting briefs, not mandatory compositions. Differentiate the project
 
 Before recommending or publishing artwork:
 
-- Place it beside the existing covers on the actual page. Inspect light and dark modes at desktop and 320px. Check home, directory, and detail crops; confirm the complete subject and readable silhouette.
+- Place it beside the existing covers on the actual page. Inspect light and dark modes at desktop and 320px. Check the project page crop; confirm the complete subject and readable silhouette.
 - Compare cleanliness, palette fit, subject clarity, distinctiveness, and brand fidelity. Name the weakest criterion and the visible evidence. A beautiful standalone image can still fail as a cover.
 - Confirm the subject relates to what the project actually does. Label illustrative explanations separately from product screenshots or demonstrations.
 - Reject accidental clipping, unnecessary props, invented brand geometry, muddy material boundaries, or a dramatic contrast level that overwhelms adjacent cards.
@@ -556,4 +232,4 @@ Before recommending or publishing artwork:
 
 ## Current collection decision
 
-Keep the six existing SVG covers. They already share the approved direction's muted palette, limited forms, restrained depth, and meaningful subjects. When a cover next needs work, improve its specific metaphor and remove redundant detail before adding realism. A wholesale conversion to generated images or wood-and-stone scenes is not needed.
+11 October 2026: SVG covers no longer render (see Images above). Project pages show glyph plates until the owner's demo recordings replace them; Edudojo keeps its gate image. Every project still carries `cover` metadata, which the cover check enforces, and the guidance in this section applies if illustrated covers return.

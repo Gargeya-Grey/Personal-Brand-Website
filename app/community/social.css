@@ -1,0 +1,174 @@
+/* Social: an index, one row per place. Hairlines, a proposition as the title, a small mark, real
+ * destinations only. Same grammar as the homepage's work index (app/index-list.css). */
+
+/* The one figure of the page sits at the right edge of the intro, clear of the title. */
+.social-page .field-intro {
+  position: relative;
+}
+.social-intro-glyph {
+  position: absolute;
+  right: 0;
+  bottom: 36px;
+  color: var(--ink);
+}
+
+.social-index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+.social-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 24px;
+  gap: 40px;
+  align-items: start;
+  padding: 48px 0;
+  border-top: 1px solid var(--rule);
+}
+.social-row:first-child {
+  border-top: 0;
+  padding-top: 24px;
+}
+.social-mark {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  background: var(--sage);
+  color: var(--ink);
+}
+.social-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.social-page .social-row-title {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+/* The title is the row's link; its ::after stretches over the whole row. Links inside the row sit above it. */
+.social-row-title a {
+  color: var(--ink);
+}
+.social-row-title a::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+}
+.social-row:has(.social-row-title a:focus-visible) {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: -2px;
+  border-radius: 12px;
+}
+.social-row-title a:focus-visible {
+  outline: none;
+}
+.social-blurb {
+  max-width: 40rem;
+  margin: 0;
+  font-size: 17px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.social-row-arrow {
+  margin-top: 6px;
+  color: var(--ink-2);
+  transition:
+    transform 200ms var(--ease-out),
+    color 200ms ease;
+}
+
+/* The question is the writer's own words, so it takes the reading face. */
+.social-question {
+  max-width: 40rem;
+  margin: 4px 0 0;
+  padding-left: 20px;
+  border-left: 2px solid var(--leaf);
+}
+.social-question figcaption {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.social-question blockquote {
+  margin: 6px 0 0;
+  font-family: var(--font-reading);
+  font-size: 1.25rem;
+  line-height: 1.5;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+
+.social-sub {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 32px;
+  margin: 6px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.social-sub li {
+  position: relative;
+  z-index: 1;
+}
+.social-sub a {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 44px;
+  padding: 4px 0;
+  color: var(--ink);
+}
+.social-sub strong {
+  font-size: 15px;
+  font-weight: 600;
+}
+.social-sub small {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .social-row:hover .social-row-title a,
+  .social-sub a:hover strong {
+    color: var(--leaf-ink);
+  }
+  .social-row:hover .social-row-arrow {
+    color: var(--leaf-ink);
+    transform: translate(2px, -2px);
+  }
+}
+
+@media (max-width: 1000px) {
+  .social-intro-glyph {
+    display: none;
+  }
+}
+
+@media (max-width: 760px) {
+  .social-row {
+    grid-template-columns: 44px minmax(0, 1fr) 20px;
+    gap: 16px;
+    padding: 28px 0;
+  }
+  .social-mark {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+  }
+  /* The third meta item would wrap with a dangling dot; the description already says it. */
+  .social-row .work-meta > span:nth-child(3) {
+    display: none;
+  }
+  .social-blurb {
+    font-size: 16px;
+  }
+  .social-question blockquote {
+    font-size: 1.125rem;
+  }
+}

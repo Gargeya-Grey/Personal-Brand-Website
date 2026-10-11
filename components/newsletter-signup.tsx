@@ -57,10 +57,11 @@ export function NewsletterSignup({
   if (subscribed) {
     return (
       <p
+        role="status"
         className={
           dark
-            ? 'rounded-2xl border border-white/10 bg-white/[0.03] p-4 font-body text-sm text-emerald-400'
-            : 'rounded-2xl border border-emerald-200 bg-emerald-50 p-4 font-headline text-sm font-bold text-accent shadow-sm dark:border-emerald-500/30 dark:bg-emerald-950/20'
+            ? 'rounded-xl border border-white/15 bg-white/[0.06] p-4 font-body text-sm text-[#f3f1ea]'
+            : 'rounded-xl border border-[var(--rule)] bg-[var(--sage)] p-4 font-body text-sm text-[var(--ink)]'
         }
       >
         Check your inbox and confirm your subscription to the Sunday letter.
@@ -70,7 +71,7 @@ export function NewsletterSignup({
 
   return (
     <form onSubmit={onSubmit} className="w-full space-y-3">
-      <div className={dark ? 'flex flex-col gap-3 sm:flex-row' : 'flex flex-col gap-3 sm:flex-row'}>
+      <div className="flex flex-col gap-3 sm:flex-row">
         <label htmlFor={`notes-email-${source}`} className="sr-only">
           Email for Notes
         </label>
@@ -85,8 +86,8 @@ export function NewsletterSignup({
           autoComplete="email"
           className={
             dark
-              ? 'h-12 w-full min-w-0 rounded-full border border-white/10 bg-white/[0.03] px-5 font-body text-sm text-white placeholder-slate-500 transition-colors focus:border-accent/50 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent disabled:opacity-50 sm:flex-1'
-              : 'h-12 min-w-0 flex-grow rounded-xl border border-outline-variant bg-surface px-5 text-base text-primary placeholder:text-on-surface-variant focus:border-accent focus:outline-none focus-visible:ring-2 focus-visible:ring-accent'
+              ? 'h-12 min-w-0 flex-grow rounded-md border border-white/20 bg-white/[0.06] px-4 text-base text-[#f3f1ea] placeholder:text-[#b9c4be] focus:border-[#f3f1ea] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:opacity-50'
+              : 'h-12 min-w-0 flex-grow rounded-md border border-[var(--rule)] bg-[var(--paper-raised)] px-4 text-base text-[var(--ink)] placeholder:text-[var(--ink-2)] focus:border-[var(--ink-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:opacity-50'
           }
         />
         <button
@@ -94,24 +95,24 @@ export function NewsletterSignup({
           disabled={subscribing}
           className={
             dark
-              ? 'h-12 w-full shrink-0 cursor-pointer rounded-full bg-white px-6 font-headline text-sm font-bold tracking-tight text-slate-950 transition-all hover:bg-accent disabled:cursor-not-allowed disabled:opacity-50 sm:w-auto'
-              : 'btn-accent group inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-2xl px-8 font-headline text-sm font-bold disabled:cursor-not-allowed disabled:opacity-50'
+              ? 'group inline-flex h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-[#f3f1ea] px-6 text-sm font-medium text-[#14201c] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:cursor-not-allowed disabled:opacity-50'
+              : 'btn-accent notes-signup-button group inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-md px-6 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50'
           }
         >
           {subscribing ? 'Subscribing…' : 'Subscribe'}
-          {!dark && !subscribing ? <ArrowRight className="btn-icon h-4 w-4" /> : null}
+          {!subscribing ? <ArrowRight className="btn-icon h-4 w-4" /> : null}
         </button>
       </div>
       {error ? (
         <p
           role="alert"
-          className={`flex items-center gap-2 text-xs ${dark ? 'text-red-400' : 'text-red-600 dark:text-red-400'}`}
+          className={`flex items-center gap-2 text-xs ${dark ? 'text-[#f0a58f]' : 'text-[var(--clay)]'}`}
         >
           <AlertCircle className="h-3.5 w-3.5 shrink-0" />
           {error}
         </p>
       ) : (
-        <p className={`text-xs font-body ${dark ? 'text-slate-500' : 'text-on-surface-variant'}`}>
+        <p className={`text-xs font-body ${dark ? 'text-[#b9c4be]' : 'text-[var(--ink-2)]'}`}>
           Sunday evening. Unsubscribe anytime.
         </p>
       )}

@@ -5,6 +5,8 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { WorkExplainer } from '@/components/work-explainer';
 import { ProjectExperience } from '@/components/project-experience';
+import { DotGlyph } from '@/components/dot-glyph';
+import type { GlyphName } from '@/lib/stipple';
 import type { WorkProject } from '@/data/selected-work';
 
 export function ProjectDetail({ work }: { work: WorkProject }) {
@@ -45,18 +47,23 @@ export function ProjectDetail({ work }: { work: WorkProject }) {
             </Link>
           </div>
           {work.id === 'odicto' && (
-            <a
-              href="https://github.com/Gargeya-Grey/Odicto-Mobile"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="field-text-link platform-link"
-            >
-              Android source & setup <ArrowUpRight size={18} />
-            </a>
+            <Link href="/playground/odicto-mobile" className="field-text-link platform-link">
+              Odicto Mobile, for Android <ArrowUpRight size={18} />
+            </Link>
           )}
         </header>
         <div className="project-detail-cover">
-          <WorkVisual cover={work.cover} />
+          {/* An owner-approved image keeps its place. Otherwise the project is named in the site's own
+              dot language until a real demo recording exists (shown below in its own section). */}
+          {work.cover.kind === 'image' ? (
+            <WorkVisual cover={work.cover} />
+          ) : (
+            <div className="project-plate glyph-host">
+              <DotGlyph name={work.id as GlyphName} size={240} />
+              <span className="project-plate-caption">{work.cover.label}</span>
+              <span className="project-plate-caption project-plate-detail">{work.cover.detail}</span>
+            </div>
+          )}
         </div>
         <ProjectExperience demo={work.demo} recordings={work.recordings} />
         {!work.demo && <WorkExplainer id={work.id} />}

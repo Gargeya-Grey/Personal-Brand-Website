@@ -1,6 +1,5 @@
 /* Project covers share a material palette; real demonstrations live on the detail page. */
-.work-visual.project-cover,
-.dark .home-main .work-visual.project-cover {
+.work-visual.project-cover {
   padding: 0;
   --cover-highlight: #eefbf9;
   --cover-glass: #a1cecd;
@@ -45,32 +44,37 @@
   font-size: 12px;
   line-height: 1.5;
 }
-.feature-edudojo .work-feature-copy {
-  position: relative;
-  isolation: isolate;
-  overflow: hidden;
-}
-.edudojo-watermark {
-  position: absolute;
-  z-index: -1;
-  width: 240px;
-  height: 200px;
-  right: -20px;
-  bottom: -22px;
-  color: var(--color-accent);
-  opacity: 0.065;
-  pointer-events: none;
-}
-.dark .edudojo-watermark {
-  opacity: 0.09;
-}
 .project-detail-cover {
-  border-radius: 12px;
+  border-radius: 20px;
   overflow: hidden;
   margin: 0 0 36px;
 }
 .project-detail-cover .work-visual {
   height: 300px;
+}
+/* The project's dot glyph on a calm sage plate: the same figure as in the index, at full size. */
+.project-plate {
+  position: relative;
+  display: grid;
+  place-items: center;
+  height: 340px;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  background:
+    radial-gradient(closest-side, var(--sage), transparent),
+    var(--paper-raised);
+  color: var(--ink);
+}
+.project-plate-caption {
+  position: absolute;
+  bottom: 18px;
+  left: 24px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.project-plate-detail {
+  left: auto;
+  right: 24px;
 }
 .project-detail-cover:has([data-cover-kind='image']) {
   max-width: 800px;
@@ -82,9 +86,6 @@
 }
 .project-detail-cover .project-cover-drawing {
   max-width: 640px;
-}
-.experiment-preview > .project-cover {
-  min-height: 240px;
 }
 .project-experience,
 .project-recordings {
@@ -185,20 +186,18 @@
   outline-offset: 5px;
 }
 @media (max-width: 700px) {
-  .home-main .work-feature.feature-edudojo .work-feature-art {
-    display: block;
-    order: 1;
-  }
-  .home-main .feature-edudojo .work-visual.project-cover,
-  .dark .home-main .feature-edudojo .work-visual.project-cover {
-    height: 170px;
-    min-height: 0;
-  }
   .experience-heading {
     display: block;
   }
   .experience-heading p {
     margin-top: 14px;
+  }
+  .project-plate {
+    height: 240px;
+  }
+  .project-plate svg {
+    width: 168px;
+    height: 168px;
   }
   .project-detail-cover .work-visual {
     height: 220px;
@@ -209,9 +208,5 @@
   }
   .hosted-demo {
     padding: 18px;
-  }
-  .edudojo-watermark {
-    width: 180px;
-    height: 145px;
   }
 }

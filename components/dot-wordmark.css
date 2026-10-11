@@ -1,0 +1,13 @@
+/* The canvas sits exactly over the real word; the word stays text for readers and search. */
+.dot-wordmark {
+  position: relative;
+}
+.dot-wordmark-canvas {
+  position: absolute;
+  /* Wider than the word (room for the wave and the scatter): lift the base 100% cap, or the dots
+     are squeezed narrower than the letters. */
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}
+

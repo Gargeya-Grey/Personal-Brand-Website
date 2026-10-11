@@ -1,23 +1,95 @@
 'use client';
-import { WorkVisual } from '@/components/work-visual';
-import { useState } from 'react';
+import { useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import { ArrowUpRight, Search } from 'lucide-react';
+import { ProcessPath } from '@/components/process-path';
 import type { PlaygroundEntry, WorkKind } from '@/data/playground';
 
-export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
+/** Reading order of the groups, each with the heading the margin dots follow. */
+const groups: readonly { kind: WorkKind; id: string; heading: ReactNode }[] = [
+  {
+    kind: 'Software',
+    id: 'playground-software',
+    heading: (
+      <>
+        Software. <em>Tools for learning, voice, memory, and publishing.</em>
+      </>
+    ),
+  },
+  {
+    kind: 'Experiments',
+    id: 'playground-experiments',
+    heading: (
+      <>
+        Experiments. <em>Questions tested in code, with the evidence shown.</em>
+      </>
+    ),
+  },
+];
+
+const isExternal = (href: string) => href.startsWith('https://');
+const linkTarget = (href: string) =>
+  isExternal(href)
+    ? ({ target: '_blank', rel: 'noopener noreferrer' } as const)
+    : ({} as Record<string, never>);
+
+function EntryMeta({ entry }: { entry: PlaygroundEntry }) {
+  return (
+    <p className="work-meta">
+      <span>{entry.title}</span>
+      <span>{entry.kind}</span>
+      <span>{entry.status}</span>
+    </p>
+  );
+}
+
+/** The links under an entry. They sit above the row-wide title link so each stays clickable. */
+function EntryActions({ entry }: { entry: PlaygroundEntry }) {
+  return (
+    <div className="field-actions playground-actions">
+      <Link href={entry.href} className="field-text-link" {...linkTarget(entry.href)}>
+        {entry.action}
+        <ArrowUpRight size={16} />
+      </Link>
+      {entry.source && (
+        <a href={entry.source} target="_blank" rel="noopener noreferrer" className="field-text-link">
+          View source <ArrowUpRight size={16} />
+        </a>
+      )}
+    </div>
+  );
+}
+
+export function PlaygroundIndex({
+  entries,
+  leadEntryId,
+  leadGlyph,
+  rowGlyphs,
+}: {
+  entries: PlaygroundEntry[];
+  leadEntryId: string;
+  leadGlyph: ReactNode;
+  rowGlyphs: Record<string, ReactNode>;
+}) {
   const [kind, setKind] = useState<WorkKind | 'All'>('All');
+  // A filter appears only for a kind that has projects: an empty filter would lead nowhere.
+  const filterKinds = groups
+    .map((group) => group.kind)
+    .filter((groupKind) => entries.some((entry) => entry.kind === groupKind));
   const [query, setQuery] = useState('');
+  const normalizedQuery = query.trim().toLowerCase();
   const visible = entries.filter(
     (entry) =>
       (kind === 'All' || entry.kind === kind) &&
-      (entry.title + ' ' + entry.description).toLowerCase().includes(query.trim().toLowerCase()),
+      (entry.title + ' ' + entry.subtitle + ' ' + entry.description)
+        .toLowerCase()
+        .includes(normalizedQuery),
   );
   return (
     <>
       <div className="playground-toolbar">
         <div className="playground-filters" role="group" aria-label="Filter projects">
-          {(['All', 'In your browser', 'Software', 'Experiments'] as const).map((value) => (
+          {(['All', ...filterKinds] as const).map((value) => (
             <button
               type="button"
               key={value}
@@ -42,61 +114,58 @@ export function PlaygroundIndex({ entries }: { entries: PlaygroundEntry[] }) {
       <p className="field-label" role="status">
         {visible.length} {visible.length === 1 ? 'project' : 'projects'} to explore
       </p>
-      <div className="project-shelf">
-        {visible.map((entry) => (
-          <article
-            key={entry.id}
-            className={entry.kind === 'In your browser' ? 'shelf-playable' : ''}
-          >
-            <Link
-              href={entry.href}
-              aria-label={'Explore ' + entry.title}
-              target={entry.href.startsWith('https://') ? '_blank' : undefined}
-              rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
-            >
-              <WorkVisual cover={entry.cover} />
-            </Link>
-            <div className="shelf-copy">
-              <p className="field-label">
-                {entry.kind} / {entry.status}
-              </p>
-              <h2>
-                <Link
-                  href={entry.href}
-                  target={entry.href.startsWith('https://') ? '_blank' : undefined}
-                  rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
-                >
-                  {entry.title}
-                </Link>
-              </h2>
-              <p>{entry.description}</p>
-              <div className="field-actions">
-                {entry.href && (
-                  <Link
-                    href={entry.href}
-                    className="field-text-link"
-                    target={entry.href.startsWith('https://') ? '_blank' : undefined}
-                    rel={entry.href.startsWith('https://') ? 'noopener noreferrer' : undefined}
-                  >
-                    {entry.action}
-                    <ArrowUpRight size={16} />
-                  </Link>
-                )}
-                {entry.source && (
-                  <a
-                    href={entry.source}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="field-text-link"
-                  >
-                    View source <ArrowUpRight size={16} />
-                  </a>
-                )}
-              </div>
-            </div>
-          </article>
-        ))}
-      </div>
+      {groups.map((group) => {
+        const groupEntries = visible.filter((entry) => entry.kind === group.kind);
+        if (!groupEntries.length) return null;
+        const leadEntry = groupEntries.find((entry) => entry.id === leadEntryId);
+        const rowEntries = groupEntries.filter((entry) => entry.id !== leadEntryId);
+        return (
+          <section key={group.kind} className="playground-group" aria-labelledby={group.id}>
+            <header className="playground-group-head">
+              <h2 id={group.id}>{group.heading}</h2>
+            </header>
+            {leadEntry && (
+              <article className="playground-lead playground-item glyph-host">
+                <div className="playground-lead-glyph" aria-hidden="true">
+                  {leadGlyph}
+                </div>
+                <div className="playground-lead-copy">
+                  <EntryMeta entry={leadEntry} />
+                  <h3 className="playground-lead-title">
+                    <Link href={leadEntry.href} {...linkTarget(leadEntry.href)}>
+                      {leadEntry.subtitle}
+                    </Link>
+                  </h3>
+                  <p className="playground-description">{leadEntry.description}</p>
+                  <ProcessPath steps={leadEntry.steps} />
+                  <EntryActions entry={leadEntry} />
+                </div>
+              </article>
+            )}
+            {rowEntries.length > 0 && (
+              <ul className="work-index playground-list">
+                {rowEntries.map((entry) => (
+                  <li key={entry.id} className="work-row playground-row playground-item glyph-host">
+                    {rowGlyphs[entry.id]}
+                    <div className="work-row-copy">
+                      <EntryMeta entry={entry} />
+                      <h3 className="work-row-title">
+                        <Link href={entry.href} {...linkTarget(entry.href)}>
+                          {entry.subtitle}
+                        </Link>
+                      </h3>
+                      <p className="playground-description">{entry.description}</p>
+                      <ProcessPath steps={entry.steps} />
+                      <EntryActions entry={entry} />
+                    </div>
+                    <ArrowUpRight size={20} className="work-row-arrow" aria-hidden="true" />
+                  </li>
+                ))}
+              </ul>
+            )}
+          </section>
+        );
+      })}
       {!visible.length && (
         <div className="experiment-surface">
           <h2>No projects match that search.</h2>

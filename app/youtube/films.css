@@ -1,0 +1,236 @@
+/* Films: the thumbnails are real content, so they stay. They sit calmly in a hairline frame beside
+ * a caption in the index grammar (app/index-list.css), not in a card. */
+
+.films-section {
+  padding-bottom: 16px;
+}
+.films-section-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 24px;
+  flex-wrap: wrap;
+  padding-bottom: 20px;
+}
+/* A heading in name only: it labels the list in the same small line the index uses. */
+.films-page .films-section-label {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.films-aside {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.films-index {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+.films-row {
+  display: grid;
+  grid-template-columns: minmax(0, 420px) minmax(0, 1fr);
+  gap: 56px;
+  align-items: center;
+  padding: 48px 0;
+  border-top: 1px solid var(--rule);
+}
+.films-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--sage);
+  box-shadow: inset 0 0 0 1px var(--rule);
+}
+.films-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.films-play {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.films-thumb-image {
+  object-fit: cover;
+  filter: saturate(0.9);
+  transition:
+    transform 500ms var(--ease-out),
+    filter 300ms ease;
+}
+/* The control is quiet: a paper disc, not a bright button. */
+.films-play-disc {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: -28px 0 0 -28px;
+  border-radius: 50%;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 0 8px 24px -12px #14201c66;
+  transition: transform 200ms var(--ease-out);
+}
+.films-play-disc svg {
+  margin-left: 2px;
+}
+.films-duration {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #14201cb8;
+  color: #f3f1ea;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.films-copy {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  min-width: 0;
+}
+.films-title {
+  max-width: 28ch;
+  margin: 0;
+  font-family: var(--font-instrument-sans), system-ui, sans-serif;
+  font-size: clamp(1.3rem, 2vw, 1.75rem);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  text-wrap: balance;
+}
+.films-description {
+  max-width: 36rem;
+  margin: 0;
+  font-size: 16px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.films-link {
+  align-self: flex-start;
+  color: var(--ink-2);
+}
+
+/* The way on: one glyph, one proposition, the page's one filled button. */
+.films-channel {
+  display: grid;
+  grid-template-columns: 88px minmax(0, 1fr) auto;
+  gap: 40px;
+  align-items: center;
+  margin-top: 128px;
+  padding: 0 0 0;
+}
+.films-channel-glyph {
+  color: var(--ink);
+}
+.films-page .films-channel h2 {
+  max-width: 20ch;
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  line-height: 1.12;
+}
+
+.films-elsewhere {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 48px;
+  margin-top: 128px;
+  padding-bottom: 160px;
+}
+.films-elsewhere-row {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) 20px;
+  gap: 20px;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink);
+}
+.films-elsewhere-row > svg:last-child {
+  color: var(--ink-2);
+  transition: color 200ms ease;
+}
+.films-elsewhere-row strong {
+  display: block;
+  font-size: 17px;
+  font-weight: 600;
+}
+.films-elsewhere-row small {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .films-row:hover .films-thumb-image {
+    filter: saturate(1);
+    transform: scale(1.03);
+  }
+  .films-row:hover .films-play-disc {
+    transform: scale(1.06);
+  }
+  .films-link:hover,
+  .films-elsewhere-row:hover > svg:last-child {
+    color: var(--leaf-ink);
+  }
+}
+
+@media (max-width: 1000px) {
+  .films-row {
+    grid-template-columns: minmax(0, 340px) minmax(0, 1fr);
+    gap: 36px;
+  }
+}
+
+@media (max-width: 760px) {
+  .films-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    align-items: start;
+    padding: 28px 0;
+  }
+  .films-channel {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    justify-items: start;
+    margin-top: 80px;
+  }
+  .films-channel-glyph svg {
+    width: 72px;
+    height: 72px;
+  }
+  .films-elsewhere {
+    grid-template-columns: minmax(0, 1fr);
+    margin-top: 80px;
+    padding-bottom: 96px;
+  }
+  .films-elsewhere-row + .films-elsewhere-row {
+    border-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .films-thumb-image,
+  .films-play-disc {
+    transition: none;
+  }
+}

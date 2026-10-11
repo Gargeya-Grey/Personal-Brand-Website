@@ -1,16 +1,11 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import dynamic from 'next/dynamic';
 import { ArrowUpRight, Play, X } from 'lucide-react';
 import type { ProjectDemo, ProjectMedia } from '@/lib/project-media';
 
-const BoxLab = dynamic(() => import('@/app/playground/box-lab/box-lab').then((m) => m.BoxLab));
-const IdeaMixer = dynamic(() =>
-  import('@/app/playground/idea-mixer/idea-mixer').then((m) => m.IdeaMixer),
-);
 
-function HostedDemo({ demo }: { demo: Extract<ProjectDemo, { kind: 'embed' }> }) {
+function HostedDemo({ demo }: { demo: ProjectDemo }) {
   const [running, setRunning] = useState(false);
   const launch = useRef<HTMLButtonElement>(null);
   return (
@@ -67,15 +62,7 @@ export function ProjectExperience({ demo, recordings = [] }: ProjectMedia) {
             <h2 id="demo-title">{demo.title}</h2>
             <p>{demo.description}</p>
           </header>
-          {demo.kind === 'native' ? (
-            demo.app === 'box-lab' ? (
-              <BoxLab />
-            ) : (
-              <IdeaMixer />
-            )
-          ) : (
-            <HostedDemo demo={demo} />
-          )}
+          <HostedDemo demo={demo} />
         </section>
       )}
       {recordings.length > 0 && (

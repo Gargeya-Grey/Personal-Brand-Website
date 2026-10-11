@@ -1,0 +1,20 @@
+/* The chapter heading is real text. While it morphs, the text turns transparent (still selectable and
+ * read by screen readers) and an aria-hidden canvas draws the dots over it. */
+.chapter-heading {
+  position: relative;
+}
+.chapter-heading[data-morphing='true'] {
+  color: transparent;
+}
+.chapter-heading-canvas {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 0;
+  height: 0;
+  /* The base styles cap canvases at 100% of their container. This canvas is wider than the heading
+     (it has room for dots that overshoot), so the cap would squeeze it. */
+  max-width: none;
+  pointer-events: none;
+  user-select: none;
+}

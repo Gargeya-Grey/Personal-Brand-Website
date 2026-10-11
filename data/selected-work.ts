@@ -6,12 +6,14 @@ export interface WorkProject extends ProjectMedia {
   cover: ProjectCover;
   title: string;
   category: string;
-  kind?: 'In your browser' | 'Software' | 'Experiments';
+  kind?: 'Software' | 'Experiments';
   subtitle: string;
   description: string;
   purpose: string;
   decision: string;
   state: string;
+  /** A few words on where the project stands, for indexes. Shortened from `state`, never beyond it. */
+  stage?: string;
   steps: readonly string[];
   tags: readonly string[];
   source?: string;
@@ -55,25 +57,54 @@ export const allWork: readonly WorkProject[] = [
       scene: 'voice',
       palette: 'mist',
       label: 'Voice → text',
-      detail: 'Desktop + Android',
+      detail: 'Desktop',
     },
     title: 'Odicto',
-    category: 'Desktop + Android',
+    category: 'Mac, Windows, Linux',
     subtitle: 'Your voice, in the app you’re already using.',
     description:
-      'Speak into a desktop hotkey or an Android keyboard. Odicto turns your voice into text where you’re already writing.',
+      'Press a hotkey and speak, in whatever app you’re writing in on Mac, Windows, or Linux. Dictate as you speak, ask AI to edit or write, or watch your words appear live.',
     purpose:
-      'A thought often arrives faster than I can type it. Odicto is a way to get it down without opening another editor: a hotkey on the computer, a microphone in the keyboard on Android.',
+      'A thought often arrives faster than I can type it. Odicto is a way to get it down without opening another editor: a hotkey on the computer.',
     decision:
-      'One idea, two implementations. Desktop dictation can run locally with Whisper. Android sends voice requests directly to the provider you configure, without an Odicto backend. Both separate transcription from optional AI assistance.',
+      'The same modes as Odicto Mobile, without the keyboard: dictation, AI mode, and live transcription. Dictation can run locally with Whisper or use an optional cloud provider. The smart polish button is on mobile only.',
     state:
-      'Two public repositories, each with its own setup instructions. Desktop covers Windows, macOS, and Linux; the mobile app targets Android. The Android build requires your own provider keys. iOS is not available.',
-    steps: ['Choose desktop or Android', 'Speak', 'Transcribe', 'Keep writing'],
-    tags: ['Whisper', 'Python / Qt', 'Android / Kotlin'],
+      'A public repository with setup instructions for Windows, macOS, and Linux. An Android version, Odicto Mobile, has its own repository.',
+    stage: 'Public repository',
+    steps: ['Press the hotkey', 'Dictate', 'Ask AI', 'Transcribe live'],
+    tags: ['Whisper', 'Python / Qt'],
     source: 'https://github.com/Gargeya-Grey/Odicto',
     action: 'Desktop source & setup',
     href: 'https://github.com/Gargeya-Grey/Odicto',
     missing: 'A short screen recording showing dictation inside an everyday app.',
+  },
+  {
+    id: 'odicto-mobile',
+    cover: {
+      kind: 'svg',
+      scene: 'voice',
+      palette: 'sea',
+      label: 'Voice → keyboard',
+      detail: 'Android',
+    },
+    title: 'Odicto Mobile',
+    category: 'Android keyboard',
+    subtitle: 'Speak, type, or ask AI, anywhere on Android.',
+    description:
+      'An Android keyboard with four ways to write: type, dictate, ask AI to edit or write, or watch your speech turn into polished text live. It can also show a floating icon.',
+    purpose:
+      'A thought often arrives faster than I can type it, on a phone most of all. The keyboard opens collapsed, so the first instinct is to speak your mind. The full keyboard is one tap away for small edits, a crowded room, or a day you’d rather not talk.',
+    decision:
+      'Four modes, one keyboard. Dictation keeps your words as spoken. AI mode selects all your text by default and does what you ask; with nothing selected, it writes at the cursor, and you can give it your own system prompt. Live transcription polishes as you speak. A separate smart polish button tidies whatever you are writing, most useful after typing.',
+    state:
+      'A public repository with setup instructions. Voice goes directly to the provider you configure, with your own keys; there is no Odicto backend. Android only; iOS is not available.',
+    stage: 'Public repository',
+    steps: ['Type', 'Dictate', 'Ask AI', 'Transcribe live'],
+    tags: ['Android / Kotlin', 'Your provider keys'],
+    source: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
+    action: 'Android source & setup',
+    href: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
+    missing: 'A portrait recording showing the keyboard microphone and the final text.',
   },
   {
     id: 'edudojo',
@@ -95,6 +126,7 @@ export const allWork: readonly WorkProject[] = [
       'The coach asks students to explain and revisit their ideas. A process journal records activity for teacher review; it does not score understanding or prove who wrote an answer. The teacher retains that judgment.',
     state:
       'I’m the founder and chief architect. The MVP is in testing, with a planned usability pilot in Jaipur. The public site includes illustrative product walkthroughs and the pilot plan.',
+    stage: 'MVP in testing, pilot planned',
     steps: ['Draft', 'Question', 'Revise', 'Review the process'],
     tags: ['Education', 'Socratic AI', 'Process journals'],
     source: undefined,
@@ -150,76 +182,13 @@ export const allWork: readonly WorkProject[] = [
       'Memory should be inspectable. Notes live in Markdown, and changes to the model of your preferences are proposed for approval. A lesson from one conversation can inform the next without silently rewriting who you are.',
     state:
       'A public, local-first toolkit with an MCP memory interface and optional Obsidian or Notion workflows. It needs a compatible AI host and initial setup; this is a developer tool, not a hosted chat service.',
+    stage: 'Public, local-first toolkit',
     steps: ['Load context', 'Have a conversation', 'Review a proposed memory', 'Carry it forward'],
     tags: ['Markdown', 'Python', 'MCP'],
     source: 'https://github.com/Gargeya-Grey/TwinAatma',
     action: 'Explore TwinAatma',
     href: 'https://github.com/Gargeya-Grey/TwinAatma',
     missing: 'A recording of a memory proposal, approval, and retrieval in a later conversation.',
-  },
-  {
-    id: 'box-lab',
-    cover: {
-      kind: 'svg',
-      scene: 'overlap',
-      palette: 'mist',
-      label: 'Prediction → overlap',
-      detail: 'Find the shared area',
-    },
-    title: 'The overlap lab',
-    category: 'Computer vision experiment',
-    kind: 'In your browser',
-    subtitle: 'How close is close enough?',
-    description:
-      'Move a prediction, resize it, and discover how computer vision measures a match. Try it on this page, with no account or installation.',
-    purpose:
-      'A computer can draw a box around an object. But did it find the right area? The lab makes one measure of that answer something you can see and change.',
-    decision:
-      'Intersection over union divides the shared area by the total area covered by both boxes. The threshold changes the verdict, not the overlap. Real benchmarks also consider classes, confidence, and missed or duplicate detections.',
-    state:
-      'A working geometric teaching tool. It is not a running AI model or a reproduction of my research results. All calculations happen in your browser.',
-    steps: [],
-    tags: ['Computer vision', 'Geometry', 'React'],
-    action: 'Read the related research',
-    href: '/research',
-    demo: {
-      kind: 'native',
-      app: 'box-lab',
-      title: 'Move the box. See the difference.',
-      description: 'Adjust the prediction and threshold. A perfect overlap is 1; no overlap is 0.',
-    },
-  },
-  {
-    id: 'idea-mixer',
-    cover: {
-      kind: 'svg',
-      scene: 'ideas',
-      palette: 'sea',
-      label: 'Audience + constraint',
-      detail: 'Make an unlikely pairing',
-    },
-    title: 'Idea mixer',
-    category: 'Creative tool',
-    kind: 'In your browser',
-    subtitle: 'Good ideas have unlikely parents.',
-    description:
-      'Pair an audience with an unexpected constraint, then save the prompts you want to explore. A small creative tool you can use right here.',
-    purpose:
-      'An empty page can be harder to work with than a useful constraint. This mixer gives you a starting point small enough to build on.',
-    decision:
-      'Choose an audience and a constraint instead of asking a model for an answer. The combination leaves the interesting work to you.',
-    state:
-      'Works in your browser without an account or AI calls. Saved ideas stay in this browser on this device; they do not sync to a server.',
-    steps: [],
-    tags: ['Creative prompts', 'React', 'Local storage'],
-    action: 'Explore more projects',
-    href: '/playground',
-    demo: {
-      kind: 'native',
-      app: 'idea-mixer',
-      title: 'Make an unlikely pairing.',
-      description: 'Mix, save, and revisit the combinations that spark something.',
-    },
   },
   {
     id: 'personal-brand',
@@ -232,14 +201,15 @@ export const allWork: readonly WorkProject[] = [
     },
     title: 'This website',
     category: 'Personal publishing system',
-    kind: 'Experiments',
+    kind: 'Software',
+    stage: 'Live, with public source',
     subtitle: 'A home for things I make and think about.',
     description:
       'Projects, research, writing, and films in one place, with a private workspace for publishing.',
     purpose:
       'My work used to be scattered across repositories, articles, and social profiles. This site gives those pieces a shared starting point.',
     decision:
-      'Public pages are built around the work. Browser experiments run here, project pages explain the decisions, and editorial tools stay behind authentication.',
+      'Public pages are built around the work. Project pages explain the decisions, and editorial tools stay behind authentication.',
     state:
       'You are using the public site. The source is available; the publishing workspace and personal tools are private.',
     steps: [],
@@ -250,7 +220,7 @@ export const allWork: readonly WorkProject[] = [
   },
 ];
 
-/** Homepage order is intentional; other experiments keep their existing routes. */
-export const selectedWork = ['edudojo', 'odicto', 'twinaatma'].map((id) =>
+/** The homepage's Selected work, in this order. Every project, these included, has a page at /playground/[id]. */
+export const selectedWork = ['edudojo', 'odicto', 'personal-brand'].map((id) =>
   allWork.find((work) => work.id === id)!,
 );

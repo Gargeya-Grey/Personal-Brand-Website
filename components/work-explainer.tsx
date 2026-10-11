@@ -48,6 +48,38 @@ const examples = {
       },
     ],
   },
+  'odicto-mobile': {
+    title: 'Four ways to write. One keyboard.',
+    note: 'An interaction sketch using sample text. This page does not record your microphone.',
+    stages: [
+      {
+        label: 'Type',
+        speaker: 'When speaking doesn’t fit',
+        text: 'Running ten minutes late.',
+        detail:
+          'The keyboard opens collapsed, so speaking comes first. The full keyboard is one tap away for small edits, a crowded room, or a quiet mood. The smart polish button then tidies what you typed.',
+      },
+      {
+        label: 'Dictate',
+        speaker: 'Your words, as spoken',
+        text: 'Running ten minutes late, start without me and I’ll catch up.',
+        detail: 'Raw dictation goes straight into the app you are writing in.',
+      },
+      {
+        label: 'Ask AI',
+        speaker: '“Make it polite.”',
+        text: 'I’m running about ten minutes late. Please start without me; I’ll catch up.',
+        detail:
+          'AI mode selects all your text by default and does what you ask. With nothing selected, it writes at the cursor. You can give it your own system prompt.',
+      },
+      {
+        label: 'Live',
+        speaker: 'Text appears while you speak',
+        text: 'I’m running ten minutes late. Start without me…',
+        detail: 'Live transcription writes as you talk and polishes as it goes.',
+      },
+    ],
+  },
   twinaatma: {
     title: 'What should the next conversation remember?',
     note: 'A sample memory flow. Nothing here is saved to your device or an AI assistant.',

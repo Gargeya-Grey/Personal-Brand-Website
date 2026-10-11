@@ -173,10 +173,13 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
   const mobileBtn = isAtelier
     ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)] text-[var(--atelier-ink)] hover:text-[var(--atelier-gold)]'
-    : 'border-outline-variant bg-canvas text-primary hover:text-accent';
+    : 'border-[var(--rule)] bg-transparent text-[var(--ink-2)] hover:text-[var(--ink)]';
 
-  const publicLinkIdle =
-    'border-transparent text-on-surface-variant hover:border-white/80 hover:bg-white/70 hover:text-primary hover:shadow-sm dark:hover:border-white/20 dark:hover:bg-white/10';
+  // Public links follow Edudojo's header: muted ink, full ink on hover, a leaf dot when active.
+  const publicLinkBase =
+    'relative inline-flex items-center px-0.5 py-1.5 text-[0.95rem] motion-safe:transition-colors motion-safe:duration-200';
+  const publicLinkIdle = 'text-[var(--ink-2)] hover:text-[var(--ink)]';
+  const publicLinkActive = 'text-[var(--ink)]';
 
   const publicMobileIdle =
     'border-transparent text-on-surface-variant hover:bg-accent/5 hover:text-primary';
@@ -225,7 +228,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
       ref={navigationRef}
       data-reading-hidden={isReadingArticle && readingNavHidden && !mobileMenuOpen}
       className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center ${
-        isAtelier ? 'atelier-chrome' : ''
+        isAtelier ? 'atelier-chrome' : 'public-nav'
       }`}
     >
       <nav
@@ -235,7 +238,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         <Link
           href={isAtelier ? '/editorial' : '/'}
           onClick={(e) => handleSamePageNav(e, isAtelier ? '/editorial' : '/')}
-          className="group flex shrink-0 items-center gap-2 px-1 sm:gap-3 sm:px-2"
+          className={`group flex shrink-0 items-center gap-2 sm:gap-3 ${isAtelier ? 'px-1 sm:px-2' : ''}`}
         >
           <BrandMark
             size={32}
@@ -244,7 +247,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             className="h-8 w-8 shrink-0 transition-transform duration-300 group-hover:scale-105"
           />
           <span
-            className={`font-headline text-base font-extrabold tracking-[-0.04em] transition-colors duration-300 sm:text-lg ${
+            className={`font-headline text-lg font-semibold tracking-[-0.025em] transition-colors duration-300 sm:text-xl ${
               isAtelier ? 'hidden min-[380px]:inline' : ''
             } ${logoText}`}
           >
@@ -254,7 +257,9 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
 
         {/* Desktop link rail; smaller screens use the complete menu. */}
         <div
-          className={`hidden min-w-0 items-center gap-0.5 rounded-full border p-1 shadow-inner lg:flex ${linkRail}`}
+          className={`hidden min-w-0 items-center lg:flex ${
+            isAtelier ? `gap-0.5 rounded-full border p-1 shadow-inner ${linkRail}` : 'gap-7 xl:gap-9'
+          }`}
         >
           {linksList.map((link) => {
             const isActive = isLinkActive(link);
@@ -269,19 +274,24 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
                 aria-current={isActive ? 'page' : undefined}
-                className={`${navLinkBase} ${
+                className={
                   isAtelier
-                    ? isActive
-                      ? atelierActive
-                      : atelierIdle
-                    : isActive
-                      ? 'border-accent/20 bg-accent/10 text-accent shadow-sm'
-                      : publicLinkIdle
-                }`}
+                    ? `${navLinkBase} ${isActive ? atelierActive : atelierIdle}`
+                    : `${publicLinkBase} ${isActive ? publicLinkActive : publicLinkIdle}`
+                }
               >
                 {link.icon}
                 <span className="md:hidden">{link.shortName ?? link.name}</span>
                 <span className="hidden md:inline">{link.name}</span>
+                {/* Edudojo's active mark: one leaf dot under the link, no pill. */}
+                {!isAtelier && (
+                  <span
+                    aria-hidden="true"
+                    className={`absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[var(--leaf)] motion-safe:transition-transform motion-safe:duration-200 ${
+                      isActive ? 'scale-100' : 'scale-0'
+                    }`}
+                  />
+                )}
               </Link>
             );
           })}
@@ -292,7 +302,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           {!isAtelier && (
             <Link
               href="/contact"
-              className="btn-accent hidden rounded-full px-6 py-2.5 text-center font-headline text-sm font-bold tracking-tight lg:inline-block"
+              className="btn-accent hidden rounded-[6px] px-5 py-2.5 text-center font-headline text-sm font-medium lg:inline-block"
             >
               Contact
             </Link>
@@ -310,7 +320,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             ref={buttonRef}
             type="button"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-full border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent lg:hidden ${mobileBtn}`}
+            className={`pointer-events-auto flex h-11 w-11 items-center justify-center rounded-[6px] border motion-safe:transition-[background-color,border-color,color] motion-safe:duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-accent lg:hidden ${mobileBtn}`}
             aria-label={mobileMenuOpen ? 'Close menu' : 'Open menu'}
             aria-expanded={mobileMenuOpen}
             aria-controls="mobile-nav-panel"

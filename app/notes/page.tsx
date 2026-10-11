@@ -2,16 +2,18 @@ import type { Metadata } from 'next';
 import { getPageMetadata } from '@/lib/page-metadata';
 import Link from 'next/link';
 
-import { ArrowRight, ArrowUpRight, Check, Mail } from 'lucide-react';
+import { ArrowDown, ArrowRight, ArrowUp, ArrowUpRight } from 'lucide-react';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { NewsletterSignup } from '@/components/newsletter-signup';
+import { DotGlyph } from '@/components/dot-glyph';
 import { getPublicNotes } from '@/lib/newsletter-service';
 import { SAMPLE_NOTE } from '@/lib/newsletter-sample';
 import { formatNoteDate, wordCount } from '@/lib/newsletter-model';
 import { NotesBody } from '@/components/notes-body';
 import { NotesMasthead } from '@/components/notes-masthead';
 import { notesBrand } from '@/lib/notes-brand';
+import './notes.css';
 
 export const metadata: Metadata = getPageMetadata({
   title: `${notesBrand.name}`,
@@ -20,6 +22,28 @@ export const metadata: Metadata = getPageMetadata({
 });
 
 export const dynamic = 'force-dynamic';
+
+const OPENING_PARAGRAPH_COUNT = 2;
+
+const promises = [
+  'A single claim, carried through to a technique you can use.',
+  'Studies and trials linked, so you can check the numbers yourself.',
+  'Quiet weeks stay quiet. No filler to feed a schedule.',
+];
+
+/** Splits a letter into its opening (the first paragraphs before any heading) and the rest. */
+function splitLetter(bodyMd: string) {
+  const blocks = bodyMd.trim().split(/\r?\n\s*\r?\n/);
+  const firstHeadingIndex = blocks.findIndex((block) => block.startsWith('## '));
+  const hasHeading = firstHeadingIndex !== -1;
+  const openingEnd = hasHeading
+    ? Math.min(OPENING_PARAGRAPH_COUNT, firstHeadingIndex)
+    : OPENING_PARAGRAPH_COUNT;
+  return {
+    opening: blocks.slice(0, openingEnd).join('\n\n'),
+    rest: blocks.slice(openingEnd).join('\n\n'),
+  };
+}
 
 export default async function NotesPage() {
   const sent = await getPublicNotes();
@@ -37,234 +61,161 @@ export default async function NotesPage() {
   const exampleWeekOf = example.weekOf === 'example' ? '2026-09-06' : example.weekOf;
   const exampleMinutes = Math.max(1, Math.round(wordCount(example.bodyMd) / 220));
 
-  const opening = example.bodyMd
-    .split(/\r?\n##\s/)[0]
-    .trim()
-    .split(/\r?\n\s*\r?\n/)
-    .slice(0, 2)
-    .join('\n\n');
+  const { opening, rest } = splitLetter(example.bodyMd);
   const exampleHeadings = example.bodyMd
     .split('\n')
     .filter((line) => line.startsWith('## '))
     .map((line) => line.slice(3).trim())
     .filter(Boolean)
     .slice(0, 5);
+  const earlierLetters = sent.slice(1);
+  const hasArchive = earlierLetters.length > 0;
 
   return (
-    <div className="relative flex min-h-screen flex-col">
+    <div className="field-site notes-page">
       <Navigation />
 
-      <main
-        id="page-main"
-        tabIndex={-1}
-        className="field-main reading-index w-full flex-grow pb-20"
-      >
-        <section className="notes-cover notes-cover-compact" aria-label="About Notes">
-          <div>
+      <main id="page-main" tabIndex={-1} className="field-main notes-main">
+        <section className="notes-hero" aria-labelledby="notes-title">
+          <div className="notes-hero-wash" aria-hidden="true" />
+          <div className="notes-hero-grid">
             <NotesMasthead size="hero" />
-            <p className="field-copy mt-6">
-              A weekly letter from Gargeya on learning, judgment, and being human with AI in the
-              room. One argument, followed all the way through.
-            </p>
-            <div className="mt-6 max-w-lg">
+            <div className="notes-hero-side">
+              <div className="notes-hero-glyph glyph-host">
+                <DotGlyph name="notes" size={104} />
+              </div>
+              <p>
+                A weekly letter from Gargeya on learning, judgment, and being human with AI in the
+                room. One argument, followed all the way through.
+              </p>
               <NewsletterSignup source="notes" variant="light" />
-            </div>
-            <div className="field-actions mt-4">
-              <a href="#latest" className="field-text-link">
-                Read a letter ↓
-              </a>
-              {sent.length > 1 && (
-                <a href="#archive" className="field-text-link">
-                  Browse the archive ↓
+              <div className="field-actions notes-hero-links">
+                <a href="#latest" className="field-text-link">
+                  Read a letter <ArrowDown size={16} />
                 </a>
-              )}
+                {hasArchive && (
+                  <a href="#archive" className="field-text-link">
+                    Browse the archive <ArrowDown size={16} />
+                  </a>
+                )}
+              </div>
             </div>
           </div>
         </section>
 
-        <section id="latest" className="letter-invitation" aria-labelledby="latest-letter-title">
-          <div className="letter-invitation-heading">
-            <p className="work-category">
-              {exampleIsLive ? 'The latest letter' : 'A letter to start with'}
-            </p>
+        {/* The letter, shown as a letter: raised paper, the writing's own face, a date and a signature. */}
+        <section id="latest" className="notes-letter" aria-labelledby="latest-letter-title">
+          <article className="notes-paper">
+            <header className="notes-paper-head">
+              <span>From Gargeya</span>
+              <span className="notes-data">{formatNoteDate(exampleWeekOf)}</span>
+            </header>
             <h2 id="latest-letter-title">{example.title}</h2>
-            <p>{example.dek}</p>
-            <span>
-              {formatNoteDate(exampleWeekOf)} · {exampleMinutes} min read
-            </span>
-          </div>
-          <article className="letter-opening">
-            <span className="letter-salutation">From Gargeya</span>
+            {example.dek && <p className="notes-paper-dek">{example.dek}</p>}
             <div className="notes-prose article-prose">
               <NotesBody content={opening} />
             </div>
-            {exampleIsLive ? (
-              <Link href={'/notes/' + example.slug} className="field-button">
-                Read the letter <ArrowRight size={18} />
-              </Link>
-            ) : (
-              <details className="sample-letter-full">
-                <summary>Read the full sample letter</summary>
-                <div className="notes-prose article-prose">
-                  <NotesBody content={example.bodyMd} />
+            {!exampleIsLive && rest && (
+              <details className="notes-more">
+                <summary>Read the rest of the sample letter</summary>
+                <div className="notes-prose notes-prose-continued article-prose">
+                  <NotesBody content={rest} />
                 </div>
               </details>
             )}
+            <footer className="notes-paper-foot">
+              {exampleIsLive ? (
+                <Link href={'/notes/' + example.slug} className="field-text-link">
+                  Read the letter <ArrowRight size={16} />
+                </Link>
+              ) : (
+                <span className="notes-sample-note">A sample, until the next one is sent.</span>
+              )}
+              <span className="notes-signature">Gargeya</span>
+            </footer>
           </article>
-          {(exampleHeadings.length > 0 || example.links.length > 0) && (
-            <details className="letter-details">
-              <summary>
-                Inside this letter & sources <span aria-hidden="true">+</span>
-              </summary>
-              <div className="letter-details-grid">
-                {exampleHeadings.length > 0 && (
-                  <div>
-                    <h3>The questions it follows</h3>
-                    <ul>
-                      {exampleHeadings.map((heading) => (
-                        <li key={heading}>{heading}</li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-                {example.links.length > 0 && (
-                  <div>
-                    <h3>Read the sources</h3>
-                    <ul>
-                      {example.links.map((link) => (
-                        <li key={link.url}>
-                          <a href={link.url} target="_blank" rel="noopener noreferrer">
-                            {link.label} <ArrowUpRight size={14} />
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </details>
-          )}
-        </section>
 
-        {/* Archive — an inbox, not a bullet list */}
-        {sent.length > 1 ? (
-          <section
-            id="archive"
-            className="scroll-mt-32 border-t border-slate-900/[0.08] py-14 dark:border-white/10 sm:py-16 lg:py-20"
-          >
-            <div className="mb-8 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <aside className="notes-rail" aria-label="About this letter">
+            <p className="work-meta">
+              <span>{exampleIsLive ? 'The latest letter' : 'A letter to start with'}</span>
+              <span>{exampleMinutes} min read</span>
+            </p>
+            {exampleHeadings.length > 0 && (
               <div>
-                <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                  The inbox
-                </span>
-                <h2 className="mt-2 font-display text-2xl font-light tracking-[-0.02em] text-primary sm:text-3xl">
-                  Earlier letters.
-                </h2>
+                <h3 className="notes-rail-title">The questions it follows</h3>
+                <ol className="notes-steps">
+                  {exampleHeadings.map((heading) => (
+                    <li key={heading}>{heading}</li>
+                  ))}
+                </ol>
               </div>
-              <p className="max-w-sm font-body text-sm leading-relaxed text-on-surface-variant sm:text-right">
-                {sent.length - 1} earlier {sent.length === 2 ? 'letter' : 'letters'}
-              </p>
-            </div>
-
-            <div className="overflow-hidden rounded-[1.75rem] border border-slate-900/[0.08] bg-white dark:border-white/10 dark:bg-white/[0.02]">
-              <div className="flex items-center justify-between gap-3 border-b border-slate-900/[0.08] px-5 py-3.5 sm:px-7 dark:border-white/10">
-                <p className="flex items-center gap-2 font-label text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
-                  <Mail className="h-3.5 w-3.5 text-accent" /> Inbox
-                </p>
-                <p className="font-label text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
-                  Sunday 19:00
-                </p>
-              </div>
-              <ul className="divide-y divide-slate-900/[0.06] dark:divide-white/[0.07]">
-                {sent.slice(1).map((week, i) => {
-                  const minutes = Math.max(1, Math.round(wordCount(week.bodyMd) / 220));
-                  return (
-                    <li key={week.id}>
-                      <Link
-                        href={`/notes/${week.slug}`}
-                        className="group grid gap-3 px-5 py-5 transition-colors duration-300 hover:bg-accent/[0.05] sm:grid-cols-12 sm:items-center sm:gap-6 sm:px-7"
-                      >
-                        <div className="flex items-center gap-3 sm:col-span-2">
-                          <span
-                            className={`h-2 w-2 shrink-0 rounded-full ${i === 0 ? 'bg-accent' : 'bg-slate-300 dark:bg-white/20'}`}
-                            aria-hidden="true"
-                          />
-                          <span className="font-mono text-xs font-semibold text-on-surface-variant">
-                            {formatNoteDate(week.weekOf)}
-                          </span>
-                        </div>
-                        <div className="min-w-0 sm:col-span-8">
-                          <p className="truncate font-headline text-lg font-bold tracking-tight text-primary transition-colors group-hover:text-accent">
-                            {week.title}
-                          </p>
-                          {week.dek ? (
-                            <p className="mt-0.5 truncate font-body text-sm text-on-surface-variant">
-                              {week.dek}
-                            </p>
-                          ) : null}
-                        </div>
-                        <div className="flex items-center gap-3 sm:col-span-2 sm:justify-end">
-                          <span className="font-label text-[11px] font-bold uppercase tracking-[0.12em] text-on-surface-variant">
-                            ~{minutes} min
-                          </span>
-                          <ArrowRight
-                            className="h-4 w-4 shrink-0 text-on-surface-variant transition-all duration-300 group-hover:translate-x-1 group-hover:text-accent"
-                            aria-hidden="true"
-                          />
-                        </div>
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            </div>
-          </section>
-        ) : null}
-
-        {/* Closing — the promise restated, one more inbox door */}
-        <section className="py-14 sm:py-16 lg:py-20">
-          <div className="cta-card-gradient relative overflow-hidden rounded-[2rem] p-6 sm:p-10 md:rounded-[2.5rem] md:p-14">
-            <div className="grid gap-10 lg:grid-cols-12 lg:gap-14">
-              <div className="lg:col-span-6">
-                <span className="font-label text-xs font-bold uppercase tracking-[0.2em] text-accent">
-                  Sunday evening
-                </span>
-                <h2 className="cta-card-heading mt-3 font-display text-3xl font-light leading-[1.08] tracking-[-0.02em] sm:text-4xl">
-                  One argument. Evidence attached. Reply open.
-                </h2>
-                <ul className="mt-6 space-y-3">
-                  {[
-                    'A single claim, carried through to a technique you can use.',
-                    'Studies and trials linked — check the numbers yourself.',
-                    'Quiet weeks stay quiet. No filler to feed a schedule.',
-                  ].map((line) => (
-                    <li
-                      key={line}
-                      className="flex items-start gap-2.5 font-body text-sm leading-relaxed text-on-surface-variant sm:text-[15px]"
-                    >
-                      <Check className="mt-0.5 h-4 w-4 shrink-0 text-accent" />
-                      {line}
+            )}
+            {example.links.length > 0 && (
+              <div>
+                <h3 className="notes-rail-title">Read the sources</h3>
+                <ul className="notes-sources">
+                  {example.links.map((link) => (
+                    <li key={link.url}>
+                      <a href={link.url} target="_blank" rel="noopener noreferrer">
+                        <span>{link.label}</span>
+                        <ArrowUpRight size={16} aria-hidden="true" />
+                      </a>
                     </li>
                   ))}
                 </ul>
               </div>
-              <div className="lg:col-span-6">
-                <div className="rounded-2xl border border-outline-variant bg-canvas p-5 sm:p-7">
-                  <p className="font-headline text-lg font-bold text-primary">Get the next one</p>
-                  <p className="mt-1.5 mb-5 font-body text-sm text-on-surface-variant">
-                    Free · Sunday 19:00 in your timezone · unsubscribe anytime.
-                  </p>
-                  <NewsletterSignup source="notes-closing" variant="light" />
-                  <a
-                    href="#latest"
-                    className="project-link mt-5 rounded-sm font-headline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent"
-                  >
-                    <span>Read this week first</span>
-                    <ArrowRight className="btn-icon h-3.5 w-3.5" />
-                  </a>
-                </div>
-              </div>
-            </div>
+            )}
+          </aside>
+        </section>
+
+        {hasArchive && (
+          <section id="archive" className="notes-archive" aria-labelledby="archive-title">
+            <header className="notes-section-head">
+              <h2 id="archive-title">
+                Earlier letters.{' '}
+                <em>{earlierLetters.length} so far, newest first.</em>
+              </h2>
+            </header>
+            <ul className="ledger">
+              {earlierLetters.map((week) => {
+                const minutes = Math.max(1, Math.round(wordCount(week.bodyMd) / 220));
+                return (
+                  <li key={week.id}>
+                    <Link href={`/notes/${week.slug}`} className="ledger-row notes-ledger-row">
+                      <span className="ledger-data">{formatNoteDate(week.weekOf)}</span>
+                      <span className="ledger-essay-copy">
+                        <span className="ledger-title">{week.title}</span>
+                        {week.dek ? <span className="ledger-excerpt">{week.dek}</span> : null}
+                      </span>
+                      <span className="ledger-note">~{minutes} min</span>
+                      <ArrowUpRight size={16} aria-hidden="true" />
+                    </Link>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        )}
+
+        {/* The one inverted band, as on the homepage: the promise restated, one more way in. */}
+        <section className="notes-band" aria-labelledby="notes-closing-title">
+          <div className="notes-band-copy">
+            <h2 id="notes-closing-title">
+              One argument. <em>Evidence attached. Reply open.</em>
+            </h2>
+            <ul>
+              {promises.map((line) => (
+                <li key={line}>{line}</li>
+              ))}
+            </ul>
+          </div>
+          <div className="notes-band-form">
+            <p className="notes-band-label">Get the next one</p>
+            <p className="notes-band-note">Free. Sunday 19:00 in your timezone. Unsubscribe anytime.</p>
+            <NewsletterSignup source="notes-closing" variant="dark" />
+            <a href="#latest" className="notes-band-link">
+              Read this week first <ArrowUp size={16} aria-hidden="true" />
+            </a>
           </div>
         </section>
       </main>

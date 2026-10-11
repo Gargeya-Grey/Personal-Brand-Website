@@ -1,7 +1,10 @@
 /** Public, reviewed media only. Missing media is omitted from the visitor experience. */
-export type ProjectDemo =
-  | { kind: 'native'; app: 'box-lab' | 'idea-mixer'; title: string; description: string }
-  | { kind: 'embed'; url: `https://${string}`; title: string; description: string };
+export type ProjectDemo = {
+  kind: 'embed';
+  url: `https://${string}`;
+  title: string;
+  description: string;
+};
 
 export interface ProjectRecording {
   id: string;

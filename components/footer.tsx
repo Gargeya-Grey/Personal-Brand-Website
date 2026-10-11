@@ -4,6 +4,7 @@ import { usePathname } from 'next/navigation';
 import { ArrowUp, ArrowUpRight } from 'lucide-react';
 import { siteConfig } from '@/lib/site-config';
 import { NewsletterSignup } from '@/components/newsletter-signup';
+import { DotWordmark } from '@/components/dot-wordmark';
 
 export function Footer() {
   const pathname = usePathname();
@@ -91,7 +92,7 @@ export function Footer() {
           </button>
         </div>
         <div className="footer-wordmark" aria-hidden="true">
-          Gargeya<span>↗</span>
+          <DotWordmark text="Gargeya." accentTail={1} />
         </div>
         <div className="footer-colophon">
           <span>© {new Date().getFullYear()} Gargeya Sharma</span>
