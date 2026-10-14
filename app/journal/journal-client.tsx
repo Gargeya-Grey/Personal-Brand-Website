@@ -304,11 +304,11 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                       ))}
                     </div>
 
-                    <h2 className="font-headline text-2xl sm:text-3xl md:text-4xl font-semibold text-slate-900 dark:text-white leading-[1.08] tracking-tight group-hover:text-accent transition-colors duration-300">
+                    <h2 className="font-headline text-2xl sm:text-3xl md:text-4xl font-semibold text-[var(--ink)] leading-[1.08] tracking-tight group-hover:text-accent transition-colors duration-300">
                       {featuredPost.title}
                     </h2>
 
-                    <p className="font-body text-sm sm:text-base text-slate-600 dark:text-white/70 leading-relaxed">
+                    <p className="font-body text-sm sm:text-base text-[var(--ink-2)] leading-relaxed">
                       {featuredPost.excerpt}
                     </p>
 
@@ -319,14 +319,14 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                           name={featuredPost.author || siteConfig.name}
                           size="md"
                         />
-                        <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">
+                        <span className="text-xs font-label font-bold text-[var(--ink)]">
                           {featuredPost.author || siteConfig.name}
                         </span>
                       </div>
 
                       <div className="flex items-center gap-3 text-xs text-on-surface-variant font-label">
                         <span>{featuredPost.date}</span>
-                        <span className="w-1 h-1 rounded-full bg-slate-200 dark:bg-slate-700" />
+                        <span className="w-1 h-1 rounded-full bg-[var(--rule)]" />
                         <span className="text-accent flex items-center gap-1">
                           <Clock className="w-3 h-3" /> {featuredPost.readTime}
                         </span>
@@ -414,11 +414,11 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                           ))}
                         </div>
 
-                        <h3 className="font-headline text-xl font-semibold text-slate-900 dark:text-white leading-snug tracking-tight group-hover:text-accent transition-colors duration-300 line-clamp-2">
+                        <h3 className="font-headline text-xl font-semibold text-[var(--ink)] leading-snug tracking-tight group-hover:text-accent transition-colors duration-300 line-clamp-2">
                           {post.title}
                         </h3>
 
-                        <p className="font-body text-sm text-slate-600 dark:text-white/70 leading-relaxed line-clamp-3">
+                        <p className="font-body text-sm text-[var(--ink-2)] leading-relaxed line-clamp-3">
                           {post.excerpt}
                         </p>
                       </div>
@@ -431,7 +431,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                             name={post.author || siteConfig.name}
                             size="sm"
                           />
-                          <span className="text-xs font-label font-bold text-slate-800 dark:text-white/80">
+                          <span className="text-xs font-label font-bold text-[var(--ink)]">
                             {post.author || siteConfig.name}
                           </span>
                         </div>
@@ -447,7 +447,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
               </div>
 
               {/* Pagination Controls block */}
-              <div className="flex flex-col items-center gap-4 border-t border-slate-200/50 pt-10 dark:border-white/10">
+              <div className="flex flex-col items-center gap-4 border-t border-[var(--rule)] pt-10">
                 <p className="font-label text-xs text-on-surface-variant dark:text-on-surface-variant uppercase tracking-widest font-semibold">
                   Showing{' '}
                   {Math.min(visibleCount + (shouldShowFeatured ? 1 : 0), sortedArticles.length)} of{' '}
