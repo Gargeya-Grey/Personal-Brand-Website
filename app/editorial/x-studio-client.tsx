@@ -730,6 +730,9 @@ export function XStudioClient() {
     const onKey = (e: KeyboardEvent) => {
       const t = e.target as HTMLElement;
       if (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable) return;
+      // Leave Ctrl/Cmd/Alt combos (copy, bookmark, save) to the browser.
+      const isModifiedKey = e.metaKey || e.ctrlKey || e.altKey;
+      if (isModifiedKey) return;
       if (view === 'library') return;
       const d = current;
       if (!d) return;
