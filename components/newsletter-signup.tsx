@@ -95,7 +95,7 @@ export function NewsletterSignup({
           disabled={subscribing}
           className={
             dark
-              ? 'group inline-flex h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-[#f3f1ea] px-6 text-sm font-medium text-[#14201c] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:cursor-not-allowed disabled:opacity-50'
+              ? 'group inline-flex h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-[#f3f1ea] px-6 text-sm font-medium text-[var(--ink)] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:cursor-not-allowed disabled:opacity-50'
               : 'btn-accent notes-signup-button group inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-md px-6 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50'
           }
         >

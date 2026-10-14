@@ -241,7 +241,7 @@ export function InkWord({ word }: { word: string }) {
 
     const reducedQuery = typeof window.matchMedia === 'function' ? window.matchMedia(REDUCED_QUERY) : null;
     let reduced = reducedQuery?.matches ?? false;
-    let palette: Palette = { ink: '#14201C', leaf: '#10B981' };
+    let palette: Palette = { ink: '#1B1A18', leaf: '#FF8000' };
     let dots: Dots | null = null;
     let dpr = 1;
     let cssW = 0;

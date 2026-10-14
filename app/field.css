@@ -1,18 +1,20 @@
-/* Edudojo's design family (v3): warm paper, green-black ink, hairlines, one forest button.
- * Leaf green is a signal (dots, focus), never small text; leaf-ink is the green for text.
+/* Edudojo design family (v3) in this site's own colours: McLaren papaya on warm graphite.
+ * The token names are the family's role names, shared with edudojo.ai; only the values differ.
+ * --leaf is papaya: a signal (dots, focus), never small text. --leaf-ink is the orange for text.
+ * --forest is the anthracite filled button. --sage is the warm wash. --clay is crimson, for warnings.
  * The --color-* names are the site's older token names, kept so every page follows these values. */
 :root {
-  --paper: #f6f7f4;
+  --paper: #f7f6f3;
   --paper-raised: #ffffff;
-  --sage: #e2ede6;
-  --ink: #14201c;
-  --ink-2: #53615b;
-  --rule: #dde2dc;
-  --forest: #1e5b49;
-  --on-forest: #faf9f5;
-  --leaf: #10b981;
-  --leaf-ink: #0b7a55;
-  --clay: #b4472f;
+  --sage: #f1ede7;
+  --ink: #1b1a18;
+  --ink-2: #5e5a55;
+  --rule: #e3e0da;
+  --forest: #1f1e1c;
+  --on-forest: #faf8f5;
+  --leaf: #ff8000;
+  --leaf-ink: #b04a00;
+  --clay: #b42335;
 
   --color-bg-primary: var(--paper);
   --color-canvas: var(--paper-raised);
@@ -21,44 +23,44 @@
   --color-accent: var(--leaf-ink);
   --color-accent-dark: var(--forest);
   --color-accent-secondary: var(--forest);
-  --color-accent-soft: #10b98114;
-  --color-accent-secondary-soft: #1e5b4910;
+  --color-accent-soft: #ff800014;
+  --color-accent-secondary-soft: #1f1e1c10;
   --color-on-surface-variant: var(--ink-2);
   --color-outline-variant: var(--rule);
-  --color-surface-container-low: #eef0eb;
+  --color-surface-container-low: #efece7;
   --color-surface-container-high: var(--rule);
   --color-surface-container-lowest: var(--paper-raised);
   --color-primary-container: var(--ink);
   --color-secondary-container: var(--sage);
   --field-rule: var(--rule);
-  --field-soft: #eef0eb;
+  --field-soft: #efece7;
   --field-mint: var(--sage);
-  --field-blue: #e6ebe8;
+  --field-blue: #ece9e4;
 }
 .dark {
   color-scheme: dark;
-  --paper: #0e1412;
-  --paper-raised: #151d1a;
-  --sage: #17261f;
-  --ink: #eceeea;
-  --ink-2: #a3b0aa;
-  --rule: #26302c;
-  --forest: #eceeea;
-  --on-forest: #0e1412;
-  --leaf: #10b981;
-  --leaf-ink: #3ddc9f;
-  --clay: #e5866b;
+  --paper: #121110;
+  --paper-raised: #1a1918;
+  --sage: #221e1a;
+  --ink: #eeece8;
+  --ink-2: #ada7a0;
+  --rule: #2c2a27;
+  --forest: #eeece8;
+  --on-forest: #121110;
+  --leaf: #ff8000;
+  --leaf-ink: #ff9f45;
+  --clay: #f07178;
 
-  --color-text-reading: #c9d1cc;
-  --color-accent-soft: #10b98118;
-  --color-accent-secondary-soft: #eceeea10;
+  --color-text-reading: #d2cec8;
+  --color-accent-soft: #ff800018;
+  --color-accent-secondary-soft: #eeece810;
   --color-surface-container-low: var(--paper-raised);
-  --color-surface-container-high: #1f2925;
+  --color-surface-container-high: #252321;
   --color-surface-container-lowest: var(--paper);
   --color-primary-container: var(--paper-raised);
-  --color-accent-dark: #8fe5c0;
-  --field-soft: #18211e;
-  --field-blue: #1a2421;
+  --color-accent-dark: #ffc08a;
+  --field-soft: #1c1a18;
+  --field-blue: #1e1c1a;
 }
 /* Reading ink is softer than display ink. Override legacy slate utilities too. */
 .dark :is(.article-prose, .notes-prose) :is(p, li, td, blockquote, em) {
@@ -67,7 +69,7 @@
 .dark :is(.article-prose, .notes-prose) :is(h2, h3, h4, strong, th) {
   color: var(--color-text-primary);
 }
-/* Older article utilities also follow the sea-glass reading palette. */
+/* Older article utilities also follow the reading palette. */
 .dark :is(.article-prose, .notes-prose) :is(a, code) {
   color: var(--color-accent);
   text-decoration-color: color-mix(in srgb, var(--color-accent) 40%, transparent);

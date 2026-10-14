@@ -65,8 +65,8 @@ export function DotWordmark({ text, accentTail = 0 }: { text: string; accentTail
     const reducedQuery = typeof window.matchMedia === 'function' ? window.matchMedia(REDUCED_QUERY) : null;
     const fineQuery = typeof window.matchMedia === 'function' ? window.matchMedia(FINE_QUERY) : null;
     let reduced = reducedQuery?.matches ?? false;
-    let ink = '#14201c';
-    let leaf = '#10b981';
+    let ink = '#1b1a18';
+    let leaf = '#ff8000';
     let dots: WordDots | null = null;
     let wave: WaveParams = waveParams(100);
     // Per-dot offset from the pointer's push, eased.

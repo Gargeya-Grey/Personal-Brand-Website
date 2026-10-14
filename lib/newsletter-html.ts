@@ -65,11 +65,11 @@ export function renderNewsletterEmail(
         <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;width:100%;background:#ffffff;border:1px solid #e2e8f0;border-radius:16px;">
           <tr>
             <td style="padding:28px 32px 8px;">
-              <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#10b981;font-weight:700;">${escapeHtml(notesBrand.kicker)}</p>
+              <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#b04a00;font-weight:700;">${escapeHtml(notesBrand.kicker)}</p>
               <p style="margin:0 0 6px;font-family:Georgia,'Times New Roman',serif;font-size:32px;line-height:1.1;color:#0f172a;font-weight:500;">${escapeHtml(notesBrand.name)}</p>
               <p style="margin:0 0 16px;font-family:Georgia,'Times New Roman',serif;font-size:16px;line-height:1.4;color:#64748b;font-style:italic;">${escapeHtml(notesBrand.tagline)}</p>
               <table role="presentation" cellspacing="0" cellpadding="0" style="margin:0 0 22px;">
-                <tr><td style="width:44px;border-top:2px solid #10b981;font-size:0;line-height:0;">&nbsp;</td></tr>
+                <tr><td style="width:44px;border-top:2px solid #ff8000;font-size:0;line-height:0;">&nbsp;</td></tr>
               </table>
               <p style="margin:0 0 18px;font-size:12px;color:#94a3b8;">
                 ${escapeHtml(siteConfig.shortName)} · ${escapeHtml(dateLabel)}
@@ -133,7 +133,7 @@ export function renderWelcomeEmail(origin = getSiteOrigin()): { html: string; te
   <table role="presentation" width="600" cellspacing="0" cellpadding="0" style="max-width:600px;margin:0 auto;background:#fff;border:1px solid #e2e8f0;border-radius:16px;">
     <tr>
       <td style="padding:28px 32px;">
-        <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#10b981;font-weight:700;">${escapeHtml(notesBrand.kicker)}</p>
+        <p style="margin:0 0 8px;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;color:#b04a00;font-weight:700;">${escapeHtml(notesBrand.kicker)}</p>
         <p style="margin:0 0 6px;font-family:Georgia,serif;font-size:28px;line-height:1.1;">${escapeHtml(notesBrand.name)}</p>
         <p style="margin:0 0 18px;font-family:Georgia,serif;font-size:16px;color:#64748b;font-style:italic;">${escapeHtml(notesBrand.tagline)}</p>
         <h1 style="font-size:22px;margin:0 0 16px;">You're on the list.</h1>

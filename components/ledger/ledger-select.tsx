@@ -1,6 +1,8 @@
 'use client';
 
-import { Check, ChevronDown } from 'lucide-react';
+import './ledger.css';
+
+import { ChevronDown } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 
 type LedgerSelectProps = {
@@ -41,7 +43,7 @@ export function LedgerSelect({
   }, []);
 
   return (
-    <div ref={rootRef} className="relative w-full">
+    <div ref={rootRef} className="ledger-select">
       <button
         type="button"
         aria-haspopup="listbox"
@@ -49,16 +51,15 @@ export function LedgerSelect({
         aria-labelledby={labelledBy}
         aria-label={labelledBy ? undefined : name}
         onClick={() => setOpen((prev) => !prev)}
-        className="atelier-input flex items-center justify-between text-left"
+        className="atelier-input ledger-select-button"
       >
-        <span className={value ? '' : 'text-[var(--atelier-faint)]'}>{value || placeholder}</span>
-        <ChevronDown className={`w-4 h-4 shrink-0 ml-2 transition-transform ${open ? 'rotate-180' : ''}`} />
+        <span className="ledger-select-value" data-empty={value ? undefined : 'true'}>
+          {value || placeholder}
+        </span>
+        <ChevronDown className="ledger-select-chevron" aria-hidden />
       </button>
       {open && (
-        <ul
-          role="listbox"
-          className="absolute z-40 mt-1.5 max-h-60 w-full overflow-y-auto rounded-2xl border border-[var(--atelier-line)] bg-[var(--atelier-card)] py-1 shadow-[var(--atelier-shadow)]"
-        >
+        <ul role="listbox" className="ledger-select-list">
           {options.map((option) => (
             <li key={option}>
               <button
@@ -69,14 +70,9 @@ export function LedgerSelect({
                   onChange(name, option);
                   setOpen(false);
                 }}
-                className={`flex w-full items-center justify-between px-4 py-2 text-sm text-left ${
-                  value === option
-                    ? 'bg-[var(--atelier-gold-soft)] text-[var(--atelier-ink)] font-semibold'
-                    : 'text-[var(--atelier-muted)] hover:bg-[var(--atelier-paper)] hover:text-[var(--atelier-ink)]'
-                }`}
+                className="ledger-select-option"
               >
-                <span>{option}</span>
-                {value === option && <Check className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />}
+                {option}
               </button>
             </li>
           ))}

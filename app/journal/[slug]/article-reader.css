@@ -35,7 +35,10 @@ html:has(.article-reader), body:has(.article-reader) { min-width:0; }
 .reader-copy-status { position:absolute; top:100%; right:0; z-index:3; min-width:180px; color:var(--color-accent); font-size:12px; text-align:right; }
 .reader-opening { display:grid; grid-template-columns:minmax(0,720px) minmax(0,1fr); align-items:start; gap:40px; margin-bottom:52px; }
 .reader-cover { min-width:0; }
-.reader-cover-image { position:relative; width:100%; aspect-ratio:16/9; border-radius:12px; overflow:hidden; background:var(--color-canvas); box-shadow:0 0 0 1px var(--reader-rule),0 20px 48px -36px color-mix(in srgb,var(--color-text-primary) 30%,transparent); }
+/* The cover frame follows the image's own proportions (--cover-ratio, set on load), so only the image
+   shows. A tall image is capped by height and narrows instead of growing bands. */
+.reader-cover-image { --cover-ratio:16/9; position:relative; width:100%; aspect-ratio:var(--cover-ratio); border-radius:12px; overflow:hidden; background:var(--color-canvas); box-shadow:0 0 0 1px var(--reader-rule); }
+.reader-cover .reader-cover-image { width:min(100%, calc(72vh * var(--cover-ratio))); margin-inline:auto; }
 .reader-cover-illustration { max-height:420px; overflow:hidden; border:1px solid var(--reader-rule); border-radius:16px; background:var(--color-canvas); }
 .reader-opening[data-has-brief="false"] { display:block; }
 .reader-opening[data-has-brief="false"] .reader-cover { max-width:720px; margin-inline:auto; }

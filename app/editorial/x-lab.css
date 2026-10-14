@@ -1,0 +1,616 @@
+/* X Lab (/editorial?workspace=lab). Imported by x-lab-client.tsx.
+ * An instrument panel in the family language: hairlines and space, mono numbers, no boxes.
+ * Series: --forest, --ink-2, --leaf-ink; --leaf marks the one highlighted value; --clay is for
+ * negative values only. Tokens only; no hex, no shadows, no gradients. */
+
+.xl {
+  --xl-mono: var(--font-plex-mono), ui-monospace, monospace;
+}
+
+/* ── Connection bar ─────────────────────────────────────────────────────────── */
+
+.atelier-section.xl-bar {
+  display: grid;
+  gap: 18px;
+  padding: 28px 0 36px;
+}
+.xl-bar-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px 32px;
+}
+.xl-conn {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 20px;
+  min-width: 0;
+}
+.xl-conn .atelier-status {
+  white-space: normal;
+}
+.xl-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px 24px;
+}
+.xl-group {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+}
+.xl-group .atelier-chip {
+  min-height: 2rem;
+  padding: 0 0.7rem;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.xl-group .atelier-chip[data-mono='true'] {
+  font-family: var(--xl-mono);
+  font-size: 0.75rem;
+}
+.xl-note {
+  max-width: 64ch;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* ── Headline figures ───────────────────────────────────────────────────────── */
+
+.xl-figures {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 36px 40px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.xl-figure {
+  display: grid;
+  align-content: start;
+  gap: 4px;
+  min-width: 0;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+.xl-figure-value {
+  font-family: var(--xl-mono);
+  font-size: clamp(1.5rem, 2.4vw, 2rem);
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  overflow-wrap: anywhere;
+}
+.xl-figure-label {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.xl-figure-sub {
+  font-family: var(--xl-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.xl-delta[data-dir='up'] {
+  color: var(--leaf-ink);
+}
+.xl-delta[data-dir='down'] {
+  color: var(--clay);
+}
+@media (max-width: 1100px) {
+  .xl-figures {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+@media (max-width: 700px) {
+  .xl-figures {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px 24px;
+  }
+}
+
+/* ── Sub-navigation ─────────────────────────────────────────────────────────── */
+
+.xl-tabbar {
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+.xl-tabbar + .atelier-section {
+  padding-top: 32px;
+}
+
+/* ── Sections ───────────────────────────────────────────────────────────────── */
+
+.xl-pair {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 56px 72px;
+}
+.xl-pair > * {
+  min-width: 0;
+}
+@media (max-width: 900px) {
+  .xl-pair {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.xl-pair .atelier-h2 {
+  margin-bottom: 24px;
+  font-size: 1.375rem;
+}
+.xl-lead {
+  max-width: 62ch;
+  margin: 0 0 24px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.xl-empty-line {
+  margin: 0;
+  padding: 16px 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.xl-small {
+  margin: 14px 0 0;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+/* ── Playbook ───────────────────────────────────────────────────────────────── */
+
+.xl-playbook {
+  --row-cols: 7.5rem minmax(0, 1fr);
+}
+.xl-playbook .atelier-row {
+  align-items: start;
+  padding: 18px 0;
+}
+.xl-playbook .atelier-status {
+  min-height: 1.5rem;
+}
+.xl-playbook .atelier-row-title {
+  font-size: 1rem;
+}
+
+/* ── Bars ───────────────────────────────────────────────────────────────────── */
+
+.xl-bars {
+  display: grid;
+  gap: 18px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.xl-bars[data-scroll='true'] {
+  max-height: 22rem;
+  padding-right: 8px;
+  overflow-y: auto;
+}
+.xl-bar-item {
+  display: grid;
+  gap: 7px;
+}
+.xl-bar-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 16px;
+}
+.xl-bar-label {
+  min-width: 0;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.xl-bar-hint {
+  font-family: var(--xl-mono);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.xl-track {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--rule);
+  overflow: hidden;
+}
+.xl-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--forest);
+}
+.xl-fill[data-tone='lead'] {
+  background: var(--leaf);
+}
+.xl-fill[data-tone='clay'] {
+  background: var(--clay);
+}
+.xl-fill[data-faded='true'] {
+  opacity: 0.4;
+}
+
+/* ── Charts ─────────────────────────────────────────────────────────────────── */
+
+.xl-chart-wrap {
+  width: 100%;
+}
+.xl-chart {
+  display: block;
+  max-width: 100%;
+  overflow: visible;
+}
+.xl-chart text {
+  font-family: var(--xl-mono);
+  font-size: 11px;
+  fill: var(--ink-2);
+}
+.xl-grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+.xl-baseline {
+  stroke: var(--ink-2);
+  stroke-width: 1;
+  opacity: 0.5;
+}
+.xl-dot {
+  cursor: pointer;
+}
+.xl-dot[data-kind='original'] {
+  fill: var(--forest);
+}
+.xl-dot[data-kind='reply'] {
+  fill: var(--paper);
+  stroke: var(--ink-2);
+  stroke-width: 1.5;
+}
+.xl-dot[data-kind='dead'] {
+  fill: var(--ink-2);
+  opacity: 0.4;
+}
+.xl-dot[data-selected='true'] {
+  fill: var(--leaf);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  opacity: 1;
+}
+.xl-dot:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+.xl-line {
+  fill: none;
+  stroke: var(--forest);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+  stroke-linecap: round;
+}
+.xl-pt {
+  fill: var(--paper);
+  stroke: var(--forest);
+  stroke-width: 1.5;
+}
+.xl-pt[data-latest='true'] {
+  fill: var(--leaf);
+  stroke: var(--ink);
+}
+.xl-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.xl-legend li {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.xl-key {
+  flex-shrink: 0;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+}
+.xl-key[data-kind='original'] {
+  background: var(--forest);
+}
+.xl-key[data-kind='reply'] {
+  border: 1.5px solid var(--ink-2);
+}
+.xl-key[data-kind='dead'] {
+  background: var(--ink-2);
+  opacity: 0.4;
+}
+.xl-key[data-kind='pinned'] {
+  background: var(--leaf);
+  border: 1.5px solid var(--ink);
+}
+
+.xl-pinned {
+  display: grid;
+  gap: 6px;
+  max-width: 72ch;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid var(--rule);
+}
+.xl-pinned p {
+  margin: 0;
+}
+.xl-pinned-text {
+  font-family: var(--font-literata), Georgia, serif;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+
+/* ── Heatmap ────────────────────────────────────────────────────────────────── */
+
+.xl-scroll {
+  overflow-x: auto;
+}
+.xl-heat {
+  display: grid;
+  grid-template-columns: 2.5rem repeat(24, minmax(0, 1fr));
+  gap: 3px;
+  min-width: 640px;
+  max-width: 980px;
+}
+.xl-heat-h {
+  font-family: var(--xl-mono);
+  font-size: 10px;
+  text-align: center;
+  color: var(--ink-2);
+}
+.xl-heat-d {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.xl-cell {
+  aspect-ratio: 1;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+.xl-cell[data-peak='true'] {
+  border-color: var(--leaf);
+  background: var(--leaf);
+}
+
+/* ── Tables ─────────────────────────────────────────────────────────────────── */
+
+.xl-table {
+  width: 100%;
+  min-width: 600px;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+.xl-table th {
+  padding: 0 16px 10px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.xl-table td {
+  padding: 14px 16px 14px 0;
+  border-bottom: 1px solid var(--rule);
+  vertical-align: top;
+}
+.xl-table th:last-child,
+.xl-table td:last-child {
+  padding-right: 0;
+}
+.xl-table th.xl-num {
+  text-align: right;
+}
+.xl-num {
+  font-family: var(--xl-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.xl-date {
+  width: 6.5rem;
+  font-family: var(--xl-mono);
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.xl-post {
+  min-width: 14rem;
+}
+.xl-post a {
+  display: -webkit-box;
+  max-width: 54ch;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-family: var(--font-literata), Georgia, serif;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink);
+  transition: color 200ms ease;
+}
+.xl-post a:hover {
+  color: var(--leaf-ink);
+}
+.xl-type {
+  font-size: 13px;
+  white-space: nowrap;
+  color: var(--ink-2);
+}
+.xl-type small {
+  display: block;
+  font-size: 12px;
+}
+
+/* ── Analysis notes ─────────────────────────────────────────────────────────── */
+
+.xl-details {
+  margin-top: 24px;
+  border-top: 1px solid var(--rule);
+}
+.xl-details > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  list-style: none;
+  font-size: 14px;
+  color: var(--ink-2);
+  cursor: pointer;
+  user-select: none;
+  transition: color 200ms ease;
+}
+.xl-details > summary::-webkit-details-marker {
+  display: none;
+}
+.xl-details > summary:hover,
+.xl-details[open] > summary {
+  color: var(--ink);
+}
+.xl-details > summary:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+  border-radius: 6px;
+}
+.xl-details-title {
+  min-width: 0;
+}
+.xl-details-title b {
+  margin-right: 8px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.xl-chev {
+  flex-shrink: 0;
+  transition: transform 200ms var(--ease-out);
+}
+.xl-details[open] .xl-chev {
+  transform: rotate(180deg);
+}
+.xl-details-body {
+  display: grid;
+  gap: 22px;
+  max-width: 70ch;
+  padding: 6px 0 12px;
+}
+.xl-details-body p {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.xl-points {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.xl-points li {
+  padding-left: 14px;
+  border-left: 1px solid var(--rule);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.xl-details-body p.xl-action {
+  padding-left: 14px;
+  border-left: 2px solid var(--leaf);
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ── Analyst ────────────────────────────────────────────────────────────────── */
+
+.xl-suggest {
+  max-width: 72ch;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+.xl-suggest li {
+  border-top: 1px solid var(--rule);
+}
+.xl-suggest button {
+  display: block;
+  width: 100%;
+  padding: 12px 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.xl-suggest button:hover {
+  color: var(--ink);
+}
+.xl-compose {
+  display: grid;
+  gap: 14px;
+  max-width: 72ch;
+}
+.xl-compose-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+}
+.xl-transcript {
+  display: grid;
+  gap: 32px;
+  max-width: 72ch;
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid var(--rule);
+}
+.xl-turn {
+  display: grid;
+  gap: 8px;
+}
+.xl-turn .atelier-label {
+  margin: 0;
+}
+.xl-turn-q {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  line-height: 1.5;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+.xl-turn-a {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  color: var(--ink);
+}

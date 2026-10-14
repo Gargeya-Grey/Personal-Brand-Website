@@ -84,7 +84,7 @@
   border-radius: 50%;
   background: var(--paper);
   color: var(--ink);
-  box-shadow: 0 8px 24px -12px #14201c66;
+  box-shadow: 0 8px 24px -12px #1b1a1866;
   transition: transform 200ms var(--ease-out);
 }
 .films-play-disc svg {
@@ -96,7 +96,7 @@
   bottom: 10px;
   padding: 2px 8px;
   border-radius: 6px;
-  background: #14201cb8;
+  background: #1b1a18b8;
   color: #f3f1ea;
   font-family: var(--font-mono);
   font-size: 12px;

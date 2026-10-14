@@ -144,7 +144,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   });
 
   return (
-    <div className="min-h-screen bg-surface text-primary relative selection:bg-emerald-500/20 selection:text-inherit flex flex-col justify-between">
+    <div className="min-h-screen bg-surface text-primary relative selection:bg-[var(--color-accent-soft)] selection:text-inherit flex flex-col justify-between">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}

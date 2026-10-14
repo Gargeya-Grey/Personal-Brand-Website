@@ -1,34 +1,16 @@
 'use client';
+import './x-studio.css';
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import * as motion from 'motion/react-client';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, MotionConfig, motion } from 'motion/react';
 import {
   Check,
-  Copy,
+  ChevronDown,
   ExternalLink,
   Loader2,
-  MessageSquare,
-  Newspaper,
-  Quote,
   RefreshCw,
-  SkipForward,
-  Sparkles,
-  Clock,
-  CheckCircle2,
-  AlertCircle,
-  Layers,
-  Upload,
-  ChevronDown,
-  ChevronUp,
-  FileJson,
-  ListTodo,
   Radio,
-  PartyPopper,
-  Focus,
-  Target,
-  Timer,
-  Keyboard,
+  Upload,
 } from 'lucide-react';
 import {
   type XContentPack,
@@ -36,6 +18,7 @@ import {
   type XDraftKind,
   type XDraftStatus,
   type XSessionId,
+  type XSignalItem,
   formatDuration,
   formatPackRunLabel,
   resolveMvpIds,
@@ -43,7 +26,6 @@ import {
   sortDraftsForExecution,
   sumEstimatedSeconds,
   DEFAULT_SESSIONS,
-  isXDraftKind,
   extractDraftSourceUrl,
   draftOpenUrl,
 } from '@/lib/x-content-model';
@@ -85,35 +67,36 @@ function packSubtitle(p: XContentPack): string {
   return `${run} · ${ready}/${total} ready`;
 }
 
-const KIND_META: Record<
-  XDraftKind,
-  { label: string; chip: string; icon: typeof Sparkles; verb: string }
-> = {
-  reply: {
-    label: 'Reply',
-    chip: '!border-emerald-500/25 !bg-emerald-500/10 !text-emerald-800 dark:!text-emerald-200',
-    icon: MessageSquare,
-    verb: 'Reply',
-  },
-  flagship: {
-    label: 'Flagship',
-    chip: '!border-violet-500/25 !bg-violet-500/10 !text-violet-800 dark:!text-violet-200',
-    icon: Layers,
-    verb: 'Post thread',
-  },
-  short: {
-    label: 'Short',
-    chip: '!border-sky-500/25 !bg-sky-500/10 !text-sky-800 dark:!text-sky-200',
-    icon: Newspaper,
-    verb: 'Post',
-  },
-  quote: {
-    label: 'Quote',
-    chip: '!border-amber-500/25 !bg-amber-500/10 !text-amber-800 dark:!text-amber-200',
-    icon: Quote,
-    verb: 'Quote',
-  },
-};
+/** The sitting a pack belongs to, from its id (`pack-YYYY-MM-DD-tHH`, IST). */
+function sittingOf(p: XContentPack): { name: string; short: string } {
+  const slotMatch = p.id.match(/-t(\d{2})$/);
+  if (!slotMatch) return { name: 'Scout run', short: 'Run' };
+  const hour = parseInt(slotMatch[1], 10);
+  if (hour === 11) return { name: 'Morning sitting', short: 'Morning' };
+  if (hour === 19) return { name: 'Evening sitting', short: 'Evening' };
+  if ([13, 15, 17, 21].includes(hour)) {
+    return { name: `${slotMatch[1]}:00 IST run`, short: `${slotMatch[1]}:00` };
+  }
+  return { name: `${slotMatch[1]}:00 UTC run (legacy)`, short: `${slotMatch[1]}:00 UTC` };
+}
+
+/** "Monday 14 October" and "14 Oct" from a pack's YYYY-MM-DD date. */
+function formatPackDate(date: string | undefined): { long: string; short: string } | null {
+  const match = (date || '').match(/^(\d{4})-(\d{2})-(\d{2})$/);
+  if (!match) return null;
+  const day = new Date(Date.UTC(Number(match[1]), Number(match[2]) - 1, Number(match[3])));
+  if (Number.isNaN(day.getTime())) return null;
+  const parts = (options: Intl.DateTimeFormatOptions) =>
+    new Intl.DateTimeFormat('en-GB', { ...options, timeZone: 'UTC' }).formatToParts(day);
+  const pick = (list: Intl.DateTimeFormatPart[], type: string) =>
+    list.find((part) => part.type === type)?.value ?? '';
+  const longParts = parts({ weekday: 'long', day: 'numeric', month: 'long' });
+  const shortParts = parts({ day: 'numeric', month: 'short' });
+  return {
+    long: `${pick(longParts, 'weekday')} ${pick(longParts, 'day')} ${pick(longParts, 'month')}`,
+    short: `${pick(shortParts, 'day')} ${pick(shortParts, 'month')}`,
+  };
+}
 
 const FILTERS: { id: FilterId; label: string }[] = [
   { id: 'all', label: 'All tasks' },
@@ -126,16 +109,41 @@ const FILTERS: { id: FilterId; label: string }[] = [
   { id: 'p1', label: 'P1–2' },
 ];
 
-function kindMeta(kind: XDraftKind | string | undefined) {
-  if (kind && isXDraftKind(kind) && KIND_META[kind]) return KIND_META[kind];
-  return KIND_META.short;
+const VIEWS: { id: ViewMode; label: string }[] = [
+  { id: 'focus', label: 'Focus' },
+  { id: 'list', label: 'List' },
+  { id: 'library', label: 'Archive' },
+];
+
+/** Replies stay replies; a short, flagship or other own post is an "Original". */
+function kindLabel(kind: XDraftKind | string | undefined): string {
+  if (kind === 'reply') return 'Reply';
+  if (kind === 'quote') return 'Quote';
+  return 'Original';
+}
+
+/** The scout writes "Reply · UChicago analog Core"; the kind already has its own column. */
+function draftTitle(label: string): string {
+  const stripped = label.replace(/^(reply|original|short|flagship|quote)\s*[·:\-–—]\s*/i, '').trim();
+  return stripped || label;
 }
 
 function charHint(text: string | undefined | null) {
   const count = typeof text === 'string' ? text.length : String(text ?? '').length;
-  if (count <= 280) return { count, tone: 'text-emerald-600 dark:text-emerald-400' };
-  if (count <= 4000) return { count, tone: 'text-[var(--atelier-faint)]' };
-  return { count, tone: 'text-amber-600 dark:text-amber-400' };
+  if (count <= 4000) return { count, tone: 'plain' as const };
+  return { count, tone: 'over' as const };
+}
+
+function comparableStatusUrl(url: string): string {
+  return url.trim().replace(/[?#].*$/, '').replace(/\/+$/, '').toLowerCase();
+}
+
+/** The scout signal that describes the post a draft answers (same status URL). */
+function findSourceSignal(signals: XSignalItem[] | undefined, draft: XDraftItem): XSignalItem | undefined {
+  const sourceUrl = extractDraftSourceUrl(draft.meta);
+  if (!sourceUrl) return undefined;
+  const wanted = comparableStatusUrl(sourceUrl);
+  return (signals || []).find((s) => s.url && comparableStatusUrl(s.url) === wanted);
 }
 
 function filterDrafts(
@@ -214,219 +222,164 @@ function useDraftActions(
   return { copied, busy, copyOpen, done, skip };
 }
 
-function ActionRow({
+/**
+ * One draft as a row of the queue.
+ * - `primary`: the draft to do now. It carries the one filled button of the view.
+ * - `next`: an open draft further down; its Copy & open is a hairline button.
+ * - `archive`: any draft of the pack; posted and skipped ones step back and fold their text away.
+ */
+function DraftRow({
   draft,
-  busy,
-  copied,
+  signals,
+  mode,
   large,
-  onCopyOpen,
-  onDone,
-  onSkip,
+  position,
+  onStatus,
 }: {
   draft: XDraftItem;
-  busy: boolean;
-  copied: boolean;
+  signals: XSignalItem[] | undefined;
+  mode: 'primary' | 'next' | 'archive';
   large?: boolean;
-  onCopyOpen: () => void;
-  onDone: () => void;
-  onSkip: () => void;
+  position?: { index: number; total: number };
+  onStatus: (id: string, s: XDraftStatus) => Promise<void>;
 }) {
-  const h = large ? 'h-12 sm:h-14 text-sm sm:text-base px-5 sm:px-6' : 'h-11 text-sm px-4';
+  const { copied, busy, copyOpen, done, skip } = useDraftActions(draft, onStatus);
+  const chars = charHint(draft.body);
+  const sourceUrl = extractDraftSourceUrl(draft.meta);
+  const sourceSignal = findSourceSignal(signals, draft);
+  const isPosted = draft.status === 'posted';
+  const isSkipped = draft.status === 'skipped';
+  const isDone = isPosted || isSkipped;
+  const stateWord = isPosted ? 'Posted' : isSkipped ? 'Skipped' : null;
+  const handle = draft.targetHandle ? `@${draft.targetHandle.replace(/^@/, '')}` : null;
+  const reach = draft.targetReach ? draft.targetReach.replace(/-/g, ' ') : null;
+
+  const body = (
+    <p className="xq-body" data-size={large ? 'lg' : undefined}>
+      {draft.body}
+    </p>
+  );
+
   return (
-    <div className="flex flex-wrap gap-3">
-      <button
-        type="button"
-        onClick={onCopyOpen}
-        className={`atelier-btn ${copied ? 'atelier-btn-gold' : 'atelier-btn-primary'} ${h}`}
-      >
-        {copied ? (
-          <>
-            <Check className="w-4 h-4" /> Copied
-          </>
+    <motion.li
+      className="atelier-row xq-row"
+      data-recede={isDone ? '' : undefined}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+    >
+      <div className="xq-kind">
+        <span className="atelier-status" data-tone={isPosted ? 'done' : isSkipped ? 'draft' : undefined}>
+          {stateWord ?? kindLabel(draft.kind)}
+        </span>
+        {stateWord && <span className="xq-kind-sub">{kindLabel(draft.kind)}</span>}
+      </div>
+
+      <div className="xq-main">
+        <h3 className="xq-title">{draftTitle(draft.label)}</h3>
+
+        {sourceSignal && (
+          <blockquote className="xq-source">
+            <p>{sourceSignal.summary}</p>
+            {(handle || reach) && (
+              <footer className="atelier-mono">
+                {handle && <span>{handle}</span>}
+                {reach && <span>{reach}</span>}
+              </footer>
+            )}
+          </blockquote>
+        )}
+
+        {isDone ? (
+          <details className="xq-fold">
+            <summary className="atelier-link">
+              Show draft <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+            </summary>
+            {body}
+          </details>
+        ) : (
+          body
+        )}
+
+        {!isDone && (draft.why || draft.tip) && (
+          <div className="xq-notes">
+            {draft.why && <p className="atelier-row-note">{draft.why}</p>}
+            {draft.tip && (
+              <p className="atelier-row-note">
+                <strong>Tip.</strong> {draft.tip}
+              </p>
+            )}
+          </div>
+        )}
+
+        <p className="atelier-meta atelier-mono xq-facts">
+          {position && (
+            <span>
+              {position.index + 1} of {position.total}
+            </span>
+          )}
+          {!sourceSignal && handle && <span>{handle}</span>}
+          {!sourceSignal && reach && <span>{reach}</span>}
+          <span data-tone={chars.tone}>{chars.count} chars</span>
+          <span>{formatDuration(draft.estimatedSeconds)}</span>
+          <span>P{draft.priority}</span>
+          {draft.kind === 'flagship' && <span>Flagship thread</span>}
+          {!sourceUrl && <span>No source link, opens compose</span>}
+        </p>
+      </div>
+
+      <div className="xq-actions">
+        {mode === 'archive' ? (
+          <div className="xq-links">
+            {isDone ? (
+              <button type="button" className="atelier-link" onClick={() => void onStatus(draft.id, 'ready')}>
+                Undo
+              </button>
+            ) : (
+              <button type="button" className="atelier-link" onClick={() => void onStatus(draft.id, 'posted')}>
+                Mark posted
+              </button>
+            )}
+            {sourceUrl && (
+              <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="atelier-link">
+                Source <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+              </a>
+            )}
+          </div>
         ) : (
           <>
-            <Copy className="w-4 h-4" /> Copy & open X
+            <button
+              type="button"
+              onClick={() => void copyOpen()}
+              className={`atelier-btn ${mode === 'primary' ? 'atelier-btn-primary' : 'atelier-btn-line'}`}
+            >
+              {copied ? (
+                <>
+                  <Check className="w-4 h-4" aria-hidden="true" /> Copied
+                </>
+              ) : (
+                'Copy & open'
+              )}
+            </button>
+            <div className="xq-links">
+              <button type="button" className="atelier-link" disabled={busy} onClick={() => void done()}>
+                {busy && <Loader2 className="w-3.5 h-3.5 xq-spin" aria-hidden="true" />}
+                Mark posted
+              </button>
+              <button type="button" className="atelier-link" disabled={busy} onClick={() => void skip()}>
+                Skip
+              </button>
+              {sourceUrl && (
+                <a href={sourceUrl} target="_blank" rel="noopener noreferrer" className="atelier-link">
+                  Source <ExternalLink className="w-3.5 h-3.5" aria-hidden="true" />
+                </a>
+              )}
+            </div>
           </>
         )}
-      </button>
-      <button
-        type="button"
-        disabled={busy}
-        onClick={onDone}
-        className={`atelier-btn atelier-btn-gold ${h} disabled:opacity-40`}
-      >
-        {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-        Done
-      </button>
-      <button
-        type="button"
-        disabled={busy}
-        onClick={onSkip}
-        className={`atelier-btn atelier-btn-ghost ${h} disabled:opacity-40`}
-      >
-        <SkipForward className="w-4 h-4" /> Skip
-      </button>
-      {(() => {
-        const sourceUrl = extractDraftSourceUrl(draft.meta);
-        if (!sourceUrl) return null;
-        return (
-          <a
-            href={sourceUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={`atelier-btn atelier-btn-ghost ${h}`}
-          >
-            Source <ExternalLink className="w-3.5 h-3.5" />
-          </a>
-        );
-      })()}
-    </div>
-  );
-}
-
-function FocusCard({
-  draft,
-  remainingCount,
-  etaSeconds,
-  onStatus,
-}: {
-  draft: XDraftItem;
-  remainingCount: number;
-  etaSeconds: number;
-  onStatus: (id: string, s: XDraftStatus) => Promise<void>;
-}) {
-  const meta = kindMeta(draft.kind);
-  const Icon = meta.icon;
-  const chars = charHint(draft.body);
-  const { copied, busy, copyOpen, done, skip } = useDraftActions(draft, onStatus);
-
-  return (
-    <motion.article
-      key={draft.id}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -12 }}
-      transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-      className="atelier-card-lg px-6 py-8 sm:px-10 sm:py-12 md:px-14 md:py-14 space-y-8 sm:space-y-10"
-    >
-      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-6">
-        <div className="space-y-4 max-w-2xl">
-          <div className="flex flex-wrap items-center gap-2">
-            <span className="text-[0.7rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)]">
-              Up next · {remainingCount} left
-            </span>
-          </div>
-          <div className="flex flex-wrap items-center gap-2">
-            <span className={`atelier-chip !py-1.5 !px-3 ${meta.chip}`}>
-              <Icon className="w-3.5 h-3.5" /> {meta.label}
-            </span>
-            <span className="atelier-chip !py-1.5 !px-3">P{draft.priority}</span>
-            <span className="atelier-chip !py-1.5 !px-3">
-              <Timer className="w-3 h-3" /> {formatDuration(draft.estimatedSeconds)}
-            </span>
-          </div>
-          <h2 className="font-headline text-3xl sm:text-4xl md:text-[2.75rem] font-extrabold tracking-[-0.03em] text-[var(--atelier-ink)] leading-[1.1]">
-            {draft.label}
-          </h2>
-          {draft.why && (
-            <p className="text-base sm:text-lg text-[var(--atelier-muted)] leading-relaxed flex gap-3 max-w-xl">
-              <Target className="w-5 h-5 text-[var(--atelier-gold)] shrink-0 mt-0.5" />
-              <span>{draft.why}</span>
-            </p>
-          )}
-        </div>
-        <div className="sm:text-right space-y-1 shrink-0 pt-1">
-          <p className={`text-sm font-mono font-medium ${chars.tone}`}>{chars.count} chars</p>
-          <p className="text-xs text-[var(--atelier-faint)]">
-            ~{formatDuration(etaSeconds)} in this filter
-          </p>
-        </div>
       </div>
-
-      <pre className="whitespace-pre-wrap font-sans text-lg sm:text-xl leading-[1.75] text-[var(--atelier-ink)] bg-[var(--atelier-paper)]/60 border border-[var(--atelier-line)] rounded-[1.75rem] sm:rounded-[2rem] px-6 py-6 sm:px-10 sm:py-9 selection:bg-[var(--atelier-gold-soft)] max-h-[min(50vh,28rem)] overflow-y-auto">
-        {draft.body}
-      </pre>
-
-      {draft.tip && (
-        <p className="text-sm text-[var(--atelier-muted)] pl-4 border-l-2 border-[var(--atelier-gold)]/35 leading-relaxed max-w-2xl">
-          {draft.tip}
-        </p>
-      )}
-
-      <div className="space-y-4 pt-1">
-        <ActionRow
-          draft={draft}
-          busy={busy}
-          copied={copied}
-          large
-          onCopyOpen={() => void copyOpen()}
-          onDone={() => void done()}
-          onSkip={() => void skip()}
-        />
-        <p className="text-xs text-[var(--atelier-faint)] flex items-center gap-2">
-          <Keyboard className="w-3.5 h-3.5" />
-          <span>
-            <kbd className="font-mono text-[var(--atelier-muted)]">C</kbd> copy ·{' '}
-            <kbd className="font-mono text-[var(--atelier-muted)]">D</kbd> done ·{' '}
-            <kbd className="font-mono text-[var(--atelier-muted)]">S</kbd> skip
-          </span>
-        </p>
-      </div>
-    </motion.article>
-  );
-}
-
-function ListCard({
-  draft,
-  index,
-  total,
-  onStatus,
-}: {
-  draft: XDraftItem;
-  index: number;
-  total: number;
-  onStatus: (id: string, s: XDraftStatus) => Promise<void>;
-}) {
-  const meta = kindMeta(draft.kind);
-  const Icon = meta.icon;
-  const { copied, busy, copyOpen, done, skip } = useDraftActions(draft, onStatus);
-
-  return (
-    <motion.article
-      layout
-      initial={{ opacity: 0, y: 12 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.98 }}
-      className="atelier-card px-6 py-6 sm:px-8 sm:py-7 space-y-5"
-    >
-      <div className="flex flex-wrap items-center gap-2">
-        <span className="font-mono text-xs text-[var(--atelier-gold)] tabular-nums">
-          {index + 1}/{total}
-        </span>
-        <span className={`atelier-chip ${meta.chip}`}>
-          <Icon className="w-3 h-3" /> {meta.label}
-        </span>
-        <span className="atelier-chip">P{draft.priority}</span>
-        <span className="atelier-chip">{formatDuration(draft.estimatedSeconds)}</span>
-      </div>
-      <h3 className="font-headline text-xl sm:text-2xl font-bold text-[var(--atelier-ink)] tracking-tight">
-        {draft.label}
-      </h3>
-      {draft.why && (
-        <p className="text-sm text-[var(--atelier-muted)] leading-relaxed max-w-2xl">{draft.why}</p>
-      )}
-      <pre className="whitespace-pre-wrap text-base leading-relaxed text-[var(--atelier-ink)] bg-[var(--atelier-paper)]/50 border border-[var(--atelier-line)] rounded-[1.5rem] p-5 sm:p-6 max-h-56 overflow-y-auto">
-        {draft.body}
-      </pre>
-      <ActionRow
-        draft={draft}
-        busy={busy}
-        copied={copied}
-        onCopyOpen={() => void copyOpen()}
-        onDone={() => void done()}
-        onSkip={() => void skip()}
-      />
-    </motion.article>
+    </motion.li>
   );
 }
 
@@ -468,55 +421,56 @@ function ImportPanel({
   };
 
   return (
-    <div className="atelier-card overflow-hidden">
+    <section className="atelier-section xq-minor">
       <button
         type="button"
         onClick={onToggle}
-        className="w-full flex items-center justify-between gap-3 px-6 py-5 text-left"
+        className="atelier-link xq-disclosure"
+        aria-expanded={open}
       >
-        <span className="flex items-center gap-2.5 text-sm text-[var(--atelier-faint)]">
-          <Upload className="w-4 h-4" />
-          Advanced import
-        </span>
-        {open ? (
-          <ChevronUp className="w-4 h-4 text-[var(--atelier-faint)]" />
-        ) : (
-          <ChevronDown className="w-4 h-4 text-[var(--atelier-faint)]" />
-        )}
+        <Upload className="w-3.5 h-3.5" aria-hidden="true" />
+        Advanced import
       </button>
-      <AnimatePresence>
+      <AnimatePresence initial={false}>
         {open && (
           <motion.div
-            initial={{ height: 0, opacity: 0 }}
-            animate={{ height: 'auto', opacity: 1 }}
-            exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden"
+            className="xq-import"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
           >
-            <div className="px-6 pb-6 space-y-4 border-t border-[var(--atelier-line)] pt-5">
-              <textarea
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                rows={5}
-                placeholder="Paste pack JSON…"
-                className="atelier-input !rounded-2xl font-mono text-xs min-h-[8rem]"
-                spellCheck={false}
-              />
-              <button
-                type="button"
-                disabled={busy || !text.trim()}
-                onClick={() => void run()}
-                className="atelier-btn atelier-btn-ghost h-10 text-xs disabled:opacity-40"
-              >
-                {busy ? <Loader2 className="w-4 h-4 animate-spin" /> : <FileJson className="w-4 h-4" />}
-                Save import
-              </button>
-              {message && <p className="text-xs text-emerald-600">{message}</p>}
-              {err && <p className="text-xs text-red-500">{err}</p>}
-            </div>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              rows={5}
+              placeholder="Paste pack JSON…"
+              aria-label="Pack JSON"
+              className="atelier-input"
+              spellCheck={false}
+            />
+            <button
+              type="button"
+              disabled={busy || !text.trim()}
+              onClick={() => void run()}
+              className="atelier-btn atelier-btn-line"
+            >
+              {busy && <Loader2 className="w-4 h-4 xq-spin" aria-hidden="true" />}
+              Save import
+            </button>
+            {message && (
+              <div className="atelier-notice" data-tone="ok" role="status">
+                {message}
+              </div>
+            )}
+            {err && (
+              <div className="atelier-notice" data-tone="warn" role="alert">
+                {err}
+              </div>
+            )}
           </motion.div>
         )}
       </AnimatePresence>
-    </div>
+    </section>
   );
 }
 
@@ -693,8 +647,28 @@ export function XStudioClient() {
     return active.drafts.filter((d) => d.status === 'posted' || d.status === 'skipped').length;
   }, [active]);
 
+  /** One progress step per draft, in the order the drafts are done. */
+  const steps = useMemo(() => {
+    if (!active) return [];
+    const ordered = sortDraftsForExecution(active.drafts);
+    const totals = { Reply: 0, Original: 0, Quote: 0 };
+    const seen = { Reply: 0, Original: 0, Quote: 0 };
+    const labelOf = (d: XDraftItem) => kindLabel(d.kind) as keyof typeof totals;
+    ordered.forEach((d) => {
+      totals[labelOf(d)] += 1;
+    });
+    return ordered.map((d) => {
+      const group = labelOf(d);
+      seen[group] += 1;
+      return {
+        id: d.id,
+        name: totals[group] > 1 ? `${group} ${seen[group]}` : group,
+        state: d.status === 'ready' ? ('open' as const) : d.status,
+      };
+    });
+  }, [active]);
+
   const totalCount = active?.drafts.length ?? 0;
-  const progress = totalCount ? Math.round((doneCount / totalCount) * 100) : 0;
   const etaSeconds = sumEstimatedSeconds(remaining);
   const current = remaining[0] ?? null;
 
@@ -788,478 +762,417 @@ export function XStudioClient() {
 
   if (loading) {
     return (
-      <div className="space-y-6 max-w-4xl mx-auto animate-pulse" aria-busy="true" aria-label="Loading queue">
-        <div className="atelier-card px-6 py-6 sm:px-8 space-y-4">
-          <div className="flex flex-wrap gap-2">
-            <div className="h-6 w-16 rounded-full bg-[var(--atelier-line)]" />
-            <div className="h-6 w-24 rounded-full bg-[var(--atelier-line)]" />
-          </div>
-          <div className="h-7 w-2/3 max-w-md rounded-xl bg-[var(--atelier-line)]" />
-          <div className="h-1.5 w-48 rounded-full bg-[var(--atelier-line)]" />
-        </div>
-        <div className="atelier-card-lg p-8 sm:p-10 space-y-4">
-          <div className="h-5 w-28 rounded-full bg-[var(--atelier-line)]" />
-          <div className="h-24 w-full rounded-2xl bg-[var(--atelier-line)]" />
-          <div className="flex gap-2">
-            <div className="h-10 w-28 rounded-full bg-[var(--atelier-line)]" />
-            <div className="h-10 w-24 rounded-full bg-[var(--atelier-line)]" />
-          </div>
-        </div>
-        <p className="text-center text-sm text-[var(--atelier-faint)] flex items-center justify-center gap-2">
-          <Loader2 className="w-4 h-4 animate-spin text-[var(--atelier-gold)]" />
-          Loading queue…
-        </p>
+      <div className="atelier-empty xq" aria-busy="true" aria-label="Loading queue">
+        <Loader2 className="w-5 h-5 xq-spin" aria-hidden="true" />
+        <p>Loading queue…</p>
       </div>
     );
   }
 
   if (error && !active) {
     return (
-      <div className="space-y-8">
-        <div className="atelier-card-lg py-20 px-10 flex flex-col items-center gap-5 text-center">
-          <AlertCircle className="w-10 h-10 text-red-500" />
-          <p className="font-headline font-bold text-xl">Could not load queue</p>
-          <p className="text-sm text-[var(--atelier-muted)] max-w-md">{error}</p>
-          <button type="button" onClick={() => void load()} className="atelier-btn atelier-btn-gold">
-            <RefreshCw className="w-4 h-4" /> Retry
-          </button>
-        </div>
+      <div className="xq">
+        <section className="atelier-section">
+          <div className="xq-failure">
+            <div className="atelier-notice" data-tone="warn" role="alert">
+              <div>
+                <strong>Could not load queue.</strong> {error}
+              </div>
+            </div>
+            <button type="button" onClick={() => void load()} className="atelier-btn atelier-btn-primary">
+              <RefreshCw className="w-4 h-4" aria-hidden="true" /> Retry
+            </button>
+          </div>
+        </section>
         <ImportPanel open onToggle={() => {}} onImported={onImported} />
       </div>
     );
   }
 
+  const activeSitting = active ? sittingOf(active) : null;
+  const activeDate = active ? formatPackDate(active.date) : null;
+  const isQueueClear = !active || (activeRuns.length === 0 && !showCompletedRuns && isPackCleared(active));
+  const showRemainingButton = filter !== 'all' && allReady.length > 0;
+  const showOtherPackButton = otherReadyPack != null;
+  const packTitle = active ? active.title.replace(/^t\d{2}\s*[·:\-–—]\s*/i, '').trim() || active.title : '';
+
   return (
-    <div className="space-y-6 sm:space-y-8 max-w-4xl mx-auto">
-      {/* Slim status bar — not a second hero */}
-      <div
-        className={`atelier-card px-5 py-4 sm:px-7 sm:py-5 transition-shadow duration-500 ${
-          pulse ? 'ring-2 ring-[var(--atelier-gold)]/40' : ''
-        }`}
-      >
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 sm:gap-5">
-          <div className="min-w-0 space-y-2">
-            <div className="flex flex-wrap items-center gap-2.5">
-              <span
-                className={`atelier-chip !py-1 !text-[0.65rem] ${
-                  live
-                    ? '!border-emerald-500/25 !bg-emerald-500/10 !text-emerald-800 dark:!text-emerald-200'
-                    : ''
-                }`}
-              >
-                <Radio className={`w-3 h-3 ${live ? 'animate-pulse' : ''}`} />
-                {live ? 'Live' : 'Paused'}
-              </span>
-              {lastSync && (
-                <span className="text-[0.65rem] text-[var(--atelier-faint)] font-mono">
-                  synced {lastSync.toLocaleTimeString()}
+    <MotionConfig reducedMotion="user">
+      <div className="xq">
+        <section className="atelier-section" aria-labelledby="xq-pack-heading">
+          {/* Scout runs: which sitting is on screen */}
+          {packs.length > 0 && (
+            <div className="xq-runs">
+              <p className="atelier-meta">
+                <span>Scout runs</span>
+                <span>
+                  <span className="xq-num">{activeRuns.length}</span> open
                 </span>
-              )}
-              {active?.id && (
-                <span className="text-[0.65rem] text-[var(--atelier-faint)] font-mono truncate max-w-[12rem]">
-                  {active.id}
-                </span>
+                {completedRuns.length > 0 && (
+                  <span>
+                    <span className="xq-num">{completedRuns.length}</span> done
+                  </span>
+                )}
+              </p>
+              <div className="xq-runs-row">
+                <div className="atelier-tabs" role="group" aria-label="Scout runs">
+                  {pickerPacks.map((p) => {
+                    const ready = readyCount(p);
+                    const cleared = isPackCleared(p);
+                    const runDate = formatPackDate(p.date);
+                    return (
+                      <button
+                        key={p.id}
+                        type="button"
+                        className="atelier-tab"
+                        aria-pressed={p.id === active?.id}
+                        title={`${p.title} · ${packSubtitle(p)}`}
+                        onClick={() => selectPack(p.id)}
+                      >
+                        {sittingOf(p).short}
+                        {runDate ? `, ${runDate.short}` : ''}
+                        <span className="atelier-tab-count">{cleared ? 'done' : `${ready} left`}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+                <div className="xq-runs-links">
+                  {completedRuns.length > 0 && (
+                    <button type="button" className="atelier-link" onClick={() => setShowCompletedRuns((v) => !v)}>
+                      {showCompletedRuns ? 'Hide completed' : 'Show completed'}
+                    </button>
+                  )}
+                  <button type="button" className="atelier-link" onClick={() => void load({ forceLatest: true })}>
+                    Jump to latest
+                  </button>
+                </div>
+              </div>
+              {activeRuns.length === 0 && !showCompletedRuns && (
+                <p className="xq-runs-note">
+                  All open runs are cleared. Completed packs stay in the cloud but stay out of your way.
+                  {completedRuns.length > 0
+                    ? ' Use “Show completed” only if you need to restore a draft.'
+                    : ' Wait for the next 1h scout (11:00–22:00 IST).'}
+                </p>
               )}
             </div>
-            <p className="font-headline text-lg sm:text-xl font-bold text-[var(--atelier-ink)] tracking-tight">
-              {active?.title ?? (activeRuns.length === 0 ? 'No open runs' : 'Waiting for pack')}
-            </p>
-            {active && (
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-[var(--atelier-muted)]">
-                <span className="inline-flex items-center gap-1.5">
-                  <ListTodo className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />
-                  {remaining.length} in view · {allReady.length} ready
+          )}
+
+          {/* The pack */}
+          <div className="atelier-section-head">
+            <h2 id="xq-pack-heading">
+              {active && activeSitting ? (
+                <>
+                  {activeSitting.name}.{activeDate ? <> <em>{activeDate.long}</em></> : null}
+                </>
+              ) : activeRuns.length === 0 ? (
+                'No open runs'
+              ) : (
+                'Waiting for pack'
+              )}
+            </h2>
+            <div className="xq-tools">
+              <span className="atelier-status" data-tone={live ? 'live' : 'draft'}>
+                {live ? 'Live' : 'Paused'}
+              </span>
+              {pulse && (
+                <span className="atelier-status" data-tone="live" role="status">
+                  Updated
                 </span>
-                <span className="inline-flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />
-                  ~{formatDuration(etaSeconds)}
-                </span>
-                <span>
-                  {doneCount}/{totalCount} cleared
-                </span>
-              </div>
-            )}
-            {active && totalCount > 0 && (
-              <div className="h-1.5 rounded-full bg-[var(--atelier-paper)] border border-[var(--atelier-line)] overflow-hidden max-w-xs mt-1">
-                <div
-                  className="h-full rounded-full bg-[var(--atelier-gold)] transition-all duration-500"
-                  style={{ width: `${progress}%` }}
-                />
-              </div>
-            )}
+              )}
+              {lastSync && <span className="atelier-mono">synced {lastSync.toLocaleTimeString()}</span>}
+              <button
+                type="button"
+                onClick={() => setLive((v) => !v)}
+                className="atelier-icon-btn"
+                aria-pressed={live}
+                aria-label={live ? 'Pause live updates' : 'Resume live updates'}
+                title={live ? 'Pause live updates' : 'Resume live updates'}
+              >
+                <Radio className="w-4 h-4" aria-hidden="true" />
+              </button>
+              <button
+                type="button"
+                onClick={() => void load({ forceLatest: true })}
+                className="atelier-icon-btn"
+                aria-label="Refresh and open latest ready pack"
+                title="Refresh & open latest ready pack"
+              >
+                <RefreshCw className="w-4 h-4" aria-hidden="true" />
+              </button>
+            </div>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2 shrink-0">
-            <div className="flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/40">
-              {(
-                [
-                  { id: 'focus' as const, icon: Focus, label: 'Focus' },
-                  { id: 'list' as const, icon: ListTodo, label: 'List' },
-                  { id: 'library' as const, icon: Newspaper, label: 'Archive' },
-                ] as const
-              ).map(({ id, icon: I, label }) => (
+          {active && (
+            <>
+              <p className="xq-pack-title">{packTitle}</p>
+              <p className="atelier-meta">
+                <span className="atelier-mono">{active.id}</span>
+                <span>
+                  <span className="xq-num">{remaining.length}</span> in view
+                </span>
+                <span>
+                  <span className="xq-num">{allReady.length}</span> ready
+                </span>
+                <span>
+                  <span className="xq-num">{formatDuration(etaSeconds)}</span>
+                </span>
+                <span>
+                  <span className="xq-num">
+                    {doneCount}/{totalCount}
+                  </span>{' '}
+                  cleared
+                </span>
+              </p>
+              {totalCount > 0 && (
+                <div className="xq-progress">
+                  <ol className="xq-steps" aria-label="Pack progress">
+                    {steps.map((step) => (
+                      <li key={step.id} data-state={step.state}>
+                        {step.name}
+                        <span className="sr-only">
+                          {step.state === 'posted' ? ' (posted)' : step.state === 'skipped' ? ' (skipped)' : ' (open)'}
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                  <span className="atelier-mono">
+                    {doneCount} of {totalCount} done
+                  </span>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* View and filters */}
+          <div className="xq-controls">
+            <div className="atelier-tabs" role="group" aria-label="View">
+              {VIEWS.map((v) => (
                 <button
-                  key={id}
+                  key={v.id}
                   type="button"
-                  onClick={() => setView(id)}
-                  className={`px-3.5 py-2 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors ${
-                    view === id
-                      ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                      : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-                  }`}
+                  className="atelier-tab"
+                  aria-pressed={view === v.id}
+                  onClick={() => setView(v.id)}
                 >
-                  <I className="w-3.5 h-3.5" />
-                  <span className="hidden sm:inline">{label}</span>
+                  {v.label}
+                  {v.id === 'list' && active && <span className="atelier-tab-count">{remaining.length}</span>}
+                  {v.id === 'library' && active && <span className="atelier-tab-count">{totalCount}</span>}
                 </button>
               ))}
             </div>
-            <button
-              type="button"
-              onClick={() => setLive((v) => !v)}
-              className="atelier-btn atelier-btn-ghost h-10 w-10 !px-0"
-              title={live ? 'Pause live updates' : 'Resume live updates'}
-            >
-              <Radio className="w-4 h-4" />
-            </button>
-            <button
-              type="button"
-              onClick={() => void load({ forceLatest: true })}
-              className="atelier-btn atelier-btn-ghost h-10 w-10 !px-0"
-              title="Refresh & open latest ready pack"
-            >
-              <RefreshCw className="w-4 h-4" />
-            </button>
+            {view !== 'library' && active && readyCount(active) > 0 && (
+              <div className="xq-filters" role="group" aria-label="Filter drafts">
+                {FILTERS.map((f) => {
+                  const count = filterDrafts(active.drafts, f.id, mvpIds).length;
+                  return (
+                    <button
+                      key={f.id}
+                      type="button"
+                      className="atelier-chip"
+                      aria-pressed={filter === f.id}
+                      onClick={() => setFilter(f.id)}
+                    >
+                      {f.label}
+                      <span className="atelier-mono">{count}</span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
           </div>
-        </div>
 
-        {/* Premium run picker — each 1h IST scout is its own card; completed runs hidden by default */}
-        {packs.length > 0 && (
-          <div className="mt-6 pt-6 border-t border-[var(--atelier-line)] space-y-3">
-            <div className="flex flex-wrap items-center justify-between gap-2">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--atelier-faint)]">
-                Scout runs
-                <span className="ml-2 normal-case tracking-normal font-medium text-[var(--atelier-muted)]">
-                  {activeRuns.length} open
-                  {completedRuns.length > 0 ? ` · ${completedRuns.length} done` : ''}
-                </span>
+          {/* Main stage */}
+          {isQueueClear ? (
+            <div className="atelier-empty">
+              <h3 className="atelier-h2">{packs.length === 0 ? 'No scout runs yet' : 'Queue is clear'}</h3>
+              <p>
+                {packs.length === 0
+                  ? 'When Grok’s 4-hour scout loop runs on your laptop, new runs appear here. Pick any one to work.'
+                  : 'Finished and skipped runs are hidden so you only see open work. Next scout adds a new card without overwriting older ones.'}
               </p>
-              <div className="flex items-center gap-2">
-                {completedRuns.length > 0 && (
+              {completedRuns.length > 0 && (
+                <button
+                  type="button"
+                  onClick={() => setShowCompletedRuns(true)}
+                  className="atelier-btn atelier-btn-primary"
+                >
+                  Show {completedRuns.length} completed run{completedRuns.length === 1 ? '' : 's'}
+                </button>
+              )}
+            </div>
+          ) : view === 'library' && active ? (
+            <>
+              <p className="atelier-row-note xq-more">
+                Archive of every draft in this pack (including done/skipped). Switch pack above to compare days.
+              </p>
+              <ul className="atelier-rows xq-rows">
+                {sortDraftsForExecution(active.drafts).map((d) => (
+                  <DraftRow key={d.id} draft={d} signals={active.signals} mode="archive" onStatus={onStatus} />
+                ))}
+              </ul>
+            </>
+          ) : remaining.length === 0 ? (
+            <div className="atelier-empty">
+              <h3 className="atelier-h2">
+                {filter !== 'all' ? 'Filter clear' : totalCount > 0 ? 'All tasks done for this pack' : 'Queue clear'}
+              </h3>
+              <p>
+                {filter !== 'all'
+                  ? 'Nothing left in this filter — try “All” or another session.'
+                  : totalCount > 0
+                    ? `Pack “${active?.title}” is loaded (${doneCount}/${totalCount} cleared).`
+                    : 'New tasks appear after the next scout run.'}
+              </p>
+              <div className="xq-empty-actions">
+                {showRemainingButton && (
+                  <button type="button" onClick={() => setFilter('all')} className="atelier-btn atelier-btn-primary">
+                    Show {allReady.length} remaining
+                  </button>
+                )}
+                {otherReadyPack && (
                   <button
                     type="button"
-                    onClick={() => setShowCompletedRuns((v) => !v)}
-                    className="text-[0.7rem] font-semibold text-[var(--atelier-faint)] hover:text-[var(--atelier-gold)] transition-colors"
+                    onClick={() => selectPack(otherReadyPack.id)}
+                    className={`atelier-btn ${showRemainingButton ? 'atelier-btn-line' : 'atelier-btn-primary'}`}
                   >
-                    {showCompletedRuns ? 'Hide completed' : 'Show completed'}
+                    Open pack with {readyCount(otherReadyPack)} ready
                   </button>
                 )}
                 <button
                   type="button"
                   onClick={() => void load({ forceLatest: true })}
-                  className="text-[0.7rem] font-semibold text-[var(--atelier-gold)] hover:opacity-80"
+                  className={`atelier-btn ${showRemainingButton || showOtherPackButton ? 'atelier-btn-line' : 'atelier-btn-primary'}`}
                 >
-                  Jump to latest
+                  <RefreshCw className="w-4 h-4" aria-hidden="true" /> Refresh latest
                 </button>
               </div>
             </div>
-            <div className="grid gap-2 sm:grid-cols-2">
-              {pickerPacks.map((p) => {
-                const ready = readyCount(p);
-                const total = p.drafts?.length ?? 0;
-                const selected = p.id === active?.id;
-                const cleared = isPackCleared(p);
-                return (
-                  <button
-                    key={p.id}
-                    type="button"
-                    onClick={() => selectPack(p.id)}
-                    className={`text-left rounded-[1.25rem] border px-4 py-3.5 transition-all duration-200 ${
-                      selected
-                        ? 'border-[var(--atelier-gold)]/45 bg-[var(--atelier-gold-soft)]/35 shadow-[var(--atelier-shadow-sm)]'
-                        : cleared
-                          ? 'border-[var(--atelier-line)] bg-[var(--atelier-paper)]/30 opacity-70 hover:opacity-100'
-                          : 'border-[var(--atelier-line)] bg-[var(--atelier-card)] hover:border-[var(--atelier-gold)]/30 hover:shadow-[var(--atelier-shadow-sm)]'
-                    }`}
-                  >
-                    <div className="flex items-start justify-between gap-2">
-                      <p
-                        className={`font-headline text-sm font-bold leading-snug line-clamp-2 ${
-                          selected ? 'text-[var(--atelier-ink)]' : 'text-[var(--atelier-ink)]'
-                        }`}
-                      >
-                        {p.title}
-                      </p>
-                      {selected && (
-                        <span className="shrink-0 atelier-chip !py-0.5 !px-2 !text-[0.6rem] !border-[var(--atelier-gold)]/30 !bg-[var(--atelier-gold-soft)] !text-[var(--atelier-gold)]">
-                          Active
-                        </span>
-                      )}
-                    </div>
-                    <p className="mt-1.5 text-[0.7rem] text-[var(--atelier-faint)] leading-relaxed">
-                      {packSubtitle(p)}
-                    </p>
-                    <div className="mt-2.5 flex items-center gap-2">
-                      <div className="flex-1 h-1 rounded-full bg-[var(--atelier-paper)] border border-[var(--atelier-line)] overflow-hidden">
-                        <div
-                          className={`h-full rounded-full transition-all ${
-                            cleared ? 'bg-[var(--atelier-faint)]' : 'bg-[var(--atelier-gold)]'
-                          }`}
-                          style={{
-                            width: `${total ? Math.round(((total - ready) / total) * 100) : 0}%`,
-                          }}
-                        />
-                      </div>
-                      <span className="text-[0.65rem] font-mono text-[var(--atelier-faint)] tabular-nums">
-                        {cleared ? 'done' : `${ready} left`}
-                      </span>
-                    </div>
-                  </button>
-                );
-              })}
-            </div>
-            {activeRuns.length === 0 && !showCompletedRuns && (
-              <p className="text-sm text-[var(--atelier-muted)] leading-relaxed py-2">
-                All open runs are cleared. Completed packs stay in the cloud but stay out of your way.
-                {completedRuns.length > 0
-                  ? ' Use “Show completed” only if you need to restore a draft.'
-                  : ' Wait for the next 1h scout (11:00–22:00 IST).'}
+          ) : (
+            <>
+              <p className="atelier-meta xq-keys">
+                {view === 'focus' && (
+                  <span>
+                    Up next, <span className="xq-num">{remaining.length}</span> left
+                  </span>
+                )}
+                <span>
+                  <kbd>C</kbd> copy &amp; open
+                </span>
+                <span>
+                  <kbd>D</kbd> posted
+                </span>
+                <span>
+                  <kbd>S</kbd> skip
+                </span>
               </p>
-            )}
-          </div>
-        )}
+              <ul className="atelier-rows xq-rows">
+                {view === 'focus' ? (
+                  <AnimatePresence mode="wait">
+                    {current && (
+                      <DraftRow
+                        key={current.id}
+                        draft={current}
+                        signals={active?.signals}
+                        mode="primary"
+                        large
+                        onStatus={onStatus}
+                      />
+                    )}
+                  </AnimatePresence>
+                ) : (
+                  <AnimatePresence>
+                    {remaining.map((d, i) => (
+                      <DraftRow
+                        key={d.id}
+                        draft={d}
+                        signals={active?.signals}
+                        mode={i === 0 ? 'primary' : 'next'}
+                        position={{ index: i, total: remaining.length }}
+                        onStatus={onStatus}
+                      />
+                    ))}
+                  </AnimatePresence>
+                )}
+              </ul>
+            </>
+          )}
+        </section>
 
-        {/* Filters — one quiet row */}
-        {view !== 'library' && active && readyCount(active) > 0 && (
-          <div className="mt-6 pt-5 border-t border-[var(--atelier-line)] flex flex-wrap gap-2">
-            {FILTERS.map((f) => {
-              const count = filterDrafts(active.drafts, f.id, mvpIds).length;
-              return (
-                <button
-                  key={f.id}
-                  type="button"
-                  onClick={() => setFilter(f.id)}
-                  className={`px-3.5 py-2 rounded-full text-xs font-bold transition-colors ${
-                    filter === f.id
-                      ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                      : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)] hover:bg-[var(--atelier-paper)]'
-                  }`}
-                >
-                  {f.label}
-                  <span className="ml-1.5 tabular-nums opacity-60">{count}</span>
-                </button>
-              );
-            })}
-          </div>
-        )}
-
-        {/* Session budgets — collapsed by default */}
+        {/* Session budgets: collapsed by default */}
         {view !== 'library' && active && (
-          <div className="mt-4">
+          <section className="atelier-section xq-minor">
             <button
               type="button"
               onClick={() => setShowMore((v) => !v)}
-              className="text-xs font-bold text-[var(--atelier-faint)] hover:text-[var(--atelier-muted)] flex items-center gap-1.5"
+              className="atelier-link xq-disclosure"
+              aria-expanded={showMore}
             >
-              {showMore ? <ChevronUp className="w-3.5 h-3.5" /> : <ChevronDown className="w-3.5 h-3.5" />}
-              Session budgets & theme
+              <ChevronDown
+                className="w-3.5 h-3.5"
+                aria-hidden="true"
+                style={{ transform: showMore ? 'rotate(180deg)' : undefined }}
+              />
+              Session budgets &amp; theme
             </button>
-            <AnimatePresence>
+            <AnimatePresence initial={false}>
               {showMore && (
                 <motion.div
-                  initial={{ height: 0, opacity: 0 }}
-                  animate={{ height: 'auto', opacity: 1 }}
-                  exit={{ height: 0, opacity: 0 }}
-                  className="overflow-hidden"
+                  className="xq-disclosure-body"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
                 >
-                  <div className="pt-4 space-y-4">
-                    {active.theme && (
-                      <p className="text-sm text-[var(--atelier-gold)] font-semibold">{active.theme}</p>
-                    )}
-                    {active.briefing && (
-                      <p className="text-sm text-[var(--atelier-muted)] leading-relaxed max-w-2xl">
-                        {active.briefing}
-                      </p>
-                    )}
-                    <div className="grid sm:grid-cols-3 gap-3">
-                      {sessions.map((s) => {
-                        const inSession = allReady.filter((d) => d.session === (s.id as XSessionId));
-                        const sec = sumEstimatedSeconds(inSession);
-                        return (
+                  {active.theme && <p className="xq-theme">{active.theme}</p>}
+                  {active.briefing && <p className="xq-briefing">{active.briefing}</p>}
+                  <ul className="xq-sessions">
+                    {sessions.map((s) => {
+                      const inSession = allReady.filter((d) => d.session === (s.id as XSessionId));
+                      const sec = sumEstimatedSeconds(inSession);
+                      return (
+                        <li key={s.id}>
                           <button
-                            key={s.id}
                             type="button"
+                            className="xq-session"
+                            aria-pressed={filter === s.id}
                             onClick={() => setFilter(s.id as FilterId)}
-                            className={`text-left rounded-2xl border px-4 py-3.5 transition-colors ${
-                              filter === s.id
-                                ? 'border-[var(--atelier-gold)]/35 bg-[var(--atelier-gold-soft)]/25'
-                                : 'border-[var(--atelier-line)] hover:border-[var(--atelier-gold)]/20'
-                            }`}
                           >
-                            <p className="text-sm font-bold text-[var(--atelier-ink)]">{s.title}</p>
-                            <p className="text-[0.7rem] text-[var(--atelier-faint)] mt-1">
+                            <span className="xq-session-name">{s.title}</span>
+                            <span className="atelier-mono">
                               {inSession.length} left · {formatDuration(sec)} / {s.maxMinutes}m
-                            </p>
+                            </span>
                           </button>
-                        );
-                      })}
-                    </div>
-                  </div>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </motion.div>
               )}
             </AnimatePresence>
-          </div>
+          </section>
         )}
+
+        {active && active.signals.length > 0 && view !== 'library' && (
+          <section className="atelier-section xq-minor">
+            <details>
+              <summary className="atelier-link xq-disclosure">
+                <ChevronDown className="w-3.5 h-3.5" aria-hidden="true" />
+                Context <span className="atelier-mono">({active.signals.length})</span>
+              </summary>
+              <ul className="xq-signals">
+                {active.signals.map((s) => (
+                  <li key={s.id}>
+                    {s.summary}
+                    {s.whyItMatters ? <span>{s.whyItMatters}</span> : null}
+                  </li>
+                ))}
+              </ul>
+            </details>
+          </section>
+        )}
+
+        <ImportPanel open={importOpen} onToggle={() => setImportOpen((v) => !v)} onImported={onImported} />
       </div>
-
-      {/* Main stage */}
-      {!active || (activeRuns.length === 0 && !showCompletedRuns && isPackCleared(active)) ? (
-        <div className="atelier-card-lg py-20 sm:py-24 px-8 sm:px-10 flex flex-col items-center gap-5 text-center">
-          <Sparkles className="w-10 h-10 text-[var(--atelier-gold)]" />
-          <p className="font-headline font-bold text-2xl text-[var(--atelier-ink)]">
-            {packs.length === 0 ? 'No scout runs yet' : 'Queue is clear'}
-          </p>
-          <p className="text-sm text-[var(--atelier-muted)] max-w-md leading-relaxed">
-            {packs.length === 0
-              ? 'When Grok’s 12-hour scout loop runs on your laptop, new runs appear here as separate cards — pick any one to work.'
-              : 'Finished and skipped runs are hidden so you only see open work. Next scout adds a new card without overwriting older ones.'}
-          </p>
-          {completedRuns.length > 0 && (
-            <button
-              type="button"
-              onClick={() => setShowCompletedRuns(true)}
-              className="atelier-btn atelier-btn-ghost text-xs"
-            >
-              Show {completedRuns.length} completed run{completedRuns.length === 1 ? '' : 's'}
-            </button>
-          )}
-        </div>
-      ) : view === 'library' ? (
-        <div className="space-y-5">
-          <p className="text-sm text-[var(--atelier-muted)]">
-            Archive of every draft in this pack (including done/skipped). Switch pack above to compare days.
-          </p>
-          {sortDraftsForExecution(active.drafts).map((d) => (
-            <div
-              key={d.id}
-              className={`atelier-card px-6 py-5 space-y-3 ${d.status !== 'ready' ? 'opacity-50' : ''}`}
-            >
-              <div className="flex flex-wrap gap-2 items-center text-xs">
-                <span className={`atelier-chip ${kindMeta(d.kind).chip}`}>{d.kind}</span>
-                <span className="font-headline font-bold text-base text-[var(--atelier-ink)]">
-                  {d.label}
-                </span>
-                <span className="text-[var(--atelier-faint)]">{d.status}</span>
-              </div>
-              <pre className="whitespace-pre-wrap text-sm text-[var(--atelier-muted)] max-h-40 overflow-y-auto leading-relaxed">
-                {d.body}
-              </pre>
-              {d.status === 'ready' ? (
-                <button
-                  type="button"
-                  onClick={() => void onStatus(d.id, 'posted')}
-                  className="atelier-btn atelier-btn-ghost h-9 text-xs"
-                >
-                  Mark done
-                </button>
-              ) : (
-                <button
-                  type="button"
-                  onClick={() => void onStatus(d.id, 'ready')}
-                  className="atelier-btn atelier-btn-ghost h-9 text-xs"
-                >
-                  Restore
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
-      ) : remaining.length === 0 ? (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="atelier-card-lg py-24 px-10 flex flex-col items-center gap-5 text-center"
-        >
-          <PartyPopper className="w-12 h-12 text-[var(--atelier-gold)]" />
-          <p className="font-headline font-bold text-2xl sm:text-3xl text-[var(--atelier-ink)]">
-            {filter !== 'all'
-              ? 'Filter clear'
-              : totalCount > 0
-                ? 'All tasks done for this pack'
-                : 'Queue clear'}
-          </p>
-          <p className="text-sm text-[var(--atelier-muted)] max-w-sm leading-relaxed">
-            {filter !== 'all'
-              ? 'Nothing left in this filter — try “All” or another session.'
-              : totalCount > 0
-                ? `Pack “${active?.title}” is loaded (${doneCount}/${totalCount} cleared).`
-                : 'New tasks appear after the next scout run.'}
-          </p>
-          <div className="flex flex-wrap justify-center gap-2 pt-2">
-            {filter !== 'all' && allReady.length > 0 && (
-              <button type="button" onClick={() => setFilter('all')} className="atelier-btn atelier-btn-gold">
-                Show {allReady.length} remaining
-              </button>
-            )}
-            {otherReadyPack && (
-              <button
-                type="button"
-                onClick={() => selectPack(otherReadyPack.id)}
-                className="atelier-btn atelier-btn-gold"
-              >
-                Open pack with {readyCount(otherReadyPack)} ready
-              </button>
-            )}
-            <button
-              type="button"
-              onClick={() => void load({ forceLatest: true })}
-              className="atelier-btn atelier-btn-ghost"
-            >
-              <RefreshCw className="w-4 h-4" /> Refresh latest
-            </button>
-          </div>
-        </motion.div>
-      ) : view === 'focus' ? (
-        <AnimatePresence mode="wait">
-          {current && (
-            <FocusCard
-              key={current.id}
-              draft={current}
-              remainingCount={remaining.length}
-              etaSeconds={etaSeconds}
-              onStatus={onStatus}
-            />
-          )}
-        </AnimatePresence>
-      ) : (
-        <div className="space-y-5">
-          <AnimatePresence mode="popLayout">
-            {remaining.map((d, i) => (
-              <ListCard key={d.id} draft={d} index={i} total={remaining.length} onStatus={onStatus} />
-            ))}
-          </AnimatePresence>
-        </div>
-      )}
-
-      {active && active.signals.length > 0 && view !== 'library' && (
-        <details className="atelier-card px-6 py-5 group">
-          <summary className="cursor-pointer font-headline font-bold text-sm text-[var(--atelier-muted)] list-none flex items-center gap-2 hover:text-[var(--atelier-ink)]">
-            <Newspaper className="w-4 h-4 text-[var(--atelier-gold)]" />
-            Context ({active.signals.length})
-          </summary>
-          <ul className="mt-5 space-y-4 text-sm text-[var(--atelier-muted)] leading-relaxed">
-            {active.signals.map((s) => (
-              <li key={s.id} className="pl-3 border-l border-[var(--atelier-line)]">
-                <span className="text-[var(--atelier-ink)] font-medium">{s.summary}</span>
-                {s.whyItMatters ? (
-                  <span className="block mt-1 text-[var(--atelier-faint)]">{s.whyItMatters}</span>
-                ) : null}
-              </li>
-            ))}
-          </ul>
-        </details>
-      )}
-
-      <ImportPanel open={importOpen} onToggle={() => setImportOpen((v) => !v)} onImported={onImported} />
-    </div>
+    </MotionConfig>
   );
 }

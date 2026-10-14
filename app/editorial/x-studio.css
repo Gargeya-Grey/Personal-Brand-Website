@@ -1,0 +1,437 @@
+/* X To-Do (the scout pack queue). Imported by x-studio-client.tsx.
+ * Grammar: atelier.css (sections, rows, status, tabs, chips, buttons, links) and the
+ * .process-path steps from index-list.css. Only the pieces those do not cover live here. */
+
+.xq {
+  min-width: 0;
+}
+
+/* ── Scout runs: which sitting is open ──────────────────────────────────────── */
+
+.xq-runs {
+  display: grid;
+  gap: 8px;
+  margin-bottom: 36px;
+}
+.xq-runs-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 4px 28px;
+}
+.xq-runs-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 20px;
+}
+.xq-runs-note {
+  max-width: 60ch;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+/* ── The pack head ──────────────────────────────────────────────────────────── */
+
+.xq-tools {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+.xq-pack-title {
+  max-width: 62ch;
+  margin: 0 0 14px;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.xq-num {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+
+/* Progress: one step per draft. Posted = filled papaya, skipped = hollow ink, open = hollow orange. */
+.xq-steps {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.xq-steps li {
+  display: flex;
+  align-items: center;
+}
+.xq-steps li::before {
+  content: '';
+  flex-shrink: 0;
+  width: 7px;
+  height: 7px;
+  margin-right: 8px;
+  border-radius: 50%;
+  border: 1.5px solid var(--leaf-ink);
+}
+.xq-steps li[data-state='posted']::before {
+  background: var(--leaf);
+  border-color: var(--leaf);
+}
+.xq-steps li[data-state='posted'] {
+  color: var(--ink);
+}
+.xq-steps li[data-state='skipped']::before {
+  border-color: var(--ink-2);
+}
+.xq-steps li:not(:last-child)::after {
+  content: '';
+  width: 28px;
+  margin: 0 10px;
+  border-top: 2px dotted var(--rule);
+}
+.xq-progress {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 22px;
+  margin-top: 18px;
+}
+
+/* ── View tabs and filters ──────────────────────────────────────────────────── */
+
+.xq-controls {
+  display: grid;
+  gap: 14px;
+  margin: 32px 0 8px;
+}
+.xq-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.xq-filters .atelier-chip {
+  min-height: 2rem;
+}
+.xq-keys {
+  margin: 0 0 4px;
+}
+.xq-keys kbd {
+  margin-right: 6px;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/* ── A draft row ────────────────────────────────────────────────────────────── */
+
+.xq-rows {
+  margin-top: 12px;
+  border-bottom: 0;
+}
+.xq-row {
+  --row-cols: 112px minmax(0, 1fr) minmax(0, auto);
+  align-items: start;
+  gap: 16px 40px;
+  padding: 30px 0;
+}
+.xq-kind {
+  display: grid;
+  justify-items: start;
+  gap: 6px;
+  padding-top: 2px;
+}
+.xq-kind-sub {
+  padding-left: 14px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.xq-main {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.xq-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  line-height: 1.35;
+  letter-spacing: -0.01em;
+}
+.xq-source {
+  margin: 0;
+  padding: 2px 0 2px 16px;
+  border-left: 2px solid var(--rule);
+  display: grid;
+  gap: 6px;
+}
+.xq-source p {
+  margin: 0;
+  max-width: 62ch;
+  font-family: var(--font-reading);
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.xq-source footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+}
+.xq-body {
+  margin: 0;
+  max-width: 64ch;
+  font-family: inherit;
+  font-size: 1.0625rem;
+  line-height: 1.7;
+  white-space: pre-wrap;
+  color: var(--ink);
+}
+.xq-body[data-size='lg'] {
+  font-size: 1.1875rem;
+  line-height: 1.72;
+}
+.xq-notes {
+  display: grid;
+  gap: 4px;
+  max-width: 62ch;
+}
+.xq-notes .atelier-row-note {
+  margin: 0;
+}
+.xq-notes strong {
+  font-weight: 600;
+  color: var(--ink);
+}
+.xq-facts {
+  margin: 0;
+}
+.xq-facts [data-tone='over'] {
+  color: var(--clay);
+}
+
+/* Actions: the main action on top, quiet links beneath. */
+.xq-actions {
+  display: grid;
+  justify-items: end;
+  gap: 6px;
+}
+.xq-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0 18px;
+}
+.xq-links .atelier-link {
+  min-height: 2.25rem;
+}
+.xq-tools .atelier-icon-btn[aria-pressed='true'] {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink-2) 55%, var(--rule));
+}
+.xq summary.atelier-link {
+  list-style: none;
+}
+.xq summary.atelier-link::-webkit-details-marker {
+  display: none;
+}
+.xq summary.atelier-link svg {
+  transition: transform 200ms var(--ease-out);
+}
+.xq details[open] > summary.atelier-link svg {
+  transform: rotate(180deg);
+}
+.xq .atelier-link:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* A finished draft steps back: muted text, the draft folded away. */
+.xq-row[data-recede] .xq-title,
+.xq-row[data-recede] .xq-body,
+.xq-row[data-recede] .xq-source p {
+  color: var(--ink-2);
+}
+.xq-fold summary {
+  display: inline-flex;
+  list-style: none;
+  cursor: pointer;
+}
+.xq-fold summary::-webkit-details-marker {
+  display: none;
+}
+.xq-fold[open] summary {
+  margin-bottom: 12px;
+}
+.xq-more {
+  margin: 0;
+}
+
+@media (max-width: 760px) {
+  .xq-row {
+    padding: 24px 0;
+    gap: 12px;
+  }
+  .xq-kind {
+    grid-auto-flow: column;
+    justify-content: start;
+    align-items: baseline;
+    gap: 0 14px;
+  }
+  .xq-kind-sub {
+    padding-left: 0;
+  }
+  .xq-actions {
+    justify-items: start;
+  }
+  .xq-links {
+    justify-content: flex-start;
+  }
+  .xq-steps li:not(:last-child)::after {
+    width: 14px;
+    margin: 0 8px;
+  }
+  .xq-body,
+  .xq-body[data-size='lg'] {
+    font-size: 1.0625rem;
+  }
+}
+
+/* ── Session budgets, context, import ───────────────────────────────────────── */
+
+.xq-minor {
+  padding: 28px 0;
+}
+.atelier-section.xq-minor + .atelier-section.xq-minor {
+  border-top: 1px solid var(--rule);
+}
+.xq-disclosure {
+  min-height: 2.25rem;
+}
+.xq-disclosure-body {
+  display: grid;
+  gap: 18px;
+  margin-top: 18px;
+}
+.xq-theme {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.xq-briefing {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.65;
+  color: var(--ink-2);
+}
+.xq-session {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: baseline;
+  gap: 4px 24px;
+  width: 100%;
+  padding: 16px 0;
+  border: 0;
+  border-top: 1px solid var(--rule);
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+}
+.xq-session-name {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.xq-session[aria-pressed='true'] .xq-session-name::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--leaf);
+}
+.xq-session:hover .xq-session-name {
+  color: var(--leaf-ink);
+}
+.xq-sessions {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+
+.xq-signals {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 18px;
+}
+.xq-signals li {
+  max-width: 68ch;
+  padding-left: 16px;
+  border-left: 2px solid var(--rule);
+  font-size: 15px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.xq-signals li span {
+  display: block;
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+.xq-import {
+  display: grid;
+  gap: 14px;
+  margin-top: 18px;
+  max-width: 62ch;
+}
+.xq-import textarea {
+  min-height: 8rem;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 13px;
+}
+.xq-import .atelier-btn {
+  justify-self: start;
+}
+
+/* ── States ─────────────────────────────────────────────────────────────────── */
+
+.xq-spin {
+  animation: xq-spin 0.9s linear infinite;
+}
+@keyframes xq-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .xq-spin {
+    animation: none;
+  }
+}
+.xq-empty-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding-top: 6px;
+}
+.xq-failure {
+  display: grid;
+  justify-items: start;
+  gap: 18px;
+}

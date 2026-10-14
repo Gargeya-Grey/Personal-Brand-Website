@@ -49,7 +49,7 @@ export function AuthorAvatar({
       .toUpperCase();
     return (
       <div
-        className={`${SIZE_CLASS[size]} shrink-0 rounded-full border border-slate-200 dark:border-white/10 bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 flex items-center justify-center font-headline font-bold text-[0.65rem] ${className}`}
+        className={`${SIZE_CLASS[size]} shrink-0 rounded-full border border-slate-200 dark:border-white/10 bg-[var(--sage)] text-[var(--leaf-ink)] flex items-center justify-center font-headline font-bold text-[0.65rem] ${className}`}
         aria-hidden
       >
         {initials || 'GS'}

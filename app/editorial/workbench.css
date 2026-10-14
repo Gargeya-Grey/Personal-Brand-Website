@@ -1,0 +1,824 @@
+/* The editorial shell and the Blog CMS (/editorial). Imported by editorial-client.tsx and loading.tsx.
+ *
+ * It only adds what app/atelier.css does not have: the head's identity block, the essay rows, the
+ * article workbench (toolbar content, metadata sheet, writing stage, preview, format guide) and the
+ * lightbox. Tokens only. No gradients, glows, shadows, blur or pills. */
+
+/* ── Shell ──────────────────────────────────────────────────────────────────── */
+
+.wb {
+  padding-bottom: 8px;
+}
+
+.wb-head h1 {
+  max-width: 26ch;
+}
+.wb-head-text {
+  display: grid;
+  flex: 1 1 28rem;
+  gap: 20px;
+  min-width: 0;
+}
+
+/* The signed-in identity: quiet, at the right of the head. No card. */
+.wb-identity {
+  display: grid;
+  justify-items: end;
+  gap: 8px;
+  flex: none;
+}
+.wb-who {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+.wb-avatar {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.wb-who-text {
+  display: grid;
+  margin: 0;
+  min-width: 0;
+  line-height: 1.3;
+  text-align: left;
+}
+.wb-who-name {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.wb-who-email {
+  font-size: 13px;
+  color: var(--ink-2);
+  overflow-wrap: anywhere;
+}
+.wb-identity-links {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+@media (max-width: 700px) {
+  .wb-identity {
+    flex-basis: 100%;
+    justify-items: start;
+  }
+}
+
+/* Draft recovery. */
+.wb-notice {
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-top: 32px;
+}
+.wb-notice-body p {
+  margin: 0;
+}
+.wb-notice-body .wb-notice-title {
+  font-weight: 500;
+}
+.wb-notice-actions {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+/* A workspace failed to render. */
+.wb-glitch {
+  display: grid;
+  justify-items: start;
+  gap: 20px;
+}
+.wb-glitch-message {
+  margin: 4px 0 0;
+  color: var(--ink-2);
+}
+
+/* Placeholders while a chunk loads. */
+.wb-blank {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.wb-editor-loading {
+  flex-grow: 1;
+  min-height: 16rem;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+/* ── Essay index ────────────────────────────────────────────────────────────── */
+
+.wb-listbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px 24px;
+  margin-bottom: 28px;
+}
+.wb-search {
+  position: relative;
+  flex: 1 1 18rem;
+  max-width: 34rem;
+}
+.wb-search > svg {
+  position: absolute;
+  top: 50%;
+  left: 14px;
+  width: 16px;
+  height: 16px;
+  color: var(--ink-2);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+.wb-search .atelier-input {
+  padding-left: 2.5rem;
+}
+@media (max-width: 700px) {
+  .wb-search {
+    flex-basis: 100%;
+    max-width: none;
+  }
+}
+
+.wb-rows {
+  --row-cols: 9.5rem minmax(0, 1fr) auto;
+}
+.wb-row {
+  align-items: start;
+  content-visibility: auto;
+  contain-intrinsic-size: auto 120px;
+}
+.wb-row-aside {
+  display: grid;
+  justify-items: start;
+  gap: 8px;
+  padding-top: 4px;
+}
+.wb-row-main {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  min-width: 0;
+}
+.wb-row-text {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+.wb-row-title {
+  margin: 0;
+  font-size: 1.25rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.wb-row-text .atelier-row-note {
+  display: -webkit-box;
+  margin: 0;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  max-width: 68ch;
+}
+.wb-row-text .atelier-meta {
+  margin: 0;
+}
+.wb-row-thumb {
+  flex: none;
+  width: 56px;
+  height: 56px;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--sage);
+  cursor: zoom-in;
+}
+.wb-row-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.wb-row-actions {
+  align-self: center;
+}
+@media (max-width: 760px) {
+  .wb-row-aside {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 6px 16px;
+    padding-top: 0;
+  }
+  .wb-row-actions {
+    align-self: start;
+  }
+  /* The slug takes its own line, so a wrapped meta line never starts with a dot. */
+  .wb-row-text .atelier-meta > :first-child {
+    flex-basis: 100%;
+    overflow-wrap: anywhere;
+  }
+  .wb-row-text .atelier-meta > :nth-child(2)::before {
+    display: none;
+  }
+}
+
+.wb-count {
+  margin: 20px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* ── Article workbench: toolbar ─────────────────────────────────────────────── */
+
+.wb-editor {
+  padding-top: 8px;
+}
+.wb-bar {
+  gap: 12px 24px;
+  background: var(--paper);
+}
+.wb-bar-lead {
+  display: flex;
+  flex: 1 1 20rem;
+  align-items: center;
+  gap: 8px 20px;
+  min-width: 0;
+}
+.wb-bar-title {
+  min-width: 0;
+  max-width: 36ch;
+  overflow: hidden;
+  font-size: 1.0625rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink);
+}
+.wb-bar-title[data-empty] {
+  color: var(--ink-2);
+}
+.wb-bar-lead .atelier-status {
+  flex: none;
+}
+.wb-bar-lead .atelier-status .atelier-mono {
+  font-size: 12px;
+}
+.wb-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+}
+.wb-layout {
+  gap: 0 18px;
+}
+.wb-layout .atelier-tab {
+  min-height: 36px;
+  text-transform: capitalize;
+}
+.wb-bar .atelier-btn[aria-pressed='true'] {
+  border-color: var(--ink);
+}
+@media (max-width: 700px) {
+  /* Three rows of controls are too tall to keep pinned on a phone. */
+  .wb-bar {
+    position: static;
+  }
+  .wb-bar-actions {
+    width: 100%;
+  }
+  .wb-bar-actions .atelier-btn-primary {
+    margin-left: auto;
+  }
+  .wb-bar-title {
+    max-width: 18ch;
+  }
+}
+
+/* ── Article workbench: metadata sheet ──────────────────────────────────────── */
+
+.wb-form {
+  display: block;
+}
+.wb-meta {
+  padding-top: 40px;
+  border-bottom: 1px solid var(--rule);
+}
+.wb-meta-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px 24px;
+  padding-bottom: 28px;
+}
+.wb-meta-ai {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px 14px;
+}
+.wb-meta-section {
+  display: grid;
+  grid-template-columns: 11rem minmax(0, 1fr);
+  gap: 16px 40px;
+  padding: 28px 0;
+  border-top: 1px solid var(--rule);
+}
+.wb-meta-section-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  align-self: start;
+}
+@media (max-width: 860px) {
+  .wb-meta-section {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.wb-fields {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px;
+}
+.wb-span-12 {
+  grid-column: span 12;
+}
+.wb-span-6 {
+  grid-column: span 6;
+}
+.wb-span-3 {
+  grid-column: span 3;
+}
+@media (max-width: 900px) {
+  .wb-span-6 {
+    grid-column: span 12;
+  }
+  .wb-span-3 {
+    grid-column: span 6;
+  }
+}
+@media (max-width: 480px) {
+  .wb-span-3 {
+    grid-column: span 12;
+  }
+}
+
+.wb-meta .atelier-label {
+  margin-bottom: 8px;
+}
+.wb-inline-note {
+  margin-left: 8px;
+  color: var(--ink-2);
+}
+.wb-input-title {
+  font-family: var(--font-reading);
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.wb-input-mono {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+}
+
+/* Choices: chips, as the filters on the public pages. */
+.wb-chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.wb-chips-field {
+  min-height: 2.75rem;
+}
+.wb-meta .atelier-chip,
+.wb-meta-ai .atelier-chip {
+  min-height: 2rem;
+  font-size: 0.8125rem;
+}
+.wb-cap {
+  text-transform: capitalize;
+}
+.wb-chip-check {
+  cursor: pointer;
+  user-select: none;
+}
+.wb-chip-check:hover {
+  color: var(--ink);
+}
+.wb-chip-check:has(input:focus-visible) {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+.wb-chip-x {
+  display: inline-flex;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+}
+.wb-chip-x:hover {
+  opacity: 1;
+}
+
+.wb-check {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 2.75rem;
+  font-size: 0.9375rem;
+  color: var(--ink);
+  cursor: pointer;
+}
+.wb-check input {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--forest);
+}
+
+.wb-cover-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wb-cover-row .atelier-input {
+  flex: 1;
+  min-width: 0;
+}
+.wb-cover-btn {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+}
+.wb-cover-thumb {
+  flex: none;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--sage);
+  cursor: zoom-in;
+}
+.wb-cover-thumb img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.wb-tag-add {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.wb-meta .wb-tag-input {
+  width: 8.5rem;
+  height: 2rem;
+  padding: 0 0.6rem;
+  font-size: 0.8125rem;
+}
+.wb-tag-btn {
+  width: 2rem;
+  height: 2rem;
+}
+
+.wb-takeaways {
+  display: grid;
+  gap: 8px;
+}
+.wb-takeaway {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.wb-takeaway .atelier-input {
+  flex: 1;
+  min-width: 0;
+}
+.wb-add {
+  justify-self: start;
+  margin-top: 6px;
+}
+
+.wb-prompt-block {
+  display: grid;
+  gap: 14px;
+  min-width: 0;
+}
+.wb-prompt-lead {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.wb-prompt {
+  max-height: 9rem;
+  margin: 0;
+  padding: 14px 16px;
+  overflow-y: auto;
+  border-radius: 12px;
+  background: var(--sage);
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  white-space: pre-wrap;
+  user-select: all;
+}
+.wb-prompt-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* ── Article workbench: writing stage and preview ───────────────────────────── */
+
+.wb-canvas {
+  position: relative;
+  margin-top: 32px;
+  isolation: isolate;
+}
+.wb-panes {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+@media (min-width: 1024px) {
+  .wb-panes[data-split='true'] {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+.wb-stage,
+.wb-preview {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: clamp(26rem, 72vh, 52rem);
+}
+.wb-stage {
+  position: relative;
+  transition: border-color 0.2s ease;
+}
+.wb-stage:focus-within {
+  border-color: color-mix(in srgb, var(--ink-2) 55%, var(--rule));
+}
+.wb-stage[data-dragover='true'] {
+  border-color: var(--leaf-ink);
+}
+.wb-preview {
+  padding: 8px 4px 0;
+}
+
+/* The highlight layer and the textarea must wrap at the same width, or the marks drift off the
+ * caret. Both reserve the same thin gutter; only the textarea's scrollbar shows. */
+.wb-stage .md-source-highlight,
+.wb-stage .md-source-textarea {
+  scrollbar-width: thin;
+  scrollbar-gutter: stable;
+}
+.wb-stage .md-source-highlight {
+  scrollbar-color: transparent transparent;
+}
+.wb-stage .md-source-textarea {
+  scrollbar-color: var(--rule) transparent;
+}
+
+.wb-pane-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin-bottom: 16px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.wb-pane-head .atelier-label {
+  margin: 0;
+}
+.wb-pane-head-lead {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  min-width: 0;
+}
+.wb-fmt {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+}
+.wb-fmt-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 2rem;
+  height: 2rem;
+  padding: 0 0.5rem;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+.wb-fmt-btn:hover:not(:disabled) {
+  background: var(--sage);
+  color: var(--ink);
+}
+.wb-fmt-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.wb-fmt-bold {
+  font-weight: 600;
+}
+.wb-fmt-italic {
+  font-style: italic;
+}
+.wb-hint {
+  margin: 12px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.wb-drop {
+  position: absolute;
+  inset: 16px;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1.5px dashed var(--leaf-ink);
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--paper-raised) 92%, transparent);
+  font-weight: 500;
+  color: var(--leaf-ink);
+  pointer-events: none;
+}
+
+/* The preview reads in Literata. markdown.tsx sets its own slate palette, so the preview body maps
+ * those back onto the tokens. */
+.wb-preview-body {
+  flex: 1;
+  min-height: 0;
+  padding-right: 8px;
+  overflow-y: auto;
+  scrollbar-color: var(--rule) transparent;
+}
+/* The preview uses the essay renderer (lib/markdown.tsx) as is, so it matches the public page. */
+
+/* Format guide: slides over the right edge of the canvas. */
+.wb-format {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 30;
+  width: min(100%, 20rem);
+  padding: 24px;
+  overflow-y: auto;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--paper-raised);
+}
+.wb-format-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.wb-format-item + .wb-format-item {
+  margin-top: 18px;
+}
+.wb-format-item p {
+  margin: 0 0 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.wb-format-item pre {
+  margin: 0;
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: var(--sage);
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--ink-2);
+  white-space: pre-wrap;
+}
+
+/* ── Lightbox ───────────────────────────────────────────────────────────────── */
+
+.wb-lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: color-mix(in srgb, var(--paper) 80%, transparent);
+}
+.wb-lightbox-panel {
+  position: relative;
+  width: 100%;
+  max-width: 56rem;
+  padding: 28px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+.wb-lightbox-panel .atelier-label {
+  margin-bottom: 4px;
+}
+.wb-lightbox-panel h3 {
+  margin: 0 0 20px;
+  font-size: 1.125rem;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+}
+.wb-lightbox-close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+}
+/* A cover shows at its own proportions: no padded box, no bands; only the image is visible. */
+.wb-lightbox-media {
+  display: flex;
+  justify-content: center;
+}
+.wb-lightbox-media img {
+  display: block;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 70vh;
+  border-radius: 12px;
+  box-shadow: 0 0 0 1px var(--rule);
+}
+.wb-lightbox-art {
+  width: 100%;
+  max-width: 28rem;
+  aspect-ratio: 16 / 9;
+  padding: 16px;
+  border-radius: 12px;
+  background: var(--sage);
+}
+
+/* ── Loading skeleton ───────────────────────────────────────────────────────── */
+
+.wb-skeleton {
+  padding-top: 8rem;
+}
+@media (min-width: 640px) {
+  .wb-skeleton {
+    padding-top: 9rem;
+  }
+}
+.wb-bone {
+  display: block;
+  height: 12px;
+  border-radius: 6px;
+  background: var(--rule);
+  animation: wb-pulse 2.4s ease-in-out infinite;
+}
+@keyframes wb-pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .wb-bone {
+    animation: none;
+  }
+}

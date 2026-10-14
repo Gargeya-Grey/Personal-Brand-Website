@@ -257,7 +257,7 @@ export function ContactForm() {
         <button
           type="submit"
           disabled={formStatus === 'submitting'}
-          className="w-full h-14 bg-primary dark:bg-accent text-white dark:text-slate-950 font-headline font-bold text-sm tracking-tight hover:shadow-[0_4px_30px_rgba(16,185,129,0.25)] hover:bg-accent dark:hover:bg-accent/90 active:scale-[0.98] transition-all text-center rounded-xl flex items-center justify-center gap-3 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
+          className="w-full h-14 bg-primary dark:bg-accent text-white dark:text-slate-950 font-headline font-bold text-sm tracking-tight hover:shadow-[0_4px_30px_rgba(255,128,0,0.25)] hover:bg-accent dark:hover:bg-accent/90 active:scale-[0.98] transition-all text-center rounded-xl flex items-center justify-center gap-3 disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent focus-visible:ring-offset-2"
         >
           {formStatus === 'submitting' ? (
             <span>Sending…</span>

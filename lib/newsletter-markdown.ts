@@ -29,7 +29,7 @@ export function parseKickerLine(line: string): { label: string; rest: string } |
 function kickerHtml(label: string, rest: string): string {
   return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:8px 0 28px;">
   <tr>
-    <td style="border-left:3px solid #10b981;padding:6px 0 6px 16px;">
+    <td style="border-left:3px solid #ff8000;padding:6px 0 6px 16px;">
       <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#059669;font-weight:700;">${escapeHtml(label)}</p>
       <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.5;color:#0f172a;">${inline(rest)}</p>
     </td>
@@ -51,7 +51,7 @@ function quoteHtml(lines: string[]): string {
   const inner = lines.map((line) => inline(line)).join('<br />');
   return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:24px 0;">
   <tr>
-    <td style="border-left:3px solid #10b981;padding:4px 0 4px 16px;">
+    <td style="border-left:3px solid #ff8000;padding:4px 0 4px 16px;">
       <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:18px;line-height:1.5;color:#0f172a;font-style:italic;">${inner}</p>
     </td>
   </tr>
@@ -63,7 +63,7 @@ function listHtml(items: string[], ordered: boolean): string {
     const lis = items
       .map(
         (item) =>
-          `<tr><td style="width:18px;vertical-align:top;padding:0 0 10px;color:#10b981;font-size:16px;line-height:1.7;">•</td><td style="padding:0 0 10px;font-size:16px;line-height:1.7;color:#1e293b;">${inline(item)}</td></tr>`
+          `<tr><td style="width:18px;vertical-align:top;padding:0 0 10px;color:#ff8000;font-size:16px;line-height:1.7;">•</td><td style="padding:0 0 10px;font-size:16px;line-height:1.7;color:#1e293b;">${inline(item)}</td></tr>`
       )
       .join('');
     return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:8px 0 20px;">
@@ -124,7 +124,7 @@ export function markdownToEmailHtml(md: string): string {
 
     if (/^(-{3,}|\*{3,}|_{3,})$/.test(trimmed)) {
       html.push(
-        '<p style="margin:28px 0;text-align:center;color:#10b981;letter-spacing:0.4em;font-size:12px;">· · ·</p>'
+        '<p style="margin:28px 0;text-align:center;color:#ff8000;letter-spacing:0.4em;font-size:12px;">· · ·</p>'
       );
       i += 1;
       continue;

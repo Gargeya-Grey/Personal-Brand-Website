@@ -1,0 +1,698 @@
+/* Notes curator (/editorial?workspace=notes): the weeks list and the week editor.
+ * Built on the atelier grammar (app/atelier.css): figures and hairline rows in the list; in the editor
+ * one raised stage for writing and reading, plain hairline groups for the details around it.
+ * Colours are the family tokens only. Literata is the letter's own voice; mono is for dates and counts. */
+
+.nc-list,
+.nc-editor {
+  color: var(--ink);
+}
+
+.nc-loading {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.nc-loading-editor {
+  flex-grow: 1;
+  min-height: 260px;
+}
+
+/* ── List: figures ──────────────────────────────────────────────────────────── */
+
+.nc-figures {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 28px 56px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.nc-figure {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.nc-figure-value {
+  margin: 0;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.nc-figure-value[data-empty='true'] {
+  color: var(--ink-2);
+}
+.nc-figure-label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.nc-figure-note {
+  margin: -2px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* ── List: letter by letter table ───────────────────────────────────────────── */
+
+.nc-table-wrap {
+  margin-top: 48px;
+  overflow-x: auto;
+}
+.nc-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+.nc-table th {
+  padding: 0 24px 12px 0;
+  border-bottom: 1px solid var(--rule);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.nc-table td {
+  padding: 16px 24px 16px 0;
+  border-bottom: 1px solid var(--rule);
+  color: var(--ink-2);
+}
+.nc-table td:first-child {
+  font-family: var(--font-reading);
+  font-size: 1.0625rem;
+  color: var(--ink);
+}
+.nc-table .nc-num {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+}
+.nc-th-tip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ── List: weeks ────────────────────────────────────────────────────────────── */
+
+.nc-list .nc-rows {
+  --row-cols: 124px minmax(0, 1fr) minmax(0, 190px) auto;
+}
+.nc-list .nc-row {
+  align-items: start;
+}
+.nc-list .nc-row > .atelier-status,
+.nc-list .nc-row > .atelier-mono,
+.nc-list .nc-row > .atelier-row-actions {
+  padding-top: 5px;
+}
+.nc-list .nc-row > .atelier-row-actions {
+  padding-top: 0;
+}
+.nc-list .nc-row-main {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.nc-list .nc-row-title {
+  display: block;
+  max-width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-reading);
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-align: left;
+  color: var(--ink);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.nc-list .nc-row-title:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+.nc-list .nc-row-dek {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 15px;
+}
+.nc-list .nc-row-meta {
+  font-size: 13px;
+}
+.nc-list .nc-status {
+  white-space: normal;
+  align-items: flex-start;
+}
+.nc-list .nc-status::before {
+  margin-top: 0.4em;
+}
+@media (hover: hover) and (pointer: fine) {
+  .nc-list .nc-row:hover .nc-row-title {
+    color: var(--leaf-ink);
+  }
+}
+
+/* ── Tooltip ────────────────────────────────────────────────────────────────── */
+
+.nc-tip {
+  position: relative;
+  display: inline-flex;
+}
+.nc-tip-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.nc-tip-btn:hover {
+  color: var(--ink);
+}
+.nc-tip-btn:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+.nc-tip-pop {
+  position: absolute;
+  top: 100%;
+  z-index: 40;
+  width: min(19rem, calc(100vw - 3rem));
+  margin-top: 8px;
+  padding: 12px 14px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper-raised);
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.55;
+  text-align: left;
+  color: var(--ink-2);
+}
+.nc-tip-pop[data-align='left'] {
+  left: 0;
+}
+.nc-tip-pop[data-align='right'] {
+  right: 0;
+}
+
+/* ── Editor: head and command bar ───────────────────────────────────────────── */
+
+.nc-editor-head {
+  display: grid;
+  gap: 20px;
+  padding: 8px 0 28px;
+}
+.nc-editor .nc-back {
+  justify-self: start;
+  min-height: 40px;
+}
+.nc-editor-title {
+  display: grid;
+  gap: 14px;
+}
+.nc-editor-title h2 {
+  max-width: 30ch;
+  margin: 0;
+  font-family: var(--font-reading);
+  font-size: clamp(1.75rem, 3.4vw, 2.6rem);
+  font-weight: 400;
+  line-height: 1.14;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+  color: var(--ink);
+}
+
+.nc-editor .nc-bar {
+  gap: 10px 24px;
+  background: var(--paper);
+}
+.nc-bar-views {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0 28px;
+}
+.nc-bar-views .atelier-tabs {
+  gap: 0 28px;
+}
+.nc-bar-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+.nc-editor .nc-message {
+  flex: 1 0 100%;
+  margin: 0;
+}
+.nc-editor .nc-locked {
+  margin: 20px 0 0;
+}
+.nc-list .nc-locked {
+  margin: 0 0 20px;
+}
+
+/* ── Editor: details ────────────────────────────────────────────────────────── */
+
+.nc-details {
+  margin-top: 48px;
+  border-top: 1px solid var(--rule);
+}
+.nc-group {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 16px 40px;
+  padding: 32px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.nc-group-head {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+}
+.nc-fields {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 20px;
+  max-width: 52rem;
+}
+.nc-span-12 {
+  grid-column: span 12;
+}
+.nc-span-8 {
+  grid-column: span 8;
+}
+.nc-span-6 {
+  grid-column: span 6;
+}
+.nc-span-4 {
+  grid-column: span 4;
+}
+.nc-field-action {
+  display: flex;
+  align-items: flex-end;
+}
+.nc-editor .nc-fill {
+  width: 100%;
+}
+.nc-editor .nc-input-title {
+  font-family: var(--font-reading);
+  font-size: 1.0625rem;
+}
+.nc-editor .nc-input-mono {
+  font-size: 13px;
+  color: var(--ink);
+}
+
+/* The auto-publish checkbox: a forest square when on, with the send rule beside it. */
+.nc-check {
+  display: grid;
+  grid-template-columns: 18px minmax(0, 1fr);
+  gap: 4px 14px;
+  align-items: start;
+  cursor: pointer;
+}
+.nc-check input {
+  appearance: none;
+  -webkit-appearance: none;
+  display: grid;
+  place-items: center;
+  width: 18px;
+  height: 18px;
+  margin: 2px 0 0;
+  border: 1px solid var(--ink-2);
+  border-radius: 6px;
+  background: var(--paper-raised);
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.nc-check input::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  margin-top: -2px;
+  border: solid var(--on-forest);
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg) scale(0);
+  transition: transform 160ms var(--ease-out);
+}
+.nc-check input:checked {
+  border-color: var(--forest);
+  background: var(--forest);
+}
+.nc-check input:checked::after {
+  transform: rotate(45deg) scale(1);
+}
+.nc-check input:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+.nc-check input:disabled,
+.nc-check input:disabled ~ span {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+.nc-check-title {
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+.nc-check-note {
+  grid-column: 2;
+  max-width: 60ch;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+
+.nc-editor .nc-skip:disabled {
+  cursor: not-allowed;
+  opacity: 0.4;
+}
+.nc-editor .nc-skip:disabled:hover {
+  color: var(--ink-2);
+}
+
+.nc-links,
+.nc-record {
+  display: grid;
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 15px;
+}
+.nc-record {
+  gap: 8px;
+  color: var(--ink-2);
+}
+.nc-link {
+  color: var(--leaf-ink);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--leaf-ink) 40%, transparent);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 200ms ease;
+}
+.nc-link svg {
+  display: inline-block;
+  margin-left: 6px;
+  vertical-align: -3px;
+}
+.nc-link:hover {
+  text-decoration-color: currentColor;
+}
+
+/* ── Editor: the stage (writing and reading) ────────────────────────────────── */
+
+.nc-editor .nc-stage {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  margin-top: 24px;
+  padding: 0;
+  overflow: hidden;
+}
+.nc-editor .nc-stage[data-mode='split'] {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+.nc-pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 480px;
+  padding: 20px 28px 24px;
+}
+.nc-stage[data-mode='split'] .nc-pane + .nc-pane {
+  border-left: 1px solid var(--rule);
+}
+.nc-pane-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 16px;
+  min-height: 3.375rem;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+.nc-pane-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+.nc-pane-label::before {
+  content: '';
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--ink-2);
+  transition: background 200ms ease, box-shadow 200ms ease;
+}
+/* The dot fills with papaya while the cursor is in the writing. */
+.nc-write:focus-within .nc-pane-label {
+  color: var(--ink);
+}
+.nc-write:focus-within .nc-pane-label::before {
+  background: var(--leaf);
+  box-shadow: inset 0 0 0 1.5px var(--leaf);
+}
+.nc-tools {
+  display: flex;
+  gap: 4px;
+}
+.nc-editor .nc-tool {
+  width: 2rem;
+  height: 2rem;
+  font-size: 13px;
+}
+.nc-tool-bold {
+  font-weight: 600;
+}
+.nc-tool-italic {
+  font-style: italic;
+}
+/* The scrollbar of the writing layer sits in its own gutter, not over the last letters. */
+.nc-write pre.md-source-highlight,
+.nc-write textarea.md-source-textarea {
+  padding-right: 14px;
+}
+.nc-pane-foot {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+  font-size: 13px;
+}
+
+.nc-preview-body {
+  min-height: 0;
+  flex-grow: 1;
+}
+.nc-stage[data-mode='split'] .nc-preview-body {
+  max-height: 72vh;
+  overflow-y: auto;
+}
+.nc-letter {
+  text-align: left;
+}
+/* Alone, the letter keeps a reading measure. */
+.nc-stage[data-mode='preview'] .nc-letter {
+  max-width: 44rem;
+  margin-inline: auto;
+}
+.nc-letter-title {
+  margin: 0 0 12px;
+  font-family: var(--font-reading);
+  font-size: clamp(1.75rem, 2.6vw, 2.25rem);
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  color: var(--ink);
+}
+.nc-letter-dek {
+  margin: 0 0 28px;
+  font-family: var(--font-reading);
+  font-size: 1.125rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+/* The renderer sets paragraphs in the UI face; the letter itself reads in the book face. */
+.nc-letter .notes-prose :is(p, li) {
+  font-family: var(--font-reading);
+}
+.nc-blank {
+  margin: 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.nc-email {
+  display: block;
+  width: 100%;
+  height: min(70vh, 40rem);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--paper-raised);
+}
+
+/* ── Narrow screens ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 1000px) {
+  .nc-editor .nc-stage[data-mode='split'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .nc-stage[data-mode='split'] .nc-pane + .nc-pane {
+    border-top: 1px solid var(--rule);
+    border-left: 0;
+  }
+  .nc-stage[data-mode='split'] .nc-preview-body {
+    max-height: none;
+    overflow: visible;
+  }
+  .nc-group {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+}
+
+@media (max-width: 760px) {
+  .nc-figures {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0;
+  }
+  .nc-figure {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    grid-template-areas:
+      'value label'
+      'value note';
+    align-items: baseline;
+    gap: 2px 16px;
+    padding: 16px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .nc-figures .nc-figure:last-child {
+    border-bottom: 1px solid var(--rule);
+  }
+  .nc-figure-value {
+    grid-area: value;
+    font-size: 1.75rem;
+  }
+  .nc-figure-label {
+    grid-area: label;
+  }
+  .nc-figure-note {
+    grid-area: note;
+    margin: 0;
+  }
+  .nc-figure .nc-tip-pop[data-align='right'] {
+    right: auto;
+    left: 0;
+  }
+
+  .nc-table thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+  .nc-table,
+  .nc-table tbody,
+  .nc-table tr,
+  .nc-table td {
+    display: block;
+  }
+  .nc-table tr {
+    padding: 16px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  .nc-table td {
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 2px 0;
+    border: 0;
+  }
+  .nc-table td:first-child {
+    display: block;
+    padding-bottom: 6px;
+  }
+  .nc-table td[data-label]::before {
+    content: attr(data-label);
+    font-family: var(--font-instrument-sans), system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink-2);
+  }
+
+  .nc-list .nc-row > .atelier-status,
+  .nc-list .nc-row > .atelier-mono {
+    padding-top: 0;
+  }
+  .nc-list .nc-rows {
+    --row-cols: minmax(0, 1fr);
+  }
+  .nc-list .nc-row {
+    position: relative;
+  }
+  .nc-list .nc-row > .atelier-row-actions {
+    position: absolute;
+    top: 14px;
+    right: 0;
+  }
+  .nc-list .nc-row-main {
+    padding-right: 48px;
+  }
+
+  .nc-pane {
+    padding: 18px 18px 20px;
+  }
+  .nc-editor .nc-bar {
+    position: static;
+  }
+  .nc-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .nc-span-12,
+  .nc-span-8,
+  .nc-span-6,
+  .nc-span-4 {
+    grid-column: auto;
+  }
+  .nc-field-action {
+    align-items: stretch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nc-check input,
+  .nc-check input::after,
+  .nc-pane-label::before,
+  .nc-tip-btn,
+  .nc-list .nc-row-title {
+    transition: none;
+  }
+}

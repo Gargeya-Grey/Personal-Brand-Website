@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, type CSSProperties } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUp, Bookmark, Check, ChevronDown, Clock, Copy, List, Type } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,10 +15,19 @@ import './article-reader.css';
 
 export type RelatedArticleCard = { slug: string; title: string; readTime: string };
 
+/** The frame takes the cover's own proportions once it loads (16:9 is reserved until then), so no bands show. */
 function CoverImage({ src, title, expanded = false }: { src: string; title: string; expanded?: boolean }) {
+  const [ratio, setRatio] = useState<number | null>(null);
   return (
-    <figure className="reader-cover-image">
+    <figure
+      className="reader-cover-image"
+      style={ratio ? ({ '--cover-ratio': ratio } as CSSProperties) : undefined}
+    >
       <Image
+        onLoad={(event) => {
+          const { naturalWidth, naturalHeight } = event.currentTarget;
+          if (naturalWidth > 0 && naturalHeight > 0) setRatio(naturalWidth / naturalHeight);
+        }}
         src={src}
         alt={title}
         fill

@@ -1,5 +1,7 @@
 'use client';
 
+import './notes-curator.css';
+
 import { useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import {
@@ -7,14 +9,10 @@ import {
   ArrowUpRight,
   Check,
   CircleHelp,
-  Eye,
   Loader2,
-  Mail,
-  Newspaper,
   Pen,
   Save,
   Send,
-  Settings2,
   SkipForward,
 } from 'lucide-react';
 import {
@@ -27,25 +25,48 @@ import {
 
 const MarkdownPreview = dynamic(
   () => import('@/components/editor/markdown-preview').then((m) => m.MarkdownPreview),
-  { ssr: false, loading: () => <p className="text-sm italic text-[var(--atelier-faint)]">Loading preview…</p> }
+  { ssr: false, loading: () => <p className="nc-loading">Loading preview…</p> }
 );
 const MarkdownSourceEditor = dynamic(
   () => import('@/components/editor/markdown-source-editor').then((m) => m.MarkdownSourceEditor),
   {
     ssr: false,
-    loading: () => (
-      <div className="min-h-[260px] flex-grow text-sm italic text-[var(--atelier-faint)] sm:min-h-[360px]">
-        Loading editor…
-      </div>
-    ),
+    loading: () => <div className="nc-loading nc-loading-editor">Loading editor…</div>,
   }
 );
 
 type LayoutMode = 'write' | 'split' | 'preview';
 type PreviewKind = 'page' | 'email';
 
-function formatReadTime(seconds: number | null): string {
-  if (seconds == null) return '—';
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+/** A letter's Sunday, e.g. "6 Sep 2026". Anything that is not YYYY-MM-DD shows as it came. */
+function formatWeekDate(weekOf: string): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(weekOf);
+  const month = match ? MONTHS[Number(match[2]) - 1] : undefined;
+  if (!match || !month) return weekOf || '—';
+  return `${Number(match[3])} ${month} ${match[1]}`;
+}
+
+/** A receipt time, e.g. "6 Sep 2026, 19:00". An unreadable value shows as it came. */
+function formatReceiptTime(iso: string): string {
+  const date = new Date(iso);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleString('en-GB', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
+function formatCount(value: number | null | undefined): string {
+  return typeof value === 'number' && Number.isFinite(value) ? value.toLocaleString() : '—';
+}
+
+function formatReadTime(seconds: number | null | undefined): string {
+  if (typeof seconds !== 'number' || !Number.isFinite(seconds)) return '—';
   if (seconds < 60) return `${seconds}s`;
   const m = Math.floor(seconds / 60);
   const s = seconds % 60;
@@ -65,35 +86,19 @@ function wrapMarkdown(body: string, before: string, after: string, start: number
   };
 }
 
-function StageBadge({ stage }: { stage: NewsletterWeek['stage'] }) {
-  if (stage === 'sent') {
-    return (
-      <span className="atelier-chip !border-emerald-500/25 !bg-emerald-500/10 !text-emerald-800 dark:!text-emerald-200">
-        <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-        Sent
-      </span>
-    );
-  }
-  if (stage === 'approved' || stage === 'sending') {
-    return (
-      <span className="atelier-chip !border-[var(--atelier-gold)]/30 !bg-[var(--atelier-gold-soft)] !text-[var(--atelier-gold)]">
-        <span className="h-1.5 w-1.5 rounded-full bg-[var(--atelier-gold)]" />
-        {stageLabel(stage)}
-      </span>
-    );
-  }
-  if (stage === 'skipped') {
-    return (
-      <span className="atelier-chip">
-        <span className="h-1.5 w-1.5 rounded-full bg-[var(--atelier-faint)]" />
-        Skipped
-      </span>
-    );
-  }
+/** draft = hollow dot, happy or sending = papaya, sent = ink, skipped = plain. */
+function StageStatus({ stage }: { stage: NewsletterWeek['stage'] }) {
+  const tone =
+    stage === 'sent'
+      ? 'done'
+      : stage === 'approved' || stage === 'sending'
+        ? 'live'
+        : stage === 'skipped'
+          ? undefined
+          : 'draft';
   return (
-    <span className="atelier-chip !border-amber-500/25 !bg-amber-500/10 !text-amber-800 dark:!text-amber-200">
-      <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-      Draft
+    <span className="atelier-status nc-status" data-tone={tone}>
+      {stageLabel(stage)}
     </span>
   );
 }
@@ -251,469 +256,471 @@ export function NewsletterClient({
     const showWrite = layoutMode === 'write' || layoutMode === 'split';
     const showPreview = layoutMode === 'preview' || layoutMode === 'split';
 
+    // What the record already knows about this letter: who wrote the body, the happy mark, the send.
+    const editedSinceBot = active.bodyMd !== active.draftMd;
+    const recordLines: string[] = [];
+    if (active.draftMd) {
+      recordLines.push(
+        editedSinceBot ? 'The body differs from the bot’s draft: your edits are kept.' : 'The body is still the bot’s draft.'
+      );
+    }
+    if (active.curatorEditedAt) recordLines.push(`You last edited it on ${formatReceiptTime(active.curatorEditedAt)}.`);
+    if (active.acknowledgedAt) recordLines.push(`Marked happy on ${formatReceiptTime(active.acknowledgedAt)}.`);
+    if (active.sentAt) {
+      const recipients = active.sentTo.length;
+      recordLines.push(
+        recipients
+          ? `Sent on ${formatReceiptTime(active.sentAt)} to ${recipients.toLocaleString()} ${recipients === 1 ? 'person' : 'people'}.`
+          : `Sent on ${formatReceiptTime(active.sentAt)}.`
+      );
+    }
+
     return (
-      <div className="article-workbench space-y-6">
-        <div className="sticky top-24 z-30">
-          <div className="article-command-bar atelier-card-lg flex flex-col justify-between gap-3 bg-[color-mix(in_srgb,var(--atelier-card)_92%,transparent)] p-3 backdrop-blur-xl sm:p-3.5 xl:flex-row xl:items-center">
-            <button
-              type="button"
-              onClick={() => applyWeek(null)}
-              className="inline-flex items-center gap-2 px-2 py-1.5 text-sm font-bold text-[var(--atelier-muted)] transition-colors hover:text-[var(--atelier-ink)]"
-            >
-              <ArrowLeft className="h-4 w-4" /> Library
-            </button>
-            <div className="flex flex-wrap items-center gap-2">
-              <StageBadge stage={active.stage} />
-              {status ? (
-                <span className="atelier-chip !text-[0.65rem]">
-                  <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-                  {status}
-                </span>
-              ) : null}
-              <button
-                type="button"
-                onClick={() => setSidebarOpen(!sidebarOpen)}
-                className={`atelier-btn h-10 text-xs ${sidebarOpen ? 'atelier-btn-gold' : 'atelier-btn-ghost'}`}
-              >
-                <Settings2 className="h-3.5 w-3.5" /> Meta
-              </button>
-              <div className="flex rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 p-1">
-                {(['write', 'split', 'preview'] as const).map((mode) => (
-                  <button
-                    key={mode}
-                    type="button"
-                    onClick={() => setLayoutMode(mode)}
-                    className={`rounded-full px-3.5 py-1.5 text-[0.7rem] font-bold capitalize transition-all ${
-                      layoutMode === mode
-                        ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)] shadow-md'
-                        : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-                    }`}
-                  >
-                    {mode}
-                  </button>
-                ))}
-              </div>
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => void saveEdits()}
-                className="atelier-btn atelier-btn-primary h-10 disabled:opacity-50"
-              >
-                {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-                {saving ? 'Saving' : 'Save'}
-              </button>
-              <button
-                type="button"
-                disabled={saving || locked}
-                onClick={() => {
-                  void (async () => {
-                    await saveEdits();
-                    await act('acknowledge');
-                  })();
-                }}
-                className="atelier-btn atelier-btn-gold h-10 disabled:opacity-50"
-              >
-                <Check className="h-4 w-4" /> I&apos;m happy with this
-              </button>
+      <div className="nc-editor">
+        <header className="nc-editor-head">
+          <button type="button" onClick={() => applyWeek(null)} className="atelier-link nc-back">
+            <ArrowLeft className="h-4 w-4" aria-hidden="true" /> All letters
+          </button>
+          <div className="nc-editor-title">
+            <h2>{title || 'Untitled letter'}</h2>
+            <div className="atelier-meta">
+              <span className="atelier-mono">{formatWeekDate(active.weekOf)}</span>
+              <StageStatus stage={active.stage} />
+              <span className="atelier-mono">{words.toLocaleString()} words</span>
             </div>
           </div>
+        </header>
+
+        <div className="atelier-toolbar nc-bar">
+          <div className="nc-bar-views">
+            <div className="atelier-tabs" role="group" aria-label="Layout">
+              {(['write', 'split', 'preview'] as const).map((mode) => (
+                <button
+                  key={mode}
+                  type="button"
+                  aria-pressed={layoutMode === mode}
+                  onClick={() => setLayoutMode(mode)}
+                  className="atelier-tab"
+                >
+                  {mode === 'write' ? 'Write' : mode === 'split' ? 'Split' : 'Preview'}
+                </button>
+              ))}
+            </div>
+            <button
+              type="button"
+              aria-pressed={sidebarOpen}
+              aria-controls="nc-details"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="atelier-tab"
+            >
+              Details
+            </button>
+          </div>
+          <div className="nc-bar-actions">
+            <button
+              type="button"
+              disabled={saving}
+              onClick={() => void saveEdits()}
+              className="atelier-btn atelier-btn-line"
+            >
+              {saving ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" /> : <Save className="h-4 w-4" aria-hidden="true" />}
+              {saving ? 'Saving' : 'Save'}
+            </button>
+            <button
+              type="button"
+              disabled={saving || locked}
+              onClick={() => {
+                void (async () => {
+                  await saveEdits();
+                  await act('acknowledge');
+                })();
+              }}
+              className="atelier-btn atelier-btn-primary"
+            >
+              <Check className="h-4 w-4" aria-hidden="true" /> I&apos;m happy with this
+            </button>
+          </div>
+          {status ? (
+            <p role="status" className="atelier-notice nc-message" data-tone="ok">
+              {status}
+            </p>
+          ) : null}
+          {error ? (
+            <p role="alert" className="atelier-notice nc-message" data-tone="warn">
+              {error}
+            </p>
+          ) : null}
         </div>
 
-        {error ? (
-          <p role="alert" className="text-sm text-red-600">
-            {error}
+        {locked ? (
+          <p className="atelier-notice nc-locked">
+            This letter is {active.stage === 'sent' ? 'sent' : 'skipped'}. Auto-publish and I&apos;m happy are locked. You can still save edits.
           </p>
         ) : null}
 
-        <div className="article-workbench-form space-y-6">
-          {sidebarOpen ? (
-            <div className="article-metadata-panel atelier-card-lg p-6 sm:p-8">
-              <div className="flex flex-col justify-between gap-4 border-b border-[var(--atelier-line)] pb-6 sm:flex-row sm:items-start">
-                <div>
-                  <p className="mb-1 text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)]">
-                    Curation
-                  </p>
-                  <h2 className="font-headline text-2xl font-bold tracking-tight text-[var(--atelier-ink)]">
-                    Letter metadata
-                  </h2>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className="atelier-chip">{active.weekOf}</span>
-                  <span className="atelier-chip tabular-nums">
-                    {words.toLocaleString()} w · {chars.toLocaleString()} c
-                  </span>
+        <div className="atelier-stage nc-stage" data-mode={layoutMode}>
+          {showWrite ? (
+            <section className="nc-pane nc-write" aria-label="Write">
+              <div className="nc-pane-head">
+                <span className="nc-pane-label">Write</span>
+                <div className="nc-tools" role="group" aria-label="Formatting">
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => applyWrap('**', '**')}
+                    className="atelier-icon-btn nc-tool"
+                    title="Bold"
+                    aria-label="Bold"
+                  >
+                    <span className="nc-tool-bold">B</span>
+                  </button>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => applyWrap('*', '*')}
+                    className="atelier-icon-btn nc-tool"
+                    title="Italic"
+                    aria-label="Italic"
+                  >
+                    <span className="nc-tool-italic">I</span>
+                  </button>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => applyWrap('### ', '')}
+                    className="atelier-icon-btn nc-tool"
+                    title="Heading"
+                    aria-label="Heading"
+                  >
+                    <span className="nc-tool-bold">H</span>
+                  </button>
+                  <button
+                    type="button"
+                    onMouseDown={(e) => e.preventDefault()}
+                    onClick={() => applyWrap('[', '](url)')}
+                    className="atelier-icon-btn nc-tool"
+                    title="Link"
+                    aria-label="Link"
+                  >
+                    <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                  </button>
                 </div>
               </div>
-
-              <div className="mt-7 space-y-6">
-                <section className="article-meta-section">
-                  <header className="article-meta-section__head">
-                    <span className="article-meta-section__index">1</span>
-                    <h3 className="article-meta-section__title">Identity</h3>
-                  </header>
-                  <div className="grid grid-cols-1 gap-5 md:grid-cols-12">
-                    <div className="md:col-span-12">
-                      <label className="atelier-label">Title *</label>
-                      <input
-                        className="atelier-input !h-12 font-headline text-base font-semibold"
-                        value={title}
-                        onChange={(e) => setTitle(e.target.value)}
-                        placeholder="A title with quiet authority"
-                      />
-                    </div>
-                    <div className="md:col-span-6">
-                      <label className="atelier-label">Subject</label>
-                      <input
-                        className="atelier-input !h-12"
-                        value={subject}
-                        onChange={(e) => setSubject(e.target.value)}
-                        placeholder="Inbox subject"
-                      />
-                    </div>
-                    <div className="md:col-span-6">
-                      <label className="atelier-label">Slug</label>
-                      <input
-                        className="atelier-input !h-12 font-mono text-xs"
-                        value={slug}
-                        onChange={(e) => setSlug(e.target.value)}
-                      />
-                    </div>
-                    <div className="md:col-span-12">
-                      <label className="atelier-label">Dek</label>
-                      <input
-                        className="atelier-input"
-                        value={dek}
-                        onChange={(e) => setDek(e.target.value)}
-                        placeholder="One elegant sentence…"
-                      />
-                    </div>
-                  </div>
-                </section>
-
-                <section className="article-meta-section">
-                  <header className="article-meta-section__head">
-                    <span className="article-meta-section__index">2</span>
-                    <h3 className="article-meta-section__title">Send</h3>
-                  </header>
-                  <div className="grid grid-cols-1 gap-5 md:grid-cols-12">
-                    <div className="md:col-span-12">
-                      <label className="flex cursor-pointer items-start gap-3 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 px-3.5 py-3">
-                        <input
-                          type="checkbox"
-                          className="mt-0.5 h-4 w-4 rounded accent-[var(--atelier-gold)]"
-                          checked={autoPublish}
-                          disabled={locked}
-                          onChange={(e) => {
-                            setAutoPublish(e.target.checked);
-                            void act('autoPublish', { autoPublish: e.target.checked });
-                          }}
-                        />
-                        <span>
-                          <span className="block text-xs font-bold text-[var(--atelier-ink)]">
-                            Auto-publish Sunday 7pm local
-                          </span>
-                          <span className="mt-1 block text-sm leading-relaxed text-[var(--atelier-muted)]">
-                            On: sends at the Sunday slot even if you have not pressed happy. Off: waits until you are happy, then goes immediately.
-                          </span>
-                        </span>
-                      </label>
-                    </div>
-                    <div className="md:col-span-8">
-                      <label className="atelier-label">Send a test</label>
-                      <input
-                        type="email"
-                        className="atelier-input !h-12"
-                        value={testEmail}
-                        onChange={(e) => setTestEmail(e.target.value)}
-                        placeholder="you@example.com"
-                      />
-                    </div>
-                    <div className="flex items-end md:col-span-4">
-                      <button
-                        type="button"
-                        className="atelier-btn atelier-btn-ghost h-12 w-full"
-                        disabled={saving}
-                        onClick={() => void sendTest()}
-                      >
-                        <Send className="h-4 w-4" /> Send test
-                      </button>
-                    </div>
-                    <div className="md:col-span-12">
-                      <button
-                        type="button"
-                        className="atelier-btn atelier-btn-ghost h-10 text-xs disabled:opacity-40"
-                        disabled={saving || active.stage === 'sent'}
-                        onClick={() => void act('skip', { note: 'Skipped by curator' })}
-                      >
-                        <SkipForward className="h-3.5 w-3.5" /> Skip this week
-                      </button>
-                    </div>
-                  </div>
-                </section>
-
-                {active.links.length ? (
-                  <section className="article-meta-section">
-                    <header className="article-meta-section__head">
-                      <span className="article-meta-section__index">3</span>
-                      <h3 className="article-meta-section__title">Go deeper</h3>
-                    </header>
-                    <ul className="space-y-2 text-sm">
-                      {active.links.map((link: NewsletterLink) => (
-                        <li key={link.url}>
-                          <a
-                            href={link.url}
-                            className="inline-flex items-center gap-1.5 text-[var(--atelier-gold)] hover:underline"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {link.label}
-                            <ArrowUpRight className="h-3.5 w-3.5" />
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
-                  </section>
-                ) : null}
+              <MarkdownSourceEditor
+                value={bodyMd}
+                onChange={setBodyMd}
+                placeholder="# Begin the letter…"
+              />
+              <div className="atelier-meta nc-pane-foot">
+                <span className="atelier-mono">{words.toLocaleString()} words</span>
+                <span className="atelier-mono">{chars.toLocaleString()} characters</span>
+                <span>Markdown marks stay visible.</span>
               </div>
-            </div>
+            </section>
           ) : null}
 
-          <div className="article-editor-canvas relative">
-            <div
-              className={`grid min-h-[520px] gap-5 ${
-                layoutMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'
-              }`}
-            >
-              {showWrite ? (
-                <div className="article-writing-pane atelier-card-lg relative flex min-h-[360px] flex-col p-5 focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6">
-                  <div className="mb-4 flex items-center justify-between gap-3 border-b border-[var(--atelier-line)] pb-4">
-                    <div className="flex min-w-0 items-center gap-3">
-                      <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
-                        Write
-                      </span>
-                      <div className="flex flex-wrap items-center gap-0.5 border-l border-[var(--atelier-line)] pl-3">
-                        <button
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => applyWrap('**', '**')}
-                          className="h-8 w-8 rounded-xl text-xs font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] hover:text-[var(--atelier-ink)]"
-                          title="Bold"
-                        >
-                          B
-                        </button>
-                        <button
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => applyWrap('*', '*')}
-                          className="h-8 w-8 rounded-xl text-xs italic text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]"
-                          title="Italic"
-                        >
-                          I
-                        </button>
-                        <button
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => applyWrap('### ', '')}
-                          className="h-8 w-8 rounded-xl text-[0.65rem] font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]"
-                          title="Heading"
-                        >
-                          H
-                        </button>
-                        <button
-                          type="button"
-                          onMouseDown={(e) => e.preventDefault()}
-                          onClick={() => applyWrap('[', '](url)')}
-                          className="flex h-8 w-8 items-center justify-center rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]"
-                          title="Link"
-                        >
-                          <ArrowUpRight className="h-3.5 w-3.5" />
-                        </button>
-                      </div>
-                    </div>
-                    <span className="shrink-0 text-[0.65rem] font-medium tabular-nums text-[var(--atelier-faint)]">
-                      {words.toLocaleString()} w · {chars.toLocaleString()} c
-                    </span>
-                  </div>
-                  <MarkdownSourceEditor
-                    value={bodyMd}
-                    onChange={setBodyMd}
-                    placeholder="# Begin the letter…"
+          {showPreview ? (
+            <section className="nc-pane nc-preview" aria-label="Preview">
+              <div className="nc-pane-head">
+                <span className="nc-pane-label">Preview</span>
+                <div className="atelier-tabs" role="group" aria-label="Preview as">
+                  <button
+                    type="button"
+                    aria-pressed={previewKind === 'page'}
+                    onClick={() => setPreview('page')}
+                    className="atelier-tab"
+                  >
+                    Page
+                  </button>
+                  <button
+                    type="button"
+                    aria-pressed={previewKind === 'email'}
+                    onClick={() => setPreview('email')}
+                    className="atelier-tab"
+                  >
+                    Email
+                  </button>
+                </div>
+              </div>
+              <div className="nc-preview-body">
+                {previewKind === 'email' ? (
+                  <iframe
+                    title="Email preview"
+                    className="nc-email"
+                    srcDoc={
+                      previewHtml ||
+                      '<body style="margin:0;padding:24px;font-family:sans-serif;color:GrayText"><p style="margin:0">Loading email preview…</p></body>'
+                    }
                   />
-                  <p className="pt-3 text-[0.65rem] text-[var(--atelier-faint)]">
-                    Write pane styles markdown in place. Marks stay visible.
-                  </p>
-                </div>
-              ) : null}
-
-              {showPreview ? (
-                <div className="article-preview-pane atelier-card-lg flex min-h-[360px] flex-col bg-[color-mix(in_srgb,var(--atelier-paper)_55%,var(--atelier-card))] p-5 sm:min-h-[480px] sm:p-6">
-                  <div className="mb-4 flex flex-wrap items-center justify-between gap-3 border-b border-[var(--atelier-line)] pb-4">
-                    <div className="flex items-center gap-2">
-                      <Eye className="h-4 w-4 text-[var(--atelier-gold)]" />
-                      <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
-                        Preview
-                      </span>
-                    </div>
-                    <div className="flex rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 p-1">
-                      <button
-                        type="button"
-                        onClick={() => setPreview('page')}
-                        className={`rounded-full px-3 py-1.5 text-[0.65rem] font-bold ${
-                          previewKind === 'page'
-                            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-                        }`}
-                      >
-                        Page
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setPreview('email')}
-                        className={`rounded-full px-3 py-1.5 text-[0.65rem] font-bold ${
-                          previewKind === 'email'
-                            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-                        }`}
-                      >
-                        Email
-                      </button>
+                ) : bodyMd ? (
+                  <div className="nc-letter">
+                    <h2 className="nc-letter-title">{title || 'Untitled'}</h2>
+                    {dek ? <p className="nc-letter-dek">{dek}</p> : null}
+                    <div className="notes-prose article-prose">
+                      <MarkdownPreview content={bodyMd} />
                     </div>
                   </div>
-                  <div className="min-h-0 flex-grow overflow-y-auto">
-                    {previewKind === 'email' ? (
-                      <iframe
-                        title="Email preview"
-                        className="h-[min(70vh,40rem)] w-full rounded-[1.25rem] border border-[var(--atelier-line)] bg-white"
-                        srcDoc={
-                          previewHtml ||
-                          '<p style="padding:24px;font-family:sans-serif;color:#64748b">Loading email preview…</p>'
-                        }
-                      />
-                    ) : bodyMd ? (
-                      <div className="text-left">
-                        <h2 className="mb-2 font-headline text-3xl font-bold tracking-tight text-[var(--atelier-ink)]">
-                          {title || 'Untitled'}
-                        </h2>
-                        {dek ? <p className="mb-6 text-[var(--atelier-muted)]">{dek}</p> : null}
-                        <div className="notes-prose article-prose">
-                          <MarkdownPreview content={bodyMd} />
-                        </div>
-                      </div>
-                    ) : (
-                      <p className="text-sm italic text-[var(--atelier-faint)]">The page is blank — write to see light.</p>
-                    )}
-                  </div>
-                </div>
-              ) : null}
-            </div>
-          </div>
+                ) : (
+                  <p className="nc-blank">The page is blank. Write to see it here.</p>
+                )}
+              </div>
+            </section>
+          ) : null}
         </div>
+
+        {sidebarOpen ? (
+          <div className="nc-details" id="nc-details">
+            <section className="nc-group" aria-labelledby="nc-identity">
+              <div className="nc-group-head">
+                <span className="atelier-mono">01</span>
+                <h3 id="nc-identity" className="atelier-h3">Identity</h3>
+              </div>
+              <div className="nc-fields">
+                <div className="nc-span-12">
+                  <label className="atelier-label" htmlFor="nc-title">Title *</label>
+                  <input
+                    id="nc-title"
+                    className="atelier-input nc-input-title"
+                    value={title}
+                    onChange={(e) => setTitle(e.target.value)}
+                    placeholder="A title with quiet authority"
+                  />
+                </div>
+                <div className="nc-span-6">
+                  <label className="atelier-label" htmlFor="nc-subject">Subject</label>
+                  <input
+                    id="nc-subject"
+                    className="atelier-input"
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
+                    placeholder="Inbox subject"
+                  />
+                </div>
+                <div className="nc-span-6">
+                  <label className="atelier-label" htmlFor="nc-slug">Slug</label>
+                  <input
+                    id="nc-slug"
+                    className="atelier-input atelier-mono nc-input-mono"
+                    value={slug}
+                    onChange={(e) => setSlug(e.target.value)}
+                  />
+                </div>
+                <div className="nc-span-12">
+                  <label className="atelier-label" htmlFor="nc-dek">Dek</label>
+                  <input
+                    id="nc-dek"
+                    className="atelier-input nc-input-title"
+                    value={dek}
+                    onChange={(e) => setDek(e.target.value)}
+                    placeholder="One elegant sentence…"
+                  />
+                </div>
+              </div>
+            </section>
+
+            <section className="nc-group" aria-labelledby="nc-send">
+              <div className="nc-group-head">
+                <span className="atelier-mono">02</span>
+                <h3 id="nc-send" className="atelier-h3">Send</h3>
+              </div>
+              <div className="nc-fields">
+                <div className="nc-span-12">
+                  <label className="nc-check">
+                    <input
+                      type="checkbox"
+                      checked={autoPublish}
+                      disabled={locked}
+                      onChange={(e) => {
+                        setAutoPublish(e.target.checked);
+                        void act('autoPublish', { autoPublish: e.target.checked });
+                      }}
+                    />
+                    <span className="nc-check-title">Auto-publish on Sunday at 19:00 local time</span>
+                    <span className="nc-check-note">
+                      On: the letter goes to each subscriber at their own local Sunday 19:00, even if you have not pressed happy. Off: it waits until you are happy, then goes out immediately.
+                    </span>
+                  </label>
+                </div>
+                <div className="nc-span-8">
+                  <label className="atelier-label" htmlFor="nc-test">Send a test</label>
+                  <input
+                    id="nc-test"
+                    type="email"
+                    className="atelier-input"
+                    value={testEmail}
+                    onChange={(e) => setTestEmail(e.target.value)}
+                    placeholder="you@example.com"
+                  />
+                </div>
+                <div className="nc-span-4 nc-field-action">
+                  <button
+                    type="button"
+                    className="atelier-btn atelier-btn-line nc-fill"
+                    disabled={saving}
+                    onClick={() => void sendTest()}
+                  >
+                    <Send className="h-4 w-4" aria-hidden="true" /> Send test
+                  </button>
+                </div>
+                <div className="nc-span-12">
+                  <button
+                    type="button"
+                    className="atelier-link nc-skip"
+                    data-tone="warn"
+                    disabled={saving || active.stage === 'sent'}
+                    onClick={() => void act('skip', { note: 'Skipped by curator' })}
+                  >
+                    <SkipForward className="h-4 w-4" aria-hidden="true" /> Skip this week
+                  </button>
+                </div>
+              </div>
+            </section>
+
+            {active.links.length ? (
+              <section className="nc-group" aria-labelledby="nc-links">
+                <div className="nc-group-head">
+                  <span className="atelier-mono">03</span>
+                  <h3 id="nc-links" className="atelier-h3">Go deeper</h3>
+                </div>
+                <ul className="nc-links">
+                  {active.links.map((link: NewsletterLink) => (
+                    <li key={link.url}>
+                      <a href={link.url} className="nc-link" target="_blank" rel="noreferrer">
+                        {link.label}
+                        <ArrowUpRight className="h-4 w-4" aria-hidden="true" />
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+
+            {recordLines.length ? (
+              <section className="nc-group" aria-labelledby="nc-record">
+                <div className="nc-group-head">
+                  <span className="atelier-mono">{active.links.length ? '04' : '03'}</span>
+                  <h3 id="nc-record" className="atelier-h3">Record</h3>
+                </div>
+                <ul className="nc-record">
+                  {recordLines.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              </section>
+            ) : null}
+          </div>
+        ) : null}
       </div>
     );
   }
 
+  const issues = metrics?.issues ?? [];
+
   return (
-    <div className="space-y-8">
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-        <MetricCard label="Subscribers" value={metrics?.subscribers ?? '—'} />
-        <MetricCard label="Last unique opens" value={metrics?.lastUniqueOpens ?? '—'} />
-        <MetricCard
-          label="Last median read time"
-          value={formatReadTime(metrics?.lastMedianReadSeconds ?? null)}
-          hint={READ_TIME_HINT}
-        />
-      </div>
-      {metrics?.issues?.length ? (
-        <div className="overflow-x-auto rounded-2xl border border-[var(--atelier-line)]">
-          <table className="w-full text-left text-sm">
-            <thead className="text-[0.65rem] uppercase tracking-[0.16em] text-[var(--atelier-faint)]">
-              <tr>
-                <th className="px-4 py-3 font-medium">Letter</th>
-                <th className="px-4 py-3 font-medium">Subscribers</th>
-                <th className="px-4 py-3 font-medium">Opens</th>
-                <th className="px-4 py-3 font-medium">
-                  <span className="inline-flex items-center gap-1.5">
-                    Read time
-                    <InfoTip label="How read time is measured" text={READ_TIME_HINT} align="right" />
-                  </span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {metrics.issues.map((issue) => (
-                <tr key={issue.id} className="border-t border-[var(--atelier-line)]">
-                  <td className="px-4 py-3 text-[var(--atelier-ink)]">{issue.title || issue.weekOf}</td>
-                  <td className="px-4 py-3 text-[var(--atelier-muted)]">{issue.subscribersAtSend ?? '—'}</td>
-                  <td className="px-4 py-3 text-[var(--atelier-muted)]">{issue.uniqueOpens ?? '—'}</td>
-                  <td className="px-4 py-3 text-[var(--atelier-muted)]">
-                    {formatReadTime(issue.medianReadSeconds)}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+    <div className="nc-list">
+      <section className="atelier-section" aria-labelledby="nc-readers">
+        <div className="atelier-section-head">
+          <h2 id="nc-readers">
+            Readers. <em>Subscribers, and how the last letter did.</em>
+          </h2>
         </div>
-      ) : null}
+        <ul className="nc-figures">
+          <Figure label="Subscribers" value={formatCount(metrics?.subscribers)} />
+          <Figure label="Last unique opens" value={formatCount(metrics?.lastUniqueOpens)} />
+          <Figure
+            label="Last median read time"
+            value={formatReadTime(metrics?.lastMedianReadSeconds)}
+            hint={READ_TIME_HINT}
+            hintAlign="right"
+          />
+        </ul>
 
-      {error ? (
-        <p role="alert" className="text-sm text-red-600">
-          {error}
-        </p>
-      ) : null}
-
-      {weeks.length === 0 ? (
-        <div className="atelier-card-lg flex flex-col items-center gap-5 px-8 py-20 text-center sm:py-28">
-          <div className="flex h-20 w-20 items-center justify-center rounded-[1.75rem] bg-[var(--atelier-gold-soft)]">
-            <Newspaper className="h-8 w-8 text-[var(--atelier-gold)]" />
+        {issues.length ? (
+          <div className="nc-table-wrap">
+            <table className="nc-table">
+              <thead>
+                <tr>
+                  <th scope="col">Letter</th>
+                  <th scope="col">Subscribers</th>
+                  <th scope="col">Opens</th>
+                  <th scope="col">
+                    <span className="nc-th-tip">
+                      Read time
+                      <InfoTip label="How read time is measured" text={READ_TIME_HINT} align="right" />
+                    </span>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {issues.map((issue) => (
+                  <tr key={issue.id}>
+                    <td>{issue.title || issue.weekOf}</td>
+                    <td className="nc-num" data-label="Subscribers">{formatCount(issue.subscribersAtSend)}</td>
+                    <td className="nc-num" data-label="Opens">{formatCount(issue.uniqueOpens)}</td>
+                    <td className="nc-num" data-label="Read time">{formatReadTime(issue.medianReadSeconds)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-          <div className="max-w-sm space-y-2">
-            <p className="font-headline text-2xl font-bold text-[var(--atelier-ink)]">No letters yet</p>
-            <p className="leading-relaxed text-[var(--atelier-muted)]">
+        ) : null}
+      </section>
+
+      <section className="atelier-section" aria-labelledby="nc-letters">
+        <div className="atelier-section-head">
+          <h2 id="nc-letters">
+            Letters. <em>One for each Sunday.</em>
+          </h2>
+        </div>
+
+        {error ? (
+          <p role="alert" className="atelier-notice nc-locked" data-tone="warn">
+            {error}
+          </p>
+        ) : null}
+
+        {weeks.length === 0 ? (
+          <div className="atelier-empty">
+            <p>
+              <strong>No letters yet.</strong>
+              <br />
               The Grok Bot files a draft here every Saturday.
             </p>
           </div>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {weeks.map((week) => (
-            <article
-              key={week.id}
-              className="atelier-card group flex flex-col gap-5 p-4 transition-shadow duration-300 hover:shadow-[var(--atelier-shadow)] sm:flex-row sm:items-center sm:p-5"
-            >
-              <div className="flex h-[96px] w-full shrink-0 items-center justify-center overflow-hidden rounded-[1.25rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)] sm:w-[148px]">
-                <Mail className="h-7 w-7 text-[var(--atelier-gold)]" />
-              </div>
-              <div className="min-w-0 flex-1 space-y-2.5">
-                <StageBadge stage={week.stage} />
-                <h3 className="font-headline text-xl font-bold leading-snug tracking-tight text-[var(--atelier-ink)] transition-colors group-hover:text-[var(--atelier-gold)] sm:text-[1.35rem]">
-                  {week.title || 'Untitled letter'}
-                </h3>
-                {week.dek ? (
-                  <p className="line-clamp-2 text-[0.9375rem] leading-relaxed text-[var(--atelier-muted)]">
-                    {week.dek}
-                  </p>
-                ) : null}
-                <p className="text-[0.7rem] font-medium tracking-wide text-[var(--atelier-faint)]">
-                  {week.weekOf}
-                  {week.autoPublish ? ' · auto-publish on' : ''}
-                  {week.acknowledgedAt ? ' · happy' : ''}
-                </p>
-              </div>
-              <div className="flex shrink-0 items-center gap-2 self-end sm:self-center">
-                <button
-                  type="button"
-                  onClick={() => applyWeek(week)}
-                  className="atelier-icon-btn"
-                  title="Edit"
-                  aria-label="Edit"
-                >
-                  <Pen className="h-4 w-4" />
-                </button>
-              </div>
-            </article>
-          ))}
-        </div>
-      )}
+        ) : (
+          <ul className="atelier-rows nc-rows">
+            {weeks.map((week) => (
+              <li key={week.id} className="atelier-row nc-row">
+                <span className="atelier-mono nc-row-date">{formatWeekDate(week.weekOf)}</span>
+                <div className="nc-row-main">
+                  <button type="button" onClick={() => applyWeek(week)} className="nc-row-title">
+                    {week.title || 'Untitled letter'}
+                  </button>
+                  {week.dek ? <p className="atelier-row-note nc-row-dek">{week.dek}</p> : null}
+                  {week.autoPublish || week.acknowledgedAt ? (
+                    <p className="atelier-meta nc-row-meta">
+                      {week.autoPublish ? <span>Auto-publish on</span> : null}
+                      {week.acknowledgedAt ? <span>Happy</span> : null}
+                    </p>
+                  ) : null}
+                </div>
+                <StageStatus stage={week.stage} />
+                <div className="atelier-row-actions">
+                  <button
+                    type="button"
+                    onClick={() => applyWeek(week)}
+                    className="atelier-icon-btn"
+                    title="Edit"
+                    aria-label={`Edit ${week.title || 'untitled letter'}`}
+                  >
+                    <Pen className="h-4 w-4" aria-hidden="true" />
+                  </button>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )}
+      </section>
     </div>
   );
 }
@@ -733,28 +740,23 @@ function InfoTip({
   const [open, setOpen] = useState(false);
   return (
     <span
-      className="relative inline-flex"
+      className="nc-tip"
       onMouseEnter={() => setOpen(true)}
       onMouseLeave={() => setOpen(false)}
     >
       <button
         type="button"
-        className="inline-flex h-4 w-4 items-center justify-center rounded-full text-[var(--atelier-faint)] transition-colors hover:text-[var(--atelier-ink)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--atelier-gold)]"
+        className="nc-tip-btn"
         aria-label={label}
         aria-expanded={open}
         onFocus={() => setOpen(true)}
         onBlur={() => setOpen(false)}
         onClick={() => setOpen((v) => !v)}
       >
-        <CircleHelp className="h-3.5 w-3.5" aria-hidden="true" />
+        <CircleHelp className="h-4 w-4" aria-hidden="true" />
       </button>
       {open ? (
-        <span
-          role="tooltip"
-          className={`absolute top-full z-40 mt-2 w-[min(18rem,calc(100vw-3rem))] rounded-xl border border-[var(--atelier-line)] bg-[var(--atelier-card)] p-3 text-left text-[0.7rem] font-normal normal-case leading-relaxed tracking-normal text-[var(--atelier-muted)] shadow-[var(--atelier-shadow)] ${
-            align === 'right' ? 'right-0' : 'left-0'
-          }`}
-        >
+        <span role="tooltip" className="nc-tip-pop" data-align={align}>
           {text}
         </span>
       ) : null}
@@ -762,26 +764,31 @@ function InfoTip({
   );
 }
 
-function MetricCard({
+/** One figure: a mono number over a short label. An empty value shows a dash and a short note. */
+function Figure({
   label,
   value,
   hint,
-  hintAlign = 'right',
+  hintAlign = 'left',
 }: {
   label: string;
-  value: string | number;
+  value: string;
   hint?: string;
   hintAlign?: 'left' | 'right';
 }) {
+  const empty = value === '—';
   return (
-    <div className="atelier-card-lg relative overflow-visible p-5">
-      <p className="flex items-center gap-1.5 text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
+    <li className="nc-figure">
+      <p className="nc-figure-value" data-empty={empty ? 'true' : undefined}>
+        {value}
+      </p>
+      <p className="nc-figure-label">
         {label}
         {hint ? (
           <InfoTip label={`How ${label.toLowerCase()} is measured`} text={hint} align={hintAlign} />
         ) : null}
       </p>
-      <p className="mt-2 font-headline text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">{value}</p>
-    </div>
+      {empty ? <p className="nc-figure-note">Not available yet</p> : null}
+    </li>
   );
 }

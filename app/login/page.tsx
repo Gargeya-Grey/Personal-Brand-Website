@@ -39,9 +39,8 @@ export default async function LoginPage({ searchParams }: LoginPageProps) {
 
   return (
     <div className="atelier-root min-h-screen relative flex flex-col justify-between antialiased">
-      <div className="atelier-glow pointer-events-none absolute inset-0 z-0" aria-hidden />
       <Navigation />
-      <main id="page-main" tabIndex={-1} className="relative z-10 pt-32 sm:pt-36 pb-20 flex-grow flex items-center justify-center px-4 sm:px-6">
+      <main id="page-main" tabIndex={-1} className="relative z-10 flex flex-grow flex-col justify-center pt-28 pb-[clamp(5rem,14vh,9rem)]">
         <LoginPageClient
           googleConfigured={googleConfigured}
           isDev={isDev}

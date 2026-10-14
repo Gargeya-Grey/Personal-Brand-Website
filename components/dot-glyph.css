@@ -8,7 +8,7 @@
   color: inherit;
 }
 .dot-glyph .dg-leaf {
-  stroke: var(--leaf, #10b981);
+  stroke: var(--leaf, #ff8000);
 }
 
 @media (prefers-reduced-motion: no-preference) {

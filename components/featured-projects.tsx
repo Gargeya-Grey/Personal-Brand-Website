@@ -18,7 +18,7 @@ function EdudojoPreview({ href }: { href: string }) {
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="relative mt-5 block overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-[0_12px_32px_-20px_rgba(15,23,42,0.35)] transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_16px_36px_-18px_rgba(16,185,129,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-slate-950/60 dark:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.65)] dark:hover:border-accent/35"
+      className="relative mt-5 block overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-[0_12px_32px_-20px_rgba(15,23,42,0.35)] transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-[0_16px_36px_-18px_rgba(255,128,0,0.28)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent dark:border-white/10 dark:bg-slate-950/60 dark:shadow-[0_16px_40px_-24px_rgba(0,0,0,0.65)] dark:hover:border-accent/35"
       aria-label="Open Edudojo.ai"
     >
       <div className="relative p-3.5 sm:p-4">
@@ -41,7 +41,7 @@ function EdudojoPreview({ href }: { href: string }) {
                 Value the process, not just the output
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-mono text-[11px] font-bold text-emerald-700 dark:text-accent">
+            <span className="shrink-0 rounded-full bg-accent/15 px-2.5 py-1 font-mono text-[11px] font-bold text-[var(--leaf-ink)]">
               pilot
             </span>
           </div>
@@ -74,7 +74,7 @@ function EdudojoPreview({ href }: { href: string }) {
               Student work
             </span>
             <span className="text-[10px] text-slate-300 dark:text-white/25">→</span>
-            <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-emerald-700 dark:text-accent">
+            <span className="rounded bg-accent/15 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-[var(--leaf-ink)]">
               Process journal
             </span>
             <span className="text-[10px] text-slate-300 dark:text-white/25">→</span>

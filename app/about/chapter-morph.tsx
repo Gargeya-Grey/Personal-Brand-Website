@@ -212,8 +212,8 @@ function createMorpher(heading: HTMLElement, canvas: HTMLCanvasElement): Morpher
 
   let run: Run | null = null;
   let frame = 0;
-  let ink = '#14201C';
-  let leafColor = '#10B981';
+  let ink = '#1B1A18';
+  let leafColor = '#FF8000';
   let canvasCssHeight = 0;
   let scratchX = new Float32Array(0);
   let scratchY = new Float32Array(0);

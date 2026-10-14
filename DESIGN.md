@@ -1,34 +1,34 @@
 ---
 name: Gargeya, in the Edudojo design family
-description: The personal site's design system. It shares Edudojo's v3 language (warm paper, one sans, hairlines, dot motion) so the owner's sites read as one umbrella.
-version: 3.0.0
+description: The personal site's design system. It shares Edudojo's v3 language (warm paper, one sans, hairlines, dot motion) so the owner's sites read as one umbrella, in its own colours (McLaren papaya on warm graphite) so the person and the company stay distinct.
+version: 3.1.0
 family: edudojo.ai (source: W:\Edudojo.ai\Website, src/app/globals.css and layout.tsx; the code is the reference when its DESIGN.md lags)
 
 modes:
   light:
-    paper: "#F6F7F4"
+    paper: "#F7F6F3"
     paper-raised: "#FFFFFF"
-    sage: "#E2EDE6"
-    ink: "#14201C"
-    ink-2: "#53615B"
-    rule: "#DDE2DC"
-    forest: "#1E5B49"
-    on-forest: "#FAF9F5"
-    leaf: "#10B981"
-    leaf-ink: "#0B7A55"
-    clay: "#B4472F"
+    sage: "#F1EDE7"      # the warm wash; the name is the family role
+    ink: "#1B1A18"
+    ink-2: "#5E5A55"
+    rule: "#E3E0DA"
+    forest: "#1F1E1C"    # anthracite filled button
+    on-forest: "#FAF8F5"
+    leaf: "#FF8000"      # McLaren papaya: the signal
+    leaf-ink: "#B04A00"  # burnt orange for text
+    clay: "#B42335"      # crimson, so a warning never reads as the accent
   dark:
-    paper: "#0E1412"
-    paper-raised: "#151D1A"
-    sage: "#17261F"
-    ink: "#ECEEEA"
-    ink-2: "#A3B0AA"
-    rule: "#26302C"
-    forest: "#ECEEEA"
-    on-forest: "#0E1412"
-    leaf: "#10B981"
-    leaf-ink: "#3DDC9F"
-    clay: "#E5866B"
+    paper: "#121110"
+    paper-raised: "#1A1918"
+    sage: "#221E1A"
+    ink: "#EEECE8"
+    ink-2: "#ADA7A0"
+    rule: "#2C2A27"
+    forest: "#EEECE8"
+    on-forest: "#121110"
+    leaf: "#FF8000"
+    leaf-ink: "#FF9F45"
+    clay: "#F07178"
 
 typography:
   sans: Instrument Sans     # headings, text, UI
@@ -38,7 +38,11 @@ typography:
 
 # Design system: the Edudojo family
 
-This site and edudojo.ai share one design language. Edudojo is the company; this is the person. They share type, colour, spacing and motion. Content, the portrait, the G mark and the dot symbols make each one distinct.
+This site and edudojo.ai share one design language. Edudojo is the company; this is the person. They share type, spacing, shape and motion. Colour, content, the portrait, the G mark and the dot symbols make each one distinct.
+
+## Colour identity (owner decision, 14 October 2026)
+
+Edudojo is green on green-black paper. This site is McLaren papaya (`#FF8000`) on warm graphite: the same creator, a different purpose. The token names stay the family's role names (`--leaf`, `--forest`, `--sage`), so code reads the same in both repositories; only the values differ. Here `--leaf` is papaya, `--forest` is anthracite and `--sage` is a warm wash. Edudojo's own marks (its gate image and gate mark) keep Edudojo's green, because they are Edudojo's brand.
 
 ## Idea
 
@@ -46,7 +50,7 @@ Edudojo's idea is "the stroke shows the hand": show how the work was made, not o
 
 ## Tokens
 
-Tokens are CSS variables in the token block of `app/field.css`, with an `html.dark` override. The site's older `--color-*` names point at these tokens, so every page follows them. Change a value there, never in a component.
+Tokens are CSS variables in the token block of `app/field.css`, with an `html.dark` override. The private pages (`/login`, `/editorial`, `/ledger`) use the same tokens through `app/atelier.css`. The site's older `--color-*` names point at these tokens, so every page follows them. Change a value there, never in a component.
 
 | Token | Use |
 |---|---|
@@ -54,12 +58,12 @@ Tokens are CSS variables in the token block of `app/field.css`, with an `html.da
 | `--sage` | The wash at the top of the hero; the soft field behind a lead glyph |
 | `--ink` / `--ink-2` | Text / muted text and a heading's second tone |
 | `--rule` | 1px hairlines between rows and sections |
-| `--forest` / `--on-forest` | The filled button: one in the content of a view, plus the header's Contact (as on Edudojo). In dark mode it becomes light ink with dark text |
-| `--leaf` | A signal: dots, the last step of a process, focus. Never small text |
-| `--leaf-ink` | Green text, link hover |
-| `--clay` | Corrections and warnings only |
+| `--forest` / `--on-forest` | The anthracite filled button: one in the content of a view, plus the header's Contact (as on Edudojo). In dark mode it becomes light ink with dark text |
+| `--leaf` | Papaya. A signal: dots, the last step of a process, focus. Never small text |
+| `--leaf-ink` | Orange text, link hover |
+| `--clay` | Crimson. Corrections and warnings only |
 
-The inverted band (Notes on the homepage) uses its own ink: `#14201C` in light mode, `#1F2D27` in dark mode.
+The inverted band (Notes on the homepage) uses its own ink: `#1B1A18` in light mode, `#24221F` in dark mode.
 
 ## Type
 
@@ -82,7 +86,7 @@ The inverted band (Notes on the homepage) uses its own ink: `#14201C` in light m
 - Filters (Playground): the same grammar as the header links, a leaf dot under the one in use. A filter appears only for a kind that has entries.
 - Controls (theme toggle, menu button): 6px squares with a hairline. Filled buttons (`.btn-accent`) are always forest.
 - Focus rings: `--leaf-ink` on paper (3:1 or better); `--leaf` only on the dark bands.
-- Favicon: the masked G (no tile) in `app/icon.svg`; its ink follows `prefers-color-scheme`. The iOS icon keeps the tile.
+- The mark (14 October 2026): ink dots gather, growing, into the G's stroke; the stroke turns into the bar, and the bar ends in a papaya dot (the last step of a process path). It is the site's dot motion held still. The full cut (8 dots) is in `public/brand/` (masked for the header, tiled for downloads); the favicon `app/icon.svg` is the small cut (4 larger dots, so it holds at 16px) with no tile, its ink following `prefers-color-scheme`. The iOS icon keeps the dark tile. Regenerate every file with `node scripts/build-brand-mark.mjs`; never hand-edit one cut.
 
 ## The index grammar (`app/index-list.css`)
 
@@ -126,7 +130,7 @@ Shapes live in one library, `lib/stipple.ts`. Rules:
 - Do lead with an idea or a question; follow with the name.
 - Do keep each section to a heading in two tones, one list, one onward link.
 - Don't add image cards to an index.
-- Don't use leaf green for small text, or more than one filled button in a view's content.
+- Don't use papaya (`--leaf`) for small text, or more than one filled button in a view's content.
 - Don't animate layout properties; use transform and opacity only.
 
 ---
