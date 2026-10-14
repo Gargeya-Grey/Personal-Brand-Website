@@ -7,8 +7,7 @@ import {
   TaxClasses,
   Types,
 } from '@/lib/ledger-schema';
-import { openRouterReasoning } from '@/lib/ai-providers';
-import type { ReasoningEffort } from '@/lib/ai-model-options';
+import { openRouterReasoning, type ReasoningEffort } from '@/lib/ai-model-options';
 
 export type LedgerAiProvider = 'google' | 'openrouter';
 
@@ -216,9 +215,11 @@ async function callGemini(opts: {
 
   let lastError: Error | null = null;
   const models = geminiModels(opts.model);
+  // The owner's model and the .env primary each get a retry; later fallbacks get one try.
+  const retriedModels = new Set([models[0], geminiModels()[0]]);
   for (let modelIndex = 0; modelIndex < models.length; modelIndex++) {
     const model = models[modelIndex]!;
-    const attempts = modelIndex === 0 ? 2 : 1;
+    const attempts = retriedModels.has(model) ? 2 : 1;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
     for (let attempt = 1; attempt <= attempts; attempt++) {
       try {

@@ -10,6 +10,7 @@ import {
   aiModelRequest,
   normalizeEffort,
   normalizeModelSlug,
+  openRouterReasoning,
 } from '../lib/ai-model-options.ts';
 
 // Real slugs pass, trimmed.
@@ -44,6 +45,11 @@ assert.deepEqual(aiModelRequest('', 'default'), {});
 assert.deepEqual(aiModelRequest('bad slug', 'default'), {});
 assert.deepEqual(aiModelRequest(' x-ai/grok-4 ', 'high'), { model: 'x-ai/grok-4', effort: 'high' });
 assert.deepEqual(aiModelRequest('', 'none'), { effort: 'none' });
+
+// OpenRouter gets a reasoning field only when the owner picks a level; the reasoning text stays out of the answer.
+assert.equal(openRouterReasoning('default'), undefined);
+assert.deepEqual(openRouterReasoning('none'), { effort: 'none', exclude: true });
+assert.deepEqual(openRouterReasoning('xhigh'), { effort: 'xhigh', exclude: true });
 
 // Each surface and provider has its own storage key.
 assert.equal(aiChoiceStorageKey('blog-metadata'), 'atelier:ai-model:blog-metadata:openrouter');

@@ -258,7 +258,8 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
       const ocrResult = await completeLedgerModel({
         provider: input.provider,
         model: input.model,
-        effort: input.effort,
+        // Transcription needs no reasoning, and three passes at a high effort can pass the 60 s limit.
+        effort: 'default',
         systemPrompt: OCR_SYSTEM_PROMPT,
         userText: 'Please transcribe all visible text, tables, line items, and invoice numbers from this document image.',
         image: imageData,

@@ -1,14 +1,9 @@
 import 'server-only';
-import { normalizeEffort, normalizeModelSlug, type ReasoningEffort } from '@/lib/ai-model-options';
+import { normalizeEffort, normalizeModelSlug, openRouterReasoning, type ReasoningEffort } from '@/lib/ai-model-options';
 
 /** The .env model. The owner can override it per request from the atelier's model control. */
 export function defaultOpenRouterModel(): string {
   return (process.env.OPENROUTER_MODEL || '').trim();
-}
-
-/** OpenRouter's unified reasoning field. "default" sends none, so the model keeps its own setting. */
-export function openRouterReasoning(effort: ReasoningEffort): { effort: Exclude<ReasoningEffort, 'default'>; exclude: true } | undefined {
-  return effort === 'default' ? undefined : { effort, exclude: true };
 }
 
 export async function callOpenRouter(opts: {

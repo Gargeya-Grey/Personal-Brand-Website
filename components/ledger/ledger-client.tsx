@@ -273,8 +273,14 @@ export function LedgerClient({
           ...extractModel.request,
         }),
       });
-      const payload = (await response.json()) as ExtractResponse;
-      if (!response.ok) throw new Error(payload.error || 'Extraction failed');
+      const payload = (await response.json().catch(() => ({}))) as ExtractResponse;
+      if (!response.ok) {
+        const timedOut = response.status === 504;
+        throw new Error(
+          payload.error ||
+            (timedOut ? 'Extraction ran past the time limit. Try a lower effort or a faster model.' : 'Extraction failed')
+        );
+      }
 
       setExtracted(payload.data);
       setFusion(payload.fusion || payload.data.sourceFusion || null);

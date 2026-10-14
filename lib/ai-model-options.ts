@@ -47,6 +47,11 @@ export function normalizeEffort(raw: unknown): ReasoningEffort {
   return isReasoningEffort(value) ? value : 'default';
 }
 
+/** OpenRouter's unified reasoning field. "default" sends none, so the model keeps its own setting. */
+export function openRouterReasoning(effort: ReasoningEffort): { effort: Exclude<ReasoningEffort, 'default'>; exclude: true } | undefined {
+  return effort === 'default' ? undefined : { effort, exclude: true };
+}
+
 /** The fields an AI request carries. An empty slug and "default" effort are left out, so the server uses its defaults. */
 export type AiModelRequest = { model?: string; effort?: ReasoningEffort };
 

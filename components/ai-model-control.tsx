@@ -32,10 +32,11 @@ const memoryStore = new Map<string, string>();
 const listeners = new Set<() => void>();
 
 function readRaw(key: string): string {
+  if (memoryStore.has(key)) return memoryStore.get(key) ?? '';
   try {
     return window.localStorage.getItem(key) ?? '';
   } catch {
-    return memoryStore.get(key) ?? '';
+    return '';
   }
 }
 
@@ -44,9 +45,9 @@ function writeChoice(key: string, next: StoredChoice) {
   try {
     if (isEmpty) window.localStorage.removeItem(key);
     else window.localStorage.setItem(key, JSON.stringify(next));
+    memoryStore.delete(key);
   } catch {
-    if (isEmpty) memoryStore.delete(key);
-    else memoryStore.set(key, JSON.stringify(next));
+    memoryStore.set(key, isEmpty ? '' : JSON.stringify(next));
   }
   listeners.forEach((listener) => listener());
 }
