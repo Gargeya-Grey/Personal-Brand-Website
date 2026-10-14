@@ -8,54 +8,88 @@ import type { FontDescriptors, FontFaceRuleInfo, LoadedFontInfo } from '@/lib/ar
 import './article-interactive.css';
 
 type FrameFont = { family: string; source: ArrayBuffer; descriptors: FontDescriptors };
+type FrameFamilies = { body: string; reading: string; mono: string };
 
-let articleFonts: Promise<FrameFont[]> | null = null;
+// Font bytes by file URL. A failed fetch is dropped so the next request tries again.
+const fontBytes = new Map<string, Promise<ArrayBuffer>>();
 
-/** Reads the font files the page already loaded, once, so frames can use them without a font-src policy. */
-function collectArticleFonts() {
-  articleFonts ??= (async () => {
-    try {
-      const pageStyle = getComputedStyle(document.documentElement);
-      const families = ['--font-body', '--font-reading', '--font-mono']
-        .map((name) => primaryFamily(pageStyle.getPropertyValue(name)))
-        .filter(Boolean);
-      const rules: FontFaceRuleInfo[] = [];
-      for (const sheet of Array.from(document.styleSheets)) {
-        try {
-          for (const rule of Array.from(sheet.cssRules)) {
-            if (!(rule instanceof CSSFontFaceRule)) continue;
-            const read = (property: string) => rule.style.getPropertyValue(property).trim();
-            rules.push({
-              family: read('font-family'), src: read('src'), sheetHref: sheet.href ?? document.baseURI,
-              weight: read('font-weight'), style: read('font-style'),
-              unicodeRange: read('unicode-range'), stretch: read('font-stretch'),
-            });
-          }
-        } catch {
-          // Cross-origin stylesheets cannot be read; their fonts are not sent.
+function fetchFontBytes(url: string) {
+  let bytes = fontBytes.get(url);
+  if (!bytes) {
+    const pending = fetch(url).then((response) => {
+      if (!response.ok) throw new Error(`Font request failed: ${response.status}`);
+      return response.arrayBuffer();
+    });
+    pending.catch(() => {
+      if (fontBytes.get(url) === pending) fontBytes.delete(url);
+    });
+    fontBytes.set(url, pending);
+    bytes = pending;
+  }
+  return bytes;
+}
+
+function readFamilies(): FrameFamilies {
+  const pageStyle = getComputedStyle(document.documentElement);
+  const read = (name: string) => pageStyle.getPropertyValue(name).trim();
+  return { body: read('--font-body'), reading: read('--font-reading'), mono: read('--font-mono') };
+}
+
+/** Waits for fonts that are still loading, but never for long: the frame reveals itself after 600 ms anyway. */
+async function settleFonts() {
+  try {
+    await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 3000))]);
+  } catch {
+    // Use whatever has loaded.
+  }
+}
+
+/**
+ * Reads the font files the page has loaded right now, so frames can use them without a font-src policy.
+ * Nothing is frozen between calls: the wanted faces are chosen again each time, and only file bytes are cached.
+ */
+async function collectArticleFonts(): Promise<{ families: FrameFamilies; fonts: FrameFont[] }> {
+  const families = readFamilies();
+  try {
+    await settleFonts();
+    const wantedFamilies = [families.body, families.reading, families.mono].map(primaryFamily).filter(Boolean);
+    // A family the current page never used (for example code font on a page without code) is still unloaded.
+    // Load its base Latin face so the frame can have it.
+    await Promise.allSettled(wantedFamilies.map((family) => document.fonts.load(`16px ${JSON.stringify(family)}`, 'Aa0')));
+    const rules: FontFaceRuleInfo[] = [];
+    for (const sheet of Array.from(document.styleSheets)) {
+      try {
+        for (const rule of Array.from(sheet.cssRules)) {
+          if (!(rule instanceof CSSFontFaceRule)) continue;
+          const read = (property: string) => rule.style.getPropertyValue(property).trim();
+          rules.push({
+            family: read('font-family'), src: read('src'), sheetHref: sheet.href ?? document.baseURI,
+            weight: read('font-weight'), style: read('font-style'),
+            unicodeRange: read('unicode-range'), stretch: read('font-stretch'),
+          });
         }
+      } catch {
+        // Cross-origin stylesheets cannot be read; their fonts are not sent.
       }
-      const loaded: LoadedFontInfo[] = [];
-      document.fonts.forEach((face) => {
-        if (face.status === 'loaded') {
-          loaded.push({ family: face.family, weight: face.weight, style: face.style, unicodeRange: face.unicodeRange });
-        }
-      });
-      const faces = pickArticleFontFaces({ families, origin: window.location.origin, rules, loaded });
-      const fonts = await Promise.all(faces.map(async ({ family, url, descriptors }) => {
-        try {
-          const response = await fetch(url);
-          return response.ok ? { family, source: await response.arrayBuffer(), descriptors } : null;
-        } catch {
-          return null;
-        }
-      }));
-      return fonts.filter((font): font is FrameFont => font !== null);
-    } catch {
-      return [];
     }
-  })();
-  return articleFonts;
+    const loaded: LoadedFontInfo[] = [];
+    document.fonts.forEach((face) => {
+      if (face.status === 'loaded') {
+        loaded.push({ family: face.family, weight: face.weight, style: face.style, unicodeRange: face.unicodeRange });
+      }
+    });
+    const faces = pickArticleFontFaces({ families: wantedFamilies, origin: window.location.origin, rules, loaded });
+    const fonts = await Promise.all(faces.map(async ({ family, url, descriptors }) => {
+      try {
+        return { family, source: await fetchFontBytes(url), descriptors };
+      } catch {
+        return null;
+      }
+    }));
+    return { families, fonts: fonts.filter((font): font is FrameFont => font !== null) };
+  } catch {
+    return { families, fonts: [] };
+  }
 }
 
 export function ArticleInteractive({ source, title, description, height }: {
@@ -86,12 +120,17 @@ export function ArticleInteractive({ source, title, description, height }: {
       reducedMotion: motionQuery.matches,
       paused: !inView || window.document.hidden,
     }, '*');
+    let active = true;
+    let fontsRequested = false;
     const receive = (event: MessageEvent) => {
       if (event.source !== frame.contentWindow || event.data?.id !== id) return;
       if (event.data.type === 'article-interactive:ready') {
-        collectArticleFonts()
-          .catch(() => [] as FrameFont[])
-          .then((fonts) => frame.contentWindow?.postMessage({ type: 'article-interactive:fonts', id, fonts }, '*'));
+        // Block code can post this message too. Answer once for each run of this effect.
+        if (fontsRequested) return;
+        fontsRequested = true;
+        collectArticleFonts().then(({ families, fonts }) => {
+          if (active) frame.contentWindow?.postMessage({ type: 'article-interactive:fonts', id, families, fonts }, '*');
+        });
         return;
       }
       if (event.data.type !== 'article-interactive:resize') return;
@@ -113,6 +152,7 @@ export function ArticleInteractive({ source, title, description, height }: {
     frame.addEventListener('load', syncPreferences);
     syncPreferences();
     return () => {
+      active = false;
       themeObserver.disconnect();
       visibilityObserver.disconnect();
       window.removeEventListener('message', receive);

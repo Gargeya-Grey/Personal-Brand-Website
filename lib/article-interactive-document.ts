@@ -55,13 +55,26 @@ html[data-reduced-motion="true"] *,html[data-reduced-motion="true"] *::before,ht
   new ResizeObserver(reportSize).observe(document.body);
   window.addEventListener('load', reportSize);
   let revealed = false;
+  let fontsReceived = false;
+  const announceFonts = (fonts) => window.dispatchEvent(new CustomEvent('article-fonts', {detail:{fonts}}));
   const reveal = () => {
     if (revealed) return;
     revealed = true;
     delete document.documentElement.dataset.fonts;
     reportSize();
   };
-  setTimeout(reveal, 600);
+  setTimeout(() => {
+    if (revealed) return;
+    reveal();
+    announceFonts(false);
+  }, 600);
+  const FAMILY_VARIABLES = {body:'--font-body', reading:'--font-reading', mono:'--font-mono'};
+  const setFamilies = (families) => {
+    for (const [key, variable] of Object.entries(FAMILY_VARIABLES)) {
+      const list = families?.[key];
+      if (typeof list === 'string' && list.length > 0 && list.length < 300) document.documentElement.style.setProperty(variable, list);
+    }
+  };
   const loadFonts = (fonts) => {
     const loads = [];
     for (const entry of Array.isArray(fonts) ? fonts.slice(0, 12) : []) {
@@ -76,11 +89,20 @@ html[data-reduced-motion="true"] *,html[data-reduced-motion="true"] *::before,ht
         loads.push(face.load());
       } catch {}
     }
-    Promise.allSettled(loads).then(reveal);
+    Promise.allSettled(loads).then((results) => {
+      reveal();
+      announceFonts(results.some((result) => result.status === 'fulfilled'));
+    });
   };
   window.addEventListener('message', (event) => {
     if (event.source !== parent || event.data?.id !== id) return;
-    if (event.data.type === 'article-interactive:fonts') { loadFonts(event.data.fonts); return; }
+    if (event.data.type === 'article-interactive:fonts') {
+      if (fontsReceived) return;
+      fontsReceived = true;
+      setFamilies(event.data.families);
+      loadFonts(event.data.fonts);
+      return;
+    }
     if (event.data.type !== 'article-interactive:preferences') return;
     const {theme, reducedMotion, paused} = event.data;
     document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';

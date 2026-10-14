@@ -29,6 +29,8 @@ The frame follows the site's light/dark theme. Available CSS variables: `--paper
 
 The frame uses the article's font by default (Instrument Sans). The CSS variables `--font-body`, `--font-reading` and `--font-mono` give the article's body, reading and code fonts. Setting `font-family:"Instrument Sans"` also works, because the page hands the frame the font files it already loaded. Other web fonts stay blocked by the policy.
 
+Fonts reach the frame shortly after it starts (the frame stays hidden for up to 600 ms to avoid a flash). Text that block code draws on a canvas at start may use a fallback font. Listen for `article-fonts` on `window` and redraw: `event.detail.fonts` is `true` when the article's fonts are registered in the frame and `false` when the 600 ms limit passed first. The event fires again with `true` if the fonts arrive later.
+
 The initial `height` is clamped to 160–1200px; the frame then reports its content height, capped at 1600px with internal scrolling for larger content. Avoid viewport-height layouts or code that repeatedly sizes itself to the containing iframe, which can cause a resize loop.
 
 CSS animations pause when off screen or when the browser tab is hidden. Reduced-motion preferences suppress CSS movement. For JavaScript/canvas loops, listen for `article-preferences` on `window`; `event.detail` contains `theme`, `reducedMotion`, and `paused`. Authors must stop their own animation loops when appropriate. Stop always destroys the frame.
