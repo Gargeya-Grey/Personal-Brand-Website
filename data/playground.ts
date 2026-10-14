@@ -50,7 +50,7 @@ export const playgroundEntries: PlaygroundEntry[] = orderedWork.map((work) => ({
       ? 'Public results'
       : work.demo
         ? 'Playable demo'
-        : work.recordings?.length
+        : work.film || work.recordings?.length
           ? 'Video walkthrough'
           : work.category,
   href: '/playground/' + work.id,
@@ -59,7 +59,7 @@ export const playgroundEntries: PlaygroundEntry[] = orderedWork.map((work) => ({
       ? 'View the dashboard'
       : work.demo
         ? 'Open & play'
-        : work.recordings?.length
+        : work.film || work.recordings?.length
           ? 'See it in action'
           : 'Explore the project',
   source: work.source,

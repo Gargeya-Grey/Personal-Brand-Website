@@ -34,17 +34,17 @@ const examples = {
     stages: [
       {
         label: 'Desktop',
-        speaker: 'Hotkey → transcript at the cursor',
+        speaker: 'Tap, speak, tap again → text at the cursor',
         text: 'Let’s test the smaller version before adding more features.',
         detail:
-          'Trigger dictation from the keyboard and keep your current app in focus. Local Whisper or an optional cloud transcription provider.',
+          'Your current app keeps focus. Whisper transcribes on your computer, or Gemini Transcribe in the cloud if you choose it.',
       },
       {
         label: 'Android',
         speaker: 'Keyboard microphone → text in your editor',
         text: 'Let’s test the smaller version before adding more features.',
         detail:
-          'Speak through the Android keyboard. Audio goes directly to your configured provider; no desktop connection is needed.',
+          'Hold the microphone on the Android keyboard. Audio goes directly to the provider you configure; no computer is needed.',
       },
     ],
   },
@@ -57,7 +57,7 @@ const examples = {
         speaker: 'When speaking doesn’t fit',
         text: 'Running ten minutes late.',
         detail:
-          'The keyboard opens collapsed, so speaking comes first. The full keyboard is one tap away for small edits, a crowded room, or a quiet mood. The smart polish button then tidies what you typed.',
+          'The keyboard opens collapsed, so speaking comes first. The full keyboard is one tap away for small edits, a crowded room, or a quiet mood. The Polish button then tidies what you typed.',
       },
       {
         label: 'Dictate',
@@ -76,7 +76,7 @@ const examples = {
         label: 'Live',
         speaker: 'Text appears while you speak',
         text: 'I’m running ten minutes late. Start without me…',
-        detail: 'Live transcription writes as you talk and polishes as it goes.',
+        detail: 'Live mode writes your words into the field while you talk.',
       },
     ],
   },
