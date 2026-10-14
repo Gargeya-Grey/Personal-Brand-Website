@@ -15,9 +15,12 @@ import './article-reader.css';
 
 export type RelatedArticleCard = { slug: string; title: string; readTime: string };
 
-/** The frame takes the cover's own proportions once it loads (16:9 is reserved until then), so no bands show. */
-function CoverImage({ src, title, expanded = false }: { src: string; title: string; expanded?: boolean }) {
-  const [ratio, setRatio] = useState<number | null>(null);
+/**
+ * The frame takes the cover's own proportions, so no bands show. The server reads them when it can
+ * (no layout shift); otherwise 16:9 is reserved and the frame corrects itself when the image loads.
+ */
+function CoverImage({ src, title, expanded = false, initialRatio = null }: { src: string; title: string; expanded?: boolean; initialRatio?: number | null }) {
+  const [ratio, setRatio] = useState<number | null>(initialRatio);
   return (
     <figure
       className="reader-cover-image"
@@ -42,7 +45,7 @@ function CoverImage({ src, title, expanded = false }: { src: string; title: stri
   );
 }
 
-export function ArticleClient({ article, canonicalUrl, related = [] }: { article: Article; canonicalUrl: string; related?: RelatedArticleCard[] }) {
+export function ArticleClient({ article, canonicalUrl, related = [], coverRatio = null }: { article: Article; canonicalUrl: string; related?: RelatedArticleCard[]; coverRatio?: number | null }) {
   const [copyStatus, setCopyStatus] = useState('');
   const [liked, setLiked] = useState(false);
   const [largeText, setLargeText] = useState(false);
@@ -184,9 +187,9 @@ export function ArticleClient({ article, canonicalUrl, related = [] }: { article
             <ExpandableFrame
               label="Cover image"
               expandText="View full image"
-              expandedContent={<CoverImage src={article.coverImage} title={article.title} expanded />}
+              expandedContent={<CoverImage src={article.coverImage} title={article.title} expanded initialRatio={coverRatio} />}
             >
-              <CoverImage src={article.coverImage} title={article.title} />
+              <CoverImage src={article.coverImage} title={article.title} initialRatio={coverRatio} />
             </ExpandableFrame>
           ) : (
             <div className="reader-cover-illustration">{renderIllustration(article.illustrationType === 'cover' ? 'diagram1' : article.illustrationType, true)}</div>

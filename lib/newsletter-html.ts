@@ -21,7 +21,7 @@ function linksBlock(links: NewsletterLink[]): string {
     .map((link) => {
       const safeUrl = escapeHtml(link.url);
       const safeLabel = escapeHtml(link.label);
-      return `<li style="margin:0 0 8px;"><a href="${safeUrl}" style="color:#059669;text-decoration:underline;">${safeLabel}</a></li>`;
+      return `<li style="margin:0 0 8px;"><a href="${safeUrl}" style="color:#b04a00;text-decoration:underline;">${safeLabel}</a></li>`;
     })
     .join('');
   return `<p style="margin:28px 0 8px;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;color:#64748b;font-weight:700;">Go deeper</p><ul style="padding-left:20px;margin:0 0 24px;">${items}</ul>`;
@@ -44,11 +44,11 @@ export function renderNewsletterEmail(
               <table role="presentation" cellspacing="0" cellpadding="0">
                 <tr>
                   <td>
-                    <a href="${escapeHtml(unsubscribeUrl)}" style="display:inline-block;padding:10px 18px;border:1px solid #059669;border-radius:999px;color:#059669;text-decoration:none;font-size:13px;font-weight:700;line-height:1;">Unsubscribe</a>
+                    <a href="${escapeHtml(unsubscribeUrl)}" style="display:inline-block;padding:10px 18px;border:1px solid #b04a00;border-radius:999px;color:#b04a00;text-decoration:none;font-size:13px;font-weight:700;line-height:1;">Unsubscribe</a>
                   </td>
                 </tr>
               </table>
-              <p style="margin:12px 0 0;font-size:12px;color:#94a3b8;">Or open <a href="${escapeHtml(unsubscribeUrl)}" style="color:#059669;text-decoration:underline;">this unsubscribe link</a>.</p>`;
+              <p style="margin:12px 0 0;font-size:12px;color:#94a3b8;">Or open <a href="${escapeHtml(unsubscribeUrl)}" style="color:#b04a00;text-decoration:underline;">this unsubscribe link</a>.</p>`;
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -73,7 +73,7 @@ export function renderNewsletterEmail(
               </table>
               <p style="margin:0 0 18px;font-size:12px;color:#94a3b8;">
                 ${escapeHtml(siteConfig.shortName)} · ${escapeHtml(dateLabel)}
-                · <a href="${escapeHtml(archiveUrl)}" style="color:#059669;text-decoration:underline;">Read in the browser</a>
+                · <a href="${escapeHtml(archiveUrl)}" style="color:#b04a00;text-decoration:underline;">Read in the browser</a>
               </p>
               <h1 style="font-family:Georgia,serif;font-size:28px;line-height:1.2;color:#0f172a;margin:0 0 10px;">${escapeHtml(week.title)}</h1>
               ${
@@ -139,7 +139,7 @@ export function renderWelcomeEmail(origin = getSiteOrigin()): { html: string; te
         <h1 style="font-size:22px;margin:0 0 16px;">You're on the list.</h1>
         <p style="font-size:16px;line-height:1.7;margin:0 0 16px;">One letter a week on the human mind, learning with AI, and what we actually score. Sunday evening, in your timezone when we can tell it.</p>
         <p style="font-size:16px;line-height:1.7;margin:0 0 16px;">If a week has nothing honest to say, it stays quiet. No roundup. No product pitch.</p>
-        <p style="font-size:14px;color:#64748b;margin:24px 0 0;"><a href="${escapeHtml(notesUrl)}" style="color:#059669;">See how a letter looks</a>. Every letter has an unsubscribe link.</p>
+        <p style="font-size:14px;color:#64748b;margin:24px 0 0;"><a href="${escapeHtml(notesUrl)}" style="color:#b04a00;">See how a letter looks</a>. Every letter has an unsubscribe link.</p>
       </td>
     </tr>
   </table>

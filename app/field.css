@@ -517,11 +517,11 @@ body {
 }
 .cta-card-gradient,
 .home-room-build {
-  background: #14201c;
+  background: #1b1a18;
 }
 .dark .cta-card-gradient,
 .dark .home-room-build {
-  background: #1f2d27;
+  background: #24221f;
 }
 .atelier-root,
 .dark .atelier-root {
@@ -709,10 +709,10 @@ body {
   color: #f3f1ea;
 }
 .field-main .cta-card-gradient p {
-  color: #b9c4be;
+  color: #bdb7b0;
 }
 .field-main .cta-card-gradient .field-label {
-  color: #3ddc9f;
+  color: #ff9f45;
 }
 @media (prefers-reduced-motion: no-preference) {
   .field-button:active,
@@ -896,32 +896,32 @@ body {
 
 /* The inverted subscription panel is the homepage's ink band: its own ink, a light button. */
 .field-main .cta-card-gradient {
-  --color-bg-primary: #14201c;
-  --color-surface: #14201c;
+  --color-bg-primary: #1b1a18;
+  --color-surface: #1b1a18;
   --color-primary: #f3f1ea;
-  --color-canvas: #1d2b26;
+  --color-canvas: #24221f;
   --color-text-primary: #f3f1ea;
-  --color-text-muted: #b9c4be;
-  --color-on-surface-variant: #b9c4be;
-  --color-accent: #3ddc9f;
-  --color-accent-dark: #8fe5c0;
+  --color-text-muted: #bdb7b0;
+  --color-on-surface-variant: #bdb7b0;
+  --color-accent: #ff9f45;
+  --color-accent-dark: #ffc08a;
   --color-outline-variant: #f3f1ea40;
 }
 .field-main .cta-card-gradient .btn-accent {
   background: #f3f1ea;
-  color: #14201c;
+  color: #1b1a18;
 }
 .dark .field-main .cta-card-gradient {
-  --color-bg-primary: #1f2d27;
-  --color-surface: #1f2d27;
-  --color-canvas: #26362f;
-  --color-primary: #eceeea;
-  --color-text-primary: #eceeea;
-  --color-text-muted: #b9c4be;
-  --color-on-surface-variant: #b9c4be;
-  --color-accent: #3ddc9f;
-  --color-accent-dark: #8fe5c0;
-  --color-outline-variant: #eceeea40;
+  --color-bg-primary: #24221f;
+  --color-surface: #24221f;
+  --color-canvas: #2c2a27;
+  --color-primary: #eeece8;
+  --color-text-primary: #eeece8;
+  --color-text-muted: #bdb7b0;
+  --color-on-surface-variant: #bdb7b0;
+  --color-accent: #ff9f45;
+  --color-accent-dark: #ffc08a;
+  --color-outline-variant: #eeece840;
   background: var(--color-bg-primary);
 }
 .dark .field-main .cta-card-gradient :is(h2, h3) {

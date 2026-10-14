@@ -190,7 +190,7 @@ const ArticleRow = memo(function ArticleRow({
       </div>
 
       <div className="wb-row-main">
-        {post.coverImage && (
+        {post.illustrationType === 'cover' && post.coverImage && (
           <button
             type="button"
             className="wb-row-thumb"

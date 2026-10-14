@@ -9,7 +9,7 @@ function escapeHtml(text: string): string {
 function inline(text: string): string {
   let out = escapeHtml(text);
   out = out.replace(/\[([^\]]+)\]\((https?:\/\/[^)\s]+)\)/g, (_m, label: string, url: string) => {
-    return `<a href="${escapeHtml(url)}" style="color:#059669;text-decoration:underline;">${label}</a>`;
+    return `<a href="${escapeHtml(url)}" style="color:#b04a00;text-decoration:underline;">${label}</a>`;
   });
   out = out.replace(/\*\*([^*]+)\*\*/g, '<strong style="color:#0f172a;">$1</strong>');
   out = out.replace(/(^|[^*])\*([^*]+)\*/g, '$1<em>$2</em>');
@@ -30,7 +30,7 @@ function kickerHtml(label: string, rest: string): string {
   return `<table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:8px 0 28px;">
   <tr>
     <td style="border-left:3px solid #ff8000;padding:6px 0 6px 16px;">
-      <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#059669;font-weight:700;">${escapeHtml(label)}</p>
+      <p style="margin:0 0 6px;font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:#b04a00;font-weight:700;">${escapeHtml(label)}</p>
       <p style="margin:0;font-family:Georgia,'Times New Roman',serif;font-size:17px;line-height:1.5;color:#0f172a;">${inline(rest)}</p>
     </td>
   </tr>
@@ -80,7 +80,7 @@ function listHtml(items: string[], ordered: boolean): string {
       const bottom = index === items.length - 1 ? '0' : '16px';
       return `<tr>
         <td style="width:44px;vertical-align:top;padding:0 14px ${bottom} 0;">
-          <p style="margin:0;font-family:ui-monospace,Consolas,monospace;font-size:12px;letter-spacing:0.08em;color:#059669;font-weight:700;line-height:1.7;">${n}</p>
+          <p style="margin:0;font-family:ui-monospace,Consolas,monospace;font-size:12px;letter-spacing:0.08em;color:#b04a00;font-weight:700;line-height:1.7;">${n}</p>
         </td>
         <td style="padding:0 0 ${bottom};font-size:16px;line-height:1.7;color:#1e293b;">${inline(item)}</td>
       </tr>`;
