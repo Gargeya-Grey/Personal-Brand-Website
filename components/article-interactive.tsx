@@ -3,7 +3,60 @@
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { Play, RotateCcw, Square, SlidersHorizontal } from 'lucide-react';
 import { buildInteractiveDocument } from '@/lib/article-interactive-document';
+import { pickArticleFontFaces, primaryFamily } from '@/lib/article-interactive-fonts';
+import type { FontDescriptors, FontFaceRuleInfo, LoadedFontInfo } from '@/lib/article-interactive-fonts';
 import './article-interactive.css';
+
+type FrameFont = { family: string; source: ArrayBuffer; descriptors: FontDescriptors };
+
+let articleFonts: Promise<FrameFont[]> | null = null;
+
+/** Reads the font files the page already loaded, once, so frames can use them without a font-src policy. */
+function collectArticleFonts() {
+  articleFonts ??= (async () => {
+    try {
+      const pageStyle = getComputedStyle(document.documentElement);
+      const families = ['--font-body', '--font-reading', '--font-mono']
+        .map((name) => primaryFamily(pageStyle.getPropertyValue(name)))
+        .filter(Boolean);
+      const rules: FontFaceRuleInfo[] = [];
+      for (const sheet of Array.from(document.styleSheets)) {
+        try {
+          for (const rule of Array.from(sheet.cssRules)) {
+            if (!(rule instanceof CSSFontFaceRule)) continue;
+            const read = (property: string) => rule.style.getPropertyValue(property).trim();
+            rules.push({
+              family: read('font-family'), src: read('src'), sheetHref: sheet.href ?? document.baseURI,
+              weight: read('font-weight'), style: read('font-style'),
+              unicodeRange: read('unicode-range'), stretch: read('font-stretch'),
+            });
+          }
+        } catch {
+          // Cross-origin stylesheets cannot be read; their fonts are not sent.
+        }
+      }
+      const loaded: LoadedFontInfo[] = [];
+      document.fonts.forEach((face) => {
+        if (face.status === 'loaded') {
+          loaded.push({ family: face.family, weight: face.weight, style: face.style, unicodeRange: face.unicodeRange });
+        }
+      });
+      const faces = pickArticleFontFaces({ families, origin: window.location.origin, rules, loaded });
+      const fonts = await Promise.all(faces.map(async ({ family, url, descriptors }) => {
+        try {
+          const response = await fetch(url);
+          return response.ok ? { family, source: await response.arrayBuffer(), descriptors } : null;
+        } catch {
+          return null;
+        }
+      }));
+      return fonts.filter((font): font is FrameFont => font !== null);
+    } catch {
+      return [];
+    }
+  })();
+  return articleFonts;
+}
 
 export function ArticleInteractive({ source, title, description, height }: {
   source: string;
@@ -34,7 +87,14 @@ export function ArticleInteractive({ source, title, description, height }: {
       paused: !inView || window.document.hidden,
     }, '*');
     const receive = (event: MessageEvent) => {
-      if (event.source !== frame.contentWindow || event.data?.id !== id || event.data.type !== 'article-interactive:resize') return;
+      if (event.source !== frame.contentWindow || event.data?.id !== id) return;
+      if (event.data.type === 'article-interactive:ready') {
+        collectArticleFonts()
+          .catch(() => [] as FrameFont[])
+          .then((fonts) => frame.contentWindow?.postMessage({ type: 'article-interactive:fonts', id, fonts }, '*'));
+        return;
+      }
+      if (event.data.type !== 'article-interactive:resize') return;
       const nextHeight = event.data.height;
       if (typeof nextHeight === 'number' && Number.isFinite(nextHeight)) {
         setFrameHeight(Math.max(160, Math.min(1600, Math.ceil(nextHeight))));

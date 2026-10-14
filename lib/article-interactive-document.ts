@@ -18,17 +18,18 @@ const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (char) => ({
 
 export function buildInteractiveDocument(source: string, title: string, id: string) {
   const safeId = JSON.stringify(id).replace(/</g, '\\u003c');
-  return `<!doctype html><html lang="en"><head>
+  return `<!doctype html><html lang="en" data-fonts="pending"><head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="${INTERACTIVE_CSP}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="referrer" content="no-referrer">
 <title>${escapeHtml(title)}</title>
 <style>
-:root { color-scheme: light; --paper:#fbfdfd; --ink:#142936; --muted:#526773; --accent:#08796d; --soft:#e7eff1; --line:#14293626; }
+:root { color-scheme: light; --paper:#fbfdfd; --ink:#142936; --muted:#526773; --accent:#08796d; --soft:#e7eff1; --line:#14293626; --font-body:"Instrument Sans",system-ui,sans-serif; --font-reading:"Literata",Georgia,serif; --font-mono:"IBM Plex Mono",ui-monospace,monospace; }
 :root[data-theme="dark"] { color-scheme:dark; --paper:#242a2d; --ink:#d2d5d2; --muted:#b5bebc; --accent:#8acdb5; --soft:#30373a; --line:#d2d5d22b; }
 * { box-sizing:border-box; }
-html { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 system-ui,sans-serif; }
+html { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 var(--font-body); }
+html[data-fonts="pending"] body { visibility:hidden; }
 body { margin:0; padding:clamp(16px,4vw,32px); overflow-wrap:anywhere; }
 #article-interactive-root { display:flow-root; min-width:0; }
 :where(img,svg,canvas,video) { max-width:100%; }
@@ -53,8 +54,34 @@ html[data-reduced-motion="true"] *,html[data-reduced-motion="true"] *::before,ht
   };
   new ResizeObserver(reportSize).observe(document.body);
   window.addEventListener('load', reportSize);
+  let revealed = false;
+  const reveal = () => {
+    if (revealed) return;
+    revealed = true;
+    delete document.documentElement.dataset.fonts;
+    reportSize();
+  };
+  setTimeout(reveal, 600);
+  const loadFonts = (fonts) => {
+    const loads = [];
+    for (const entry of Array.isArray(fonts) ? fonts.slice(0, 12) : []) {
+      try {
+        if (typeof entry?.family !== 'string' || entry.family.length >= 100 || !(entry.source instanceof ArrayBuffer)) continue;
+        const descriptors = {};
+        for (const key of ['style', 'weight', 'stretch', 'unicodeRange']) {
+          if (typeof entry.descriptors?.[key] === 'string') descriptors[key] = entry.descriptors[key];
+        }
+        const face = new FontFace(entry.family, entry.source, descriptors);
+        document.fonts.add(face);
+        loads.push(face.load());
+      } catch {}
+    }
+    Promise.allSettled(loads).then(reveal);
+  };
   window.addEventListener('message', (event) => {
-    if (event.source !== parent || event.data?.type !== 'article-interactive:preferences' || event.data.id !== id) return;
+    if (event.source !== parent || event.data?.id !== id) return;
+    if (event.data.type === 'article-interactive:fonts') { loadFonts(event.data.fonts); return; }
+    if (event.data.type !== 'article-interactive:preferences') return;
     const {theme, reducedMotion, paused} = event.data;
     document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.reducedMotion = String(Boolean(reducedMotion));
@@ -63,6 +90,7 @@ html[data-reduced-motion="true"] *,html[data-reduced-motion="true"] *::before,ht
     reportSize();
   });
   reportSize();
+  parent.postMessage({type:'article-interactive:ready',id}, '*');
 })();
 </script></body></html>`;
 }

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { articleWordCount, extractArticleHeadings, parseInteractiveInfo, readFencedBlock } from '../lib/article-markdown.ts';
 import { buildInteractiveDocument } from '../lib/article-interactive-document.ts';
 import { INTERACTIVE_EXAMPLE } from '../lib/article-interactive-example.ts';
+import { pickArticleFontFaces, primaryFamily } from '../lib/article-interactive-fonts.ts';
 
 const markdown = [
   '## An idea',
@@ -37,4 +38,34 @@ assert.ok(document.includes("connect-src 'none'"));
 assert.ok(document.includes("frame-src 'none'"));
 assert.ok(document.includes('&lt;/title&gt;&lt;script&gt;bad()&lt;/script&gt;'));
 assert.ok(!document.includes('<title></title><script>'));
-console.log('Article content checks passed: anchors, fenced blocks, opt-in interactive syntax, document isolation policy.');
+assert.ok(document.includes("font-src 'none'"), 'The font policy must stay closed');
+assert.ok(document.includes('--font-body:"Instrument Sans"'));
+assert.ok(document.includes('font:16px/1.6 var(--font-body)'));
+assert.ok(document.includes('article-interactive:fonts'));
+assert.ok(document.includes('new FontFace('));
+assert.ok(document.includes("type:'article-interactive:ready'"));
+assert.equal(primaryFamily('"Instrument Sans", sans-serif'), 'Instrument Sans');
+assert.equal(primaryFamily("'IBM Plex Mono', monospace"), 'IBM Plex Mono');
+assert.equal(primaryFamily(''), '');
+const sheetHref = 'https://sgargeya.com/_next/static/css/app.css';
+const faceRule = (family, src, unicodeRange, weight = '400 700') => ({ family, src, sheetHref, weight, style: 'normal', unicodeRange, stretch: '' });
+assert.deepEqual(pickArticleFontFaces({
+  families: ['Instrument Sans', 'Literata', 'IBM Plex Mono'],
+  origin: 'https://sgargeya.com',
+  rules: [
+    faceRule('"Instrument Sans"', 'url("../media/latin.woff2") format("woff2")', 'U+0-FF, U+131'),
+    faceRule('"Instrument Sans"', 'url("../media/latin-ext.woff2") format("woff2")', 'U+100-2BA'),
+    faceRule('"Instrument Sans Fallback"', 'local("Arial")', ''),
+    faceRule('Literata', 'url(https://fonts.example.com/literata.woff2)', 'U+0-FF'),
+    faceRule('Other Font', 'url("../media/other.woff2")', 'U+0-FF'),
+  ],
+  loaded: [
+    { family: '"Instrument Sans"', weight: '400 700', style: 'normal', unicodeRange: 'U+0-FF,U+131' },
+    { family: 'Literata', weight: '400 700', style: 'normal', unicodeRange: 'U+0-FF' },
+  ],
+}), [{
+  family: 'Instrument Sans',
+  url: 'https://sgargeya.com/_next/static/media/latin.woff2',
+  descriptors: { weight: '400 700', style: 'normal', unicodeRange: 'U+0-FF, U+131' },
+}]);
+console.log('Article content checks passed: anchors, fenced blocks, opt-in interactive syntax, document isolation policy, article fonts.');
