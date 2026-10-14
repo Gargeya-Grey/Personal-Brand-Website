@@ -39,28 +39,29 @@
 }
 .dark {
   color-scheme: dark;
-  --paper: #121110;
-  --paper-raised: #1a1918;
-  --sage: #221e1a;
-  --ink: #eeece8;
+  /* Softened 14 Oct 2026: near-white on near-black glowed. Text ~13.6:1, long text ~10:1. */
+  --paper: #151413;
+  --paper-raised: #1c1b19;
+  --sage: #25211d;
+  --ink: #e0ddd8;
   --ink-2: #ada7a0;
   --rule: #2c2a27;
-  --forest: #eeece8;
-  --on-forest: #121110;
+  --forest: #e0ddd8;
+  --on-forest: #151413;
   --leaf: #ff8000;
   --leaf-ink: #ff9f45;
   --clay: #f07178;
 
-  --color-text-reading: #d2cec8;
+  --color-text-reading: #c2bdb6;
   --color-accent-soft: #ff800018;
-  --color-accent-secondary-soft: #eeece810;
+  --color-accent-secondary-soft: #e0ddd810;
   --color-surface-container-low: var(--paper-raised);
-  --color-surface-container-high: #252321;
+  --color-surface-container-high: #282624;
   --color-surface-container-lowest: var(--paper);
   --color-primary-container: var(--paper-raised);
   --color-accent-dark: #ffc08a;
-  --field-soft: #1c1a18;
-  --field-blue: #1e1c1a;
+  --field-soft: #1f1d1b;
+  --field-blue: #211f1d;
 }
 /* Reading ink is softer than display ink. Override legacy slate utilities too. */
 .dark :is(.article-prose, .notes-prose) :is(p, li, td, blockquote, em) {
@@ -915,14 +916,18 @@ body {
   --color-bg-primary: #24221f;
   --color-surface: #24221f;
   --color-canvas: #2c2a27;
-  --color-primary: #eeece8;
-  --color-text-primary: #eeece8;
+  --color-primary: #e0ddd8;
+  --color-text-primary: #e0ddd8;
   --color-text-muted: #bdb7b0;
   --color-on-surface-variant: #bdb7b0;
   --color-accent: #ff9f45;
   --color-accent-dark: #ffc08a;
-  --color-outline-variant: #eeece840;
+  --color-outline-variant: #e0ddd840;
   background: var(--color-bg-primary);
+}
+.dark .field-main .cta-card-gradient .btn-accent {
+  background: var(--ink);
+  color: var(--on-forest);
 }
 .dark .field-main .cta-card-gradient :is(h2, h3) {
   color: var(--color-text-primary);

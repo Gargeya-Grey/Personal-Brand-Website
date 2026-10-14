@@ -18,14 +18,14 @@ modes:
     leaf-ink: "#B04A00"  # burnt orange for text
     clay: "#B42335"      # crimson, so a warning never reads as the accent
   dark:
-    paper: "#121110"
-    paper-raised: "#1A1918"
-    sage: "#221E1A"
-    ink: "#EEECE8"
+    paper: "#151413"
+    paper-raised: "#1C1B19"
+    sage: "#25211D"
+    ink: "#E0DDD8"
     ink-2: "#ADA7A0"
     rule: "#2C2A27"
-    forest: "#EEECE8"
-    on-forest: "#121110"
+    forest: "#E0DDD8"
+    on-forest: "#151413"
     leaf: "#FF8000"
     leaf-ink: "#FF9F45"
     clay: "#F07178"
@@ -63,7 +63,9 @@ Tokens are CSS variables in the token block of `app/field.css`, with an `html.da
 | `--leaf-ink` | Orange text, link hover |
 | `--clay` | Crimson. Corrections and warnings only |
 
-The inverted band (Notes on the homepage) uses its own ink: `#1B1A18` in light mode, `#24221F` in dark mode.
+Dark mode is soft on purpose (owner, 14 October 2026): near-white at 16:1 on near-black glowed and tired the eye. Paper is lifted to `#151413`, `--ink` is `#E0DDD8` (about 13.6:1), and long text (essay and Notes paragraphs, lists) uses `--color-text-reading` `#C2BDB6` (about 9.9:1). Headings and bold text keep `--ink`. Keep dark text between about 10:1 and 14:1; do not go back to pure white.
+
+The inverted band (Notes on the homepage) has its own background: `#1B1A18` in light mode, `#24221F` in dark mode. Its text (`--band-ink`) is `#F3F1EA` in light mode and `#E0DDD8` in dark mode.
 
 ## Type
 

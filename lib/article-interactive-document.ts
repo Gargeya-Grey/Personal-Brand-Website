@@ -26,7 +26,7 @@ export function buildInteractiveDocument(source: string, title: string, id: stri
 <title>${escapeHtml(title)}</title>
 <style>
 :root { color-scheme: light; --paper:#ffffff; --ink:#1b1a18; --muted:#5e5a55; --accent:#b04a00; --soft:#f1ede7; --line:#1b1a1826; }
-:root[data-theme="dark"] { color-scheme:dark; --paper:#1a1918; --ink:#eeece8; --muted:#ada7a0; --accent:#ff9f45; --soft:#221e1a; --line:#eeece82b; }
+:root[data-theme="dark"] { color-scheme:dark; --paper:#1c1b19; --ink:#e0ddd8; --muted:#ada7a0; --accent:#ff9f45; --soft:#25211d; --line:#e0ddd82b; }
 * { box-sizing:border-box; }
 html { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 var(--font-body); }
 :root { --font-body:"Instrument Sans",system-ui,sans-serif; --font-reading:"Literata",Georgia,serif; --font-mono:"IBM Plex Mono",ui-monospace,monospace; }
