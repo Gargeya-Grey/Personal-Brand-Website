@@ -21,7 +21,7 @@ Set `X_TOKEN_ENCRYPTION_KEY` (32+ random characters). Reuse the X Lab key if you
 
 ## 3. AI
 
-Gemini is the default, same as the old app. OpenRouter is a toggle on `/ledger`.
+Gemini is the default, same as the old app. OpenRouter is a toggle on `/ledger`. Under **Extraction model** you can type another model slug for either provider, and an effort level for OpenRouter. The browser remembers the choice; an empty field uses the `.env` model.
 
 | Env | Notes |
 | :--- | :--- |
@@ -29,7 +29,7 @@ Gemini is the default, same as the old app. OpenRouter is a toggle on `/ledger`.
 | `GEMINI_MODEL` | Optional. Defaults to `gemini-flash-latest`. |
 | `GEMINI_MODEL_FALLBACK` | Optional. Defaults to `gemini-flash-latest`. |
 | `OPENROUTER_API_KEY` | Needed to use the OpenRouter toggle. |
-| `LEDGER_OPENROUTER_MODEL` | **The OpenRouter model name.** Change this in `.env` and restart. |
+| `LEDGER_OPENROUTER_MODEL` | **The default OpenRouter model.** Override it under Extraction model, or change it here and restart. |
 
 If `LEDGER_OPENROUTER_MODEL` is empty, the ledger uses `OPENROUTER_MODEL` (the same key as Editorial). Prefer `LEDGER_OPENROUTER_MODEL` so a ledger model swap does not change blog AI.
 

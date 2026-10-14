@@ -1,0 +1,535 @@
+/* Growth Strategy (/editorial?workspace=strategy): a calm editorial dashboard.
+ * Built on the atelier grammar (app/atelier.css) and the index grammar (app/index-list.css).
+ * A sticky section rail, then numbered sections: a mono index on the left, a two-tone heading and
+ * hairline rows on the right. The two sittings are a dotted path with papaya dots, as .process-path.
+ * Tokens only: no boxes, gradients, glow or lift. */
+
+.st-root {
+  color: var(--ink);
+}
+
+/* ── Section rail ───────────────────────────────────────────────────────────── */
+
+.st-rail {
+  position: sticky;
+  top: 72px;
+  z-index: 15;
+  overflow-x: auto;
+  background: var(--paper);
+  border-bottom: 1px solid var(--rule);
+  scrollbar-width: none;
+}
+.st-rail::-webkit-scrollbar {
+  display: none;
+}
+.st-rail .atelier-tabs {
+  flex-wrap: nowrap;
+  gap: 0 28px;
+  white-space: nowrap;
+}
+.st-rail .atelier-tab {
+  min-height: 48px;
+}
+@media (max-width: 700px) {
+  .st-rail {
+    top: 64px;
+  }
+}
+
+/* ── Sections ───────────────────────────────────────────────────────────────── */
+
+.st-root .st-section {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr);
+  gap: 16px 40px;
+  padding: 64px 0;
+  scroll-margin-top: 128px;
+}
+.st-aside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  padding-top: 0.75rem;
+}
+.st-aside > .atelier-mono {
+  font-size: 13px;
+}
+.st-updated {
+  font-size: 13px;
+}
+.st-body {
+  min-width: 0;
+  max-width: 54rem;
+}
+
+.st-root .st-h2 {
+  margin: 0 0 28px;
+  font-size: clamp(1.6rem, 2.8vw, 2.25rem);
+  font-weight: 500;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+  text-wrap: balance;
+}
+.st-root .st-h2 em {
+  font-style: normal;
+  font-weight: inherit;
+  color: var(--ink-2);
+}
+.st-root .st-h2-lead {
+  max-width: 22ch;
+  margin-bottom: 36px;
+  font-size: clamp(1.9rem, 3.8vw, 3rem);
+  line-height: 1.06;
+  letter-spacing: -0.04em;
+}
+.st-root .st-h3 {
+  margin: 0 0 12px;
+}
+
+.st-text {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+.st-root .st-body .st-text + .st-text,
+.st-root .st-body .st-steps + .st-text {
+  margin-top: 16px;
+}
+
+/* ── 01: the question ───────────────────────────────────────────────────────── */
+
+/* The thesis is the owner's own sentence, so it reads in the book face. */
+.st-statement {
+  max-width: 46ch;
+  margin: 0 0 28px;
+  font-family: var(--font-reading);
+  font-size: clamp(1.2rem, 1.9vw, 1.45rem);
+  line-height: 1.55;
+  color: var(--ink);
+}
+.st-audience {
+  position: relative;
+  max-width: 62ch;
+  margin: 36px 0 0;
+  padding: 24px 0 0 24px;
+  border-top: 1px solid var(--rule);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.st-audience::before {
+  content: '';
+  position: absolute;
+  top: 2rem;
+  left: 0;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--leaf);
+}
+
+/* ── 02: when you are stuck ─────────────────────────────────────────────────── */
+
+.st-lenses {
+  margin: 0 0 32px;
+}
+.st-prompt {
+  position: relative;
+  max-width: 44rem;
+  margin: 0 0 56px;
+  padding-left: 28px;
+}
+.st-prompt::before {
+  content: '';
+  position: absolute;
+  top: 0.62em;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--leaf);
+}
+.st-question {
+  max-width: 34ch;
+  margin: 0 0 10px;
+  font-size: clamp(1.25rem, 2vw, 1.6rem);
+  font-weight: 500;
+  line-height: 1.35;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.st-steps {
+  counter-reset: step;
+  margin: 0 0 28px;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+.st-steps li {
+  counter-increment: step;
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  gap: 0 8px;
+  padding: 16px 0;
+  border-top: 1px solid var(--rule);
+  font-size: 1rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.st-steps li::before {
+  content: counter(step, decimal-leading-zero);
+  padding-top: 0.2em;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+.st-check {
+  max-width: 62ch;
+  margin: 32px 0 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+/* ── 03: two sittings ───────────────────────────────────────────────────────── */
+
+.st-title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px 24px;
+  margin-bottom: 28px;
+}
+.st-title-row .st-h2 {
+  margin: 0;
+}
+.st-root .st-open {
+  min-height: 40px;
+  color: var(--leaf-ink);
+}
+.st-root .st-open:hover {
+  color: var(--ink);
+}
+.st-practice {
+  max-width: 62ch;
+}
+
+/* The daily shape: mono numbers over short labels, set apart by space. */
+.st-figures {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px 56px;
+  margin: 40px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-figures li {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.st-figures b {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 2rem;
+  font-weight: 500;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+}
+.st-figures span {
+  font-size: 14px;
+  color: var(--ink-2);
+}
+
+/* The sittings: two stops on a dotted path, papaya when done (as .process-path). */
+.st-path {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 48px;
+  margin: 56px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.st-stop {
+  position: relative;
+}
+.st-stop:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 5px;
+  right: -38px;
+  left: 24px;
+  border-top: 2px dotted color-mix(in srgb, var(--ink-2) 40%, var(--rule));
+  pointer-events: none;
+}
+.st-stop-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 10px;
+  width: 100%;
+  margin: 0;
+  padding: 32px 0 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: inherit;
+  cursor: pointer;
+}
+.st-stop-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 12px;
+  height: 12px;
+  border: 1.5px solid var(--leaf-ink);
+  border-radius: 50%;
+  transition: background 200ms ease, border-color 200ms ease;
+}
+.st-stop[data-done='true'] .st-stop-button::before {
+  border-color: var(--leaf);
+  background: var(--leaf);
+}
+.st-stop-button:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+.st-time {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 1.75rem;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  transition: color 200ms ease;
+}
+@media (hover: hover) and (pointer: fine) {
+  .st-stop-button:hover .st-time {
+    color: var(--leaf-ink);
+  }
+}
+.st-stop-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 16px;
+}
+.st-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--leaf-ink);
+}
+.st-action {
+  max-width: 38ch;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.st-note {
+  margin: 28px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+/* Rules as hairline rows: a short label, then the sentence. */
+.st-rows {
+  margin: 56px 0 0;
+  padding: 0;
+  border-bottom: 1px solid var(--rule);
+}
+.st-rows > div {
+  display: grid;
+  grid-template-columns: 168px minmax(0, 1fr);
+  gap: 8px 32px;
+  padding: 24px 0;
+  border-top: 1px solid var(--rule);
+}
+.st-rows dt {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.6;
+  color: var(--ink);
+}
+.st-rows dd {
+  max-width: 62ch;
+  margin: 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink-2);
+}
+
+/* ── 04: why this approach fits X ───────────────────────────────────────────── */
+
+.st-why {
+  grid-column: 1 / -1;
+}
+.st-why summary {
+  display: grid;
+  grid-template-columns: 148px minmax(0, 1fr) auto;
+  gap: 0 40px;
+  align-items: start;
+  list-style: none;
+  cursor: pointer;
+}
+.st-why summary::-webkit-details-marker {
+  display: none;
+}
+.st-why summary:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 8px;
+  border-radius: 6px;
+}
+.st-why summary .st-h2 {
+  max-width: 28ch;
+  margin: 0;
+}
+.st-why-index {
+  padding-top: 0.75rem;
+  font-size: 13px;
+}
+.st-chevron {
+  margin-top: 0.6rem;
+  color: var(--ink-2);
+  transition: transform 200ms var(--ease-out), color 200ms ease;
+}
+.st-why summary:hover .st-chevron {
+  color: var(--ink);
+}
+.st-why[open] .st-chevron {
+  transform: rotate(180deg);
+}
+.st-why-body {
+  max-width: 54rem;
+  margin: 40px 0 0 188px;
+}
+.st-notes {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+.st-notes li {
+  padding: 28px 0;
+  border-top: 1px solid var(--rule);
+}
+.st-notes .atelier-h3 {
+  margin-bottom: 8px;
+}
+.st-source {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 40px;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--leaf-ink);
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--leaf-ink) 40%, transparent);
+  text-underline-offset: 4px;
+  transition: text-decoration-color 200ms ease;
+}
+.st-source:hover {
+  text-decoration-color: currentColor;
+}
+.st-implication {
+  max-width: 62ch;
+  margin: 4px 0 0;
+  font-size: 1rem;
+  line-height: 1.7;
+  color: var(--ink);
+}
+.st-limit {
+  margin: 28px 0 0;
+}
+
+/* ── Narrow screens ─────────────────────────────────────────────────────────── */
+
+@media (max-width: 900px) {
+  .st-root .st-section {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 48px 0;
+  }
+  .st-aside {
+    flex-direction: row;
+    align-items: baseline;
+    gap: 20px;
+    padding-top: 0;
+  }
+  .st-why summary {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      'index index'
+      'title chevron';
+    gap: 8px 16px;
+  }
+  .st-why-index {
+    grid-area: index;
+    padding-top: 0;
+  }
+  .st-why summary .st-h2 {
+    grid-area: title;
+  }
+  .st-chevron {
+    grid-area: chevron;
+  }
+  .st-why-body {
+    margin-left: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  .st-path {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 36px 0;
+  }
+  .st-stop-button {
+    padding: 0 0 0 32px;
+  }
+  .st-stop-button::before {
+    top: 11px;
+  }
+  .st-stop:not(:last-child)::after {
+    top: 28px;
+    right: auto;
+    bottom: -32px;
+    left: 5px;
+    width: 0;
+    border-top: 0;
+    border-left: 2px dotted color-mix(in srgb, var(--ink-2) 40%, var(--rule));
+  }
+  .st-rows > div {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 6px;
+    padding: 20px 0;
+  }
+  .st-figures {
+    gap: 20px 36px;
+  }
+  .st-steps li {
+    grid-template-columns: 40px minmax(0, 1fr);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .st-stop-button::before,
+  .st-time,
+  .st-chevron,
+  .st-source {
+    transition: none;
+  }
+}

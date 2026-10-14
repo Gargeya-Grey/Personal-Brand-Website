@@ -14,12 +14,17 @@ import {
 } from '@/lib/ledger-schema';
 import { applyBusinessRules, clipText, smartMapValue } from '@/lib/ledger-engine';
 import { completeLedgerModel, parseJsonFromModel, type LedgerAiProvider } from '@/lib/ledger-ai';
+import type { ReasoningEffort } from '@/lib/ai-model-options';
 
 export type ExtractRequest = {
   file?: { data?: string; mimeType?: string } | null;
   fileText?: string;
   extraDetails?: string;
   provider?: LedgerAiProvider | string;
+  /** The owner's slug for the chosen provider; empty uses .env. */
+  model?: string | null;
+  /** OpenRouter only. */
+  effort?: ReasoningEffort;
 };
 
 export type ExtractResult = {
@@ -28,6 +33,8 @@ export type ExtractResult = {
   confidence_flags: Record<string, ConfidenceLevel>;
   status: 'DONE' | 'REVIEW_REQUIRED';
   fusion: string;
+  /** The model that produced the entry (OpenRouter can fall back to Gemini). */
+  engine?: { provider: LedgerAiProvider; model: string };
 };
 
 function decodeFilePayload(file?: { data?: string; mimeType?: string } | null): {
@@ -250,6 +257,9 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
     try {
       const ocrResult = await completeLedgerModel({
         provider: input.provider,
+        model: input.model,
+        // Transcription needs no reasoning, and three passes at a high effort can pass the 60 s limit.
+        effort: 'default',
         systemPrompt: OCR_SYSTEM_PROMPT,
         userText: 'Please transcribe all visible text, tables, line items, and invoice numbers from this document image.',
         image: imageData,
@@ -265,9 +275,12 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
 
   // Phase 2: High-Thinking Structured Extraction
   let pass1Parsed: unknown = null;
+  let engine: ExtractResult['engine'];
   try {
     const pass1Result = await completeLedgerModel({
       provider: input.provider,
+      model: input.model,
+      effort: input.effort,
       systemPrompt: LEDGER_EXTRACT_SYSTEM_PROMPT,
       userText: buildExtractUserPrompt(transcript, extraDetails),
       image: imageData,
@@ -275,6 +288,7 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
       thinkingBudget: 2048,
     });
     pass1Parsed = parseJsonFromModel(pass1Result.text);
+    engine = { provider: pass1Result.provider, model: pass1Result.model };
   } catch (extractErr) {
     console.error('[ledger-extract] Phase 2 extraction error', extractErr);
     throw new Error(extractErr instanceof Error ? extractErr.message : 'Structured extraction failed.');
@@ -285,6 +299,8 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
   try {
     const judgeResult = await completeLedgerModel({
       provider: input.provider,
+      model: input.model,
+      effort: input.effort,
       systemPrompt: JUDGE_SYSTEM_PROMPT,
       userText: buildJudgeUserPrompt(transcript, extraDetails, pass1Parsed),
       image: imageData,
@@ -294,6 +310,7 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
     const judgeParsed = parseJsonFromModel(judgeResult.text);
     if (judgeParsed && typeof judgeParsed === 'object') {
       finalParsed = judgeParsed;
+      engine = { provider: judgeResult.provider, model: judgeResult.model };
     }
   } catch (judgeErr) {
     console.warn('[ledger-extract] Judge pass failed, falling back to Phase 2 output', judgeErr);
@@ -323,5 +340,6 @@ export async function runLedgerExtraction(input: ExtractRequest): Promise<Extrac
     confidence_flags: flags,
     status: hasLow ? 'REVIEW_REQUIRED' : 'DONE',
     fusion: data.sourceFusion || 'Document transcript and operator notes were successfully audited and merged.',
+    engine,
   };
 }

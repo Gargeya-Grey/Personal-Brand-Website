@@ -1,5 +1,7 @@
 'use client';
 
+import './workbench.css';
+
 import {
   Component,
   useState,
@@ -13,12 +15,10 @@ import {
 import { createPortal } from 'react-dom';
 import dynamic from 'next/dynamic';
 import * as motion from 'motion/react-client';
-import { AnimatePresence } from 'motion/react';
+import { AnimatePresence, MotionConfig } from 'motion/react';
 import {
-  Plus, Search, ArrowLeft, LogOut, Sparkles, Clock, Eye, Download, Save, X,
-  HelpCircle, FileText, Info, RefreshCw, Star, ArrowUpRight, Pen, Trash2,
-  Settings2, Maximize2, Upload, Loader2, ImagePlus, Table2, ListTodo, BookOpen,
-  BarChart3, Compass, Mail, SlidersHorizontal,
+  Plus, Search, ArrowLeft, X, ArrowUpRight, Pen, Trash2, Upload, Loader2,
+  ImagePlus, Table2, SlidersHorizontal,
 } from 'lucide-react';
 import type { Article, ArticleLite } from '@/lib/blog-service';
 import type { NewsletterWeek } from '@/lib/newsletter-model';
@@ -29,62 +29,49 @@ import { renderIllustration } from '@/components/render-illustration';
 import { siteConfig } from '@/lib/site-config';
 import { INTERACTIVE_EXAMPLE } from '@/lib/article-interactive-example';
 import { articleWordCount } from '@/lib/article-markdown';
+import type { AiModelDefaults } from '@/lib/ai-model-options';
+import { AiModelControl, useAiModelChoice } from '@/components/ai-model-control';
+
+/** Quiet placeholder while a workspace chunk loads. */
+function WorkspaceLoading({ label }: { label: string }) {
+  return (
+    <section className="atelier-section" role="status" aria-live="polite">
+      <p className="atelier-meta">{label}</p>
+    </section>
+  );
+}
 
 const XStudioClient = dynamic(() => import('./x-studio-client').then((m) => m.XStudioClient), {
   ssr: false,
-  loading: () => (
-    <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
-      <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
-      <p className="text-sm">Loading queue…</p>
-    </div>
-  ),
+  loading: () => <WorkspaceLoading label="Loading queue…" />,
 });
 const XLabClient = dynamic(() => import('./x-lab-client').then((m) => m.XLabClient), {
   ssr: false,
-  loading: () => (
-    <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
-      <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
-      <p className="text-sm">Loading X Lab…</p>
-    </div>
-  ),
+  loading: () => <WorkspaceLoading label="Loading X Lab…" />,
 });
 const XGrowthStrategy = dynamic(
   () => import('./x-growth-strategy').then((m) => m.XGrowthStrategy),
   {
     ssr: false,
-    loading: () => (
-      <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
-        <p className="text-sm">Loading strategy…</p>
-      </div>
-    ),
+    loading: () => <WorkspaceLoading label="Loading strategy…" />,
   }
 );
 const NewsletterClient = dynamic(
   () => import('./newsletter-client').then((m) => m.NewsletterClient),
   {
     ssr: false,
-    loading: () => (
-      <div className="atelier-card-lg py-20 flex flex-col items-center gap-3 text-[var(--atelier-muted)]">
-        <Loader2 className="w-6 h-6 animate-spin text-[var(--atelier-gold)]" />
-        <p className="text-sm">Loading Notes…</p>
-      </div>
-    ),
+    loading: () => <WorkspaceLoading label="Loading Notes…" />,
   }
 );
 const MarkdownPreview = dynamic(
   () => import('@/components/editor/markdown-preview').then((m) => m.MarkdownPreview),
-  { ssr: false, loading: () => <p className="text-sm text-[var(--atelier-faint)] italic">Loading preview…</p> }
+  { ssr: false, loading: () => <p className="wb-blank">Loading preview…</p> }
 );
 const MarkdownSourceEditor = dynamic(
   () => import('@/components/editor/markdown-source-editor').then((m) => m.MarkdownSourceEditor),
   {
     ssr: false,
-    loading: () => (
-      <div className="min-h-[260px] flex-grow sm:min-h-[360px] text-sm text-[var(--atelier-faint)] italic">
-        Loading editor…
-      </div>
-    ),
+    loading: () => <div className="wb-editor-loading">Loading editor…</div>,
   }
 );
 
@@ -106,94 +93,78 @@ class XStudioErrorBoundary extends Component<
   render() {
     if (this.state.error) {
       return (
-        <div className="atelier-card-lg py-16 px-8 flex flex-col items-center gap-4 text-center max-w-lg mx-auto">
-          <p className="font-headline font-bold text-xl text-[var(--atelier-ink)]">
-            X To-Do hit a glitch
-          </p>
-          <p className="text-sm text-[var(--atelier-muted)] leading-relaxed">
-            {this.state.error.message || 'Unexpected render error'}
-          </p>
+        <section className="atelier-section wb-glitch">
+          <div className="atelier-notice" data-tone="warn" role="alert">
+            <div>
+              <strong>X To-Do hit a glitch</strong>
+              <p className="wb-glitch-message">
+                {this.state.error.message || 'Unexpected render error'}
+              </p>
+            </div>
+          </div>
           <button
             type="button"
-            className="atelier-btn atelier-btn-gold"
+            className="atelier-btn atelier-btn-line"
             onClick={() => this.setState({ error: null })}
           >
             Try again
           </button>
-        </div>
+        </section>
       );
     }
     return this.props.children;
   }
 }
 
+type Workspace = 'blog' | 'x' | 'lab' | 'strategy' | 'notes';
+
 interface EditorialClientProps {
   initialArticles: ArticleLite[];
   user: UserSession;
   /** From server searchParams — never sync URL during render/mount via history API */
-  initialWorkspace?: 'blog' | 'x' | 'lab' | 'strategy' | 'notes';
+  initialWorkspace?: Workspace;
   initialNotes?: NewsletterWeek[];
+  /** The .env model, so the model control can show what an empty field means. */
+  aiDefaults: AiModelDefaults;
 }
 
-function IllustrationThumb({
-  type,
-  coverImage,
-  onPreview,
-}: {
-  type: string;
-  coverImage?: string;
-  onPreview?: (type: string, url?: string) => void;
-}) {
-  const isCover = type === 'cover' && coverImage;
-  return (
-    <div
-      onClick={(e) => {
-        if (onPreview) {
-          e.stopPropagation();
-          onPreview(type, coverImage);
-        }
-      }}
-      className={`w-full h-full relative group ${onPreview ? 'cursor-pointer' : ''} overflow-hidden`}
-      title={onPreview ? 'Preview' : undefined}
-    >
-      {isCover ? (
-        // eslint-disable-next-line @next/next/no-img-element
-        <img src={coverImage} alt="" className="w-full h-full object-contain" />
-      ) : (
-        <div className="w-full h-full opacity-90">
-          {renderIllustration(type === 'cover' ? 'diagram1' : type, false)}
-        </div>
-      )}
-      {onPreview && (
-        <div className="absolute inset-0 bg-black/30 dark:bg-black/45 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
-          {/* Fixed light chip + dark icon so contrast stays clear in both themes */}
-          <span className="w-9 h-9 rounded-full bg-white shadow-lg shadow-black/25 flex items-center justify-center ring-1 ring-black/5">
-            <Maximize2 className="w-4 h-4 text-neutral-900" strokeWidth={2.25} />
-          </span>
-        </div>
-      )}
-    </div>
-  );
-}
+/** The page head for each workspace: a two-tone heading and an optional lead. */
+const WORKSPACE_HEADS: Record<
+  Workspace,
+  { name: string; title: string; tail: string; lead?: string }
+> = {
+  blog: {
+    name: 'Blog',
+    title: 'Editorial.',
+    tail: 'Shape essays with quiet control.',
+    lead: 'AI for scaffolding, you for the voice.',
+  },
+  notes: {
+    name: 'Notes',
+    title: 'Notes.',
+    tail: 'The weekly letter.',
+    lead: 'Edit, preview, mark happy, or let Sunday 7pm local send it.',
+  },
+  x: {
+    name: 'X To-Do',
+    title: 'X To-Do.',
+    tail: 'Focus queue for scout packs.',
+    lead: 'Reply, post, mark done.',
+  },
+  lab: {
+    name: 'X Lab',
+    title: 'X Lab.',
+    tail: 'Growth analytics from X API snapshots.',
+    lead: 'Refresh, explore, ask the AI analyst.',
+  },
+  strategy: {
+    name: 'Growth Strategy',
+    title: 'Growth Strategy.',
+    tail: 'What to post, when to sit down, and how to sound like yourself.',
+  },
+};
 
-function StatusBadge({ status }: { status: 'draft' | 'published' | undefined }) {
-  if (status === 'draft') {
-    return (
-      <span className="atelier-chip !border-amber-500/25 !bg-amber-500/10 !text-amber-800 dark:!text-amber-200">
-        <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
-        Draft
-      </span>
-    );
-  }
-  return (
-    <span className="atelier-chip !border-emerald-500/25 !bg-emerald-500/10 !text-emerald-800 dark:!text-emerald-200">
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-      Live
-    </span>
-  );
-}
-
-const ArticleCard = memo(function ArticleCard({
+const ArticleRow = memo(function ArticleRow({
   post,
   onEdit,
   onDelete,
@@ -206,60 +177,57 @@ const ArticleCard = memo(function ArticleCard({
   isDeletingId: number | null;
   onPreview: (type: string, url?: string) => void;
 }) {
+  const isDraft = post.status === 'draft';
+  const tags = post.categories.slice(0, 3).join(', ');
   return (
-    <article
-      className="group atelier-card p-4 sm:p-5 flex flex-col sm:flex-row gap-5 sm:items-center hover:shadow-[var(--atelier-shadow)] transition-shadow duration-300 [content-visibility:auto] [contain-intrinsic-size:auto_140px]"
-    >
-      <div className="relative shrink-0 w-full aspect-video sm:w-[148px] sm:h-[96px] sm:aspect-auto rounded-[1.25rem] overflow-hidden border border-[var(--atelier-line)] bg-[var(--atelier-paper)] shadow-inner">
-        <IllustrationThumb type={post.illustrationType} coverImage={post.coverImage} onPreview={onPreview} />
-      </div>
-
-      <div className="flex-1 min-w-0 space-y-2.5">
-        <div className="flex flex-wrap items-center gap-2">
-          {post.featured && (
-            <span className="atelier-chip !border-[var(--atelier-gold)]/30 !bg-[var(--atelier-gold-soft)] !text-[var(--atelier-gold)]">
-              <Star className="w-3 h-3" /> Featured
-            </span>
-          )}
-          <StatusBadge status={post.status} />
-        </div>
-        <h3 className="font-headline text-xl sm:text-[1.35rem] font-bold tracking-tight text-[var(--atelier-ink)] leading-snug line-clamp-2 group-hover:text-[var(--atelier-gold)] transition-colors">
-          {post.title}
-        </h3>
-        {post.excerpt && (
-          <p className="text-[0.9375rem] text-[var(--atelier-muted)] line-clamp-2 leading-relaxed">
-            {post.excerpt}
-          </p>
+    <li className="atelier-row wb-row">
+      <div className="wb-row-aside">
+        <span className="atelier-mono">{post.date}</span>
+        <span className="atelier-status" data-tone={isDraft ? 'draft' : 'live'}>
+          {isDraft ? 'Draft' : 'Live'}
+        </span>
+        {post.featured && (
+          <span className="atelier-status" data-tone="done">
+            Featured
+          </span>
         )}
-        <div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-[0.7rem] text-[var(--atelier-faint)] font-medium tracking-wide">
-          <span className="font-mono text-[0.65rem] opacity-80">/{post.slug}</span>
-          <span className="opacity-40">·</span>
-          <span className="inline-flex items-center gap-1">
-            <Clock className="w-3 h-3 text-[var(--atelier-gold)]" /> {post.readTime}
-          </span>
-          <span className="opacity-40">·</span>
-          <span>{post.date}</span>
+      </div>
+
+      <div className="wb-row-main">
+        {post.illustrationType === 'cover' && post.coverImage && (
+          <button
+            type="button"
+            className="wb-row-thumb"
+            onClick={() => onPreview('cover', post.coverImage)}
+            aria-label={`Preview cover of ${post.title}`}
+            title="Preview cover"
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src={post.coverImage} alt="" loading="lazy" />
+          </button>
+        )}
+        <div className="wb-row-text">
+          <h3 className="wb-row-title font-reading">{post.title}</h3>
+          {post.excerpt && <p className="atelier-row-note">{post.excerpt}</p>}
+          <p className="atelier-meta">
+            <span className="atelier-mono">/{post.slug}</span>
+            <span>{post.readTime}</span>
+            {tags && <span>{tags}</span>}
+          </p>
         </div>
       </div>
 
-      <div className="hidden lg:flex flex-wrap gap-1.5 max-w-[200px] shrink-0">
-        {post.categories.slice(0, 3).map((c) => (
-          <span key={c} className="atelier-chip">
-            {c}
-          </span>
-        ))}
-      </div>
-
-      <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
-        <button type="button" onClick={() => onEdit(post)} className="atelier-icon-btn" title="Edit" aria-label="Edit">
+      <div className="atelier-row-actions wb-row-actions">
+        <button type="button" onClick={() => onEdit(post)} className="atelier-icon-btn" title="Edit" aria-label={`Edit ${post.title}`}>
           <Pen className="w-4 h-4" />
         </button>
         <Link
           href={`/journal/${post.slug}`}
           target="_blank"
+          rel="noopener noreferrer"
           className="atelier-icon-btn"
           title="View"
-          aria-label="View"
+          aria-label={`View ${post.title}`}
         >
           <ArrowUpRight className="w-4 h-4" />
         </Link>
@@ -267,14 +235,15 @@ const ArticleCard = memo(function ArticleCard({
           type="button"
           onClick={() => onDelete(post.id)}
           disabled={isDeletingId === post.id}
-          className="atelier-icon-btn hover:!text-red-500 hover:!border-red-400/30 disabled:opacity-40"
+          className="atelier-icon-btn"
+          data-tone="warn"
           title="Delete"
-          aria-label="Delete"
+          aria-label={`Delete ${post.title}`}
         >
           {isDeletingId === post.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />}
         </button>
       </div>
-    </article>
+    </li>
   );
 });
 
@@ -283,40 +252,29 @@ const WORKSPACE_KEY = 'editorial_workspace';
 type XWorkspace = 'x' | 'lab' | 'strategy';
 
 function WorkspaceSwitch({ active }: { active: XWorkspace }) {
-  const tab = (id: XWorkspace, href: string, label: ReactNode, Icon: typeof BookOpen) => (
+  const tab = (id: XWorkspace, href: string, label: ReactNode) => (
     <Link
       href={href}
-      role="tab"
-      aria-selected={active === id}
       prefetch
-      className={`inline-flex items-center gap-1.5 px-3 py-2 rounded-full text-xs font-bold transition-colors ${
-        active === id
-          ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-          : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-      }`}
+      aria-current={active === id ? 'page' : undefined}
+      className="atelier-tab"
     >
-      <Icon className="w-3.5 h-3.5" />
       {label}
     </Link>
   );
   return (
-    <div
-      className="inline-flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 shadow-[var(--atelier-shadow-sm)]"
-      role="tablist"
-      aria-label="X workspace"
-    >
-      {tab('x', '/editorial?workspace=x', 'X To-Do', ListTodo)}
-      {tab('lab', '/editorial?workspace=lab', 'X Lab', BarChart3)}
+    <nav className="atelier-tabs" aria-label="X workspace">
+      {tab('x', '/editorial?workspace=x', 'X To-Do')}
+      {tab('lab', '/editorial?workspace=lab', 'X Lab')}
       {tab(
         'strategy',
         '/editorial?workspace=strategy',
         <>
           <span className="sm:hidden">Strategy</span>
           <span className="hidden sm:inline">Growth Strategy</span>
-        </>,
-        Compass
+        </>
       )}
-    </div>
+    </nav>
   );
 }
 
@@ -325,6 +283,7 @@ export function EditorialClient({
   user,
   initialWorkspace = 'blog',
   initialNotes = [],
+  aiDefaults,
 }: EditorialClientProps) {
   const workspace = initialWorkspace;
   const [notesEditing, setNotesEditing] = useState(false);
@@ -361,12 +320,8 @@ export function EditorialClient({
   const [isAiFilling, setIsAiFilling] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [previewItem, setPreviewItem] = useState<{ type: string; url?: string } | null>(null);
-  const [metaProvider, setMetaProvider] = useState<'meta' | 'openrouter'>('meta');
   const [mounted, setMounted] = useState(false);
-  const [autoGenerateCoverImage, setAutoGenerateCoverImage] = useState(false);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [generatedImagePrompt, setGeneratedImagePrompt] = useState('');
-  const [promptCopied, setPromptCopied] = useState(false);
+  const blogModel = useAiModelChoice('blog-metadata');
 
   const getEditor = () =>
     document.querySelector('textarea[data-atelier-editor]') as HTMLTextAreaElement | null;
@@ -606,43 +561,18 @@ export function EditorialClient({
     }
   };
 
-  const runGrokCoverGeneration = async (prompt: string, slug?: string) => {
-    if (!prompt.trim()) return;
-    setIsGeneratingImage(true);
-    try {
-      const r = await fetch('/api/ai/generate-cover', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: slug || formSlug || 'cover', prompt }),
-      });
-      const imgData = await r.json();
-      if (imgData.success && imgData.url) {
-        setFormCoverImage(imgData.url);
-      } else {
-        throw new Error(imgData.error || 'Grok did not return an image URL.');
-      }
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Cover generation failed.');
-    } finally {
-      setIsGeneratingImage(false);
-    }
-  };
-
   const handleAiFill = async () => {
     if (!formContent.trim()) {
       alert('Write some content first so AI can analyze it.');
       return;
     }
     setIsAiFilling(true);
-    setGeneratedImagePrompt('');
-    setPromptCopied(false);
     try {
       const res = await fetch('/api/ai/fill', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: formContent, provider: metaProvider }),
+        body: JSON.stringify({ content: formContent, ...blogModel.request }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to auto-fill metadata.');
@@ -652,12 +582,6 @@ export function EditorialClient({
       if (meta.excerpt) setFormExcerpt(meta.excerpt);
       if (Array.isArray(meta.categories)) setFormCategories(meta.categories);
       if (Array.isArray(meta.takeaways)) setFormTakeaways(meta.takeaways.filter(Boolean));
-      if (data.imagePrompt) {
-        setGeneratedImagePrompt(data.imagePrompt);
-        if (autoGenerateCoverImage) {
-          await runGrokCoverGeneration(data.imagePrompt, meta.slug || formSlug);
-        }
-      }
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'AI fill failed');
     } finally {
@@ -779,7 +703,6 @@ export function EditorialClient({
     setFormStatus('draft');
     setFormCoverImage('');
     setEditingArticle({ id: undefined });
-    setGeneratedImagePrompt('');
   };
 
   const startEditArticle = async (lite: ArticleLite) => {
@@ -790,7 +713,6 @@ export function EditorialClient({
     setFormFeatured(!!lite.featured);
     setFormStatus(lite.status || 'published');
     setFormCoverImage(lite.coverImage || '');
-    setGeneratedImagePrompt('');
     setEditingArticle({ id: lite.id } as Partial<Article>);
     try {
       const res = await fetch(`/api/blog?id=${lite.id}`, { credentials: 'include' });
@@ -934,43 +856,89 @@ export function EditorialClient({
 
   const charCount = formContent.length;
 
+  const headConfig = WORKSPACE_HEADS[workspace];
+  const showHead = !editingArticle && !(workspace === 'notes' && notesEditing);
+  const isXWorkspace = workspace === 'x' || workspace === 'lab' || workspace === 'strategy';
+  const saveStateLabel = isSaving
+    ? 'Saving…'
+    : lastAutosaved
+      ? 'Local copy'
+      : 'Not saved yet';
+
   return (
-    <div
-      className={`px-4 sm:px-6 md:px-10 mx-auto w-full transition-all duration-300 ${
-        editingArticle || (workspace === 'notes' && notesEditing)
-          ? 'max-w-[96%] 2xl:max-w-[1700px]'
-          : workspace === 'x'
-            ? 'max-w-5xl'
-            : workspace === 'lab' || workspace === 'strategy' || workspace === 'notes'
-              ? 'max-w-6xl'
-              : 'max-w-6xl'
-      }`}
-    >
+    <MotionConfig reducedMotion="user">
+    <div className="atelier-page wb">
+      {showHead && (
+        <header className="atelier-head wb-head">
+          <div className="atelier-head-row">
+            <div className="wb-head-text">
+              <p className="atelier-meta">
+                <span>Private</span>
+                <span>{headConfig.name}</span>
+              </p>
+              <h1>
+                {headConfig.title} <em>{headConfig.tail}</em>
+              </h1>
+              {headConfig.lead && <p className="atelier-lead">{headConfig.lead}</p>}
+              {workspace === 'blog' && (
+                <ul className="atelier-facts" aria-label="Essay counts">
+                  <li><b>{publishedCount}</b>live</li>
+                  <li><b>{draftCount}</b>drafts</li>
+                  <li><b>{featuredCount}</b>featured</li>
+                </ul>
+              )}
+              {isXWorkspace && <WorkspaceSwitch active={workspace} />}
+            </div>
+
+            <div className="wb-identity">
+              <div className="wb-who">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={avatarForSession(user)}
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="wb-avatar"
+                />
+                <p className="wb-who-text">
+                  <span className="wb-who-name">{user.name}</span>
+                  <span className="wb-who-email">{user.email}</span>
+                </p>
+              </div>
+              <div className="wb-identity-links">
+                {workspace === 'blog' && (
+                  <button type="button" onClick={exportJson} className="atelier-link">
+                    Backup
+                  </button>
+                )}
+                <Link href="/api/auth/logout" className="atelier-link" data-tone="warn">
+                  Sign out
+                </Link>
+              </div>
+            </div>
+          </div>
+        </header>
+      )}
+
       {/* Draft recovery */}
       <AnimatePresence>
         {hasBackupDraft && !editingArticle && (
           <motion.div
-            initial={{ opacity: 0, y: -12 }}
+            initial={{ opacity: 0, y: -8 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            className="mb-8 atelier-card-lg p-5 sm:p-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-[var(--atelier-gold)]/25"
+            exit={{ opacity: 0, y: -6 }}
+            className="atelier-notice wb-notice"
+            role="status"
           >
-            <div className="flex gap-4 items-start">
-              <div className="w-12 h-12 rounded-2xl bg-[var(--atelier-gold-soft)] flex items-center justify-center shrink-0">
-                <Info className="w-5 h-5 text-[var(--atelier-gold)]" />
-              </div>
-              <div>
-                <p className="font-headline text-lg font-bold text-[var(--atelier-ink)]">Unsaved draft found</p>
-                <p className="text-sm text-[var(--atelier-muted)] mt-1 leading-relaxed">
-                  Resume where you left off on this device, or discard the local snapshot.
-                </p>
-              </div>
+            <div className="wb-notice-body">
+              <p className="wb-notice-title">Unsaved draft found</p>
+              <p>Resume where you left off on this device, or discard the local snapshot.</p>
             </div>
-            <div className="flex gap-2 shrink-0">
-              <button type="button" onClick={handleRestoreDraft} className="atelier-btn atelier-btn-gold">
-                <RefreshCw className="w-4 h-4" /> Restore
+            <div className="wb-notice-actions">
+              <button type="button" onClick={handleRestoreDraft} className="atelier-btn atelier-btn-line">
+                Restore
               </button>
-              <button type="button" onClick={handleDiscardDraft} className="atelier-btn atelier-btn-ghost">
+              <button type="button" onClick={handleDiscardDraft} className="atelier-link">
                 Discard
               </button>
             </div>
@@ -978,166 +946,13 @@ export function EditorialClient({
         )}
       </AnimatePresence>
 
-      {/* Hero — full for blog CMS; compact for X To-Do so the queue has room */}
-      <header className={
-        workspace === 'notes' && notesEditing
-          ? 'hidden'
-          : workspace === 'x' || workspace === 'lab' || workspace === 'strategy' || workspace === 'notes'
-            ? 'mb-6 sm:mb-8'
-            : 'mb-10 sm:mb-12'
-      }>
-        {workspace === 'x' || workspace === 'lab' || workspace === 'strategy' || workspace === 'notes' ? (
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-1">
-            <div className="min-w-0 flex-1 space-y-2">
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
-                Private atelier
-              </p>
-              <h1 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight text-[var(--atelier-ink)]">
-                {workspace === 'lab'
-                  ? 'X Lab'
-                  : workspace === 'strategy'
-                    ? 'Growth Strategy'
-                    : workspace === 'notes'
-                      ? 'Notes'
-                      : 'X To-Do'}
-              </h1>
-              <p className="text-sm leading-relaxed text-[var(--atelier-muted)] sm:text-pretty">
-                {workspace === 'lab'
-                  ? 'Growth analytics from X API snapshots. Refresh, explore, ask the AI analyst.'
-                  : workspace === 'strategy'
-                    ? 'What to post, when to sit down, and how to sound like yourself.'
-                    : workspace === 'notes'
-                      ? 'Weekly letter. Edit, preview, mark happy, or let Sunday 7pm local send it.'
-                      : 'Focus queue for scout packs. Reply, post, mark done. Switch workspaces anytime.'}
-              </p>
-            </div>
-            <div className="flex flex-wrap items-center gap-2.5 sm:justify-end shrink-0">
-              {workspace === 'notes' ? (
-                <Link
-                  href="/editorial?workspace=notes"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-ink)] px-3 py-2 text-xs font-bold text-[var(--atelier-card)]"
-                >
-                  <Mail className="h-3.5 w-3.5" />
-                  Newsletter
-                </Link>
-              ) : (
-              <WorkspaceSwitch
-                active={
-                  workspace === 'lab' ? 'lab' : workspace === 'strategy' ? 'strategy' : 'x'
-                }
-              />
-              )}
-              <div className="inline-flex items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-card)] overflow-hidden shadow-[var(--atelier-shadow-sm)]">
-                <div className="flex items-center gap-2 pl-1.5 pr-2.5 py-1.5">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  <img
-                    src={avatarForSession(user)}
-                    alt=""
-                    width={28}
-                    height={28}
-                    className="w-7 h-7 rounded-full object-cover ring-1 ring-[var(--atelier-gold)]/25"
-                  />
-                  <span className="font-headline text-xs font-bold text-[var(--atelier-ink)] truncate max-w-[7.5rem]">
-                    {user.name}
-                  </span>
-                </div>
-                <Link
-                  href="/api/auth/logout"
-                  title="Sign out"
-                  aria-label="Sign out"
-                  className="inline-flex h-9 w-9 items-center justify-center border-l border-[var(--atelier-line)] text-[var(--atelier-faint)] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
-                >
-                  <LogOut className="w-3.5 h-3.5" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        ) : (
-          <div className="atelier-card-lg p-6 sm:p-8 md:p-10 relative overflow-hidden">
-            <div
-              className="absolute -right-16 -top-20 w-72 h-72 rounded-full opacity-40 pointer-events-none"
-              style={{ background: 'radial-gradient(circle, var(--atelier-gold-soft), transparent 70%)' }}
-            />
-            <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8 lg:gap-10">
-              <div className="space-y-4 max-w-2xl min-w-0">
-                <p className="text-[0.7rem] font-bold uppercase tracking-[0.28em] text-[var(--atelier-gold)]">
-                  Private atelier · Google OAuth
-                </p>
-                <h1 className="font-headline text-4xl sm:text-5xl md:text-[3.25rem] font-extrabold tracking-[-0.03em] text-[var(--atelier-ink)] leading-[1.05]">
-                  Editorial
-                  <span className="block text-[var(--atelier-muted)] font-semibold text-[0.85em] mt-1 tracking-tight">
-                    workspace
-                  </span>
-                </h1>
-                <p className="text-[var(--atelier-muted)] text-base sm:text-lg leading-relaxed max-w-lg">
-                  Shape essays with quiet control — AI for scaffolding, you for the voice.
-                </p>
-                <div className="flex flex-wrap items-center gap-2 pt-1">
-                  <span className="atelier-chip !py-1.5 !px-3.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                    {publishedCount} live
-                  </span>
-                  <span className="atelier-chip !py-1.5 !px-3.5">{draftCount} drafts</span>
-                  {featuredCount > 0 && (
-                    <span className="atelier-chip !py-1.5 !px-3.5 !text-[var(--atelier-gold)]">
-                      <Star className="w-3 h-3" /> {featuredCount} featured
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              {/* Account panel — one neat unit (identity + actions) */}
-              <div className="w-full sm:w-auto sm:min-w-[16.5rem] lg:max-w-[18rem] shrink-0">
-                <div className="rounded-2xl border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/55 overflow-hidden shadow-[var(--atelier-shadow-sm)]">
-                  <div className="flex items-center gap-3 px-3.5 py-3">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={avatarForSession(user)}
-                      alt=""
-                      width={40}
-                      height={40}
-                      className="w-10 h-10 rounded-xl object-cover ring-2 ring-[var(--atelier-gold)]/25 shrink-0"
-                    />
-                    <div className="min-w-0 flex-1 leading-tight">
-                      <p className="font-headline font-bold text-sm text-[var(--atelier-ink)] truncate">
-                        {user.name}
-                      </p>
-                      <p className="text-[0.65rem] text-[var(--atelier-faint)] truncate mt-0.5">
-                        {user.email}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2 border-t border-[var(--atelier-line)]">
-                    <button
-                      type="button"
-                      onClick={exportJson}
-                      className="inline-flex items-center justify-center gap-1.5 h-11 px-3 text-xs font-bold tracking-tight text-[var(--atelier-ink)] hover:bg-[var(--atelier-gold-soft)]/40 transition-colors border-r border-[var(--atelier-line)]"
-                    >
-                      <Download className="w-3.5 h-3.5 text-[var(--atelier-gold)] shrink-0" />
-                      Backup
-                    </button>
-                    <Link
-                      href="/api/auth/logout"
-                      className="inline-flex items-center justify-center gap-1.5 h-11 px-3 text-xs font-bold tracking-tight text-[var(--atelier-muted)] hover:text-red-600 dark:hover:text-red-400 hover:bg-red-500/5 transition-colors"
-                    >
-                      <LogOut className="w-3.5 h-3.5 shrink-0" />
-                      Sign out
-                    </Link>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </header>
-
       {workspace === 'x' && !editingArticle ? (
         <XStudioErrorBoundary>
           <XStudioClient />
         </XStudioErrorBoundary>
       ) : workspace === 'lab' && !editingArticle ? (
         <XStudioErrorBoundary>
-          <XLabClient />
+          <XLabClient aiDefaults={aiDefaults} />
         </XStudioErrorBoundary>
       ) : workspace === 'strategy' && !editingArticle ? (
         <XStudioErrorBoundary>
@@ -1152,391 +967,333 @@ export function EditorialClient({
         {editingArticle ? (
           <motion.div
             key="editor"
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
-            className="article-workbench space-y-6"
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
+            className="wb-editor"
           >
             {/* Sticky command bar */}
-            <div className="sticky top-24 z-30">
-              <div className="article-command-bar atelier-card-lg p-3 sm:p-3.5 flex flex-col xl:flex-row xl:items-center justify-between gap-3 backdrop-blur-xl bg-[color-mix(in_srgb,var(--atelier-card)_92%,transparent)]">
+            <div className="atelier-toolbar wb-bar">
+              <div className="wb-bar-lead">
                 <button
                   type="button"
                   onClick={() => setEditingArticle(null)}
-                  className="inline-flex items-center gap-2 text-sm font-bold text-[var(--atelier-muted)] hover:text-[var(--atelier-ink)] transition-colors px-2 py-1.5"
+                  className="atelier-link"
                 >
                   <ArrowLeft className="w-4 h-4" /> Library
                 </button>
-                <div className="flex flex-wrap items-center gap-2">
-                  {lastAutosaved && (
-                    <span className="atelier-chip !text-[0.65rem]">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
-                      {lastAutosaved}
-                    </span>
+                <span
+                  className="wb-bar-title font-reading"
+                  data-empty={formTitle ? undefined : 'true'}
+                  title={formTitle || undefined}
+                >
+                  {formTitle || 'Untitled essay'}
+                </span>
+                <span
+                  className="atelier-status"
+                  data-tone={isSaving || lastAutosaved ? 'live' : 'draft'}
+                  role="status"
+                  title={lastAutosaved ? 'Autosaved to this browser every 5 seconds' : undefined}
+                >
+                  {saveStateLabel}
+                  {!isSaving && lastAutosaved && (
+                    <span className="atelier-mono">{lastAutosaved}</span>
                   )}
-                  <button
-                    type="button"
-                    onClick={() => setSidebarOpen(!sidebarOpen)}
-                    className={`atelier-btn h-10 text-xs ${
-                      sidebarOpen ? 'atelier-btn-gold' : 'atelier-btn-ghost'
-                    }`}
-                  >
-                    <Settings2 className="w-3.5 h-3.5" /> Meta
-                  </button>
-                  <div className="flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50">
-                    {(['write', 'split', 'preview'] as const).map((mode) => (
-                      <button
-                        key={mode}
-                        type="button"
-                        onClick={() => setEditorLayoutMode(mode)}
-                        className={`px-3.5 py-1.5 rounded-full text-[0.7rem] font-bold capitalize transition-all ${
-                          editorLayoutMode === mode
-                            ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)] shadow-md'
-                            : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-                        }`}
-                      >
-                        {mode}
-                      </button>
-                    ))}
-                  </div>
-                  <button type="button" onClick={() => setShowHelp(!showHelp)} className="atelier-btn atelier-btn-ghost h-10 text-xs">
-                    <HelpCircle className="w-4 h-4" /> Format
-                  </button>
-                  <button type="button" onClick={() => setEditingArticle(null)} className="atelier-btn atelier-btn-ghost h-10 text-xs">
-                    Cancel
-                  </button>
-                  <button type="button" onClick={() => handleSave()} disabled={isSaving} className="atelier-btn atelier-btn-primary h-10 disabled:opacity-50">
-                    {isSaving ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin" /> Saving
-                      </>
-                    ) : (
-                      <>
-                        <Save className="w-4 h-4" /> Save
-                      </>
-                    )}
-                  </button>
+                </span>
+              </div>
+
+              <div className="wb-bar-actions">
+                <div role="group" aria-label="Editor layout" className="atelier-tabs wb-layout">
+                  {(['write', 'split', 'preview'] as const).map((mode) => (
+                    <button
+                      key={mode}
+                      type="button"
+                      onClick={() => setEditorLayoutMode(mode)}
+                      aria-pressed={editorLayoutMode === mode}
+                      className="atelier-tab"
+                    >
+                      {mode}
+                    </button>
+                  ))}
                 </div>
+                <button
+                  type="button"
+                  onClick={() => setSidebarOpen(!sidebarOpen)}
+                  aria-pressed={sidebarOpen}
+                  className="atelier-btn atelier-btn-line"
+                >
+                  Meta
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowHelp(!showHelp)}
+                  aria-pressed={showHelp}
+                  className="atelier-btn atelier-btn-line"
+                >
+                  Format
+                </button>
+                <button type="button" onClick={() => setEditingArticle(null)} className="atelier-link">
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleSave()}
+                  disabled={isSaving}
+                  className="atelier-btn atelier-btn-primary"
+                >
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="w-4 h-4 animate-spin" /> Saving
+                    </>
+                  ) : (
+                    'Save'
+                  )}
+                </button>
               </div>
             </div>
 
-            <form onSubmit={handleSave} className="article-workbench-form space-y-6">
+            <form onSubmit={handleSave} className="wb-form">
               {sidebarOpen && (
-                <div className="article-metadata-panel atelier-card-lg p-6 sm:p-8">
-                  <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-6 border-b border-[var(--atelier-line)]">
-                    <div>
-                      <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)] mb-1">
-                        Curation
-                      </p>
-                      <h2 className="font-headline text-2xl font-bold text-[var(--atelier-ink)] tracking-tight">
-                        Article metadata
-                      </h2>
-                    </div>
-                    <div className="flex flex-wrap items-center gap-2">
-                      <div className="flex p-1 rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50">
-                        {(['meta', 'openrouter'] as const).map((p) => (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => setMetaProvider(p)}
-                            className={`px-3 py-1.5 rounded-full text-[0.65rem] font-bold uppercase tracking-wide transition-colors ${
-                              metaProvider === p
-                                ? 'bg-[var(--atelier-ink)] text-[var(--atelier-card)]'
-                                : 'text-[var(--atelier-faint)] hover:text-[var(--atelier-ink)]'
-                            }`}
-                            title={p === 'meta' ? 'Muse Spark (default)' : 'OpenRouter'}
-                          >
-                            {p === 'meta' ? 'Meta' : 'OpenRouter'}
-                          </button>
-                        ))}
-                      </div>
+                <section className="wb-meta" aria-label="Article metadata">
+                  <div className="wb-meta-head">
+                    <h2 className="atelier-h2">
+                      Article metadata
+                    </h2>
+                    <div className="wb-meta-ai">
+                      <AiModelControl
+                        choice={blogModel}
+                        defaultModel={aiDefaults.openRouterModel}
+                        idPrefix="wb-ai-model"
+                      />
                       <button
                         type="button"
                         onClick={handleAiFill}
-                        disabled={isAiFilling || isGeneratingImage}
-                        className="atelier-btn atelier-btn-violet disabled:opacity-50"
-                        title={`${metaProvider === 'meta' ? 'Meta' : 'OpenRouter'} · ${autoGenerateCoverImage ? 'Metadata + prompt + Grok image' : 'Metadata + copyable cover prompt only'}`}
+                        disabled={isAiFilling}
+                        className="atelier-btn atelier-btn-line"
+                        title="Fill the title, slug, excerpt, categories and takeaways from the article"
                       >
-                        <Sparkles className={`w-4 h-4 ${isAiFilling ? 'animate-spin' : ''}`} />
                         {isAiFilling ? 'Curating…' : 'AI Fill'}
                       </button>
-                      <label className="atelier-chip cursor-pointer select-none !py-2 !px-3.5 hover:border-[var(--atelier-violet)]/40">
-                        <input
-                          type="checkbox"
-                          checked={autoGenerateCoverImage}
-                          onChange={(e) => setAutoGenerateCoverImage(e.target.checked)}
-                          className="w-3.5 h-3.5 accent-[var(--atelier-violet)] rounded"
-                        />
-                        + Grok image
-                      </label>
                     </div>
                   </div>
 
-                  <div className="mt-7 space-y-6">
-                    <section className="article-meta-section">
-                      <header className="article-meta-section__head">
-                        <span className="article-meta-section__index">1</span>
-                        <h3 className="article-meta-section__title">Identity</h3>
-                      </header>
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                        <div className="md:col-span-12">
-                          <label className="atelier-label">Title *</label>
-                          <input
-                            className="atelier-input font-headline font-semibold text-base !h-12"
-                            value={formTitle}
-                            onChange={(e) => handleTitleChange(e.target.value)}
-                            placeholder="A title with quiet authority"
-                            required
-                          />
-                        </div>
-                        <div className="md:col-span-6">
-                          <label className="atelier-label">Slug</label>
-                          <input
-                            className="atelier-input font-mono text-xs !h-12"
-                            value={formSlug}
-                            onChange={(e) => setFormSlug(e.target.value)}
-                            required
-                          />
-                        </div>
-                        <div className="md:col-span-3">
-                          <label className="atelier-label">Status</label>
-                          <div className="flex h-12 p-1 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50">
-                            {(['draft', 'published'] as const).map((s) => (
-                              <button
-                                key={s}
-                                type="button"
-                                onClick={() => setFormStatus(s)}
-                                className={`flex-1 rounded-[0.75rem] text-[0.7rem] font-bold capitalize transition-all ${
-                                  formStatus === s
-                                    ? s === 'draft'
-                                      ? 'bg-amber-500/15 text-amber-800 dark:text-amber-200'
-                                      : 'bg-emerald-500/15 text-emerald-800 dark:text-emerald-200'
-                                    : 'text-[var(--atelier-faint)]'
-                                }`}
-                              >
-                                {s}
-                              </button>
-                            ))}
-                          </div>
-                        </div>
-                        <div className="md:col-span-3">
-                          <label className="atelier-label">Feature</label>
-                          <label className="flex items-center gap-2.5 h-12 px-3.5 rounded-[1rem] border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/50 cursor-pointer">
-                            <input
-                              type="checkbox"
-                              checked={formFeatured}
-                              onChange={(e) => setFormFeatured(e.target.checked)}
-                              className="w-4 h-4 accent-[var(--atelier-gold)] rounded"
-                            />
-                            <Star className="w-3.5 h-3.5 text-[var(--atelier-gold)]" />
-                            <span className="text-xs font-bold text-[var(--atelier-ink)]">Home</span>
-                          </label>
+                  <section className="wb-meta-section">
+                    <header className="wb-meta-section-head">
+                      <span className="atelier-mono">01</span>
+                      <h3 className="atelier-h3">Identity</h3>
+                    </header>
+                    <div className="wb-fields">
+                      <div className="wb-span-12">
+                        <label className="atelier-label" htmlFor="wb-title">Title *</label>
+                        <input
+                          id="wb-title"
+                          className="atelier-input wb-input-title"
+                          value={formTitle}
+                          onChange={(e) => handleTitleChange(e.target.value)}
+                          placeholder="A title with quiet authority"
+                          required
+                        />
+                      </div>
+                      <div className="wb-span-6">
+                        <label className="atelier-label" htmlFor="wb-slug">Slug</label>
+                        <input
+                          id="wb-slug"
+                          className="atelier-input wb-input-mono"
+                          value={formSlug}
+                          onChange={(e) => setFormSlug(e.target.value)}
+                          required
+                        />
+                      </div>
+                      <div className="wb-span-3">
+                        <span className="atelier-label" id="wb-status-label">Status</span>
+                        <div role="group" aria-labelledby="wb-status-label" className="wb-chips wb-chips-field">
+                          {(['draft', 'published'] as const).map((s) => (
+                            <button
+                              key={s}
+                              type="button"
+                              onClick={() => setFormStatus(s)}
+                              aria-pressed={formStatus === s}
+                              className="atelier-chip wb-cap"
+                            >
+                              {s}
+                            </button>
+                          ))}
                         </div>
                       </div>
-                    </section>
-
-                    <section className="article-meta-section">
-                      <header className="article-meta-section__head">
-                        <span className="article-meta-section__index">2</span>
-                        <h3 className="article-meta-section__title">Summary &amp; Display</h3>
-                      </header>
-                      <div className="grid grid-cols-1 md:grid-cols-12 gap-5">
-                        <div className="md:col-span-12">
-                          <label className="atelier-label">Excerpt</label>
+                      <div className="wb-span-3">
+                        <span className="atelier-label">Feature</span>
+                        <label className="wb-check">
                           <input
-                            className="atelier-input"
-                            value={formExcerpt}
-                            onChange={(e) => setFormExcerpt(e.target.value)}
-                            placeholder="One elegant sentence…"
+                            type="checkbox"
+                            checked={formFeatured}
+                            onChange={(e) => setFormFeatured(e.target.checked)}
                           />
-                        </div>
-                        <div className="md:col-span-12">
-                          <label className="atelier-label">
-                            Cover URL
-                            {isGeneratingImage && (
-                              <span className="ml-2 normal-case tracking-normal text-[var(--atelier-violet)]">
-                                Grok rendering…
-                              </span>
-                            )}
-                          </label>
-                          <div className="flex gap-2">
-                            <input
-                              className="atelier-input flex-1 min-w-0"
-                              value={formCoverImage}
-                              onChange={(e) => setFormCoverImage(e.target.value)}
-                              placeholder="https://… or upload"
-                            />
+                          <span>Feature on home</span>
+                        </label>
+                      </div>
+                    </div>
+                  </section>
+
+                  <section className="wb-meta-section">
+                    <header className="wb-meta-section-head">
+                      <span className="atelier-mono">02</span>
+                      <h3 className="atelier-h3">Summary &amp; display</h3>
+                    </header>
+                    <div className="wb-fields">
+                      <div className="wb-span-12">
+                        <label className="atelier-label" htmlFor="wb-excerpt">Excerpt</label>
+                        <input
+                          id="wb-excerpt"
+                          className="atelier-input"
+                          value={formExcerpt}
+                          onChange={(e) => setFormExcerpt(e.target.value)}
+                          placeholder="One elegant sentence…"
+                        />
+                      </div>
+                      <div className="wb-span-12">
+                        <label className="atelier-label" htmlFor="wb-cover">
+                          Cover URL
+                        </label>
+                        <div className="wb-cover-row">
+                          <input
+                            id="wb-cover"
+                            className="atelier-input"
+                            value={formCoverImage}
+                            onChange={(e) => setFormCoverImage(e.target.value)}
+                            placeholder="https://… or upload"
+                          />
+                          <button
+                            type="button"
+                            onClick={triggerImageUpload}
+                            disabled={isUploadingImage}
+                            className="atelier-icon-btn wb-cover-btn"
+                            title="Upload"
+                            aria-label="Upload cover image"
+                          >
+                            {isUploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                          </button>
+                          {formCoverImage && (
                             <button
                               type="button"
-                              onClick={triggerImageUpload}
-                              disabled={isUploadingImage}
-                              className="atelier-icon-btn !w-12 !h-12 !rounded-[1rem] shrink-0"
-                              title="Upload"
+                              onClick={() => setPreviewItem({ type: 'cover', url: formCoverImage })}
+                              className="wb-cover-thumb"
+                              title="Preview cover"
+                              aria-label="Preview cover"
                             >
-                              {isUploadingImage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img src={formCoverImage} alt="" />
                             </button>
-                            {formCoverImage && (
-                              <button
-                                type="button"
-                                onClick={() => setPreviewItem({ type: 'cover', url: formCoverImage })}
-                                className="relative w-12 h-12 rounded-[1rem] border border-[var(--atelier-line)] overflow-hidden shrink-0 bg-[var(--atelier-paper)] group"
-                                title="Preview cover"
-                              >
-                                {/* eslint-disable-next-line @next/next/no-img-element */}
-                                <img
-                                  src={formCoverImage}
-                                  alt="Cover preview"
-                                  className="object-cover w-full h-full"
-                                />
-                                <span className="absolute inset-0 flex items-center justify-center bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity text-white">
-                                  <Maximize2 className="w-3.5 h-3.5" />
-                                </span>
-                              </button>
-                            )}
-                            <input id="local-cover-upload" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleLocalImageUpload} />
-                          </div>
+                          )}
+                          <input id="local-cover-upload" type="file" accept="image/jpeg,image/png,image/webp,image/gif" className="hidden" onChange={handleLocalImageUpload} />
                         </div>
                       </div>
-                    </section>
+                    </div>
+                  </section>
 
-                    <section className="article-meta-section">
-                      <header className="article-meta-section__head">
-                        <span className="article-meta-section__index">3</span>
-                        <h3 className="article-meta-section__title">Taxonomy</h3>
-                      </header>
-                      <div className="flex flex-wrap gap-2">
-                        {CATEGORIES_LIST.map((cat) => {
-                          const active = formCategories.includes(cat);
-                          return (
+                  <section className="wb-meta-section">
+                    <header className="wb-meta-section-head">
+                      <span className="atelier-mono">03</span>
+                      <h3 className="atelier-h3">Taxonomy</h3>
+                    </header>
+                    <div className="wb-chips">
+                      {CATEGORIES_LIST.map((cat) => {
+                        const active = formCategories.includes(cat);
+                        return (
+                          <button
+                            key={cat}
+                            type="button"
+                            onClick={() => toggleCategory(cat)}
+                            data-active={active}
+                            aria-pressed={active}
+                            className="atelier-chip"
+                          >
+                            {cat}
+                          </button>
+                        );
+                      })}
+                      {formCategories
+                        .filter((cat) => !(CATEGORIES_LIST as readonly string[]).includes(cat))
+                        .map((cat) => (
+                          <span key={cat} className="atelier-chip" data-active="true">
+                            {cat}
                             <button
-                              key={cat}
                               type="button"
                               onClick={() => toggleCategory(cat)}
-                              data-active={active}
-                              className={`atelier-chip transition-all ${
-                                active
-                                  ? '!bg-[var(--atelier-gold-soft)] !border-[var(--atelier-gold)]/40 !text-[var(--atelier-ink)]'
-                                  : 'hover:border-[var(--atelier-gold)]/30'
-                              }`}
+                              className="wb-chip-x"
+                              aria-label={`Remove ${cat}`}
                             >
-                              {cat}
+                              <X className="w-3 h-3" />
                             </button>
-                          );
-                        })}
-                        {formCategories
-                          .filter((cat) => !(CATEGORIES_LIST as readonly string[]).includes(cat))
-                          .map((cat) => (
-                            <span key={cat} className="atelier-chip !bg-[var(--atelier-gold-soft)] !border-[var(--atelier-gold)]/30">
-                              {cat}
-                              <button type="button" onClick={() => toggleCategory(cat)} className="opacity-60 hover:opacity-100">
-                                <X className="w-3 h-3" />
-                              </button>
-                            </span>
-                          ))}
-                        <div className="flex gap-1.5 items-center">
-                          <input
-                            value={customTagInput}
-                            onChange={(e) => setCustomTagInput(e.target.value)}
-                            onKeyDown={(e) => {
-                              if (e.key === 'Enter') {
-                                e.preventDefault();
-                                handleAddCustomTag();
-                              }
-                            }}
-                            placeholder="Custom…"
-                            className="atelier-input !h-8 !rounded-full !text-xs w-28 !px-3"
-                          />
-                          <button type="button" onClick={() => handleAddCustomTag()} className="atelier-icon-btn !w-8 !h-8 !rounded-full">
-                            <Plus className="w-3.5 h-3.5" />
-                          </button>
-                        </div>
-                      </div>
-                    </section>
-
-                    <section className="article-meta-section">
-                      <header className="article-meta-section__head">
-                        <span className="article-meta-section__index">4</span>
-                        <h3 className="article-meta-section__title">Key takeaways</h3>
-                        <button type="button" onClick={addTakeawayField} className="article-meta-section__action">
-                          <Plus className="w-3 h-3" /> Add
-                        </button>
-                      </header>
-                      <div className="space-y-2">
-                        {formTakeaways.map((t, i) => (
-                          <div key={i} className="flex gap-2">
-                            <input
-                              className="atelier-input !h-11 text-sm"
-                              value={t}
-                              onChange={(e) => updateTakeaway(i, e.target.value)}
-                              placeholder="A crisp learning point…"
-                            />
-                            <button type="button" onClick={() => removeTakeawayField(i)} className="atelier-icon-btn !w-11 !h-11 shrink-0">
-                              <X className="w-3.5 h-3.5" />
-                            </button>
-                          </div>
+                          </span>
                         ))}
+                      <div className="wb-tag-add">
+                        <input
+                          value={customTagInput}
+                          onChange={(e) => setCustomTagInput(e.target.value)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                              e.preventDefault();
+                              handleAddCustomTag();
+                            }
+                          }}
+                          placeholder="Custom…"
+                          aria-label="Custom tag"
+                          className="atelier-input wb-tag-input"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleAddCustomTag()}
+                          className="atelier-icon-btn wb-tag-btn"
+                          aria-label="Add custom tag"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                        </button>
                       </div>
-                    </section>
-                  </div>
-
-                  {generatedImagePrompt && (
-                    <div className="rounded-[1.5rem] border border-[var(--atelier-violet)]/20 bg-[color-mix(in_srgb,var(--atelier-violet)_6%,var(--atelier-card))] p-5 sm:p-6 space-y-4">
-                      <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                        <div>
-                          <p className="text-[0.65rem] font-bold uppercase tracking-[0.2em] text-[var(--atelier-violet)] mb-1 flex items-center gap-1.5">
-                            <Sparkles className="w-3.5 h-3.5" /> Cover prompt
-                          </p>
-                          <p className="text-sm text-[var(--atelier-muted)]">
-                            Copy for free tools — or generate with Grok when you choose.
-                          </p>
-                        </div>
-                        <div className="flex flex-wrap gap-2">
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              try {
-                                await navigator.clipboard.writeText(generatedImagePrompt);
-                                setPromptCopied(true);
-                                setTimeout(() => setPromptCopied(false), 2000);
-                              } catch {
-                                alert('Could not copy');
-                              }
-                            }}
-                            className="atelier-btn atelier-btn-ghost h-10 text-xs"
-                          >
-                            {promptCopied ? 'Copied' : 'Copy prompt'}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={isGeneratingImage || isAiFilling}
-                            onClick={() => runGrokCoverGeneration(generatedImagePrompt, formSlug)}
-                            className="atelier-btn atelier-btn-violet h-10 text-xs disabled:opacity-50"
-                          >
-                            {isGeneratingImage ? 'Grok…' : 'Generate with Grok'}
-                          </button>
-                        </div>
-                      </div>
-                      <p className="font-mono text-xs text-[var(--atelier-muted)] leading-relaxed whitespace-pre-wrap max-h-36 overflow-y-auto select-all">
-                        {generatedImagePrompt}
-                      </p>
                     </div>
-                  )}
-                </div>
+                  </section>
+
+                  <section className="wb-meta-section">
+                    <header className="wb-meta-section-head">
+                      <span className="atelier-mono">04</span>
+                      <h3 className="atelier-h3">Key takeaways</h3>
+                    </header>
+                    <div className="wb-takeaways">
+                      {formTakeaways.map((t, i) => (
+                        <div key={i} className="wb-takeaway">
+                          <input
+                            className="atelier-input"
+                            value={t}
+                            onChange={(e) => updateTakeaway(i, e.target.value)}
+                            placeholder="A crisp learning point…"
+                            aria-label={`Takeaway ${i + 1}`}
+                          />
+                          <button
+                            type="button"
+                            onClick={() => removeTakeawayField(i)}
+                            className="atelier-icon-btn wb-cover-btn"
+                            aria-label={`Remove takeaway ${i + 1}`}
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      ))}
+                      <button type="button" onClick={addTakeawayField} className="atelier-link wb-add">
+                        <Plus className="w-3.5 h-3.5" /> Add
+                      </button>
+                    </div>
+                  </section>
+
+                </section>
               )}
 
               {/* Editor canvas */}
-              <div className="article-editor-canvas relative">
-                <div
-                  className={`grid gap-5 min-h-[520px] ${
-                    editorLayoutMode === 'split' ? 'lg:grid-cols-2' : 'grid-cols-1'
-                  }`}
-                >
+              <div className="wb-canvas">
+                <div className="wb-panes" data-split={editorLayoutMode === 'split'}>
                   {(editorLayoutMode === 'split' || editorLayoutMode === 'write') && (
                     <div
-                      className={`article-writing-pane atelier-card-lg relative flex min-h-[360px] flex-col p-5 transition-shadow focus-within:ring-2 focus-within:ring-[var(--atelier-gold)]/25 sm:min-h-[480px] sm:p-6 ${
-                        editorDragOver ? 'ring-2 ring-[var(--atelier-gold)]/40 bg-[var(--atelier-gold-soft)]/20' : ''
-                      }`}
+                      className="atelier-stage wb-stage"
+                      data-dragover={editorDragOver}
                       onDragEnter={(e) => {
                         e.preventDefault();
                         if (e.dataTransfer.types.includes('Files')) setEditorDragOver(true);
@@ -1558,23 +1315,21 @@ export function EditorialClient({
                         className="hidden"
                         onChange={(e) => void handleInlineImageInput(e)}
                       />
-                      <div className="flex items-center justify-between gap-3 pb-4 mb-4 border-b border-[var(--atelier-line)]">
-                        <div className="flex items-center gap-3 min-w-0">
-                          <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
-                            Write
-                          </span>
-                          <div className="flex flex-wrap items-center gap-0.5 pl-3 border-l border-[var(--atelier-line)]">
-                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('**', '**')} className="w-8 h-8 rounded-xl text-xs font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] hover:text-[var(--atelier-ink)]" title="Bold (Ctrl+B)">B</button>
-                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('*', '*')} className="w-8 h-8 rounded-xl text-xs italic text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Italic (Ctrl+I)">I</button>
-                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('### ', '')} className="w-8 h-8 rounded-xl text-[0.65rem] font-bold text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Heading">H</button>
-                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('[', '](url)')} className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center" title="Link (Ctrl+K)"><ArrowUpRight className="w-3.5 h-3.5" /></button>
-                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('`', '`')} className="px-2 h-8 rounded-xl text-[0.65rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Inline code (Ctrl+E)">code</button>
-                            <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="px-2 h-8 rounded-xl text-[0.6rem] font-mono text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)]" title="Block">{'{}'}</button>
+                      <div className="wb-pane-head">
+                        <div className="wb-pane-head-lead">
+                          <span className="atelier-label">Write</span>
+                          <div className="wb-fmt" role="toolbar" aria-label="Formatting">
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('**', '**')} className="wb-fmt-btn wb-fmt-bold" title="Bold (Ctrl+B)" aria-label="Bold">B</button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('*', '*')} className="wb-fmt-btn wb-fmt-italic" title="Italic (Ctrl+I)" aria-label="Italic">I</button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('### ', '')} className="wb-fmt-btn" title="Heading" aria-label="Heading">H</button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('[', '](url)')} className="wb-fmt-btn" title="Link (Ctrl+K)" aria-label="Link"><ArrowUpRight className="w-3.5 h-3.5" /></button>
+                            <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={() => insertMarkdown('`', '`')} className="wb-fmt-btn" title="Inline code (Ctrl+E)" aria-label="Inline code">code</button>
+                            <button type="button" onClick={() => insertMarkdown('```\n', '\n```')} className="wb-fmt-btn" title="Block" aria-label="Code block">{'{}'}</button>
                             <button
                               type="button"
                               onMouseDown={(event) => event.preventDefault()}
                               onClick={() => insertAtCursor(`\n\n${INTERACTIVE_EXAMPLE}\n\n`)}
-                              className="inline-flex min-h-9 items-center gap-1.5 rounded-xl px-2 text-xs text-[var(--atelier-gold)] hover:bg-[var(--atelier-gold-soft)]"
+                              className="wb-fmt-btn"
                               title="Insert an interactive HTML example"
                             >
                               <SlidersHorizontal className="h-3.5 w-3.5" /> Interactive
@@ -1582,8 +1337,9 @@ export function EditorialClient({
                             <button
                               type="button"
                               onClick={insertTableTemplate}
-                              className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center"
+                              className="wb-fmt-btn"
                               title="Insert table"
+                              aria-label="Insert table"
                             >
                               <Table2 className="w-3.5 h-3.5" />
                             </button>
@@ -1591,8 +1347,9 @@ export function EditorialClient({
                               type="button"
                               onClick={triggerInlineImageUpload}
                               disabled={isUploadingInlineImage}
-                              className="w-8 h-8 rounded-xl text-[var(--atelier-muted)] hover:bg-[var(--atelier-gold-soft)] flex items-center justify-center disabled:opacity-40"
+                              className="wb-fmt-btn"
                               title="Insert image"
+                              aria-label="Insert image"
                             >
                               {isUploadingInlineImage ? (
                                 <Loader2 className="w-3.5 h-3.5 animate-spin" />
@@ -1602,15 +1359,13 @@ export function EditorialClient({
                             </button>
                           </div>
                         </div>
-                        <span className="text-[0.65rem] tabular-nums text-[var(--atelier-faint)] font-medium shrink-0">
+                        <span className="atelier-mono">
                           {wordCount.toLocaleString()} w · {charCount.toLocaleString()} c · {formReadTime}
                         </span>
                       </div>
                       {editorDragOver && (
-                        <div className="pointer-events-none absolute inset-4 z-10 flex items-center justify-center rounded-[1.5rem] border-2 border-dashed border-[var(--atelier-gold)]/50 bg-[var(--atelier-card)]/80 backdrop-blur-sm">
-                          <p className="font-headline text-sm font-bold text-[var(--atelier-gold)] flex items-center gap-2">
-                            <ImagePlus className="w-5 h-5" /> Drop image to insert
-                          </p>
+                        <div className="wb-drop">
+                          <ImagePlus className="w-5 h-5" /> Drop image to insert
                         </div>
                       )}
                       <MarkdownSourceEditor
@@ -1621,25 +1376,22 @@ export function EditorialClient({
                         onPaste={(e) => void handleEditorPaste(e)}
                         placeholder="# Begin the piece…&#10;&#10;Tip: drag & drop or paste an image, or use the image button in the toolbar."
                       />
-                      <p className="pt-3 text-[0.65rem] text-[var(--atelier-faint)]">
+                      <p className="wb-hint">
                         Write pane styles markdown in place (marks stay visible). Ctrl+B bold · Ctrl+I italic · Ctrl+K link · Ctrl+E code.
                       </p>
                     </div>
                   )}
 
                   {(editorLayoutMode === 'split' || editorLayoutMode === 'preview') && (
-                    <div className="article-preview-pane atelier-card-lg flex min-h-[360px] flex-col bg-[color-mix(in_srgb,var(--atelier-paper)_55%,var(--atelier-card))] p-5 sm:min-h-[480px] sm:p-6">
-                      <div className="flex items-center gap-2 pb-4 mb-4 border-b border-[var(--atelier-line)]">
-                        <Eye className="w-4 h-4 text-[var(--atelier-gold)]" />
-                        <span className="text-[0.65rem] font-bold uppercase tracking-[0.18em] text-[var(--atelier-faint)]">
-                          Preview
-                        </span>
+                    <div className="wb-preview">
+                      <div className="wb-pane-head">
+                        <span className="atelier-label">Preview</span>
                       </div>
-                      <div className="flex-grow overflow-y-auto">
+                      <div className="wb-preview-body">
                         {formContent ? (
-                          <div className="text-left"><MarkdownPreview content={formContent} /></div>
+                          <MarkdownPreview content={formContent} />
                         ) : (
-                          <p className="text-sm text-[var(--atelier-faint)] italic">The page is blank — write to see light.</p>
+                          <p className="wb-blank">The page is blank. Write to see light.</p>
                         )}
                       </div>
                     </div>
@@ -1653,17 +1405,15 @@ export function EditorialClient({
                       animate={{ x: 0, opacity: 1 }}
                       exit={{ x: '100%', opacity: 0 }}
                       transition={{ type: 'tween', duration: 0.3 }}
-                      className="article-format-panel absolute right-0 top-0 bottom-0 w-[min(100%,20rem)] atelier-card-lg p-6 z-30 overflow-y-auto"
+                      className="wb-format"
                     >
-                      <div className="flex items-center justify-between mb-6">
-                        <span className="font-headline font-bold flex items-center gap-2 text-[var(--atelier-ink)]">
-                          <FileText className="w-5 h-5 text-[var(--atelier-gold)]" /> Format
-                        </span>
-                        <button type="button" onClick={() => setShowHelp(false)} className="atelier-icon-btn !w-9 !h-9">
+                      <div className="wb-format-head">
+                        <h3 className="atelier-h3">Format</h3>
+                        <button type="button" onClick={() => setShowHelp(false)} className="atelier-icon-btn" aria-label="Close format guide">
                           <X className="w-4 h-4" />
                         </button>
                       </div>
-                      <div className="space-y-5 text-sm text-[var(--atelier-muted)]">
+                      <div className="wb-format-list">
                         {[
                           { label: 'Headers', code: '# H1\n## H2\n### H3' },
                           { label: 'Emphasis', code: '**bold** *italic* `code`\nCtrl+B / Ctrl+I / Ctrl+E' },
@@ -1678,11 +1428,9 @@ export function EditorialClient({
                             code: '| A | B |\n| --- | --- |\n| 1 | 2 |',
                           },
                         ].map(({ label, code }) => (
-                          <div key={label}>
-                            <p className="font-headline font-bold text-[var(--atelier-ink)] mb-1.5 text-sm">{label}</p>
-                            <pre className="bg-[var(--atelier-paper)] border border-[var(--atelier-line)] p-3 rounded-2xl text-[0.7rem] font-mono whitespace-pre-wrap">
-                              {code}
-                            </pre>
+                          <div key={label} className="wb-format-item">
+                            <p>{label}</p>
+                            <pre>{code}</pre>
                           </div>
                         ))}
                       </div>
@@ -1698,55 +1446,43 @@ export function EditorialClient({
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="space-y-5"
           >
-            <div className="atelier-card p-3 sm:p-4 flex flex-col sm:flex-row gap-3 sm:items-center justify-between">
-              <div className="relative flex-grow max-w-xl">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--atelier-faint)]" />
-                <input
-                  type="search"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search title, tag, or slug…"
-                  className="atelier-input !pl-11 !rounded-full"
-                />
+            <section className="atelier-section">
+              <div className="wb-listbar">
+                <div className="wb-search">
+                  <Search aria-hidden />
+                  <input
+                    type="search"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    placeholder="Search title, tag, or slug…"
+                    aria-label="Search essays"
+                    className="atelier-input"
+                  />
+                </div>
+                <button type="button" onClick={startNewArticle} className="atelier-btn atelier-btn-primary">
+                  <Plus className="w-4 h-4" /> New article
+                </button>
               </div>
-              <button type="button" onClick={startNewArticle} className="atelier-btn atelier-btn-primary shrink-0">
-                <Plus className="w-4 h-4" /> New article
-              </button>
-            </div>
 
-            <div className="space-y-4">
-              <AnimatePresence mode="popLayout">
-                {filteredArticles.length === 0 ? (
-                  <motion.div
-                    key="empty"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="atelier-card-lg py-20 sm:py-28 px-8 flex flex-col items-center text-center gap-5"
-                  >
-                    <div className="w-20 h-20 rounded-[1.75rem] bg-[var(--atelier-gold-soft)] flex items-center justify-center">
-                      <Sparkles className="w-8 h-8 text-[var(--atelier-gold)]" />
-                    </div>
-                    <div className="max-w-sm space-y-2">
-                      <p className="font-headline text-2xl font-bold text-[var(--atelier-ink)]">
-                        {searchQuery ? 'Nothing matched' : 'An empty atelier'}
-                      </p>
-                      <p className="text-[var(--atelier-muted)] leading-relaxed">
-                        {searchQuery
-                          ? 'Try another phrase.'
-                          : 'Start a draft. AI can scaffold metadata and a cover prompt — you keep the voice.'}
-                      </p>
-                    </div>
-                    {!searchQuery && (
-                      <button type="button" onClick={startNewArticle} className="atelier-btn atelier-btn-gold">
-                        <Plus className="w-4 h-4" /> Begin first piece
-                      </button>
-                    )}
-                  </motion.div>
-                ) : (
-                  filteredArticles.map((post) => (
-                    <ArticleCard
+              {filteredArticles.length === 0 ? (
+                <div className="atelier-empty">
+                  <h3 className="atelier-h3">{searchQuery ? 'Nothing matched' : 'No essays yet'}</h3>
+                  <p>
+                    {searchQuery
+                      ? 'Try another phrase.'
+                      : 'Start a draft. AI can scaffold the metadata, and you keep the voice.'}
+                  </p>
+                  {!searchQuery && (
+                    <button type="button" onClick={startNewArticle} className="atelier-btn atelier-btn-line">
+                      <Plus className="w-4 h-4" /> Begin first piece
+                    </button>
+                  )}
+                </div>
+              ) : (
+                <ul className="atelier-rows wb-rows">
+                  {filteredArticles.map((post) => (
+                    <ArticleRow
                       key={post.id}
                       post={post}
                       onEdit={startEditArticle}
@@ -1754,17 +1490,18 @@ export function EditorialClient({
                       isDeletingId={isDeletingId}
                       onPreview={(type, url) => setPreviewItem({ type, url })}
                     />
-                  ))
-                )}
-              </AnimatePresence>
-            </div>
+                  ))}
+                </ul>
+              )}
 
-            {filteredArticles.length > 0 && (
-              <p className="text-center text-[0.7rem] text-[var(--atelier-faint)] tracking-wide pt-2 pb-4">
-                Showing {filteredArticles.length} of {articles.length}
-                {searchQuery ? ' matches' : ' pieces'}
-              </p>
-            )}
+              {filteredArticles.length > 0 && (
+                <p className="wb-count">
+                  Showing <span className="atelier-mono">{filteredArticles.length}</span> of{' '}
+                  <span className="atelier-mono">{articles.length}</span>
+                  {searchQuery ? ' matches' : ' pieces'}
+                </p>
+              )}
+            </section>
           </motion.div>
         )}
       </AnimatePresence>
@@ -1774,35 +1511,31 @@ export function EditorialClient({
         previewItem &&
         createPortal(
           <div
-            className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-8 bg-black/70 backdrop-blur-xl"
+            className="wb-lightbox"
             onClick={() => setPreviewItem(null)}
             role="dialog"
             aria-modal="true"
+            aria-label="Preview"
           >
-            <div
-              className="relative w-full max-w-4xl rounded-[2rem] bg-[#0f172a] border border-white/10 p-6 sm:p-8 shadow-2xl"
-              onClick={(e) => e.stopPropagation()}
-            >
+            <div className="wb-lightbox-panel" onClick={(e) => e.stopPropagation()}>
               <button
                 type="button"
                 onClick={() => setPreviewItem(null)}
-                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/5 border border-white/10 text-white/70 hover:text-white flex items-center justify-center"
+                className="atelier-icon-btn wb-lightbox-close"
                 aria-label="Close"
               >
-                <X className="w-5 h-5" />
+                <X className="w-4 h-4" />
               </button>
-              <p className="text-[0.65rem] font-bold uppercase tracking-[0.22em] text-[var(--atelier-gold)] mb-2">
-                Preview
-              </p>
-              <h3 className="font-headline text-lg font-bold text-white mb-6">
+              <p className="atelier-label">Preview</p>
+              <h3>
                 {previewItem.type === 'cover' ? 'Cover image' : `Illustration · ${previewItem.type}`}
               </h3>
-              <div className="rounded-[1.5rem] overflow-hidden bg-black/40 border border-white/5 min-h-[240px] flex items-center justify-center p-4">
+              <div className="wb-lightbox-media">
                 {previewItem.type === 'cover' && previewItem.url ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={previewItem.url} alt="" className="max-h-[65vh] w-auto rounded-xl object-contain" />
+                  <img src={previewItem.url} alt="" />
                 ) : (
-                  <div className="w-full max-w-md aspect-video">
+                  <div className="wb-lightbox-art">
                     {renderIllustration(previewItem.type === 'cover' ? 'diagram1' : previewItem.type, true)}
                   </div>
                 )}
@@ -1812,5 +1545,6 @@ export function EditorialClient({
           document.body
         )}
     </div>
+    </MotionConfig>
   );
 }

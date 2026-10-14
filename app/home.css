@@ -85,7 +85,7 @@
   background: var(--paper-raised);
   border: 1px solid var(--rule);
   border-radius: 20px;
-  box-shadow: 0 24px 48px -32px #14201c33;
+  box-shadow: 0 24px 48px -32px #1b1a1833;
 }
 .home-portrait {
   display: flex;
@@ -278,9 +278,9 @@
 
 /* The inverted band: its own ink, so it reads as one calm object, not a heavy block. */
 .home-band {
-  --band-bg: #14201c;
+  --band-bg: #1b1a18;
   --band-ink: #f3f1ea;
-  --band-ink-2: #b9c4be;
+  --band-ink-2: #bdb7b0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) 200px;
   gap: 48px;
@@ -292,7 +292,7 @@
   color: var(--band-ink);
 }
 .dark .home-band {
-  --band-bg: #1f2d27;
+  --band-bg: #24221f;
 }
 .field-main .home-band h2 {
   max-width: 20ch;

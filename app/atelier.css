@@ -1,0 +1,614 @@
+/* The private atelier (/login, /editorial, /ledger) in the family language.
+ * Same tokens, type and grammar as the public pages: warm paper, hairlines, two-tone headings,
+ * mono data, one forest button per view, a papaya dot for the active item. No glass, no glow,
+ * no pills, no gradients.
+ *
+ * The --atelier-* names are older; they point at the family tokens so older markup follows them.
+ * New markup uses the structural classes below (.atelier-page, -head, -tabs, -section, -rows,
+ * -status, -stage, -panel, -notice, -empty, -toolbar). */
+
+.atelier-root {
+  --atelier-ink: var(--ink);
+  --atelier-muted: var(--ink-2);
+  --atelier-faint: var(--ink-2);
+  --atelier-paper: var(--paper);
+  --atelier-card: var(--paper-raised);
+  --atelier-line: var(--rule);
+  --atelier-gold: var(--leaf-ink);
+  --atelier-gold-soft: var(--color-accent-soft);
+  --atelier-violet: var(--ink-2);
+  --atelier-contrast: var(--sage);
+  --atelier-contrast-border: var(--rule);
+  --atelier-contrast-ink: var(--ink);
+  --atelier-contrast-muted: var(--ink-2);
+  --atelier-contrast-accent: var(--leaf-ink);
+  --atelier-shadow: none;
+  --atelier-shadow-sm: none;
+  --atelier-radius: 12px;
+  --atelier-radius-lg: 20px;
+  --atelier-radius-pill: 6px;
+  background: var(--paper);
+  color: var(--ink);
+}
+.atelier-glow {
+  display: none;
+}
+
+/* ── Page frame ─────────────────────────────────────────────────────────────── */
+
+/* The page column: the public site's 1320px with 44/30/22px gutters. */
+.atelier-page {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 max(44px, env(safe-area-inset-right)) 0 max(44px, env(safe-area-inset-left));
+}
+@media (max-width: 1000px) {
+  .atelier-page {
+    padding-left: max(30px, env(safe-area-inset-left));
+    padding-right: max(30px, env(safe-area-inset-right));
+  }
+}
+@media (max-width: 700px) {
+  .atelier-page {
+    padding-left: max(22px, env(safe-area-inset-left));
+    padding-right: max(22px, env(safe-area-inset-right));
+  }
+}
+
+/* A page head: meta line, a two-tone h1, a lead, then facts. One hairline closes it. */
+.atelier-head {
+  display: grid;
+  gap: 20px;
+  padding: 24px 0 40px;
+  border-bottom: 1px solid var(--rule);
+}
+.atelier-head h1 {
+  max-width: 18ch;
+  margin: 0;
+  font-size: clamp(2.4rem, 5vw, 4rem);
+  font-weight: 500;
+  line-height: 1.02;
+  letter-spacing: -0.04em;
+  text-wrap: balance;
+}
+.atelier-root :is(h1, h2) em {
+  font-style: normal;
+  font-weight: inherit;
+  color: var(--ink-2);
+}
+.atelier-lead {
+  max-width: 60ch;
+  margin: 0;
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.atelier-head-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+/* Facts: a mono number and a word, separated by space, never boxed. */
+.atelier-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.atelier-facts b,
+.atelier-fact-value {
+  margin-right: 6px;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-weight: 500;
+  color: var(--ink);
+}
+
+/* ── Navigation inside a page ───────────────────────────────────────────────── */
+
+/* Tabs and filters speak the header's language: muted text, a papaya dot under the one in use. */
+.atelier-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 28px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.atelier-tab {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 1px;
+  border: 0;
+  background: none;
+  font: inherit;
+  font-size: 0.95rem;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.atelier-tab:hover {
+  color: var(--ink);
+}
+.atelier-tab::after {
+  content: '';
+  position: absolute;
+  bottom: 2px;
+  left: 50%;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--leaf);
+  transform: translateX(-50%) scale(0);
+  transition: transform 200ms var(--ease-out);
+}
+.atelier-tab:is([aria-current='page'], [aria-selected='true'], [aria-pressed='true'], .is-active) {
+  color: var(--ink);
+}
+.atelier-tab:is([aria-current='page'], [aria-selected='true'], [aria-pressed='true'], .is-active)::after {
+  transform: translateX(-50%) scale(1);
+}
+.atelier-tab-count {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+/* ── Sections and lists ─────────────────────────────────────────────────────── */
+
+.atelier-section {
+  padding: 48px 0;
+}
+.atelier-section + .atelier-section {
+  border-top: 1px solid var(--rule);
+}
+.atelier-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px 24px;
+  margin-bottom: 24px;
+}
+.atelier-section-head h2,
+.atelier-h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+.atelier-h3 {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* Rows: a table of contents. Set --row-cols on the list for its own columns. */
+.atelier-rows {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-bottom: 1px solid var(--rule);
+}
+.atelier-row {
+  display: grid;
+  grid-template-columns: var(--row-cols, 120px minmax(0, 1fr) auto);
+  gap: 12px 32px;
+  align-items: center;
+  padding: 22px 0;
+  border-top: 1px solid var(--rule);
+  color: var(--ink);
+}
+.atelier-row-title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+a.atelier-row-title:hover,
+.atelier-row:hover .atelier-row-title[data-link] {
+  color: var(--leaf-ink);
+}
+.atelier-row-note {
+  margin: 4px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.atelier-row-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+}
+@media (max-width: 760px) {
+  .atelier-row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+  }
+  .atelier-row-actions {
+    justify-content: flex-start;
+  }
+}
+
+/* Mono for real data only: dates, counts, ids, money. */
+.atelier-mono {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 13px;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink-2);
+}
+
+/* Fine-dot meta line, as .work-meta on the public pages. */
+.atelier-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 0;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.atelier-meta > * + *::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  margin: 0 10px 3px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.6;
+}
+
+/* Status: a word with a 6px dot. live = papaya, draft = hollow, warn = crimson, done = ink. */
+.atelier-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  white-space: nowrap;
+}
+.atelier-status::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+.atelier-status[data-tone='live']::before {
+  background: var(--leaf);
+}
+.atelier-status[data-tone='live'] {
+  color: var(--ink);
+}
+.atelier-status[data-tone='draft']::before {
+  background: transparent;
+  box-shadow: inset 0 0 0 1.5px var(--ink-2);
+}
+.atelier-status[data-tone='warn'] {
+  color: var(--clay);
+}
+.atelier-status[data-tone='warn']::before {
+  background: var(--clay);
+}
+.atelier-status[data-tone='done']::before {
+  background: var(--ink);
+}
+
+/* ── Surfaces ───────────────────────────────────────────────────────────────── */
+
+/* The one raised object in a view: the editor, the compose box, the review sheet. */
+.atelier-stage {
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  background: var(--paper-raised);
+  padding: 32px;
+}
+@media (max-width: 700px) {
+  .atelier-stage {
+    padding: 20px;
+  }
+}
+/* A quiet group: hairline, no fill. Use sparingly; prefer rows and space. */
+.atelier-panel {
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  padding: 24px;
+}
+/* The wash: a soft field for one lead figure or a calm summary. */
+.atelier-wash {
+  border-radius: 12px;
+  background: var(--sage);
+  padding: 24px;
+}
+
+/* Notices: a hairline on the left, text in ink. tone: ok | warn | info. */
+.atelier-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-left: 2px solid var(--ink-2);
+  border-radius: 0 6px 6px 0;
+  background: var(--sage);
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.atelier-notice[data-tone='ok'] {
+  border-left-color: var(--leaf);
+}
+.atelier-notice[data-tone='warn'] {
+  border-left-color: var(--clay);
+}
+.atelier-notice[data-tone='warn'] strong {
+  color: var(--clay);
+}
+
+/* An empty state: a short sentence and one onward action, centred in space. */
+.atelier-empty {
+  display: grid;
+  justify-items: center;
+  gap: 14px;
+  padding: 72px 24px;
+  text-align: center;
+  color: var(--ink-2);
+}
+.atelier-empty p {
+  max-width: 44ch;
+  margin: 0;
+}
+
+/* A sticky command bar for editors: paper, one hairline under it. */
+.atelier-toolbar {
+  position: sticky;
+  top: 72px;
+  z-index: 20;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule);
+  background: var(--paper);
+}
+@media (max-width: 700px) {
+  .atelier-toolbar {
+    top: 64px;
+  }
+}
+
+/* A text link: muted ink, full ink on hover. */
+.atelier-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: 0;
+  background: none;
+  padding: 0;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 200ms ease;
+}
+.atelier-link:hover {
+  color: var(--ink);
+}
+.atelier-link[data-tone='warn']:hover {
+  color: var(--clay);
+}
+
+/* ── Controls ───────────────────────────────────────────────────────────────── */
+
+.atelier-input {
+  width: 100%;
+  height: 2.75rem;
+  padding: 0 0.875rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 0.9375rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+textarea.atelier-input {
+  height: auto;
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+  line-height: 1.55;
+}
+.atelier-input::placeholder {
+  color: color-mix(in srgb, var(--ink-2) 80%, transparent);
+}
+.atelier-input:hover {
+  border-color: color-mix(in srgb, var(--ink-2) 45%, var(--rule));
+}
+.atelier-input:focus {
+  outline: none;
+  border-color: var(--leaf-ink);
+  box-shadow: 0 0 0 1px var(--leaf-ink);
+}
+
+.atelier-label {
+  display: block;
+  margin-bottom: 0.45rem;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.atelier-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  height: 2.5rem;
+  padding: 0 1.1rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+  font-size: 0.875rem;
+  font-weight: 500;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease, opacity 0.2s ease;
+}
+.atelier-btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+@media (max-width: 639px) {
+  .atelier-btn {
+    padding-right: 0.9rem;
+    padding-left: 0.9rem;
+  }
+}
+
+/* The filled button: forest (anthracite; light ink in dark mode). One per view. */
+.atelier-btn-primary,
+.atelier-btn-gold {
+  background: var(--forest);
+  color: var(--on-forest);
+}
+.atelier-btn-primary:hover:not(:disabled),
+.atelier-btn-gold:hover:not(:disabled) {
+  background: color-mix(in srgb, var(--forest) 88%, var(--paper));
+}
+
+/* Secondary: a hairline button. */
+.atelier-btn-ghost,
+.atelier-btn-line,
+.atelier-btn-violet {
+  background: transparent;
+  border-color: var(--rule);
+  color: var(--ink);
+}
+.atelier-btn-ghost:hover:not(:disabled),
+.atelier-btn-line:hover:not(:disabled),
+.atelier-btn-violet:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--ink-2) 55%, var(--rule));
+}
+/* Destructive: hairline in crimson text. */
+.atelier-btn-danger {
+  background: transparent;
+  border-color: var(--rule);
+  color: var(--clay);
+}
+.atelier-btn-danger:hover:not(:disabled) {
+  border-color: var(--clay);
+}
+
+/* A tag: small text in a 6px hairline box. Active: ink text and a papaya dot. */
+.atelier-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.75rem;
+  padding: 0 0.6rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--ink-2);
+}
+button.atelier-chip {
+  cursor: pointer;
+  transition: border-color 0.2s ease, color 0.2s ease;
+}
+button.atelier-chip:hover {
+  color: var(--ink);
+}
+.atelier-chip:is([data-active='true'], [aria-pressed='true'], .active) {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.atelier-chip:is([data-active='true'], [aria-pressed='true'], .active)::before {
+  content: '';
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--leaf);
+}
+
+/* Icon controls: 6px squares with a hairline, as the theme toggle. */
+.atelier-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border-radius: 6px;
+  border: 1px solid var(--rule);
+  background: transparent;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.atelier-icon-btn:hover {
+  color: var(--ink);
+  border-color: color-mix(in srgb, var(--ink-2) 55%, var(--rule));
+}
+.atelier-icon-btn[data-tone='warn']:hover {
+  color: var(--clay);
+  border-color: var(--clay);
+}
+
+.atelier-card,
+.atelier-card-lg {
+  background: var(--paper-raised);
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  box-shadow: none;
+}
+.atelier-card-lg {
+  border-radius: 20px;
+}
+.atelier-contrast-panel {
+  background: var(--sage);
+  border-color: var(--rule);
+}
+
+/* ── Chrome ─────────────────────────────────────────────────────────────────── */
+
+.atelier-root .atelier-chrome {
+  color: var(--ink);
+}
+/* The private footer sits on the page column. */
+.atelier-root .workspace-footer {
+  padding: 28px max(44px, calc((100vw - 1320px) / 2 + 44px));
+  font-size: 13px;
+}
+.atelier-root .workspace-footer a {
+  display: inline-flex;
+  align-items: center;
+  color: var(--ink-2);
+}
+.atelier-root .workspace-footer a:hover {
+  color: var(--ink);
+}
+@media (max-width: 700px) {
+  .atelier-root .workspace-footer {
+    padding: 24px 22px;
+  }
+}

@@ -1,9 +1,9 @@
 'use client';
 
-import { Menu, X, BookOpen, AtSign, Landmark, Mail } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useSearchParams } from 'next/navigation';
-import { Suspense, useState, useEffect, useRef, type ReactNode } from 'react';
+import { Suspense, useState, useEffect, useRef } from 'react';
 import { BrandMark } from '@/components/brand-mark';
 import { ThemeToggle } from '@/components/theme-provider';
 import { siteConfig } from '@/lib/site-config';
@@ -14,8 +14,6 @@ type NavLink = {
   path: string;
   external?: boolean;
   key: string;
-  icon?: ReactNode;
-  shortName?: string;
 };
 
 function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
@@ -34,33 +32,25 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     ? [
         {
           name: 'Blog CMS',
-          shortName: 'Blog',
           path: '/editorial',
           key: 'blog',
-          icon: <BookOpen className="h-3.5 w-3.5" strokeWidth={2.25} />,
         },
         {
           name: 'Notes',
-          shortName: 'Notes',
           path: '/editorial?workspace=notes',
           key: 'notes',
-          icon: <Mail className="h-3.5 w-3.5" strokeWidth={2.25} />,
         },
         {
           name: 'X To-Do',
-          shortName: 'X',
           path: '/editorial?workspace=x',
           key: 'x',
-          icon: <AtSign className="h-3.5 w-3.5" strokeWidth={2.25} />,
         },
         {
           name: 'Ledger',
-          shortName: 'Books',
           path: '/ledger',
           key: 'ledger',
-          icon: <Landmark className="h-3.5 w-3.5" strokeWidth={2.25} />,
         },
-        { name: 'Public site', shortName: 'Public', path: '/', key: 'public' },
+        { name: 'Public site', path: '/', key: 'public' },
       ]
     : [
         { name: 'Playground', path: '/playground', key: 'playground' },
@@ -154,28 +144,13 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     };
   }, [mobileMenuOpen]);
 
-  // Glass chrome — theme-aware
-  const navShell = isAtelier
-    ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/90 shadow-[var(--atelier-shadow-sm)] backdrop-blur-xl'
-    : 'border-outline-variant bg-surface/95 backdrop-blur-xl';
+  // Public and private pages share Edudojo's header: a paper bar with one hairline.
+  const navShell = 'border-outline-variant bg-surface/95 backdrop-blur-xl';
+  const logoText = 'text-primary group-hover:text-accent';
+  const mobilePanel = 'border-outline-variant bg-surface shadow-xl';
+  const mobileBtn = 'border-[var(--rule)] bg-transparent text-[var(--ink-2)] hover:text-[var(--ink)]';
 
-  const logoText = isAtelier
-    ? 'text-[var(--atelier-ink)] group-hover:text-[var(--atelier-gold)]'
-    : 'text-primary group-hover:text-accent';
-
-  const linkRail = isAtelier
-    ? 'border-[var(--atelier-line)] bg-[var(--atelier-paper)]/70'
-    : 'border-transparent bg-transparent';
-
-  const mobilePanel = isAtelier
-    ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)]/98 shadow-[var(--atelier-shadow)]'
-    : 'border-outline-variant bg-surface shadow-xl';
-
-  const mobileBtn = isAtelier
-    ? 'border-[var(--atelier-line)] bg-[var(--atelier-card)] text-[var(--atelier-ink)] hover:text-[var(--atelier-gold)]'
-    : 'border-[var(--rule)] bg-transparent text-[var(--ink-2)] hover:text-[var(--ink)]';
-
-  // Public links follow Edudojo's header: muted ink, full ink on hover, a leaf dot when active.
+  // Links follow Edudojo's header: muted ink, full ink on hover, a papaya dot when active.
   const publicLinkBase =
     'relative inline-flex items-center px-0.5 py-1.5 text-[0.95rem] motion-safe:transition-colors motion-safe:duration-200';
   const publicLinkIdle = 'text-[var(--ink-2)] hover:text-[var(--ink)]';
@@ -215,20 +190,12 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
     );
   };
 
-  const atelierActive =
-    'border-transparent bg-[var(--atelier-ink)] text-[var(--atelier-card)] shadow-md';
-  const atelierIdle =
-    'border-transparent text-[var(--atelier-faint)] hover:bg-[var(--atelier-paper)] hover:text-[var(--atelier-ink)]';
-
-  const navLinkBase =
-    'inline-flex items-center gap-1.5 rounded-full border px-3 py-2 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,border-color,color,box-shadow] motion-safe:duration-200 md:px-3';
-
   return (
     <div
       ref={navigationRef}
       data-reading-hidden={isReadingArticle && readingNavHidden && !mobileMenuOpen}
       className={`safe-nav-inset pointer-events-none fixed right-0 left-0 z-50 flex flex-col items-center ${
-        isAtelier ? 'atelier-chrome' : 'public-nav'
+        isAtelier ? 'public-nav atelier-chrome' : 'public-nav'
       }`}
     >
       <nav
@@ -238,7 +205,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
         <Link
           href={isAtelier ? '/editorial' : '/'}
           onClick={(e) => handleSamePageNav(e, isAtelier ? '/editorial' : '/')}
-          className={`group flex shrink-0 items-center gap-2 sm:gap-3 ${isAtelier ? 'px-1 sm:px-2' : ''}`}
+          className="group flex shrink-0 items-center gap-2 sm:gap-3"
         >
           <BrandMark
             size={32}
@@ -247,19 +214,21 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             className="h-8 w-8 shrink-0 transition-transform duration-300 group-hover:scale-105"
           />
           <span
-            className={`font-headline text-lg font-semibold tracking-[-0.025em] transition-colors duration-300 sm:text-xl ${
-              isAtelier ? 'hidden min-[380px]:inline' : ''
-            } ${logoText}`}
+            className={`font-headline text-lg font-semibold tracking-[-0.025em] transition-colors duration-300 sm:text-xl ${logoText}`}
           >
-            {isAtelier ? 'Atelier' : siteConfig.shortName}
+            {siteConfig.shortName}
+            {/* The private side names itself in the second tone. */}
+            {isAtelier && (
+              <span className="ml-2 hidden font-medium text-[var(--ink-2)] min-[380px]:inline">
+                Atelier
+              </span>
+            )}
           </span>
         </Link>
 
         {/* Desktop link rail; smaller screens use the complete menu. */}
         <div
-          className={`hidden min-w-0 items-center lg:flex ${
-            isAtelier ? `gap-0.5 rounded-full border p-1 shadow-inner ${linkRail}` : 'gap-7 xl:gap-9'
-          }`}
+          className="hidden min-w-0 items-center gap-7 lg:flex xl:gap-9"
         >
           {linksList.map((link) => {
             const isActive = isLinkActive(link);
@@ -274,24 +243,16 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                 target={link.external ? '_blank' : undefined}
                 rel={link.external ? 'noopener noreferrer' : undefined}
                 aria-current={isActive ? 'page' : undefined}
-                className={
-                  isAtelier
-                    ? `${navLinkBase} ${isActive ? atelierActive : atelierIdle}`
-                    : `${publicLinkBase} ${isActive ? publicLinkActive : publicLinkIdle}`
-                }
+                className={`${publicLinkBase} ${isActive ? publicLinkActive : publicLinkIdle}`}
               >
-                {link.icon}
-                <span className="md:hidden">{link.shortName ?? link.name}</span>
-                <span className="hidden md:inline">{link.name}</span>
-                {/* Edudojo's active mark: one leaf dot under the link, no pill. */}
-                {!isAtelier && (
-                  <span
-                    aria-hidden="true"
-                    className={`absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[var(--leaf)] motion-safe:transition-transform motion-safe:duration-200 ${
-                      isActive ? 'scale-100' : 'scale-0'
-                    }`}
-                  />
-                )}
+                {link.name}
+                {/* Edudojo's active mark: one papaya dot under the link, no pill. */}
+                <span
+                  aria-hidden="true"
+                  className={`absolute -bottom-1 left-1/2 size-1 -translate-x-1/2 rounded-full bg-[var(--leaf)] motion-safe:transition-transform motion-safe:duration-200 ${
+                    isActive ? 'scale-100' : 'scale-0'
+                  }`}
+                />
               </Link>
             );
           })}
@@ -310,7 +271,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
           {isAtelier && (
             <Link
               href="/api/auth/logout"
-              className="hidden items-center rounded-full border border-[var(--atelier-line)] bg-[var(--atelier-paper)]/80 px-4 py-2 font-headline text-sm font-semibold text-[var(--atelier-muted)] transition-colors hover:text-[var(--atelier-ink)] lg:inline-flex"
+              className="hidden items-center rounded-[6px] border border-[var(--rule)] px-4 py-2.5 font-headline text-sm font-medium text-[var(--ink)] transition-colors hover:border-[var(--ink-2)] lg:inline-flex"
             >
               Sign out
             </Link>
@@ -376,16 +337,9 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
                 rel={link.external ? 'noopener noreferrer' : undefined}
                 aria-current={isActive ? 'page' : undefined}
                 className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-3 font-headline text-sm font-semibold tracking-tight motion-safe:transition-[background-color,color] motion-safe:duration-200 ${
-                  isAtelier
-                    ? isActive
-                      ? atelierActive
-                      : 'border-transparent text-[var(--atelier-ink)] hover:bg-[var(--atelier-paper)]'
-                    : isActive
-                      ? 'border-accent/20 bg-accent/10 text-accent'
-                      : publicMobileIdle
+                  isActive ? 'border-accent/20 bg-accent/10 text-accent' : publicMobileIdle
                 }`}
               >
-                {link.icon}
                 {link.name}
               </Link>
             );
@@ -394,7 +348,7 @@ function NavigationBar({ workspaceParam }: { workspaceParam: string | null }) {
             <Link
               href="/api/auth/logout"
               onClick={() => setMobileMenuOpen(false)}
-              className="mt-2 w-full rounded-2xl border border-[var(--atelier-line)] py-3 text-center font-headline text-sm font-bold text-[var(--atelier-muted)]"
+              className="mt-2 w-full rounded-[6px] border border-[var(--rule)] py-3 text-center font-headline text-sm font-medium text-[var(--ink)]"
             >
               Sign out
             </Link>

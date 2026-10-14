@@ -7,6 +7,7 @@ import {
   TaxClasses,
   Types,
 } from '@/lib/ledger-schema';
+import { openRouterReasoning, type ReasoningEffort } from '@/lib/ai-model-options';
 
 export type LedgerAiProvider = 'google' | 'openrouter';
 
@@ -24,13 +25,14 @@ export function geminiApiKey(): string {
   return (process.env.GEMINI_API_KEY || '').trim().replace(/^["']|["']$/g, '');
 }
 
-export function geminiModels(): string[] {
+/** The owner's slug (from the Ledger's model control) comes first; the .env models stay as fallbacks. */
+export function geminiModels(chosen?: string | null): string[] {
   const primary = (process.env.GEMINI_MODEL || process.env.LEDGER_GEMINI_MODEL || 'gemini-flash-latest').trim();
   const fallback = (process.env.GEMINI_MODEL_FALLBACK || 'gemini-flash-latest').trim();
-  return [...new Set([primary, fallback, 'gemini-flash-latest'].filter(Boolean))];
+  return [...new Set([chosen || '', primary, fallback, 'gemini-flash-latest'].filter(Boolean))];
 }
 
-/** Change LEDGER_OPENROUTER_MODEL in .env to switch the OpenRouter model. */
+/** The .env default for OpenRouter. The owner can override it per extraction from the Ledger's model control. */
 export function ledgerOpenRouterModel(): string {
   return (process.env.LEDGER_OPENROUTER_MODEL || process.env.OPENROUTER_MODEL || '').trim();
 }
@@ -39,8 +41,9 @@ export function isGeminiConfigured(): boolean {
   return geminiApiKey().length > 0;
 }
 
+/** The key is enough: the model can come from the Ledger's model control. */
 export function isOpenRouterConfigured(): boolean {
-  return !!(process.env.OPENROUTER_API_KEY || '').trim() && !!ledgerOpenRouterModel();
+  return !!(process.env.OPENROUTER_API_KEY || '').trim();
 }
 
 export function isLedgerAiConfigured(): boolean {
@@ -172,12 +175,13 @@ export const LEDGER_RESPONSE_SCHEMA = {
 };
 
 async function callGemini(opts: {
+  model?: string | null;
   systemPrompt: string;
   userText: string;
   image?: { mimeType: string; data: string };
   jsonFormat?: boolean;
   thinkingBudget?: number;
-}): Promise<string> {
+}): Promise<{ text: string; model: string }> {
   const apiKey = geminiApiKey();
   if (!apiKey) throw new Error('GEMINI_API_KEY is not configured.');
 
@@ -210,10 +214,12 @@ async function callGemini(opts: {
   };
 
   let lastError: Error | null = null;
-  const models = geminiModels();
+  const models = geminiModels(opts.model);
+  // The owner's model and the .env primary each get a retry; later fallbacks get one try.
+  const retriedModels = new Set([models[0], geminiModels()[0]]);
   for (let modelIndex = 0; modelIndex < models.length; modelIndex++) {
     const model = models[modelIndex]!;
-    const attempts = modelIndex === 0 ? 2 : 1;
+    const attempts = retriedModels.has(model) ? 2 : 1;
     const url = `https://generativelanguage.googleapis.com/v1beta/models/${encodeURIComponent(model)}:generateContent?key=${encodeURIComponent(apiKey)}`;
     for (let attempt = 1; attempt <= attempts; attempt++) {
       try {
@@ -257,7 +263,7 @@ async function callGemini(opts: {
           lastError = new Error(`Gemini model ${model} returned an empty completion.`);
           break;
         }
-        return text;
+        return { text, model };
       } catch (error) {
         lastError = error instanceof Error ? error : new Error(String(error));
         if (attempt < attempts) await sleep(2 ** attempt * 400);
@@ -269,16 +275,18 @@ async function callGemini(opts: {
 }
 
 async function callOpenRouter(opts: {
+  model?: string | null;
+  effort?: ReasoningEffort;
   systemPrompt: string;
   userText: string;
   image?: { mimeType: string; data: string };
   jsonFormat?: boolean;
-}): Promise<string> {
+}): Promise<{ text: string; model: string }> {
   const apiKey = (process.env.OPENROUTER_API_KEY || '').trim();
   if (!apiKey) throw new Error('OPENROUTER_API_KEY is not configured.');
-  const model = ledgerOpenRouterModel();
+  const model = opts.model || ledgerOpenRouterModel();
   if (!model) {
-    throw new Error('Set LEDGER_OPENROUTER_MODEL (or OPENROUTER_MODEL) in .env to choose the OpenRouter model.');
+    throw new Error('No OpenRouter model chosen. Enter one under Extraction model, or set LEDGER_OPENROUTER_MODEL in .env.');
   }
 
   const userContent: ChatPart[] = [];
@@ -306,6 +314,7 @@ async function callOpenRouter(opts: {
       ],
       temperature: 0.1,
       ...(opts.jsonFormat ? { response_format: { type: 'json_object' } } : {}),
+      reasoning: openRouterReasoning(opts.effort || 'default'),
     }),
   });
 
@@ -315,11 +324,15 @@ async function callOpenRouter(opts: {
   }
   const text = contentFromOpenAiShape(await response.json());
   if (!text) throw new Error('OpenRouter returned an empty completion.');
-  return text;
+  return { text, model };
 }
 
 export async function completeLedgerModel(opts: {
   provider?: string;
+  /** Applies to the chosen provider only; a fallback to Gemini uses the .env models. */
+  model?: string | null;
+  /** OpenRouter only. */
+  effort?: ReasoningEffort;
   systemPrompt: string;
   userText: string;
   image?: { mimeType: string; data: string };
@@ -330,16 +343,18 @@ export async function completeLedgerModel(opts: {
 
   if (provider === 'openrouter') {
     try {
-      const text = await callOpenRouter(opts);
-      return { text, provider: 'openrouter', model: ledgerOpenRouterModel() };
+      const { text, model } = await callOpenRouter(opts);
+      return { text, provider: 'openrouter', model };
     } catch (error) {
       console.warn('[ledger-ai] OpenRouter failed, falling back to Gemini', error);
       if (!isGeminiConfigured()) throw error;
+      const { text, model } = await callGemini({ ...opts, model: null });
+      return { text, provider: 'google', model };
     }
   }
 
-  const text = await callGemini(opts);
-  return { text, provider: 'google', model: geminiModels()[0] || 'gemini' };
+  const { text, model } = await callGemini(opts);
+  return { text, provider: 'google', model };
 }
 
 export function parseJsonFromModel(content: string): unknown {

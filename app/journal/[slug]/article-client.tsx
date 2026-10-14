@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useMemo, useRef } from 'react';
+import { useState, useEffect, useMemo, useRef, type CSSProperties } from 'react';
 import { ArrowLeft, ArrowRight, ArrowUp, Bookmark, Check, ChevronDown, Clock, Copy, List, Type } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -15,10 +15,22 @@ import './article-reader.css';
 
 export type RelatedArticleCard = { slug: string; title: string; readTime: string };
 
-function CoverImage({ src, title, expanded = false }: { src: string; title: string; expanded?: boolean }) {
+/**
+ * The frame takes the cover's own proportions, so no bands show. The server reads them when it can
+ * (no layout shift); otherwise 16:9 is reserved and the frame corrects itself when the image loads.
+ */
+function CoverImage({ src, title, expanded = false, initialRatio = null }: { src: string; title: string; expanded?: boolean; initialRatio?: number | null }) {
+  const [ratio, setRatio] = useState<number | null>(initialRatio);
   return (
-    <figure className="reader-cover-image">
+    <figure
+      className="reader-cover-image"
+      style={ratio ? ({ '--cover-ratio': ratio } as CSSProperties) : undefined}
+    >
       <Image
+        onLoad={(event) => {
+          const { naturalWidth, naturalHeight } = event.currentTarget;
+          if (naturalWidth > 0 && naturalHeight > 0) setRatio(naturalWidth / naturalHeight);
+        }}
         src={src}
         alt={title}
         fill
@@ -33,7 +45,7 @@ function CoverImage({ src, title, expanded = false }: { src: string; title: stri
   );
 }
 
-export function ArticleClient({ article, canonicalUrl, related = [] }: { article: Article; canonicalUrl: string; related?: RelatedArticleCard[] }) {
+export function ArticleClient({ article, canonicalUrl, related = [], coverRatio = null }: { article: Article; canonicalUrl: string; related?: RelatedArticleCard[]; coverRatio?: number | null }) {
   const [copyStatus, setCopyStatus] = useState('');
   const [liked, setLiked] = useState(false);
   const [largeText, setLargeText] = useState(false);
@@ -175,9 +187,9 @@ export function ArticleClient({ article, canonicalUrl, related = [] }: { article
             <ExpandableFrame
               label="Cover image"
               expandText="View full image"
-              expandedContent={<CoverImage src={article.coverImage} title={article.title} expanded />}
+              expandedContent={<CoverImage src={article.coverImage} title={article.title} expanded initialRatio={coverRatio} />}
             >
-              <CoverImage src={article.coverImage} title={article.title} />
+              <CoverImage src={article.coverImage} title={article.title} initialRatio={coverRatio} />
             </ExpandableFrame>
           ) : (
             <div className="reader-cover-illustration">{renderIllustration(article.illustrationType === 'cover' ? 'diagram1' : article.illustrationType, true)}</div>

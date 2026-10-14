@@ -31,7 +31,7 @@ export function UnsubscribeClient({ email, token }: { email: string; token: stri
 
   if (status === 'done') {
     return (
-      <p className="rounded-2xl border border-emerald-200 bg-emerald-50 p-5 font-body text-sm text-emerald-800 dark:border-emerald-500/30 dark:bg-emerald-950/20 dark:text-emerald-200">
+      <p className="rounded-2xl border border-[var(--rule)] bg-[var(--sage)] p-5 font-body text-sm text-[var(--ink)]">
         You are off the list. {email} stays on file so you can subscribe again from Notes. No letters until then.
       </p>
     );

@@ -135,8 +135,8 @@ function createLane(): Lane {
 function readPalette(): Palette {
   const css = getComputedStyle(document.documentElement);
   return {
-    ink: css.getPropertyValue('--ink').trim() || '#14201c',
-    leaf: css.getPropertyValue('--leaf').trim() || '#10b981',
+    ink: css.getPropertyValue('--ink').trim() || '#1b1a18',
+    leaf: css.getPropertyValue('--leaf').trim() || '#ff8000',
   };
 }
 

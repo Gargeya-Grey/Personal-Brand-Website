@@ -87,7 +87,7 @@ export function ScrollProgress() {
       
       {/* Scrollbar Fill indicator */}
       <div 
-        className="absolute top-0 right-0 left-0 bg-gradient-to-b from-emerald-500/60 via-accent to-emerald-400 rounded-b-full transition-all duration-75"
+        className="absolute top-0 right-0 left-0 bg-gradient-to-b from-[var(--leaf)] via-[var(--leaf)] to-[var(--leaf)] rounded-b-full transition-all duration-75"
         style={{ height: `${progress}%` }}
       >
         {/* Glowing tip indicator */}

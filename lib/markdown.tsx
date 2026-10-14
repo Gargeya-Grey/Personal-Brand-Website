@@ -82,7 +82,7 @@ export function parseInlineMarkdown(text: string): React.ReactNode[] {
           <img
             src={extra}
             alt={content}
-            className="rounded-xl border border-slate-200/90 dark:border-white/10 my-1 max-w-full h-auto"
+            className="rounded-xl border border-[var(--rule)] my-1 max-w-full h-auto"
           />
         </ExpandableFrame>
       );
@@ -94,20 +94,20 @@ export function parseInlineMarkdown(text: string): React.ReactNode[] {
           href={extra}
           target={isExternal ? '_blank' : undefined}
           rel={isExternal ? 'noopener noreferrer' : undefined}
-          className="text-emerald-600 dark:text-emerald-400 underline underline-offset-4 decoration-emerald-600/30 dark:decoration-emerald-400/30 hover:text-emerald-700 dark:hover:text-emerald-300 hover:decoration-emerald-700 dark:hover:decoration-emerald-300 font-medium"
+          className="text-[var(--leaf-ink)] underline underline-offset-4 decoration-[var(--leaf-ink)]/30 hover:text-[var(--ink)] hover:decoration-[var(--ink)] font-medium"
         >
           {parseInlineMarkdown(content)}
         </a>
       );
     } else if (type === 'bold') {
       parts.push(
-        <strong key={key} className="font-semibold text-slate-800 dark:text-slate-100">
+        <strong key={key} className="font-semibold text-[var(--ink)]">
           {content}
         </strong>
       );
     } else if (type === 'italic') {
       parts.push(
-        <em key={key} className="italic font-normal text-slate-700 dark:text-slate-200">
+        <em key={key} className="italic font-normal text-[var(--ink)]">
           {content}
         </em>
       );
@@ -115,7 +115,7 @@ export function parseInlineMarkdown(text: string): React.ReactNode[] {
       parts.push(
         <code
           key={key}
-          className="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 text-xs md:text-sm text-emerald-600 dark:text-emerald-400 font-mono"
+          className="px-1.5 py-0.5 rounded bg-[var(--sage)] text-xs md:text-sm text-[var(--leaf-ink)] font-mono"
         >
           {content}
         </code>
@@ -130,11 +130,11 @@ export function parseInlineMarkdown(text: string): React.ReactNode[] {
 }
 
 const BODY =
-  'font-body text-slate-700 dark:text-slate-300 text-base md:text-[1.0625rem] leading-[1.8] tracking-normal font-normal text-left';
+  'font-body text-[var(--ink)] text-base md:text-[1.0625rem] leading-[1.8] tracking-normal font-normal text-left';
 const H2 =
-  'font-headline text-[1.35rem] md:text-[1.65rem] font-[520] dark:font-[480] text-slate-800 dark:text-slate-100 tracking-[-0.015em] mt-14 mb-5 scroll-mt-36';
+  'font-headline text-[1.35rem] md:text-[1.65rem] font-[520] dark:font-[480] text-[var(--ink)] tracking-[-0.015em] mt-14 mb-5 scroll-mt-36';
 const H3 =
-  'font-headline text-lg md:text-xl font-[520] dark:font-[480] text-slate-800 dark:text-slate-100 tracking-[-0.01em] mt-10 mb-4 scroll-mt-36';
+  'font-headline text-lg md:text-xl font-[520] dark:font-[480] text-[var(--ink)] tracking-[-0.01em] mt-10 mb-4 scroll-mt-36';
 /**
  * Custom block-level markdown parser converting MD text into premium React nodes
  * with consecutive list item and blockquote grouping.
@@ -160,7 +160,7 @@ export function renderMarkdown(
       elements.push(interactive ? (
         <ArticleInteractive key={`interactive-${i}`} source={block.content} {...interactive} />
       ) : (
-        <div key={`code-block-${i}`} className="article-code-block my-6 max-w-full overflow-x-auto rounded-2xl border border-slate-800 bg-[#0c1017] p-5 font-mono text-xs text-emerald-400">
+        <div key={`code-block-${i}`} className="article-code-block my-6 max-w-full overflow-x-auto rounded-xl border border-[var(--rule)] bg-[var(--sage)] p-5 font-mono text-xs text-[var(--ink)]">
           <pre className="leading-relaxed"><code>{block.content}</code></pre>
         </div>
       ));
@@ -212,7 +212,7 @@ export function renderMarkdown(
       elements.push(
         <blockquote
           key={`quote-${i}`}
-          className="relative my-10 border-l-[3px] border-emerald-500 dark:border-emerald-400/80 pl-5 sm:pl-6 font-headline font-medium text-[1.125rem] md:text-[1.2rem] leading-[1.65] tracking-[-0.01em] text-slate-800 dark:text-slate-200 not-italic"
+          className="relative my-10 border-l-[3px] border-[var(--leaf)] pl-5 sm:pl-6 font-headline font-medium text-[1.125rem] md:text-[1.2rem] leading-[1.65] tracking-[-0.01em] text-[var(--ink)] not-italic"
         >
           {quoteLines.map((ql, idx) => (
             <p key={idx} className={idx > 0 ? 'mt-3' : ''}>
@@ -229,7 +229,7 @@ export function renderMarkdown(
       elements.push(
         <hr
           key={`hr-${i}`}
-          className="my-10 border-0 h-px bg-gradient-to-r from-transparent via-slate-300 dark:via-white/15 to-transparent"
+          className="my-10 border-0 h-px bg-[var(--rule)]"
         />
       );
       i++;
@@ -258,7 +258,7 @@ export function renderMarkdown(
         >
           {listItems.map((item, idx) => (
             <li key={idx} className="grid grid-cols-[1.75rem_minmax(0,1fr)] items-baseline gap-3">
-              <span className="font-label tabular-nums text-slate-400 dark:text-slate-500">
+              <span className="font-label tabular-nums text-[var(--ink-2)]">
                 {String(idx + 1).padStart(2, '0')}
               </span>
               <span>{parseInlineMarkdown(item)}</span>
@@ -281,8 +281,8 @@ export function renderMarkdown(
           key={`ul-${i}`}
           className={
             afterSourcesHeading
-              ? `${BODY} list-none pl-0 my-4 space-y-4 divide-y divide-slate-200/70 dark:divide-white/10 text-[0.9375rem] md:text-base text-slate-600 dark:text-slate-400 [&>li]:pt-4 [&>li:first-child]:pt-0`
-              : `${BODY} list-disc pl-5 my-6 space-y-3 marker:text-slate-400 dark:marker:text-slate-500`
+              ? `${BODY} list-none pl-0 my-4 space-y-4 divide-y divide-[var(--rule)] text-[0.9375rem] md:text-base text-[var(--ink-2)] [&>li]:pt-4 [&>li:first-child]:pt-0`
+              : `${BODY} list-disc pl-5 my-6 space-y-3 marker:text-[var(--ink-2)]`
           }
         >
           {listItems.map((item, idx) => (
@@ -305,11 +305,11 @@ export function renderMarkdown(
             <img
               src={src}
               alt={alt}
-              className="w-full rounded-xl border border-slate-200/90 dark:border-white/10 h-auto"
+              className="w-full rounded-xl border border-[var(--rule)] h-auto"
             />
           </ExpandableFrame>
           {alt ? (
-            <figcaption className="mt-2.5 text-center font-body text-sm leading-relaxed text-slate-500 dark:text-slate-400">
+            <figcaption className="mt-2.5 text-center font-body text-sm leading-relaxed text-[var(--ink-2)]">
               {alt}
             </figcaption>
           ) : null}
@@ -349,9 +349,9 @@ export function renderMarkdown(
           key={`p-${i}`}
           className={
             afterSourcesHeading
-              ? `${BODY} mb-4 text-[0.9375rem] md:text-base text-slate-600 dark:text-slate-400`
+              ? `${BODY} mb-4 text-[0.9375rem] md:text-base text-[var(--ink-2)]`
               : isLead
-                ? `${BODY} letter-lead mb-6 text-[1.125rem] md:text-[1.1875rem] leading-[1.75] text-slate-700 dark:text-slate-300`
+                ? `${BODY} letter-lead mb-6 text-[1.125rem] md:text-[1.1875rem] leading-[1.75] text-[var(--ink)]`
                 : `${BODY} mb-4`
           }
         >

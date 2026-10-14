@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { requireAllowedSession } from '@/lib/auth';
 import { getEditorialArticlesLite } from '@/lib/blog-service';
 import { getNewsletterWeeks } from '@/lib/newsletter-service';
+import { defaultOpenRouterModel } from '@/lib/ai-providers';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { EditorialClient } from './editorial-client';
@@ -49,7 +50,6 @@ export default async function EditorialPage({
 
   return (
     <div className="atelier-root min-h-screen relative flex flex-col justify-between antialiased">
-      <div className="atelier-glow pointer-events-none absolute inset-0 z-0" aria-hidden />
       <Navigation />
       <main id="page-main" tabIndex={-1} className="relative z-10 pt-32 sm:pt-36 pb-12 sm:pb-16 flex-grow">
         <EditorialClient
@@ -57,6 +57,7 @@ export default async function EditorialPage({
           user={user}
           initialWorkspace={initialWorkspace}
           initialNotes={initialNotes}
+          aiDefaults={{ openRouterModel: defaultOpenRouterModel() || null }}
         />
       </main>
       <Footer />

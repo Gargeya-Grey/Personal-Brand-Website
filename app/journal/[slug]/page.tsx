@@ -10,6 +10,7 @@ import {
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { ArticleClient } from './article-client';
+import { getCoverRatio } from '@/lib/cover-ratio';
 import { absoluteUrl, getDefaultShareImage, siteConfig } from '@/lib/site-config';
 import { clampMetaDescription } from '@/lib/meta';
 import { getBlogPostingJsonLd, serializeJsonLd } from '@/lib/structured-data';
@@ -130,6 +131,8 @@ export default async function BlogPostPage({ params }: PageProps) {
   }
 
   const related = pickRelated(article, listing);
+  const coverRatio =
+    article.illustrationType === 'cover' ? await getCoverRatio(article.coverImage) : null;
 
   const jsonLd = getBlogPostingJsonLd({
     title: article.title,
@@ -144,7 +147,7 @@ export default async function BlogPostPage({ params }: PageProps) {
   });
 
   return (
-    <div className="min-h-screen bg-surface text-primary relative selection:bg-emerald-500/20 selection:text-inherit flex flex-col justify-between">
+    <div className="min-h-screen bg-surface text-primary relative selection:bg-[var(--color-accent-soft)] selection:text-inherit flex flex-col justify-between">
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonLd) }}
@@ -157,7 +160,7 @@ export default async function BlogPostPage({ params }: PageProps) {
         tabIndex={-1}
         className="relative z-10 flex-grow pb-24 pt-28 sm:pt-32 lg:pt-36"
       >
-        <ArticleClient article={article} canonicalUrl={absoluteUrl(`/journal/${article.slug}`)} related={related} />
+        <ArticleClient article={article} canonicalUrl={absoluteUrl(`/journal/${article.slug}`)} related={related} coverRatio={coverRatio} />
       </main>
 
       <Footer />

@@ -1,0 +1,604 @@
+/* Finance Ledger (/ledger), in the family language. Imported by ledger-client.tsx and ledger-select.tsx.
+ * Hairlines and space, not boxes. Money, dates and ids in IBM Plex Mono with tabular numbers.
+ * Everything is scoped under .ledger-root so it wins over the unlayered .atelier-* rules. */
+
+.ledger-root {
+  padding-bottom: 24px;
+}
+
+/* ── Head: the account sits on the meta line ─────────────────────────────────── */
+
+.ledger-root .ledger-head-row {
+  align-items: center;
+}
+.ledger-account {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+}
+.ledger-account img {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+.ledger-account-name {
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--ink);
+}
+
+/* ── The flow: Upload, Review, Notion (the .process-path grammar) ────────────── */
+
+.ledger-root .ledger-steps {
+  margin-top: 4px;
+  font-size: 15px;
+}
+.ledger-root .ledger-steps li[data-state]::before {
+  width: 8px;
+  height: 8px;
+  margin-right: 9px;
+  border: 1.5px solid var(--ink-2);
+  background: transparent;
+  transition: background-color 200ms ease, border-color 200ms ease;
+}
+.ledger-root .ledger-steps li[data-state='done']::before {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.ledger-root .ledger-steps li[data-state='current']::before {
+  border-color: var(--leaf);
+  background: var(--leaf);
+}
+.ledger-root .ledger-steps li[data-state='done'],
+.ledger-root .ledger-steps li[data-state='current'] {
+  color: var(--ink);
+}
+.ledger-root .ledger-steps li[data-state='current'] {
+  font-weight: 500;
+}
+@media (max-width: 480px) {
+  .ledger-root .ledger-steps li:not(:last-child)::after {
+    width: 18px;
+    margin: 0 8px;
+  }
+}
+
+/* ── Notion setup: one slim row; the form opens beneath it ───────────────────── */
+
+.ledger-setup {
+  padding: 18px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.ledger-setup-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 24px;
+}
+.ledger-setup-title {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 18px;
+  min-width: 0;
+}
+.ledger-setup-body {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+  max-width: 880px;
+  padding-top: 24px;
+}
+.ledger-root .ledger-setup-body > * {
+  min-width: 0;
+}
+.ledger-setup-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+@media (max-width: 640px) {
+  .ledger-setup-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+/* ── The work: upload on the left, review on the right ───────────────────────── */
+
+.ledger-work {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 56px;
+  padding: 48px 0 24px;
+}
+@media (min-width: 1100px) {
+  .ledger-work {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 7fr);
+    gap: 72px;
+  }
+  .ledger-intake {
+    position: sticky;
+    top: 96px;
+    align-self: start;
+  }
+}
+.ledger-section-head {
+  margin-bottom: 24px;
+}
+.ledger-section-head h2 {
+  margin: 0;
+  font-size: clamp(1.5rem, 2.4vw, 1.875rem);
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.03em;
+}
+
+.ledger-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.ledger-field {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+.ledger-field .atelier-label {
+  margin-bottom: 0;
+}
+.ledger-root .ledger-field textarea.atelier-input {
+  height: auto;
+  min-height: 5.5rem;
+  padding-top: 0.85rem;
+  padding-bottom: 0.85rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+.ledger-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.ledger-hint code,
+.ledger-mono {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+}
+.ledger-hint code {
+  font-size: 12px;
+  color: var(--ink);
+}
+
+/* ── Upload ──────────────────────────────────────────────────────────────────── */
+
+.ledger-drop {
+  display: grid;
+  justify-items: center;
+  gap: 6px;
+  padding: 36px 24px;
+  border: 1px dashed var(--rule);
+  border-radius: 12px;
+  background: var(--paper-raised);
+  text-align: center;
+  cursor: pointer;
+  transition: border-color 200ms ease;
+}
+.ledger-drop:hover {
+  border-color: color-mix(in srgb, var(--ink-2) 45%, var(--rule));
+}
+.ledger-drop[data-drag='true'] {
+  border-color: var(--leaf-ink);
+}
+.ledger-drop:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+}
+.ledger-drop svg {
+  width: 20px;
+  height: 20px;
+  margin-bottom: 4px;
+  color: var(--ink-2);
+}
+.ledger-drop-title {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink);
+}
+.ledger-drop-types {
+  margin: 0;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+.ledger-drop-paste {
+  margin: 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.ledger-file {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+}
+.ledger-file-name {
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 14px;
+  font-weight: 500;
+}
+.ledger-file-size {
+  margin: 2px 0 0;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+}
+
+.ledger-provider {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 10px;
+}
+.ledger-provider .atelier-chip {
+  min-height: 2rem;
+}
+.ledger-provider button.atelier-chip:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.ledger-preview {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 220px;
+  padding: 8px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  object-fit: contain;
+}
+
+/* ── Review ──────────────────────────────────────────────────────────────────── */
+
+.ledger-empty {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 6rem;
+  border-top: 1px solid var(--rule);
+  color: var(--ink-2);
+}
+.ledger-empty svg {
+  flex-shrink: 0;
+}
+.ledger-empty p {
+  margin: 0;
+}
+
+.ledger-root .ledger-review-bar {
+  top: 72px;
+  align-items: flex-start;
+  padding: 14px 0;
+  background: var(--paper);
+}
+@media (max-width: 700px) {
+  .ledger-root .ledger-review-bar {
+    top: 64px;
+  }
+}
+.ledger-review-title {
+  margin: 0;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.ledger-review-title:focus {
+  outline: none;
+}
+.ledger-review-lede {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+
+.ledger-messages {
+  display: grid;
+  gap: 12px;
+  margin-top: 20px;
+}
+.ledger-messages ul {
+  margin: 0;
+  padding-left: 1.1rem;
+}
+.ledger-messages li + li {
+  margin-top: 4px;
+}
+.ledger-fusion {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--ink-2);
+}
+.ledger-notice-action {
+  margin-left: auto;
+  flex-shrink: 0;
+}
+.ledger-root .ledger-notice-row {
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.ledger-group {
+  padding: 28px 0;
+  border-top: 1px solid var(--rule);
+}
+.ledger-group:first-of-type {
+  border-top: 0;
+}
+.ledger-group > h3 {
+  margin: 0 0 20px;
+}
+.ledger-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px 24px;
+}
+.ledger-span {
+  grid-column: 1 / -1;
+}
+@media (max-width: 640px) {
+  .ledger-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+.ledger-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+.ledger-conf {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 11px;
+  color: var(--ink-2);
+}
+.ledger-conf::before {
+  content: '';
+  flex-shrink: 0;
+  box-sizing: border-box;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--ink-2);
+}
+.ledger-conf[data-level='high']::before {
+  background: var(--leaf);
+}
+.ledger-conf[data-level='medium']::before {
+  border: 1.5px solid var(--ink-2);
+  background: transparent;
+}
+.ledger-conf[data-level='low'] {
+  color: var(--clay);
+}
+.ledger-conf[data-level='low']::before {
+  background: var(--clay);
+}
+.ledger-conf[data-level='absent']::before {
+  display: none;
+}
+
+/* Money, dates and ids: Plex Mono, tabular. */
+.ledger-root .ledger-num {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-variant-numeric: tabular-nums;
+  font-size: 0.875rem;
+}
+.ledger-amount {
+  position: relative;
+}
+.ledger-root .ledger-amount .atelier-input {
+  padding-right: 7.75rem;
+}
+.ledger-amount-steps {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  display: flex;
+  gap: 2px;
+  transform: translateY(-50%);
+}
+.ledger-amount-steps button {
+  min-width: 1.75rem;
+  height: 1.75rem;
+  padding: 0 4px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 12px;
+  color: var(--ink-2);
+  cursor: pointer;
+  transition: color 200ms ease, background-color 200ms ease;
+}
+.ledger-amount-steps button:hover {
+  background: var(--sage);
+  color: var(--ink);
+}
+.ledger-amount-steps button:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 0;
+}
+
+.ledger-checks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 28px;
+  margin-top: 20px;
+}
+.ledger-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--ink);
+  cursor: pointer;
+}
+.ledger-check input {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  accent-color: var(--forest);
+}
+
+.ledger-months-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 6px 20px;
+}
+.ledger-months-head .atelier-label {
+  margin-bottom: 0;
+}
+.ledger-months-tools {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 18px;
+}
+.ledger-months {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  gap: 8px;
+}
+.ledger-months .atelier-chip {
+  justify-content: center;
+  min-height: 2rem;
+}
+.ledger-warn {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--clay);
+}
+
+.ledger-audit pre {
+  margin: 12px 0 0;
+  max-height: 14rem;
+  overflow: auto;
+  padding: 16px;
+  border: 1px solid var(--rule);
+  border-radius: 12px;
+  background: var(--sage);
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 12px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+
+/* ── Select: a 6px hairline listbox, a papaya dot on the chosen option ───────── */
+
+.ledger-select {
+  position: relative;
+  width: 100%;
+}
+.ledger-select-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: left;
+  cursor: pointer;
+}
+.ledger-select-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ledger-select-value[data-empty] {
+  color: var(--ink-2);
+}
+.ledger-select-chevron {
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  color: var(--ink-2);
+  transition: transform 200ms var(--ease-out);
+}
+.ledger-select-button[aria-expanded='true'] .ledger-select-chevron {
+  transform: rotate(180deg);
+}
+.ledger-select-list {
+  position: absolute;
+  top: calc(100% + 6px);
+  right: 0;
+  left: 0;
+  z-index: 40;
+  max-height: 15rem;
+  margin: 0;
+  padding: 4px 0;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--paper-raised);
+}
+.ledger-select-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 12px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  text-align: left;
+  color: var(--ink-2);
+  cursor: pointer;
+}
+.ledger-select-option::before {
+  content: '';
+  flex-shrink: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: transparent;
+}
+.ledger-select-option[aria-selected='true'] {
+  font-weight: 500;
+  color: var(--ink);
+}
+.ledger-select-option[aria-selected='true']::before {
+  background: var(--leaf);
+}
+.ledger-select-option:hover,
+.ledger-select-option:focus-visible {
+  background: var(--sage);
+  color: var(--ink);
+}
+.ledger-select-option:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: -2px;
+}

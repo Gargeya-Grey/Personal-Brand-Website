@@ -109,7 +109,7 @@
   background: var(--paper-raised);
   border: 1px solid var(--rule);
   border-radius: 20px;
-  box-shadow: 0 24px 48px -32px #14201c33;
+  box-shadow: 0 24px 48px -32px #1b1a1833;
 }
 .notes-paper-head {
   display: flex;
@@ -310,9 +310,9 @@
 
 /* ── The one inverted band, as on the homepage ─────────────────────────────────────────────── */
 .notes-band {
-  --band-bg: #14201c;
+  --band-bg: #1b1a18;
   --band-ink: #f3f1ea;
-  --band-ink-2: #b9c4be;
+  --band-ink-2: #bdb7b0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) minmax(0, 28rem);
   gap: 64px;
@@ -324,7 +324,7 @@
   color: var(--band-ink);
 }
 .dark .notes-band {
-  --band-bg: #1f2d27;
+  --band-bg: #24221f;
 }
 .field-main .notes-band h2 {
   max-width: 14ch;

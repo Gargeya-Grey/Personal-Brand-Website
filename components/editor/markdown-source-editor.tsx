@@ -4,7 +4,7 @@ import { useMemo, type ClipboardEvent, type KeyboardEvent, type UIEvent } from '
 import { highlightMarkdownSource } from '@/lib/markdown-source-highlight';
 
 const sharedType =
-  'font-mono text-sm leading-relaxed whitespace-pre-wrap break-words [overflow-wrap:anywhere] [tab-size:4]';
+  'font-mono text-[0.9375rem] leading-[1.75] whitespace-pre-wrap break-words [overflow-wrap:anywhere] [tab-size:4]';
 
 interface MarkdownSourceEditorProps {
   value: string;
@@ -40,7 +40,7 @@ export function MarkdownSourceEditor({
     <div className="relative min-h-[260px] w-full flex-grow sm:min-h-[360px]">
       <pre
         aria-hidden
-        className={`md-source-highlight pointer-events-none absolute inset-0 m-0 overflow-auto p-0 ${sharedType} text-[var(--atelier-ink)]`}
+        className={`md-source-highlight pointer-events-none absolute inset-0 m-0 overflow-auto p-0 ${sharedType} text-[var(--ink)]`}
       >
         {highlighted}
         {'\n'}
@@ -55,7 +55,7 @@ export function MarkdownSourceEditor({
         onScroll={syncScroll}
         placeholder={placeholder}
         spellCheck
-        className={`md-source-textarea absolute inset-0 min-h-0 w-full resize-none overflow-auto border-0 bg-transparent p-0 caret-[var(--atelier-ink)] ${sharedType} text-transparent placeholder:text-[var(--atelier-faint)] focus:outline-none`}
+        className={`md-source-textarea absolute inset-0 min-h-0 w-full resize-none overflow-auto border-0 bg-transparent p-0 caret-[var(--ink)] ${sharedType} text-transparent placeholder:text-[var(--ink-2)] focus:outline-none`}
       />
     </div>
   );

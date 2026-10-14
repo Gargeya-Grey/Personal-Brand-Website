@@ -7,6 +7,7 @@ import './field.css';
 import './work.css';
 import './project-media.css';
 import './index-list.css';
+import './atelier.css';
 import { ThemeProvider } from '@/components/theme-provider';
 import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Analytics } from '@vercel/analytics/next';
@@ -107,8 +108,8 @@ export const viewport: Viewport = {
   initialScale: 1,
   viewportFit: 'cover',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f6f7f4' },
-    { media: '(prefers-color-scheme: dark)', color: '#0e1412' },
+    { media: '(prefers-color-scheme: light)', color: '#f7f6f3' },
+    { media: '(prefers-color-scheme: dark)', color: '#121110' },
   ],
 };
 

@@ -25,8 +25,8 @@ export function buildInteractiveDocument(source: string, title: string, id: stri
 <meta name="referrer" content="no-referrer">
 <title>${escapeHtml(title)}</title>
 <style>
-:root { color-scheme: light; --paper:#fbfdfd; --ink:#142936; --muted:#526773; --accent:#08796d; --soft:#e7eff1; --line:#14293626; }
-:root[data-theme="dark"] { color-scheme:dark; --paper:#242a2d; --ink:#d2d5d2; --muted:#b5bebc; --accent:#8acdb5; --soft:#30373a; --line:#d2d5d22b; }
+:root { color-scheme: light; --paper:#ffffff; --ink:#1b1a18; --muted:#5e5a55; --accent:#b04a00; --soft:#f1ede7; --line:#1b1a1826; }
+:root[data-theme="dark"] { color-scheme:dark; --paper:#1a1918; --ink:#eeece8; --muted:#ada7a0; --accent:#ff9f45; --soft:#221e1a; --line:#eeece82b; }
 * { box-sizing:border-box; }
 html { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 system-ui,sans-serif; }
 body { margin:0; padding:clamp(16px,4vw,32px); overflow-wrap:anywhere; }
