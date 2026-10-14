@@ -2,8 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { requireAllowedSession } from '@/lib/auth';
 import { CATEGORIES } from '@/lib/categories';
-import fs from 'fs/promises';
-import path from 'path';
+import { callOpenRouter, resolveOpenRouterChoice } from '@/lib/ai-providers';
 
 interface Metadata {
   title: string;
@@ -15,8 +14,6 @@ interface Metadata {
   coverImage?: string;
 }
 
-type Provider = 'meta' | 'openrouter';
-
 function parseJSONFromLLM(content: string) {
   try {
     return JSON.parse(content);
@@ -24,107 +21,6 @@ function parseJSONFromLLM(content: string) {
     const cleanJson = content.replace(/```json|```/gi, '').trim();
     return JSON.parse(cleanJson);
   }
-}
-
-async function callOpenRouter(apiKey: string, model: string, systemPrompt: string, userContent: string, jsonFormat: boolean = true) {
-  const response = await fetch('https://openrouter.ai/api/v1/chat/completions', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-      'HTTP-Referer': process.env.APP_URL || 'http://localhost:3000',
-      'X-Title': 'Curator Canvas Editorial'
-    },
-    body: JSON.stringify({
-      model: model,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userContent }
-      ],
-      response_format: jsonFormat ? { type: 'json_object' } : undefined
-    })
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`OpenRouter API returned error: ${errorText}`);
-  }
-
-  const data = await response.json();
-  const content = data.choices?.[0]?.message?.content;
-  if (!content) {
-    throw new Error('Failed to receive completion content from OpenRouter.');
-  }
-
-  return content as string;
-}
-
-async function callMeta(apiKey: string, model: string, systemPrompt: string, userContent: string, _jsonFormat: boolean = true) {
-  const response = await fetch('https://api.meta.ai/v1/responses', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model: model,
-      input: [
-        { role: 'system', content: [{ type: 'input_text', text: systemPrompt }] },
-        { role: 'user', content: [{ type: 'input_text', text: userContent }] },
-      ],
-      stream: false,
-    })
-  });
-
-  if (!response.ok) {
-    const errorText = await response.text();
-    throw new Error(`Meta API returned error: ${errorText}`);
-  }
-
-  const data = await response.json();
-
-  let content: string | null = null;
-
-  if (typeof data.output_text === 'string' && data.output_text.trim()) {
-    content = data.output_text;
-  } else if (typeof data.outputText === 'string' && data.outputText.trim()) {
-    content = data.outputText;
-  } else if (Array.isArray(data.output)) {
-    const pieces: string[] = [];
-    for (const item of data.output) {
-      if (item?.content && Array.isArray(item.content)) {
-        for (const c of item.content) {
-          if (typeof c?.text === 'string' && c.text.trim()) pieces.push(c.text);
-          else if (typeof c?.output_text === 'string' && c.output_text.trim()) pieces.push(c.output_text);
-        }
-      } else if (typeof item?.text === 'string' && item.text.trim()) {
-        pieces.push(item.text);
-      }
-    }
-    if (pieces.length) content = pieces.join('\n');
-    if (!content) {
-      const maybe = data.output?.[0]?.content?.find((c: any) => c?.type === 'output_text')?.text;
-      if (typeof maybe === 'string' && maybe.trim()) content = maybe;
-    }
-  }
-
-  if (!content && typeof data.content === 'string') content = data.content;
-  if (!content && typeof data.text === 'string') content = data.text;
-  if (!content && typeof data.response === 'string') content = data.response;
-  if (!content && data.choices?.[0]?.message?.content) content = data.choices[0].message.content;
-  if (!content && data.data?.choices?.[0]?.message?.content) content = data.data.choices[0].message.content;
-  if (!content && typeof data.result === 'string') content = data.result;
-
-  if (!content || !content.trim()) {
-    throw new Error('Failed to receive completion content from Meta.');
-  }
-
-  return content.trim();
-}
-
-function resolveProvider(requested?: string): Provider {
-  const raw = (requested || process.env.AI_METADATA_PROVIDER || 'meta').toString().toLowerCase().trim();
-  return raw === 'openrouter' ? 'openrouter' : 'meta';
 }
 
 function runProgrammaticValidation(meta: Partial<Metadata>): string[] {
@@ -235,47 +131,20 @@ export async function POST(request: Request) {
 
     const body = await request.json().catch(() => ({}));
     const content: string | undefined = body.content;
-    const requestedProvider: string | undefined = body.provider;
     if (!content) {
       return NextResponse.json({ error: 'Missing content body' }, { status: 400 });
     }
 
-    const provider = resolveProvider(requestedProvider);
-
-    let apiKey: string | undefined;
-    let model: string;
-    if (provider === 'meta') {
-      apiKey = process.env.MODEL_API_KEY;
-      if (!apiKey) {
-        return NextResponse.json({
-          error: 'Meta API key is not configured. Set MODEL_API_KEY in your .env file.'
-        }, { status: 500 });
-      }
-      model = (process.env.META_MODEL || '').trim();
-      if (!model) {
-        return NextResponse.json({
-          error: 'META_MODEL is not configured. Set META_MODEL in your .env file (no hardcoded model fallback).'
-        }, { status: 500 });
-      }
-    } else {
-      apiKey = process.env.OPENROUTER_API_KEY;
-      if (!apiKey) {
-        return NextResponse.json({
-          error: 'OpenRouter API Key (OPENROUTER_API_KEY) is not configured in the server environment. Please configure it in your .env file.'
-        }, { status: 500 });
-      }
-      model = (process.env.OPENROUTER_MODEL || '').trim();
-      if (!model) {
-        return NextResponse.json({
-          error: 'OPENROUTER_MODEL is not configured. Set OPENROUTER_MODEL in your .env file (no hardcoded model fallback).'
-        }, { status: 500 });
-      }
+    let choice: ReturnType<typeof resolveOpenRouterChoice>;
+    try {
+      choice = resolveOpenRouterChoice({ model: body.model, effort: body.effort });
+    } catch (configError) {
+      return NextResponse.json({ error: configError instanceof Error ? configError.message : 'AI is not configured.' }, { status: 500 });
     }
+    const { model, effort } = choice;
 
     const callLLM = (systemPrompt: string, userContent: string, jsonFormat: boolean = true) =>
-      provider === 'meta'
-        ? callMeta(apiKey as string, model, systemPrompt, userContent, jsonFormat)
-        : callOpenRouter(apiKey as string, model, systemPrompt, userContent, jsonFormat);
+      callOpenRouter({ ...choice, systemPrompt, userContent, jsonFormat });
 
     const generatorSystemPrompt = `You are an expert technical blog editor and AI metadata generator.
 Your job is to read the markdown blog content and generate highly accurate metadata fields in JSON format.
@@ -396,53 +265,11 @@ Return the final corrected metadata as a JSON object matching the original schem
       finalMeta = meta as Metadata;
     }
 
-    let imagePrompt: string | null = null;
-    if (finalMeta.title) {
-      try {
-        let designSpec = '';
-        try {
-          const designPath = path.join(process.cwd(), 'post-design.md');
-          designSpec = await fs.readFile(designPath, 'utf-8');
-        } catch (e) {
-          designSpec = 'Minimalist, editorial, academic authority, tech/AI motif. Use Slate background with Algorithmic Mint highlights.';
-        }
-
-        const promptOptimizerSystem = `You are a professional art director and visual designer.
-Your task is to convert the title and summary of a technical blog post into a highly detailed, visually descriptive prompt for a 3D/editorial image generator.
-You must construct a single descriptive prompt paragraph that will produce an image representing the core concept of the blog post.
-
-Follow these rules:
-1. Translate the abstract technical concepts (e.g. "Rippling going AI native", "langsmith engines", "database orchestrations") into concrete 3D objects, models, or architectural metaphors (e.g., layered frosted glass cards with holographic circuits, glowing light rays passing through prisms, flowing streams of illuminated particles, structured node matrices, abstract geometric machines).
-2. The style must align strictly with "Editorial Glassmorphism": refractive glass panels, light dispersion, chromatic aberration, anodized metallic elements, soft glowing mint highlights, deep dark slate/navy backgrounds, volumetric lighting, and deep-focus perspective.
-3. Keep the layout minimalist, asymmetrical, and clean. Specify ample negative space.
-4. DO NOT request any text, labels, words, or letters in the image.
-5. Provide only the optimized prompt paragraph as your output. Do not include any JSON wrapper, labels, or explanation.`;
-
-        const promptOptimizerUser = `Please generate an image prompt for the following blog post:
-Title: "${finalMeta.title}"
-Description: "${finalMeta.excerpt}"
-
-Visual Brand Guidelines:
-${designSpec}`;
-
-        try {
-          const rawPrompt = await callLLM(promptOptimizerSystem, promptOptimizerUser, false);
-          imagePrompt = rawPrompt.trim();
-        } catch (promptErr) {
-          console.error('Failed optimizing cover image prompt, falling back to static prompt:', promptErr);
-          imagePrompt = `A stunning premium 3D editorial graphic for: "${finalMeta.title}". ${finalMeta.excerpt}. Editorial Glassmorphism, refractive glass, volumetric lighting, slate background, algorithmic mint green highlights.`;
-        }
-      } catch (err: any) {
-        console.error('Failed generating image prompt:', err);
-      }
-    }
-
-    return NextResponse.json({ 
-      success: true, 
-      provider,
+    return NextResponse.json({
+      success: true,
       model,
+      effort,
       metadata: finalMeta,
-      imagePrompt
     });
   } catch (err: any) {
     return NextResponse.json({ error: `Server error: ${err.message}` }, { status: 500 });

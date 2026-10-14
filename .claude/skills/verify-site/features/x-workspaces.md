@@ -4,7 +4,7 @@
 
 - Workspace tabs: X To-Do, X Lab, Growth Strategy.
 - X To-Do: the pack queue (morning t11 and evening t19 packs), each draft with its source, copy and open, mark posted or skipped.
-- X Lab: connect state, refresh, summary metrics, posts, AI analyst chat.
+- X Lab: connect state, refresh, summary metrics, posts, AI analyst chat (OpenRouter, with its own model control; shown only when X is connected).
 - Growth Strategy: the owner's dashboard from `lib/x-growth-strategy.ts`: sittings, rooms, rules.
 
 ## How to get to it (user POV)

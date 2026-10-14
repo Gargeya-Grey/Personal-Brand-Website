@@ -42,7 +42,7 @@ This index guides AI assistants directly to the files responsible for each subsy
 | [components/contact-form.tsx](file:///w:/Personal-Brand-Website/components/contact-form.tsx) | **Contact Interface** | Client React State | Built as a simulated mockup with a `1200ms` delay (no database writes). |
 | [lib/blog-service.ts](file:///w:/Personal-Brand-Website/lib/blog-service.ts) | **Database Layer** | Node `fs/promises` | Reads/writes blog posts directly to a local JSON file with in-memory caching. |
 | [data/articles.json](file:///w:/Personal-Brand-Website/data/articles.json) | **Blog Posts Database** | Flat-File JSON | Contains serialized data schema for all published and draft articles. |
-| [app/api/ai/fill/route.ts](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) | **AI CMS Assistant API** | OpenRouter API | Handles markdown metadata parsing and cover photo generation via Grok. |
+| [app/api/ai/fill/route.ts](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) | **AI CMS Assistant API** | OpenRouter API | Drafts essay metadata (title, slug, excerpt, categories, takeaways) with the model the owner picks. |
 | [lib/auth.ts](file:///w:/Personal-Brand-Website/lib/auth.ts) | **Auth Engine** | Web Crypto API JWT | signs/verifies user sessions. Google OAuth callbacks and allowed email checks. |
 | [app/ledger](file:///w:/Personal-Brand-Website/app/ledger) | **Finance Ledger** | Notion + AI | Private invoice extractor at `/ledger`. Setup: [data/ledger-setup.md](data/ledger-setup.md). |
 | [app/api/auth/mock-login/route.ts](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts) | **Dev Mode Auth Bypass** | JWT Mock Signature | Disabled in production. Allows one-click CMS access during local development. |
@@ -96,8 +96,8 @@ This chart maps how the client front-end communicates with the Next.js API route
 *   **Dev Mode login bypass:** When `NODE_ENV !== 'production'`, a developer login bypass is active at [/api/auth/mock-login](file:///w:/Personal-Brand-Website/app/api/auth/mock-login/route.ts). Clicking it signs a mock session token, granting quick access to the CMS dashboard without needing OAuth client credentials.
 
 ### 3. Artificial Intelligence Engine
-*   **OpenRouter metadata generation:** The metadata generator in [/api/ai/fill](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) utilizes the OpenRouter API (configured via `OPENROUTER_API_KEY`, defaulting to `nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free`) to read article drafts and programmatically return titles, URL slugs, summaries, categorizations, and SVG design blueprints.
-*   **Grok cover-image generation:** Integrates OpenRouter's `x-ai/grok-imagine-image-quality` model to compile descriptive text prompts, generate base64 assets, and save files directly to the public disk at `/covers`.
+*   **OpenRouter metadata generation:** The metadata generator in [/api/ai/fill](file:///w:/Personal-Brand-Website/app/api/ai/fill/route.ts) uses the OpenRouter API (`OPENROUTER_API_KEY`; the default model is `OPENROUTER_MODEL`) to read article drafts and programmatically return titles, URL slugs, summaries, categorizations, and SVG design blueprints.
+*   **Model control:** Every AI call in the atelier (blog metadata, X Lab analyst, Ledger extraction) has a model slug field and, for OpenRouter, an effort level ([lib/ai-model-options.ts](lib/ai-model-options.ts)). The browser remembers the choice; an empty field uses the `.env` model. Cover images are made by hand and uploaded; the CMS does not generate them.
 *   *Note: While `@google/genai` is listed in the dependencies in [package.json](file:///w:/Personal-Brand-Website/package.json), the active system routes execute prompts purely via the OpenRouter API.*
 
 ### 4. Interactive & Visual Systems
@@ -133,7 +133,7 @@ Create a `.env` file in the root directory based on the variables declared below
 # URL for callbacks and redirection sanitization
 APP_URL="http://localhost:3000"
 
-# OpenRouter configuration for metadata fill & cover images
+# OpenRouter: the default model for the atelier's AI calls
 OPENROUTER_API_KEY="your-openrouter-api-key"
 OPENROUTER_MODEL="nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free"
 

@@ -4,6 +4,8 @@ import './x-lab.css';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import type { ReactNode, RefObject } from 'react';
 import { ChevronDown, Link2, Loader2, RefreshCw } from 'lucide-react';
+import type { AiModelDefaults } from '@/lib/ai-model-options';
+import { AiModelControl, useAiModelChoice } from '@/components/ai-model-control';
 
 type Range = '7d' | '30d' | '90d' | 'all';
 type TabId = 'overview' | 'replies' | 'timing' | 'posts' | 'analyst';
@@ -624,7 +626,7 @@ function PostsSection({
 
 /* ── X Lab ──────────────────────────────────────────────────────────────────── */
 
-export function XLabClient() {
+export function XLabClient({ aiDefaults }: { aiDefaults: AiModelDefaults }) {
   const [range, setRange] = useState<Range>('all');
   const [tab, setTab] = useState<TabId>('overview');
   const [classFilter, setClassFilter] = useState<ClassFilter>('all');
@@ -637,7 +639,8 @@ export function XLabClient() {
   const [chatA, setChatA] = useState<string | null>(null);
   const [askedQ, setAskedQ] = useState('');
   const [chatBusy, setChatBusy] = useState(false);
-  const [provider, setProvider] = useState<'meta' | 'openrouter'>('meta');
+  const [answerModel, setAnswerModel] = useState<string | null>(null);
+  const analystModel = useAiModelChoice('x-lab-analyst');
   const [heatMetric, setHeatMetric] = useState<'eng' | 'imp'>('eng');
 
   const load = useCallback(async (r: Range) => {
@@ -698,17 +701,19 @@ export function XLabClient() {
     if (!chatQ.trim()) return;
     setChatBusy(true);
     setChatA(null);
+    setAnswerModel(null);
     setAskedQ(chatQ);
     try {
       const res = await fetch('/api/x-lab/chat', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ question: chatQ, range, provider }),
+        body: JSON.stringify({ question: chatQ, range, ...analystModel.request }),
       });
       const json = await res.json();
       if (!res.ok) throw new Error(json.error || 'Chat failed');
       setChatA(json.answer);
+      setAnswerModel(typeof json.model === 'string' ? json.model : null);
     } catch (e) {
       setChatA(e instanceof Error ? e.message : 'Chat failed');
     } finally {
@@ -1340,19 +1345,12 @@ export function XLabClient() {
             <section className="atelier-section">
               <div className="atelier-section-head">
                 <h2>AI growth analyst</h2>
-                <div className="xl-group" role="group" aria-label="Model provider">
-                  {(['meta', 'openrouter'] as const).map((p) => (
-                    <button
-                      key={p}
-                      type="button"
-                      className="atelier-chip"
-                      data-mono="true"
-                      aria-pressed={provider === p}
-                      onClick={() => setProvider(p)}
-                    >
-                      {p}
-                    </button>
-                  ))}
+                <div className="xl-model">
+                  <AiModelControl
+                    choice={analystModel}
+                    defaultModel={aiDefaults.openRouterModel}
+                    idPrefix="xl-ai-model"
+                  />
                 </div>
               </div>
               <p className="xl-lead">
@@ -1407,7 +1405,10 @@ export function XLabClient() {
                     <p className="xl-turn-q">{askedQ}</p>
                   </div>
                   <div className="xl-turn">
-                    <span className="atelier-label">Analyst</span>
+                    <span className="atelier-label">
+                      Analyst
+                      {answerModel && <span className="xl-turn-model"> · {answerModel}</span>}
+                    </span>
                     {chatBusy && !chatA ? (
                       <p className="xl-turn-a" style={{ color: 'var(--ink-2)' }}>
                         Reading the warehouse…

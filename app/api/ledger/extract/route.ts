@@ -1,6 +1,7 @@
 import { runLedgerExtraction } from '@/lib/ledger-extract';
 import { allowExtract, privateJson, requireLedgerUser } from '@/lib/ledger-http';
 import { isLedgerAiConfigured } from '@/lib/ledger-settings';
+import { normalizeEffort, normalizeModelSlug } from '@/lib/ai-model-options';
 
 export const runtime = 'nodejs';
 export const maxDuration = 60;
@@ -13,7 +14,7 @@ export async function POST(request: Request) {
     return privateJson(
       {
         error:
-          'No AI provider is configured. Set GEMINI_API_KEY (default), or OPENROUTER_API_KEY plus LEDGER_OPENROUTER_MODEL.',
+          'No AI provider is configured. Set GEMINI_API_KEY (default) or OPENROUTER_API_KEY.',
       },
       503
     );
@@ -25,11 +26,14 @@ export async function POST(request: Request) {
 
   try {
     const body = await request.json();
+    const provider = body.provider === 'openrouter' ? 'openrouter' : 'google';
     const result = await runLedgerExtraction({
       file: body.file ?? null,
       fileText: typeof body.fileText === 'string' ? body.fileText : '',
       extraDetails: typeof body.extraDetails === 'string' ? body.extraDetails : '',
-      provider: body.provider === 'openrouter' ? 'openrouter' : 'google',
+      provider,
+      model: normalizeModelSlug(body.model),
+      effort: provider === 'openrouter' ? normalizeEffort(body.effort) : 'default',
     });
     return privateJson(result);
   } catch (error) {

@@ -320,7 +320,7 @@
 .wb-meta-head {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
+  align-items: flex-start;
   justify-content: space-between;
   gap: 16px 24px;
   padding-bottom: 28px;
@@ -328,8 +328,14 @@
 .wb-meta-ai {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
-  gap: 10px 14px;
+  align-items: flex-start;
+  gap: 10px 20px;
+  min-width: 0;
+  max-width: 100%;
+}
+.wb-meta-ai .ai-model {
+  flex: 1 1 18rem;
+  max-width: 34rem;
 }
 .wb-meta-section {
   display: grid;
@@ -381,10 +387,6 @@
 .wb-meta .atelier-label {
   margin-bottom: 8px;
 }
-.wb-inline-note {
-  margin-left: 8px;
-  color: var(--ink-2);
-}
 .wb-input-title {
   font-family: var(--font-reading);
   font-size: 1.125rem;
@@ -406,24 +408,12 @@
 .wb-chips-field {
   min-height: 2.75rem;
 }
-.wb-meta .atelier-chip,
-.wb-meta-ai .atelier-chip {
+.wb-meta .atelier-chip {
   min-height: 2rem;
   font-size: 0.8125rem;
 }
 .wb-cap {
   text-transform: capitalize;
-}
-.wb-chip-check {
-  cursor: pointer;
-  user-select: none;
-}
-.wb-chip-check:hover {
-  color: var(--ink);
-}
-.wb-chip-check:has(input:focus-visible) {
-  outline: 2px solid var(--leaf-ink);
-  outline-offset: 2px;
 }
 .wb-chip-x {
   display: inline-flex;
@@ -517,35 +507,6 @@
 .wb-add {
   justify-self: start;
   margin-top: 6px;
-}
-
-.wb-prompt-block {
-  display: grid;
-  gap: 14px;
-  min-width: 0;
-}
-.wb-prompt-lead {
-  margin: 0;
-  font-size: 14px;
-  color: var(--ink-2);
-}
-.wb-prompt {
-  max-height: 9rem;
-  margin: 0;
-  padding: 14px 16px;
-  overflow-y: auto;
-  border-radius: 12px;
-  background: var(--sage);
-  font-size: 14px;
-  line-height: 1.6;
-  color: var(--ink-2);
-  white-space: pre-wrap;
-  user-select: all;
-}
-.wb-prompt-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
 }
 
 /* ── Article workbench: writing stage and preview ───────────────────────────── */
