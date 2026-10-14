@@ -335,7 +335,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                   </div>
 
                   {/* Right Column illustration block */}
-                  <div className="relative flex h-64 w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-inner dark:border-white/10 dark:bg-slate-900/80 lg:col-span-7 lg:h-full lg:min-h-[22rem]">
+                  <div className="relative flex h-64 w-full items-center justify-center overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--sage)] shadow-inner lg:col-span-7 lg:h-full lg:min-h-[22rem]">
                     {featuredPost.illustrationType === 'cover' && featuredPost.coverImage ? (
                       <Image
                         src={featuredPost.coverImage}
@@ -385,7 +385,7 @@ export default function JournalClient({ initialArticles }: JournalClientProps) {
                     >
                       <div className="space-y-5">
                         {/* Thumbnail schema */}
-                        <div className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-inner dark:border-white/10 dark:bg-slate-900/80">
+                        <div className="relative flex h-48 w-full items-center justify-center overflow-hidden rounded-2xl border border-[var(--rule)] bg-[var(--sage)] shadow-inner">
                           {post.illustrationType === 'cover' && post.coverImage ? (
                             <Image
                               src={post.coverImage}
