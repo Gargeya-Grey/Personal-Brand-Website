@@ -18,7 +18,7 @@ const escapeHtml = (text: string) => text.replace(/[&<>"']/g, (char) => ({
 
 export function buildInteractiveDocument(source: string, title: string, id: string) {
   const safeId = JSON.stringify(id).replace(/</g, '\\u003c');
-  return `<!doctype html><html lang="en"><head>
+  return `<!doctype html><html lang="en" data-fonts="pending"><head>
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="${INTERACTIVE_CSP}">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -28,7 +28,9 @@ export function buildInteractiveDocument(source: string, title: string, id: stri
 :root { color-scheme: light; --paper:#ffffff; --ink:#1b1a18; --muted:#5e5a55; --accent:#b04a00; --soft:#f1ede7; --line:#1b1a1826; }
 :root[data-theme="dark"] { color-scheme:dark; --paper:#1a1918; --ink:#eeece8; --muted:#ada7a0; --accent:#ff9f45; --soft:#221e1a; --line:#eeece82b; }
 * { box-sizing:border-box; }
-html { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 system-ui,sans-serif; }
+html { margin:0; background:var(--paper); color:var(--ink); font:16px/1.6 var(--font-body); }
+:root { --font-body:"Instrument Sans",system-ui,sans-serif; --font-reading:"Literata",Georgia,serif; --font-mono:"IBM Plex Mono",ui-monospace,monospace; }
+html[data-fonts="pending"] body { visibility:hidden; }
 body { margin:0; padding:clamp(16px,4vw,32px); overflow-wrap:anywhere; }
 #article-interactive-root { display:flow-root; min-width:0; }
 :where(img,svg,canvas,video) { max-width:100%; }
@@ -53,8 +55,56 @@ html[data-reduced-motion="true"] *,html[data-reduced-motion="true"] *::before,ht
   };
   new ResizeObserver(reportSize).observe(document.body);
   window.addEventListener('load', reportSize);
+  let revealed = false;
+  let fontsReceived = false;
+  const announceFonts = (fonts) => window.dispatchEvent(new CustomEvent('article-fonts', {detail:{fonts}}));
+  const reveal = () => {
+    if (revealed) return;
+    revealed = true;
+    delete document.documentElement.dataset.fonts;
+    reportSize();
+  };
+  setTimeout(() => {
+    if (revealed) return;
+    reveal();
+    announceFonts(false);
+  }, 600);
+  const FAMILY_VARIABLES = {body:'--font-body', reading:'--font-reading', mono:'--font-mono'};
+  const setFamilies = (families) => {
+    for (const [key, variable] of Object.entries(FAMILY_VARIABLES)) {
+      const list = families?.[key];
+      if (typeof list === 'string' && list.length > 0 && list.length < 300) document.documentElement.style.setProperty(variable, list);
+    }
+  };
+  const loadFonts = (fonts) => {
+    const loads = [];
+    for (const entry of Array.isArray(fonts) ? fonts.slice(0, 12) : []) {
+      try {
+        if (typeof entry?.family !== 'string' || entry.family.length >= 100 || !(entry.source instanceof ArrayBuffer)) continue;
+        const descriptors = {};
+        for (const key of ['style', 'weight', 'stretch', 'unicodeRange']) {
+          if (typeof entry.descriptors?.[key] === 'string') descriptors[key] = entry.descriptors[key];
+        }
+        const face = new FontFace(entry.family, entry.source, descriptors);
+        document.fonts.add(face);
+        loads.push(face.load());
+      } catch {}
+    }
+    Promise.allSettled(loads).then((results) => {
+      reveal();
+      announceFonts(results.some((result) => result.status === 'fulfilled'));
+    });
+  };
   window.addEventListener('message', (event) => {
-    if (event.source !== parent || event.data?.type !== 'article-interactive:preferences' || event.data.id !== id) return;
+    if (event.source !== parent || event.data?.id !== id) return;
+    if (event.data.type === 'article-interactive:fonts') {
+      if (fontsReceived) return;
+      fontsReceived = true;
+      setFamilies(event.data.families);
+      loadFonts(event.data.fonts);
+      return;
+    }
+    if (event.data.type !== 'article-interactive:preferences') return;
     const {theme, reducedMotion, paused} = event.data;
     document.documentElement.dataset.theme = theme === 'dark' ? 'dark' : 'light';
     document.documentElement.dataset.reducedMotion = String(Boolean(reducedMotion));
@@ -63,6 +113,7 @@ html[data-reduced-motion="true"] *,html[data-reduced-motion="true"] *::before,ht
     reportSize();
   });
   reportSize();
+  parent.postMessage({type:'article-interactive:ready',id}, '*');
 })();
 </script></body></html>`;
 }

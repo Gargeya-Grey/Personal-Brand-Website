@@ -25,7 +25,11 @@ Use a unique, meaningful title, a short explanation, labelled controls, keyboard
 
 ## Styling and motion
 
-The frame follows the site's light/dark theme. Available CSS variables: `--paper`, `--ink`, `--muted`, `--accent`, `--soft`, `--line`. Use system fonts and inline SVG or data images. Use flexible widths (`width:100%`, `max-width:100%`), not a fixed desktop canvas.
+The frame follows the site's light/dark theme. Available CSS variables: `--paper`, `--ink`, `--muted`, `--accent`, `--soft`, `--line`. Use inline SVG or data images. Use flexible widths (`width:100%`, `max-width:100%`), not a fixed desktop canvas.
+
+The frame uses the article's font by default (Instrument Sans). The CSS variables `--font-body`, `--font-reading` and `--font-mono` give the article's body, reading and code fonts. Setting `font-family:"Instrument Sans"` also works, because the page hands the frame the font files it already loaded. Other web fonts stay blocked by the policy.
+
+Fonts reach the frame shortly after it starts (the frame stays hidden for up to 600 ms to avoid a flash). Text that block code draws on a canvas at start may use a fallback font. Listen for `article-fonts` on `window` and redraw: `event.detail.fonts` is `true` when the article's fonts are registered in the frame and `false` when the 600 ms limit passed first. The event fires again with `true` if the fonts arrive later.
 
 The initial `height` is clamped to 160–1200px; the frame then reports its content height, capped at 1600px with internal scrolling for larger content. Avoid viewport-height layouts or code that repeatedly sizes itself to the containing iframe, which can cause a resize loop.
 
