@@ -137,7 +137,7 @@ Shapes live in one library, `lib/stipple.ts`. Rules:
 
 # Project cover art direction
 
-Use this blueprint when creating or revising portfolio project covers. It applies to each project's own page (`/playground/[slug]`); indexes use dot glyphs instead (see Images above). It does not replace the separate blog-image specification in [post-design.md](post-design.md).
+Use this blueprint when creating or revising portfolio project covers. It applies to each project's own page (`/playground/[slug]`); indexes use dot glyphs instead (see Images above).
 
 For site philosophy, see [personal-world-design.md](docs/personal-world-design.md). For cover metadata, SVG components, image exceptions, and publishing checks, use [project-cover-system.md](docs/project-cover-system.md). This file owns the creative brief; that guide owns implementation.
 

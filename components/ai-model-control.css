@@ -1,0 +1,106 @@
+/* The model control: one summary line, and an editor behind "Change". Family tokens only. */
+
+.ai-model {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+}
+.ai-model-summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+  min-width: 0;
+  min-height: 2.5rem;
+  font-size: 14px;
+  color: var(--ink-2);
+}
+.ai-model-summary .ai-model-label {
+  display: inline;
+  margin: 0;
+}
+.ai-model-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.ai-model-slug {
+  color: var(--ink);
+}
+.ai-model-toggle {
+  min-height: 2rem;
+}
+
+.ai-model-note {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--clay);
+}
+
+.ai-model-editor {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.ai-model-fields {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 12px 16px;
+}
+.ai-model-fields[data-effort='true'] {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 13rem);
+}
+@media (max-width: 560px) {
+  .ai-model-fields[data-effort='true'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+.ai-model-field {
+  min-width: 0;
+}
+.ai-model-field .atelier-label {
+  margin-bottom: 8px;
+}
+.ai-model-input {
+  font-family: var(--font-plex-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+}
+.ai-model-input[aria-invalid='true'] {
+  border-color: var(--clay);
+}
+.ai-model-select {
+  cursor: pointer;
+}
+
+.ai-model-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 16px;
+}
+.ai-model-hint {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+.ai-model-browse {
+  font-size: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: color-mix(in srgb, currentColor 35%, transparent);
+}
+.ai-model-browse:hover {
+  text-decoration-color: currentColor;
+}
+
+.ai-model .atelier-link:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.ai-model .atelier-link:focus-visible {
+  outline: 2px solid var(--leaf-ink);
+  outline-offset: 2px;
+  border-radius: 2px;
+}

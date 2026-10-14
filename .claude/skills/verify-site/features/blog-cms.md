@@ -22,4 +22,4 @@ Sign in, open `/editorial`, or press "Blog CMS" in the private header.
 ## Gotchas
 
 - Save, publish and delete write to `data/` or Supabase. Do not press them during a visual check.
-- AI fill and cover generation call external APIs; they fail without keys, which is expected locally.
+- AI fill calls OpenRouter and fails without a key, which is expected locally. Do not press it with real keys. The model control (slug + effort) sits in the metadata panel; its choice is stored in localStorage under `atelier:ai-model:blog-metadata:openrouter`. There is no cover-image generation and no cover prompt.

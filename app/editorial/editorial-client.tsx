@@ -29,6 +29,8 @@ import { renderIllustration } from '@/components/render-illustration';
 import { siteConfig } from '@/lib/site-config';
 import { INTERACTIVE_EXAMPLE } from '@/lib/article-interactive-example';
 import { articleWordCount } from '@/lib/article-markdown';
+import type { AiModelDefaults } from '@/lib/ai-model-options';
+import { AiModelControl, useAiModelChoice } from '@/components/ai-model-control';
 
 /** Quiet placeholder while a workspace chunk loads. */
 function WorkspaceLoading({ label }: { label: string }) {
@@ -122,6 +124,8 @@ interface EditorialClientProps {
   /** From server searchParams — never sync URL during render/mount via history API */
   initialWorkspace?: Workspace;
   initialNotes?: NewsletterWeek[];
+  /** The .env model, so the model control can show what an empty field means. */
+  aiDefaults: AiModelDefaults;
 }
 
 /** The page head for each workspace: a two-tone heading and an optional lead. */
@@ -279,6 +283,7 @@ export function EditorialClient({
   user,
   initialWorkspace = 'blog',
   initialNotes = [],
+  aiDefaults,
 }: EditorialClientProps) {
   const workspace = initialWorkspace;
   const [notesEditing, setNotesEditing] = useState(false);
@@ -315,12 +320,8 @@ export function EditorialClient({
   const [isAiFilling, setIsAiFilling] = useState(false);
   const [isUploadingImage, setIsUploadingImage] = useState(false);
   const [previewItem, setPreviewItem] = useState<{ type: string; url?: string } | null>(null);
-  const [metaProvider, setMetaProvider] = useState<'meta' | 'openrouter'>('meta');
   const [mounted, setMounted] = useState(false);
-  const [autoGenerateCoverImage, setAutoGenerateCoverImage] = useState(false);
-  const [isGeneratingImage, setIsGeneratingImage] = useState(false);
-  const [generatedImagePrompt, setGeneratedImagePrompt] = useState('');
-  const [promptCopied, setPromptCopied] = useState(false);
+  const blogModel = useAiModelChoice('blog-metadata');
 
   const getEditor = () =>
     document.querySelector('textarea[data-atelier-editor]') as HTMLTextAreaElement | null;
@@ -560,43 +561,18 @@ export function EditorialClient({
     }
   };
 
-  const runGrokCoverGeneration = async (prompt: string, slug?: string) => {
-    if (!prompt.trim()) return;
-    setIsGeneratingImage(true);
-    try {
-      const r = await fetch('/api/ai/generate-cover', {
-        method: 'POST',
-        credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ slug: slug || formSlug || 'cover', prompt }),
-      });
-      const imgData = await r.json();
-      if (imgData.success && imgData.url) {
-        setFormCoverImage(imgData.url);
-      } else {
-        throw new Error(imgData.error || 'Grok did not return an image URL.');
-      }
-    } catch (err: unknown) {
-      alert(err instanceof Error ? err.message : 'Cover generation failed.');
-    } finally {
-      setIsGeneratingImage(false);
-    }
-  };
-
   const handleAiFill = async () => {
     if (!formContent.trim()) {
       alert('Write some content first so AI can analyze it.');
       return;
     }
     setIsAiFilling(true);
-    setGeneratedImagePrompt('');
-    setPromptCopied(false);
     try {
       const res = await fetch('/api/ai/fill', {
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ content: formContent, provider: metaProvider }),
+        body: JSON.stringify({ content: formContent, ...blogModel.request }),
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to auto-fill metadata.');
@@ -606,12 +582,6 @@ export function EditorialClient({
       if (meta.excerpt) setFormExcerpt(meta.excerpt);
       if (Array.isArray(meta.categories)) setFormCategories(meta.categories);
       if (Array.isArray(meta.takeaways)) setFormTakeaways(meta.takeaways.filter(Boolean));
-      if (data.imagePrompt) {
-        setGeneratedImagePrompt(data.imagePrompt);
-        if (autoGenerateCoverImage) {
-          await runGrokCoverGeneration(data.imagePrompt, meta.slug || formSlug);
-        }
-      }
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : 'AI fill failed');
     } finally {
@@ -733,7 +703,6 @@ export function EditorialClient({
     setFormStatus('draft');
     setFormCoverImage('');
     setEditingArticle({ id: undefined });
-    setGeneratedImagePrompt('');
   };
 
   const startEditArticle = async (lite: ArticleLite) => {
@@ -744,7 +713,6 @@ export function EditorialClient({
     setFormFeatured(!!lite.featured);
     setFormStatus(lite.status || 'published');
     setFormCoverImage(lite.coverImage || '');
-    setGeneratedImagePrompt('');
     setEditingArticle({ id: lite.id } as Partial<Article>);
     try {
       const res = await fetch(`/api/blog?id=${lite.id}`, { credentials: 'include' });
@@ -984,7 +952,7 @@ export function EditorialClient({
         </XStudioErrorBoundary>
       ) : workspace === 'lab' && !editingArticle ? (
         <XStudioErrorBoundary>
-          <XLabClient />
+          <XLabClient aiDefaults={aiDefaults} />
         </XStudioErrorBoundary>
       ) : workspace === 'strategy' && !editingArticle ? (
         <XStudioErrorBoundary>
@@ -1093,35 +1061,17 @@ export function EditorialClient({
                       Article metadata
                     </h2>
                     <div className="wb-meta-ai">
-                      <div role="group" aria-label="AI provider" className="wb-chips">
-                        {(['meta', 'openrouter'] as const).map((p) => (
-                          <button
-                            key={p}
-                            type="button"
-                            onClick={() => setMetaProvider(p)}
-                            aria-pressed={metaProvider === p}
-                            className="atelier-chip"
-                            title={p === 'meta' ? 'Muse Spark (default)' : 'OpenRouter'}
-                          >
-                            {p === 'meta' ? 'Meta' : 'OpenRouter'}
-                          </button>
-                        ))}
-                      </div>
-                      <label className="atelier-chip wb-chip-check" data-active={autoGenerateCoverImage}>
-                        <input
-                          type="checkbox"
-                          checked={autoGenerateCoverImage}
-                          onChange={(e) => setAutoGenerateCoverImage(e.target.checked)}
-                          className="sr-only"
-                        />
-                        + Grok image
-                      </label>
+                      <AiModelControl
+                        choice={blogModel}
+                        defaultModel={aiDefaults.openRouterModel}
+                        idPrefix="wb-ai-model"
+                      />
                       <button
                         type="button"
                         onClick={handleAiFill}
-                        disabled={isAiFilling || isGeneratingImage}
+                        disabled={isAiFilling}
                         className="atelier-btn atelier-btn-line"
-                        title={`${metaProvider === 'meta' ? 'Meta' : 'OpenRouter'} · ${autoGenerateCoverImage ? 'Metadata + prompt + Grok image' : 'Metadata + copyable cover prompt only'}`}
+                        title="Fill the title, slug, excerpt, categories and takeaways from the article"
                       >
                         {isAiFilling ? 'Curating…' : 'AI Fill'}
                       </button>
@@ -1204,9 +1154,6 @@ export function EditorialClient({
                       <div className="wb-span-12">
                         <label className="atelier-label" htmlFor="wb-cover">
                           Cover URL
-                          {isGeneratingImage && (
-                            <span className="wb-inline-note">Grok rendering…</span>
-                          )}
                         </label>
                         <div className="wb-cover-row">
                           <input
@@ -1337,45 +1284,6 @@ export function EditorialClient({
                     </div>
                   </section>
 
-                  {generatedImagePrompt && (
-                    <section className="wb-meta-section">
-                      <header className="wb-meta-section-head">
-                        <span className="atelier-mono">05</span>
-                        <h3 className="atelier-h3">Cover prompt</h3>
-                      </header>
-                      <div className="wb-prompt-block">
-                        <p className="wb-prompt-lead">
-                          Copy for free tools, or generate with Grok when you choose.
-                        </p>
-                        <p className="wb-prompt">{generatedImagePrompt}</p>
-                        <div className="wb-prompt-actions">
-                          <button
-                            type="button"
-                            onClick={async () => {
-                              try {
-                                await navigator.clipboard.writeText(generatedImagePrompt);
-                                setPromptCopied(true);
-                                setTimeout(() => setPromptCopied(false), 2000);
-                              } catch {
-                                alert('Could not copy');
-                              }
-                            }}
-                            className="atelier-btn atelier-btn-line"
-                          >
-                            {promptCopied ? 'Copied' : 'Copy prompt'}
-                          </button>
-                          <button
-                            type="button"
-                            disabled={isGeneratingImage || isAiFilling}
-                            onClick={() => runGrokCoverGeneration(generatedImagePrompt, formSlug)}
-                            className="atelier-btn atelier-btn-line"
-                          >
-                            {isGeneratingImage ? 'Grok…' : 'Generate with Grok'}
-                          </button>
-                        </div>
-                      </div>
-                    </section>
-                  )}
                 </section>
               )}
 
@@ -1563,7 +1471,7 @@ export function EditorialClient({
                   <p>
                     {searchQuery
                       ? 'Try another phrase.'
-                      : 'Start a draft. AI can scaffold metadata and a cover prompt, and you keep the voice.'}
+                      : 'Start a draft. AI can scaffold the metadata, and you keep the voice.'}
                   </p>
                   {!searchQuery && (
                     <button type="button" onClick={startNewArticle} className="atelier-btn atelier-btn-line">

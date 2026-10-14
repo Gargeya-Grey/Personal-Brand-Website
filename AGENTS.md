@@ -29,6 +29,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 ### Auth / CMS
 - Google OAuth + JWT session cookie; allowed email gate in `lib/auth.ts`.
 - CMS: `/editorial` — blog tools + **X studio** (`x-studio-client.tsx`) + **X Lab** (`x-lab-client.tsx`, `?workspace=lab`) + **Growth Strategy** (`x-growth-strategy.tsx`, `?workspace=strategy`) + **Notes** (`newsletter-client.tsx`, `?workspace=notes`). Scout brief is `data/gargeya-voice.md`. Notes brief is `data/newsletter-brief.md`. The strategy page is a dashboard, not the brief.
+- **AI model control:** every AI call in the atelier runs on OpenRouter (the Ledger also on Gemini). `lib/ai-model-options.ts` is the shared slug/effort contract, `lib/ai-providers.ts` the OpenRouter client, `components/ai-model-control.tsx` the control. The browser remembers each choice; `.env` models are the defaults. No Meta provider and no AI cover images.
 - **Finance Ledger** `/ledger` — invoice extract → review → Notion. Same allowlist. Setup: `data/ledger-setup.md`.
 
 ### Finance ledger
@@ -37,7 +38,7 @@ Personal brand site for **Gargeya** (`@GargeyaS` / GitHub `Gargeya-Grey`): Next.
 | `lib/ledger-schema.ts` | Enums, entry shape, size limits |
 | `lib/ledger-engine.ts` | FY calendar, enum map, operator-note fusion, save validation |
 | `lib/ledger-extract.ts` | Two-step extract: untrusted invoice + trusted notes |
-| `lib/ledger-ai.ts` | Gemini default (`GEMINI_API_KEY`); OpenRouter via `LEDGER_OPENROUTER_MODEL` |
+| `lib/ledger-ai.ts` | Gemini default (`GEMINI_API_KEY`); OpenRouter via `LEDGER_OPENROUTER_MODEL`; the owner can set either model slug on `/ledger` |
 | `lib/ledger-settings.ts` | Per-email encrypted Notion keys (Supabase) + env fallback |
 | `app/api/ledger/*` | extract / notion / settings (session + origin + rate limit) |
 | `data/sql/ledger_settings.sql` | Table + deny-all RLS |

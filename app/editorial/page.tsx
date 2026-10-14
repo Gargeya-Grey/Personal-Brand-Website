@@ -4,6 +4,7 @@ import type { Metadata } from 'next';
 import { requireAllowedSession } from '@/lib/auth';
 import { getEditorialArticlesLite } from '@/lib/blog-service';
 import { getNewsletterWeeks } from '@/lib/newsletter-service';
+import { defaultOpenRouterModel } from '@/lib/ai-providers';
 import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { EditorialClient } from './editorial-client';
@@ -56,6 +57,7 @@ export default async function EditorialPage({
           user={user}
           initialWorkspace={initialWorkspace}
           initialNotes={initialNotes}
+          aiDefaults={{ openRouterModel: defaultOpenRouterModel() || null }}
         />
       </main>
       <Footer />

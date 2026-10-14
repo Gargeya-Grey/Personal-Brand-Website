@@ -17,5 +17,5 @@ Sign in, press "Ledger" in the private header, or open `/ledger`.
 
 ## Gotchas
 
-- Extract calls Gemini or OpenRouter and fails without keys; the error message is the expected end state locally.
+- Extract calls Gemini or OpenRouter (model slug per provider under Extraction model; effort for OpenRouter) and fails without keys; the error message is the expected end state locally.
 - Never press the Notion send control during a check.

@@ -22,6 +22,7 @@ import type { LedgerSettingsPublic } from '@/lib/ledger-types';
 import { extractPdfText, fileLooksLikePdf, renderPdfPreviewImage, validateInvoiceFile } from '@/lib/ledger-pdf-client';
 import { harvestDocumentSignals } from '@/lib/ledger-parse';
 import { LedgerSelect } from '@/components/ledger/ledger-select';
+import { AiModelControl, useAiModelChoice } from '@/components/ai-model-control';
 
 type ExtractResponse = {
   data: LedgerEntry;
@@ -29,6 +30,8 @@ type ExtractResponse = {
   status?: string;
   fusion?: string;
   error?: string;
+  /** The model that actually ran. OpenRouter can fall back to Gemini. */
+  engine?: { provider: 'google' | 'openrouter'; model: string };
 };
 
 const FLOW_STEPS = ['Upload', 'Review', 'Notion'] as const;
@@ -136,6 +139,8 @@ export function LedgerClient({
   const [provider, setProvider] = useState<'google' | 'openrouter'>(
     initialSettings.geminiConfigured || !initialSettings.openRouterConfigured ? 'google' : 'openrouter'
   );
+  const extractModel = useAiModelChoice('ledger-extract', provider);
+  const [engine, setEngine] = useState<ExtractResponse['engine'] | null>(null);
   const [statusMessage, setStatusMessage] = useState('');
   const reviewHeadingRef = useRef<HTMLHeadingElement>(null);
 
@@ -167,6 +172,7 @@ export function LedgerClient({
     setSuccess(null);
     setError(null);
     setFusion(null);
+    setEngine(null);
     setSelectedMonths([]);
     setPreviewUrl((prev) => {
       if (prev) URL.revokeObjectURL(prev);
@@ -207,6 +213,7 @@ export function LedgerClient({
     setExtracted(null);
     setExtraDetails('');
     setFusion(null);
+    setEngine(null);
     setReviewNotes([]);
     setError(null);
     setSuccess(null);
@@ -263,6 +270,7 @@ export function LedgerClient({
           fileText,
           extraDetails,
           provider,
+          ...extractModel.request,
         }),
       });
       const payload = (await response.json()) as ExtractResponse;
@@ -270,6 +278,7 @@ export function LedgerClient({
 
       setExtracted(payload.data);
       setFusion(payload.fusion || payload.data.sourceFusion || null);
+      setEngine(payload.engine ?? null);
       setReviewNotes(payload.validation_errors || []);
       setSelectedMonths(payload.data.month ? [payload.data.month] : []);
       setStatusMessage(
@@ -393,10 +402,6 @@ export function LedgerClient({
   const flags = extracted?.confidence_flags || {};
 
   const flowStage = success ? 2 : extracted ? 1 : 0;
-  const activeModel =
-    provider === 'google'
-      ? settings.geminiModel || 'gemini-flash-latest'
-      : settings.openRouterModel || 'OpenRouter model unset';
 
   return (
     <div className="atelier-page ledger-root">
@@ -492,15 +497,15 @@ export function LedgerClient({
             </div>
             {!settings.aiConfigured && (
               <p className="atelier-notice ledger-span" data-tone="warn" style={{ margin: 0 }}>
-                No AI key is configured. Set GEMINI_API_KEY (default), or OPENROUTER_API_KEY and LEDGER_OPENROUTER_MODEL.
+                No AI key is configured. Set GEMINI_API_KEY (default) or OPENROUTER_API_KEY in .env.
               </p>
             )}
             {settings.aiConfigured && (
               <p className="ledger-hint ledger-span">
                 Gemini <span className="ledger-mono">{settings.geminiConfigured ? settings.geminiModel : 'not set'}</span>
                 {' · '}
-                OpenRouter <span className="ledger-mono">{settings.openRouterModel || 'not set'}</span> — change{' '}
-                <code>LEDGER_OPENROUTER_MODEL</code> in .env, then restart the server.
+                OpenRouter <span className="ledger-mono">{settings.openRouterModel || 'not set'}</span>. These .env
+                models are the defaults. Change the model under Extraction model.
               </p>
             )}
             {settingsMsg && (
@@ -603,21 +608,21 @@ export function LedgerClient({
                   aria-pressed={provider === 'openrouter'}
                   disabled={!settings.openRouterConfigured}
                   title={
-                    settings.openRouterModel
-                      ? `Uses ${settings.openRouterModel} from .env`
-                      : 'Set OPENROUTER_API_KEY and LEDGER_OPENROUTER_MODEL in .env'
+                    settings.openRouterConfigured
+                      ? 'Run the extraction on OpenRouter'
+                      : 'Set OPENROUTER_API_KEY in .env'
                   }
                   className="atelier-chip"
                 >
                   OpenRouter
                 </button>
-                <span
-                  className="ledger-model"
-                  title={`Active ${provider === 'google' ? 'GEMINI_MODEL' : 'LEDGER_OPENROUTER_MODEL'} environment variable`}
-                >
-                  {activeModel}
-                </span>
               </div>
+              <AiModelControl
+                choice={extractModel}
+                defaultModel={provider === 'google' ? settings.geminiModel : settings.openRouterModel}
+                provider={provider}
+                idPrefix="ledger-ai-model"
+              />
             </div>
 
             {error && !extracted && (
@@ -679,8 +684,13 @@ export function LedgerClient({
                 </button>
               </div>
 
-              {(error || success || fusion || extracted.operatorOverrides?.length || reviewNotes.length > 0) && (
+              {(error || success || engine || fusion || extracted.operatorOverrides?.length || reviewNotes.length > 0) && (
                 <div className="ledger-messages">
+                  {engine && (
+                    <p className="ledger-fusion">
+                      Extracted with <span className="ledger-mono">{engine.model}</span>
+                    </p>
+                  )}
                   {error && (
                     <div className="atelier-notice" data-tone="warn" role="alert">
                       {error}

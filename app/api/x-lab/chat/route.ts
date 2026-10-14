@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { requireAllowedSession } from '@/lib/auth';
-import { completeWithConfiguredProvider } from '@/lib/ai-providers';
+import { completeWithOpenRouter } from '@/lib/ai-providers';
 import {
   buildChatDataPacket,
   getLabSummary,
@@ -60,8 +60,9 @@ export async function POST(request: Request) {
 
     const userContent = `DATA_PACKET:\n${JSON.stringify(packet)}\n\nQUESTION:\n${question}`;
 
-    const { provider, model, text } = await completeWithConfiguredProvider({
-      provider: body.provider,
+    const { model, effort, text } = await completeWithOpenRouter({
+      model: body.model,
+      effort: body.effort,
       systemPrompt: SYSTEM,
       userContent,
       jsonFormat: false,
@@ -70,8 +71,8 @@ export async function POST(request: Request) {
     return NextResponse.json(
       {
         answer: text,
-        provider,
         model,
+        effort,
         range,
         sampleSize: packet.sampleSize,
       },
