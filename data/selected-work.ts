@@ -20,6 +20,20 @@ export interface WorkProject extends ProjectMedia {
   action: string;
   href: string;
   missing?: string;
+  /** A second place worth a visit: the sibling app, a hosted Space. Shown under the actions. */
+  related?: { href: string; label: string };
+  /** What the project holds, as a short table of contents. Read from the project's repository. */
+  facets?: WorkFacets;
+}
+
+export interface WorkFacets {
+  /** A heading in two tones: `title`, then `tone` in the second ink. */
+  title: string;
+  tone: string;
+  aside: string;
+  /** How the first column reads: keys on a keyboard, or a plain label. */
+  keyStyle: 'keyboard' | 'label';
+  items: readonly { key: string; title: string; note: string }[];
 }
 
 /** One record supplies the project page, Playground entry, and sitemap. */
@@ -60,23 +74,64 @@ export const allWork: readonly WorkProject[] = [
       detail: 'Desktop',
     },
     title: 'Odicto',
-    category: 'Mac, Windows, Linux',
+    category: 'Windows, macOS, Linux',
     subtitle: 'Your voice, in the app you’re already using.',
     description:
-      'Press a hotkey and speak, in whatever app you’re writing in on Mac, Windows, or Linux. Dictate as you speak, ask AI to edit or write, or watch your words appear live.',
+      'Tap a hotkey, speak, tap again. The text appears where your cursor is, in any app on Windows, macOS, or Linux. Ask AI for an answer, or watch live captions while you talk.',
     purpose:
       'A thought often arrives faster than I can type it. Odicto is a way to get it down without opening another editor: a hotkey on the computer.',
     decision:
-      'The same modes as Odicto Mobile, without the keyboard: dictation, AI mode, and live transcription. Dictation can run locally with Whisper or use an optional cloud provider. The smart polish button is on mobile only.',
+      'Private by default. Dictation can run entirely on your computer with local Whisper; Gemini Transcribe is an option. AI is optional too: a local Ollama model, or OpenRouter, Gemini, or Groq with your own key. In a terminal, Odicto types the text instead of pasting it, so a paste shortcut never interrupts what is running.',
     state:
-      'A public repository with setup instructions for Windows, macOS, and Linux. An Android version, Odicto Mobile, has its own repository.',
-    stage: 'Public repository',
-    steps: ['Press the hotkey', 'Dictate', 'Ask AI', 'Transcribe live'],
-    tags: ['Whisper', 'Python / Qt'],
+      'Version 1.0.1 is a public release, with one-command installers for Windows, macOS, and Linux (X11) and a setup page for providers and keys. No telemetry. Odicto Mobile, for Android, has its own repository.',
+    stage: 'v1.0.1, public release',
+    steps: ['Tap the hotkey', 'Speak', 'Tap again', 'Text at your cursor'],
+    tags: ['Python', 'PySide6', 'Whisper', 'Ollama · OpenRouter · Gemini · Groq'],
     source: 'https://github.com/Gargeya-Grey/Odicto',
     action: 'Desktop source & setup',
     href: 'https://github.com/Gargeya-Grey/Odicto',
-    missing: 'A short screen recording showing dictation inside an everyday app.',
+    film: {
+      youtubeId: 'mbXbTn3tXTo',
+      title: 'Don’t be frustrated at your keyboard, Just talk to your PC now!',
+      duration: '1:08',
+      caption:
+        'A one-minute demo on the desktop: tap, speak, tap again, and the text appears where the cursor is.',
+    },
+    related: { href: '/playground/odicto-mobile', label: 'Odicto Mobile, for Android' },
+    facets: {
+      title: 'Five keys.',
+      tone: 'Everything it does.',
+      aside:
+        'The defaults. You can change the dictation and AI hotkeys in the settings file.',
+      keyStyle: 'keyboard',
+      items: [
+        {
+          key: 'Ctrl+`',
+          title: 'Dictate',
+          note: 'Your words, pasted at the cursor. Optional polish fixes grammar and punctuation first.',
+        },
+        {
+          key: 'Ctrl+Shift+`',
+          title: 'Ask AI',
+          note: 'Speak a question or an instruction. A short answer is pasted, from a fresh start each time.',
+        },
+        {
+          key: 'F7',
+          title: 'Live captions',
+          note: 'Your words show in a small bar while you talk. Tap again to insert the final text once.',
+        },
+        {
+          key: 'F6',
+          title: 'Keep the thread',
+          note: 'Hold F6 with a dictation or AI hotkey to continue the same conversation with the AI.',
+        },
+        {
+          key: 'F5',
+          title: 'Start over',
+          note: 'Clears the conversation memory. Saying “reset chat” does the same.',
+        },
+      ],
+    },
   },
   {
     id: 'odicto-mobile',
@@ -91,20 +146,60 @@ export const allWork: readonly WorkProject[] = [
     category: 'Android keyboard',
     subtitle: 'Speak, type, or ask AI, anywhere on Android.',
     description:
-      'An Android keyboard with four ways to write: type, dictate, ask AI to edit or write, or watch your speech turn into polished text live. It can also show a floating icon.',
+      'An Android keyboard that opens as a voice bar. Hold the microphone and speak: keep your words as spoken, ask AI to edit your text, or watch words appear while you talk. The full keyboard is one tap away.',
     purpose:
       'A thought often arrives faster than I can type it, on a phone most of all. The keyboard opens collapsed, so the first instinct is to speak your mind. The full keyboard is one tap away for small edits, a crowded room, or a day you’d rather not talk.',
     decision:
-      'Four modes, one keyboard. Dictation keeps your words as spoken. AI mode selects all your text by default and does what you ask; with nothing selected, it writes at the cursor, and you can give it your own system prompt. Live transcription polishes as you speak. A separate smart polish button tidies whatever you are writing, most useful after typing.',
+      'There is no Odicto server. Voice goes straight from the phone to the provider you choose, with your own keys kept in Android Keystore, and the audio is not kept. Password, payment, and other protected fields block voice. Before it inserts anything, Odicto checks that the same field still has focus; if it changed, the text waits in history for you to copy.',
     state:
-      'A public repository with setup instructions. Voice goes directly to the provider you configure, with your own keys; there is no Odicto backend. Android only; iOS is not available.',
-    stage: 'Public repository',
+      'Version 1.1.1 is a beta APK for Android 6.0 and newer, on the GitHub releases page. You need a Groq key; Gemini and OpenRouter keys add AI, Live, and Polish. Physical testing so far covers a Samsung Galaxy S24 Ultra and one Samsung tablet. iOS is not available.',
+    stage: 'Beta APK, v1.1.1',
     steps: ['Type', 'Dictate', 'Ask AI', 'Transcribe live'],
-    tags: ['Android / Kotlin', 'Your provider keys'],
+    tags: ['Kotlin', 'React · Capacitor', 'Groq · Gemini · OpenRouter'],
     source: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
-    action: 'Android source & setup',
-    href: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
-    missing: 'A portrait recording showing the keyboard microphone and the final text.',
+    action: 'Download the beta APK',
+    href: 'https://github.com/Gargeya-Grey/Odicto-Mobile/releases',
+    film: {
+      youtubeId: 'i32JaWYKEFU',
+      title:
+        'Introducing Odicto-Mobile (How I made my first demo video with Claude Opus 5.5 agents)',
+      duration: '1:15',
+      caption: 'Odicto Mobile, introduced on an Android phone in a little over a minute.',
+    },
+    related: { href: '/playground/odicto', label: 'Odicto, for the desktop' },
+    facets: {
+      title: 'Three modes and a polish.',
+      tone: 'One keyboard.',
+      aside: 'Hold the microphone, speak, release. Slide up to lock it for a longer thought.',
+      keyStyle: 'label',
+      items: [
+        {
+          key: 'Raw',
+          title: 'Your words, as spoken',
+          note: 'Groq Whisper transcribes after you release the microphone.',
+        },
+        {
+          key: 'AI',
+          title: 'Ask for an edit',
+          note: 'Speak an instruction. AI mode selects the whole field by default; with nothing selected, it writes at the cursor. Gemini or OpenRouter answers, with your own system prompt if you set one.',
+        },
+        {
+          key: 'Live',
+          title: 'Words while you talk',
+          note: 'Gemini Live writes into the field as you speak, without a second copy at the end.',
+        },
+        {
+          key: 'Polish',
+          title: 'Tidy what you typed',
+          note: 'One tap sends the selection, or the whole field, for a cleaner version. Typing alone sends nothing.',
+        },
+        {
+          key: 'Float',
+          title: 'Outside the keyboard',
+          note: 'An optional floating microphone works while another keyboard is active.',
+        },
+      ],
+    },
   },
   {
     id: 'edudojo',
@@ -148,19 +243,53 @@ export const allWork: readonly WorkProject[] = [
     category: 'Agent experiment',
     subtitle: 'Can an agent clean data without breaking it?',
     description:
-      'An OpenEnv hackathon environment where agents practise data cleaning and privacy tasks against SQLite.',
+      'A reinforcement-learning environment from the OpenEnv hackathon. Agents change a live SQLite database to clean data and protect privacy, from date formats to a compliance audit.',
     purpose:
       'Reading a database is different from safely changing one. This environment gives agents tasks such as normalising dates, masking sensitive text, and resolving duplicate entities.',
     decision:
-      'Grade the database state after actions, not just an agent’s explanation. The environment provides execution feedback and task rewards, with penalties for destructive actions.',
+      'Grade the database, not the explanation. Every action gets feedback from SQLite. An action that runs earns a small reward, progress on the grader earns more, and a destructive action such as an unauthorised DROP TABLE ends the episode with a penalty.',
     state:
-      'A public hackathon project with task definitions, a grader, tests, and a baseline runner. It is an experimental environment, not a production compliance guarantee.',
+      'A public hackathon submission (OpenEnv, by Scaler School of Technology, Meta, and Hugging Face) with four tasks, a grader, tests, and a baseline runner. It also runs as a Hugging Face Space. It is an experimental environment, not a production compliance guarantee.',
+    stage: 'Hackathon submission',
     steps: ['Inspect the schema', 'Choose an action', 'Change the data', 'Check the result'],
-    tags: ['OpenEnv', 'Python', 'SQLite'],
+    tags: ['OpenEnv', 'Python', 'SQLite', 'Docker'],
     source: 'https://github.com/Gargeya-Grey/DataCleanOpenEnv',
     action: 'Explore the repository',
     href: 'https://github.com/Gargeya-Grey/DataCleanOpenEnv',
     missing: 'One recorded task run, including a failed attempt and what changed on the next try.',
+    related: {
+      href: 'https://huggingface.co/spaces/grey8magic/DataCleanOpenEnv',
+      label: 'The Hugging Face Space',
+    },
+    facets: {
+      title: 'Four tasks.',
+      tone: 'Easy to expert.',
+      aside:
+        'Baseline scores run from 0 to 1, for GPT-4o-mini with the included script, as the repository reports them.',
+      keyStyle: 'label',
+      items: [
+        {
+          key: 'Easy',
+          title: 'Date standardization',
+          note: 'Convert mixed date strings to ISO 8601. Baseline 1.0.',
+        },
+        {
+          key: 'Medium',
+          title: 'PII redaction',
+          note: 'Mask credit card numbers inside free-text message logs. Baseline 1.0.',
+        },
+        {
+          key: 'Hard',
+          title: 'Entity resolution',
+          note: 'Merge two sales tables into one and remove duplicates by email. Baseline 0.8 or more, depending on the merge strategy.',
+        },
+        {
+          key: 'Expert',
+          title: 'Compliance audit',
+          note: 'Across tables: redact emails in the logs and drop the ssn column. Baseline 1.0.',
+        },
+      ],
+    },
   },
   {
     id: 'twinaatma',
@@ -175,20 +304,54 @@ export const allWork: readonly WorkProject[] = [
     category: 'Personal AI memory',
     subtitle: 'Start the next conversation with some shared history.',
     description:
-      'A local memory for your AI tools: notes, decisions, and preferences you own, with proposed changes for you to review.',
+      'A private memory any AI tool can load: notes, decisions, and preferences in Markdown you own. Your assistant proposes changes; you approve them.',
     purpose:
       'A new AI conversation often starts with explaining yourself again. TwinAatma gives an assistant relevant context from a collection of notes you can read and keep.',
     decision:
       'Memory should be inspectable. Notes live in Markdown, and changes to the model of your preferences are proposed for approval. A lesson from one conversation can inform the next without silently rewriting who you are.',
     state:
-      'A public, local-first toolkit with an MCP memory interface and optional Obsidian or Notion workflows. It needs a compatible AI host and initial setup; this is a developer tool, not a hosted chat service.',
+      'A public, local-first toolkit. One MCP server gives a compatible AI host, such as Cursor, your memory, and one command writes the host’s configuration. The core needs only Python 3.9 and its standard library. Obsidian is recommended for reading; Notion is optional. It is a developer tool, not a hosted chat service.',
     stage: 'Public, local-first toolkit',
     steps: ['Load context', 'Have a conversation', 'Review a proposed memory', 'Carry it forward'],
-    tags: ['Markdown', 'Python', 'MCP'],
+    tags: ['Markdown', 'Python', 'MCP', 'SQLite search'],
     source: 'https://github.com/Gargeya-Grey/TwinAatma',
     action: 'Explore TwinAatma',
     href: 'https://github.com/Gargeya-Grey/TwinAatma',
     missing: 'A recording of a memory proposal, approval, and retrieval in a later conversation.',
+    facets: {
+      title: 'Set it up once.',
+      tone: 'Then just talk.',
+      aside:
+        'What the assistant does by itself after the one-time setup. Your Self changes only when you say yes.',
+      keyStyle: 'label',
+      items: [
+        {
+          key: 'Chat starts',
+          title: 'Your context loads',
+          note: 'The search index refreshes if it is stale, then your Self and relevant memory load.',
+        },
+        {
+          key: 'During chat',
+          title: 'Search and capture',
+          note: 'The assistant searches memory and keeps what matters, without you managing folders.',
+        },
+        {
+          key: 'A preference',
+          title: 'One question',
+          note: '“Want me to remember that?” Nothing changes without a yes.',
+        },
+        {
+          key: 'Chat ends',
+          title: 'A summary is saved',
+          note: 'A useful session leaves a short summary for next time.',
+        },
+        {
+          key: 'About weekly',
+          title: 'A drift proposal',
+          note: 'An update to your Self, drafted from how your work has changed, for your yes or no.',
+        },
+      ],
+    },
   },
   {
     id: 'personal-brand',
@@ -205,18 +368,51 @@ export const allWork: readonly WorkProject[] = [
     stage: 'Live, with public source',
     subtitle: 'A home for things I make and think about.',
     description:
-      'Projects, research, writing, and films in one place, with a private workspace for publishing.',
+      'Projects, essays, a weekly letter, and films in one place, with a private workspace behind it.',
     purpose:
       'My work used to be scattered across repositories, articles, and social profiles. This site gives those pieces a shared starting point.',
     decision:
-      'Public pages are built around the work. Project pages explain the decisions, and editorial tools stay behind authentication.',
+      'Public pages are built around the work. The site shares Edudojo’s design language (warm paper, one sans, dots that move) in its own papaya colour, so the person and the company read as one family. Editorial tools stay behind sign-in.',
     state:
       'You are using the public site. The source is available; the publishing workspace and personal tools are private.',
     steps: [],
-    tags: ['Next.js', 'TypeScript', 'Editorial CMS'],
+    tags: ['Next.js', 'TypeScript', 'Supabase', 'Editorial CMS'],
     source: 'https://github.com/Gargeya-Grey/Personal-Brand-Website',
     action: 'Read the source',
     href: 'https://github.com/Gargeya-Grey/Personal-Brand-Website',
+    facets: {
+      title: 'What lives here.',
+      tone: 'One place for the work.',
+      aside: 'The public rooms. The workspace that feeds them is private.',
+      keyStyle: 'label',
+      items: [
+        {
+          key: 'Journal',
+          title: 'Essays',
+          note: 'Long writing on learning, AI, and building. Some essays have interactive blocks.',
+        },
+        {
+          key: 'Notes',
+          title: 'A weekly letter',
+          note: 'One letter each Sunday, at 19:00 in your own time zone.',
+        },
+        {
+          key: 'Playground',
+          title: 'The projects',
+          note: 'Every tool, with the question it answers and how it works.',
+        },
+        {
+          key: 'Research',
+          title: 'Research and publications',
+          note: 'Academic papers, with the background behind each one.',
+        },
+        {
+          key: 'Videos',
+          title: 'Travel films',
+          note: 'A series from Japan, playable on the page.',
+        },
+      ],
+    },
   },
 ];
 

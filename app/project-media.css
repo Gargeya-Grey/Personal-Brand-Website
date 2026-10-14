@@ -210,3 +210,243 @@
     padding: 18px;
   }
 }
+
+/* The demo film in the cover's place: a sage plate (as the glyph plates are) with the film as its
+ * screen. The papaya disc is the view's one bright object. YouTube loads only after a press. */
+.project-film {
+  margin: 0 0 56px;
+  scroll-margin-top: 125px;
+}
+.film-plate {
+  padding: clamp(12px, 3vw, 36px) clamp(12px, 3vw, 36px) 0;
+  border: 1px solid var(--rule);
+  border-radius: 20px;
+  background:
+    radial-gradient(closest-side, var(--sage), transparent),
+    var(--paper-raised);
+}
+.film-screen {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  max-width: 1080px;
+  margin-inline: auto;
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--sage);
+  box-shadow:
+    inset 0 0 0 1px var(--rule),
+    0 24px 48px -32px #1b1a1859;
+}
+.film-screen iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
+.film-play {
+  position: absolute;
+  inset: 0;
+  display: block;
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+.film-poster {
+  object-fit: cover;
+}
+/* Bottom left, so it never covers the film's own centred title. */
+.film-cue {
+  position: absolute;
+  left: clamp(12px, 2.4vw, 24px);
+  bottom: clamp(12px, 2.4vw, 24px);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 16px 6px 6px;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--paper-raised) 92%, transparent);
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+  box-shadow: 0 10px 24px -16px #1b1a1880;
+  backdrop-filter: blur(6px);
+}
+.film-disc {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--leaf);
+  color: #1b1a18;
+}
+.film-disc svg {
+  margin-left: 2px;
+}
+.film-duration {
+  margin-left: 6px;
+  color: var(--ink-2);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  letter-spacing: 0.04em;
+}
+.film-play:focus-visible {
+  outline: none;
+}
+/* Drawn above the poster: an inset outline on the button would sit under the image. */
+.film-play:focus-visible::after {
+  content: '';
+  position: absolute;
+  inset: 6px;
+  border: 2px solid var(--leaf-ink);
+  border-radius: 8px;
+}
+.film-plate-captions {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 1080px;
+  margin-inline: auto;
+  padding: 14px 4px 16px;
+  font-size: 13px;
+  color: var(--ink-2);
+}
+.film-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 24px;
+  margin-top: 18px;
+}
+.film-caption p {
+  max-width: 620px;
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.8;
+}
+.film-caption .field-text-link {
+  flex: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .film-screen[data-playing] iframe {
+    animation: film-in 420ms var(--ease-out) both;
+  }
+  .film-poster {
+    transition: transform 600ms var(--ease-out);
+  }
+  .film-disc {
+    transition: transform 200ms var(--ease-out);
+  }
+}
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  .film-play:hover .film-poster {
+    transform: scale(1.015);
+  }
+  .film-play:hover .film-disc {
+    transform: scale(1.06);
+  }
+}
+@keyframes film-in {
+  from {
+    opacity: 0;
+  }
+}
+@media (max-width: 700px) {
+  .film-cue {
+    gap: 8px;
+    padding: 4px 12px 4px 4px;
+    font-size: 13px;
+  }
+  .film-disc {
+    width: 34px;
+    height: 34px;
+  }
+  .film-disc svg {
+    width: 16px;
+    height: 16px;
+  }
+  .film-plate-captions {
+    font-size: 12px;
+    padding-block: 10px 12px;
+  }
+  .film-caption {
+    display: block;
+  }
+  .film-caption .field-text-link {
+    margin-top: 10px;
+  }
+}
+
+/* What a project holds: a short table of contents on hairlines, a key, a name, one sentence. */
+.work-facets {
+  margin: 0 0 24px;
+}
+.field-main .work-facets h2 em {
+  font-style: normal;
+  color: var(--ink-2);
+}
+.facet-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--rule);
+}
+.facet-list li {
+  display: grid;
+  grid-template-columns: minmax(0, 170px) minmax(0, 0.8fr) minmax(0, 1.4fr);
+  gap: 32px;
+  align-items: baseline;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--rule);
+}
+.facet-key {
+  justify-self: start;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+kbd.facet-key {
+  padding: 3px 9px;
+  border: 1px solid var(--rule);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+  background: var(--paper-raised);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+.field-main .facet-list h3 {
+  font-size: 18px;
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+}
+.facet-list p {
+  color: var(--color-text-muted);
+  font-size: 15px;
+  line-height: 1.75;
+}
+@media (max-width: 760px) {
+  .facet-list li {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 8px;
+    padding: 18px 0;
+  }
+  .facet-list h3 {
+    margin-top: 4px;
+  }
+}
+/* On a phone the film's own title fills the frame: the cue shrinks to the disc. */
+@media (max-width: 480px) {
+  .film-cue {
+    padding: 3px;
+  }
+  .film-cue-text {
+    display: none;
+  }
+}

@@ -5,6 +5,8 @@ import { Navigation } from '@/components/navigation';
 import { Footer } from '@/components/footer';
 import { WorkExplainer } from '@/components/work-explainer';
 import { ProjectExperience } from '@/components/project-experience';
+import { ProjectFilm } from '@/components/project-film';
+import { WorkFacets } from '@/components/work-facets';
 import { DotGlyph } from '@/components/dot-glyph';
 import type { GlyphName } from '@/lib/stipple';
 import type { WorkProject } from '@/data/selected-work';
@@ -46,27 +48,40 @@ export function ProjectDetail({ work }: { work: WorkProject }) {
               {work.action} <ArrowUpRight size={18} />
             </Link>
           </div>
-          {work.id === 'odicto' && (
-            <Link href="/playground/odicto-mobile" className="field-text-link platform-link">
-              Odicto Mobile, for Android <ArrowUpRight size={18} />
+          {work.related && (
+            <Link
+              href={work.related.href}
+              {...(work.related.href.startsWith('https:')
+                ? { target: '_blank', rel: 'noopener noreferrer' }
+                : {})}
+              className="field-text-link platform-link"
+            >
+              {work.related.label} <ArrowUpRight size={18} />
             </Link>
           )}
         </header>
-        <div className="project-detail-cover">
-          {/* An owner-approved image keeps its place. Otherwise the project is named in the site's own
-              dot language until a real demo recording exists (shown below in its own section). */}
-          {work.cover.kind === 'image' ? (
-            <WorkVisual cover={work.cover} />
-          ) : (
-            <div className="project-plate glyph-host">
-              <DotGlyph name={work.id as GlyphName} size={240} />
-              <span className="project-plate-caption">{work.cover.label}</span>
-              <span className="project-plate-caption project-plate-detail">{work.cover.detail}</span>
-            </div>
-          )}
-        </div>
+        {/* The owner's demo film takes the cover's place. Otherwise an owner-approved image keeps its
+            place, or the project is named in the site's own dot language. */}
+        {work.film ? (
+          <ProjectFilm film={work.film} cover={work.cover} />
+        ) : (
+          <div className="project-detail-cover">
+            {work.cover.kind === 'image' ? (
+              <WorkVisual cover={work.cover} />
+            ) : (
+              <div className="project-plate glyph-host">
+                <DotGlyph name={work.id as GlyphName} size={240} />
+                <span className="project-plate-caption">{work.cover.label}</span>
+                <span className="project-plate-caption project-plate-detail">
+                  {work.cover.detail}
+                </span>
+              </div>
+            )}
+          </div>
+        )}
         <ProjectExperience demo={work.demo} recordings={work.recordings} />
         {!work.demo && <WorkExplainer id={work.id} />}
+        {work.facets && <WorkFacets facets={work.facets} />}
         {work.id === 'dataclean' && (
           <section className="work-process" aria-label="How it works">
             <ol>
