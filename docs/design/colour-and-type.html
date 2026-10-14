@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><title>Colour and type</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Instrument+Sans:wght@400;500;600&family=Literata:ital,opsz,wght@0,7..72,400;1,7..72,400&display=swap" rel="stylesheet">
+<style>
+:root { --paper:#F7F6F3; --raised:#FFFFFF; --sage:#F1EDE7; --ink:#1B1A18; --ink-2:#5E5A55; --rule:#E3E0DA; --leaf:#FF8000; --leaf-ink:#B04A00; }
+@page { size: A4; margin: 0; }
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 10.5pt/1.55 'Instrument Sans', system-ui, sans-serif; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; padding: 18mm 18mm 14mm; page-break-after: always; position: relative; overflow: hidden; }
+.page:last-child { page-break-after: auto; }
+.page.dark { background: #151413; color: #E0DDD8; }
+.page.dark .label, .page.dark .swatch p, .page.dark .foot { color: #ADA7A0; }
+.page.dark .swatch, .page.dark table td, .page.dark table th { border-color: #2C2A27; }
+.label { font-size: 9pt; font-weight: 500; color: var(--ink-2); margin: 0 0 6mm; }
+.label span { color: var(--leaf-ink); }
+.page.dark .label span { color: #FF9F45; }
+h1 { font-weight: 500; letter-spacing: -0.04em; font-size: 30pt; line-height: 1.02; margin: 0 0 4mm; }
+h2 { font-weight: 500; letter-spacing: -0.035em; font-size: 20pt; line-height: 1.15; margin: 0 0 4mm; }
+h1 em, h2 em { font-style: normal; color: var(--ink-2); }
+.page.dark h2 em { color: #ADA7A0; }
+h3 { font-size: 10.5pt; font-weight: 600; margin: 0 0 2mm; }
+.lead { font-size: 11pt; color: var(--ink-2); max-width: 150mm; margin: 0 0 5mm; }
+.mono { font-family: 'IBM Plex Mono', monospace; font-size: 8.5pt; }
+.swatches { display: grid; grid-template-columns: 1fr 1fr; gap: 0 8mm; }
+.swatch { display: flex; gap: 4mm; align-items: flex-start; padding: 2mm 0; border-top: 1px solid var(--rule); }
+.swatch b { font-weight: 500; margin-right: 2mm; }
+.swatch p { margin: 0.5mm 0 0; color: var(--ink-2); font-size: 9pt; line-height: 1.4; }
+.chip { flex: none; width: 10mm; height: 10mm; border-radius: 6px; border: 1px solid #5E5A5555; }
+table { width: 100%; border-collapse: collapse; margin-top: 3mm; font-size: 9pt; }
+th { text-align: left; font-weight: 500; color: inherit; opacity: .75; padding: 1.6mm 2mm 1.6mm 0; border-bottom: 1px solid var(--rule); }
+td { padding: 1.3mm 2mm 1.3mm 0; border-bottom: 1px solid var(--rule); vertical-align: middle; }
+.pair { display: inline-block; width: 11mm; text-align: center; border-radius: 4px; padding: 0.6mm 0; font-weight: 600; border: 1px solid #8884; }
+.panels { display: grid; grid-template-columns: 1fr 1fr; gap: 6mm; margin-top: 6mm; }
+.panel { border-radius: 12px; padding: 7mm 6mm; border: 1px solid #2C2A27; }
+.panel h3 { font-size: 16pt; font-weight: 500; letter-spacing: -0.035em; margin: 0 0 4mm; }
+.panel p { font-size: 10.5pt; line-height: 1.9; margin: 0 0 3mm; }
+.panel .panel-label { font-size: 8.5pt; font-weight: 500; margin: 0 0 4mm; line-height: 1.4; }
+.panel .panel-note { margin: 4mm 0 0; line-height: 1.5; }
+.faces { display: grid; gap: 0; }
+.face { display: grid; grid-template-columns: 52mm 1fr; gap: 6mm; padding: 5mm 0; border-top: 1px solid var(--rule); }
+.face .sample { font-size: 30pt; line-height: 1.1; letter-spacing: -0.03em; }
+.face p { margin: 1mm 0 0; color: var(--ink-2); font-size: 9pt; }
+.scale td:first-child { width: 38mm; }
+.foot { position: absolute; left: 18mm; right: 18mm; bottom: 9mm; display: flex; justify-content: space-between; font-size: 8pt; color: var(--ink-2); }
+.notes { columns: 2; column-gap: 8mm; font-size: 9.5pt; padding-left: 4mm; margin: 0; }
+.notes li { break-inside: avoid; margin-bottom: 2mm; }
+</style></head><body>
+
+<section class="page">
+  <p class="label"><span>●</span> sgargeya.com · Design system v3</p>
+  <h1>Colour and type. <em>McLaren papaya on warm graphite.</em></h1>
+  <p class="lead">The site shares Edudojo’s design language: warm paper, one sans, hairlines, dot motion. The colours are its own, so the person and the company stay distinct. Every colour on these pages is read from <span class="mono">app/field.css</span>, and every ratio is measured.</p>
+  <h2>Light mode</h2>
+  <div class="swatches">
+    <div class="swatch">
+      <span class="chip" style="background:#F7F6F3"></span>
+      <div><b>--paper</b><span class="mono">#F7F6F3</span><p>Page background</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#FFFFFF"></span>
+      <div><b>--paper-raised</b><span class="mono">#FFFFFF</span><p>The one raised object in a view</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#F1EDE7"></span>
+      <div><b>--sage</b><span class="mono">#F1EDE7</span><p>Warm wash: top of the hero, field behind a lead glyph</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#1B1A18"></span>
+      <div><b>--ink</b><span class="mono">#1B1A18</span><p>Text and headings</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#5E5A55"></span>
+      <div><b>--ink-2</b><span class="mono">#5E5A55</span><p>Muted text, a heading’s second tone, nav links</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#E3E0DA"></span>
+      <div><b>--rule</b><span class="mono">#E3E0DA</span><p>1px hairlines between rows and sections</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#1F1E1C"></span>
+      <div><b>--forest</b><span class="mono">#1F1E1C</span><p>The anthracite filled button</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#FAF8F5"></span>
+      <div><b>--on-forest</b><span class="mono">#FAF8F5</span><p>Text on the filled button</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#FF8000"></span>
+      <div><b>--leaf</b><span class="mono">#FF8000</span><p>McLaren papaya. A signal: dots, last step, focus. Never small text</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#B04A00"></span>
+      <div><b>--leaf-ink</b><span class="mono">#B04A00</span><p>Orange text, link hover</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#B42335"></span>
+      <div><b>--clay</b><span class="mono">#B42335</span><p>Crimson. Corrections and warnings only</p></div>
+    </div></div>
+  <table><thead><tr><th></th><th>Pair</th><th>Ratio</th><th>Use</th><th>WCAG</th></tr></thead><tbody><tr><td><span class="pair" style="background:#F7F6F3;color:#1B1A18">Aa</span></td>
+      <td>--ink on --paper</td><td class="mono">16.09</td><td>All text</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#F7F6F3;color:#5E5A55">Aa</span></td>
+      <td>--ink-2 on --paper</td><td class="mono">6.33</td><td>Muted text</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#F1EDE7;color:#1B1A18">Aa</span></td>
+      <td>--ink on --sage</td><td class="mono">14.91</td><td>Text on the wash</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#F7F6F3;color:#B04A00">Aa</span></td>
+      <td>--leaf-ink on --paper</td><td class="mono">5.08</td><td>Orange text, links</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#F7F6F3;color:#B42335">Aa</span></td>
+      <td>--clay on --paper</td><td class="mono">6.01</td><td>Warnings</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#1F1E1C;color:#FAF8F5">Aa</span></td>
+      <td>--on-forest on --forest</td><td class="mono">15.71</td><td>Filled button</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#F7F6F3;color:#FF8000">Aa</span></td>
+      <td>--leaf on --paper</td><td class="mono">2.33</td><td>Papaya as a mark</td><td>dark grounds only</td></tr><tr><td><span class="pair" style="background:#F7F6F3;color:#E3E0DA">Aa</span></td>
+      <td>--rule on --paper</td><td class="mono">1.22</td><td>Hairline (decorative)</td><td>decorative</td></tr></tbody></table>
+  <div class="foot"><span>Colour · light</span><span class="mono">1 / 4</span></div>
+</section>
+
+<section class="page dark">
+  <p class="label"><span>●</span> Dark mode</p>
+  <h2>Dark mode. <em>Same roles, warm graphite paper.</em></h2>
+  <div class="swatches">
+    <div class="swatch">
+      <span class="chip" style="background:#151413"></span>
+      <div><b>--paper</b><span class="mono">#151413</span><p>Page background</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#1C1B19"></span>
+      <div><b>--paper-raised</b><span class="mono">#1C1B19</span><p>The one raised object in a view</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#25211D"></span>
+      <div><b>--sage</b><span class="mono">#25211D</span><p>Warm wash: top of the hero, field behind a lead glyph</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#E0DDD8"></span>
+      <div><b>--ink</b><span class="mono">#E0DDD8</span><p>Text and headings</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#ADA7A0"></span>
+      <div><b>--ink-2</b><span class="mono">#ADA7A0</span><p>Muted text, a heading’s second tone, nav links</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#2C2A27"></span>
+      <div><b>--rule</b><span class="mono">#2C2A27</span><p>1px hairlines between rows and sections</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#E0DDD8"></span>
+      <div><b>--forest</b><span class="mono">#E0DDD8</span><p>The anthracite filled button</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#151413"></span>
+      <div><b>--on-forest</b><span class="mono">#151413</span><p>Text on the filled button</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#FF8000"></span>
+      <div><b>--leaf</b><span class="mono">#FF8000</span><p>McLaren papaya. A signal: dots, last step, focus. Never small text</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#FF9F45"></span>
+      <div><b>--leaf-ink</b><span class="mono">#FF9F45</span><p>Orange text, link hover</p></div>
+    </div>
+    <div class="swatch">
+      <span class="chip" style="background:#F07178"></span>
+      <div><b>--clay</b><span class="mono">#F07178</span><p>Crimson. Corrections and warnings only</p></div>
+    </div>
+    <div class="swatch"><span class="chip" style="background:#C2BDB6"></span><div><b>--color-text-reading</b><span class="mono">#C2BDB6</span><p>Paragraphs and lists in long text. 9.9:1</p></div></div>
+  </div>
+  <table><thead><tr><th></th><th>Pair</th><th>Ratio</th><th>Use</th><th>WCAG</th></tr></thead><tbody><tr><td><span class="pair" style="background:#151413;color:#E0DDD8">Aa</span></td>
+      <td>--ink on --paper</td><td class="mono">13.58</td><td>All text</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#151413;color:#ADA7A0">Aa</span></td>
+      <td>--ink-2 on --paper</td><td class="mono">7.72</td><td>Muted text</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#25211D;color:#E0DDD8">Aa</span></td>
+      <td>--ink on --sage</td><td class="mono">11.80</td><td>Text on the wash</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#151413;color:#FF9F45">Aa</span></td>
+      <td>--leaf-ink on --paper</td><td class="mono">9.02</td><td>Orange text, links</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#151413;color:#F07178">Aa</span></td>
+      <td>--clay on --paper</td><td class="mono">6.43</td><td>Warnings</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#E0DDD8;color:#151413">Aa</span></td>
+      <td>--on-forest on --forest</td><td class="mono">13.58</td><td>Filled button</td><td>passes 4.5:1</td></tr><tr><td><span class="pair" style="background:#151413;color:#FF8000">Aa</span></td>
+      <td>--leaf on --paper</td><td class="mono">7.31</td><td>Papaya as a mark</td><td>passes 3:1</td></tr><tr><td><span class="pair" style="background:#151413;color:#2C2A27">Aa</span></td>
+      <td>--rule on --paper</td><td class="mono">1.29</td><td>Hairline (decorative)</td><td>decorative</td></tr></tbody></table>
+  <div class="foot"><span>Colour · dark</span><span class="mono">2 / 4</span></div>
+</section>
+
+<section class="page dark">
+  <p class="label"><span>●</span> Reading in dark mode</p>
+  <h2>A softer dark theme. <em>About 10:1 to 14:1, not 16:1.</em></h2>
+  <p class="lead" style="color:#ADA7A0">Near-white text on near-black glows at the edges of each letter, and the eye tires. Every dark page now sits on slightly lifted paper with dimmer ink. Long text (essay and Notes paragraphs) drops one more step to reading ink. Headings and bold text keep the ink.</p>
+  <div class="panels">
+    <div class="panel" style="background:#121110">
+    <p class="panel-label" style="color:#ADA7A0">Before</p>
+    <h3 style="color:#EEECE8">What measuring takes</h3>
+    <p style="color:#D2CEC8">Your list will differ. That is the point. There is no single right answer for everyone. There is one right answer for each use case, and you find it by measuring your own work.</p>
+    <p style="color:#D2CEC8"><b style="color:#EEECE8">Real tasks.</b> Use work from your own history, not generic puzzles.</p>
+    <p class="panel-note mono" style="color:#ADA7A0">paper #121110<br>body #D2CEC8 · 12.0:1<br>ink #EEECE8 · 16.0:1</p>
+  </div>
+    <div class="panel" style="background:#151413">
+    <p class="panel-label" style="color:#ADA7A0">Now</p>
+    <h3 style="color:#E0DDD8">What measuring takes</h3>
+    <p style="color:#C2BDB6">Your list will differ. That is the point. There is no single right answer for everyone. There is one right answer for each use case, and you find it by measuring your own work.</p>
+    <p style="color:#C2BDB6"><b style="color:#E0DDD8">Real tasks.</b> Use work from your own history, not generic puzzles.</p>
+    <p class="panel-note mono" style="color:#ADA7A0">paper #151413<br>body #C2BDB6 · 9.9:1<br>ink #E0DDD8 · 13.6:1</p>
+  </div>
+  </div>
+  <ul class="notes" style="margin-top:8mm">
+    <li>Both stay far above WCAG AAA (7:1) for body text.</li>
+    <li>Keep dark text between about 10:1 and 14:1. Do not go back to pure white.</li>
+    <li>Light mode does not change. Dark ink on warm paper does not glow.</li>
+    <li>Change the value in the token block only, never in a component.</li>
+  </ul>
+  <div class="foot"><span>Colour · reading</span><span class="mono">3 / 4</span></div>
+</section>
+
+<section class="page">
+  <p class="label"><span>●</span> Typography</p>
+  <h2>Three faces. <em>Each has one job.</em></h2>
+  <div class="faces">
+    <div class="face"><div><h3>Instrument Sans</h3><p>Headings, text and UI. Headings 500 with −0.035em to −0.04em tracking. Body 400; 500 to 600 for short labels only.</p></div>
+      <div class="sample" style="font-weight:500">I build tools for how we learn to think.</div></div>
+    <div class="face"><div><h3>Literata</h3><p>A person’s writing: article and Notes prose, essay titles, quotes.</p></div>
+      <div class="sample" style="font-family:Literata,serif;font-size:20pt;letter-spacing:0;line-height:1.4">One idea on learning, AI, and being human. <i>Delivered Sunday evening.</i></div></div>
+    <div class="face"><div><h3>IBM Plex Mono</h3><p>Real data only: dates, versions, steps, numerals. A unit next to a number stays in sans.</p></div>
+      <div class="sample mono" style="font-size:20pt;letter-spacing:0">14 Oct 2026 · v3 · 51</div></div>
+  </div>
+  <h3 style="margin-top:6mm">Scale on the site</h3>
+  <table class="scale"><thead><tr><th>Role</th><th>Size</th><th>Weight · tracking · leading</th><th>Where</th></tr></thead><tbody>
+    <tr><td>Hero h1</td><td class="mono">up to 5.25rem</td><td>500 · −0.04em · 1.02</td><td>Homepage headline</td></tr>
+    <tr><td>Section h2</td><td class="mono">clamp(2.1rem, 3.6vw, 3.4rem)</td><td>500 · −0.035em · 1.06</td><td>Section headings</td></tr>
+    <tr><td>Article title</td><td class="mono">clamp(2rem, 4.4vw, 3.65rem)</td><td>550 · −0.048em · 1.13</td><td>Journal essays</td></tr>
+    <tr><td>Essay h2</td><td class="mono">clamp(1.45rem, 2.4vw, 1.9rem)</td><td>550 · −0.035em · 1.4</td><td>Inside an essay</td></tr>
+    <tr><td>Reading body</td><td class="mono">1.0625rem (1.25rem large)</td><td>400 · 0 · 1.9</td><td>Essay paragraphs</td></tr>
+    <tr><td>Copy</td><td class="mono">16px</td><td>400 · 0 · 1.8</td><td>Intros, max 560px</td></tr>
+    <tr><td>Label</td><td class="mono">13px</td><td>500 · 0 · 1.6</td><td>Field labels, kickers</td></tr>
+  </tbody></table>
+  <h3 style="margin-top:6mm">Rules</h3>
+  <ul class="notes">
+    <li>An <span class="mono">&lt;em&gt;</span> in an h1 or h2 is the second tone: upright, in <span class="mono">--ink-2</span>, never italic.</li>
+    <li>Papaya is a signal: dots, the last step, focus. Orange text uses <span class="mono">--leaf-ink</span>.</li>
+    <li>Separate with 1px hairlines and space, not boxes. One raised object per view.</li>
+    <li>Do not bring back Instrument Serif or Manrope.</li>
+  </ul>
+  <div class="foot"><span>Type</span><span class="mono">4 / 4</span></div>
+</section>
+</body></html>

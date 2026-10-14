@@ -325,6 +325,7 @@
 }
 .dark .notes-band {
   --band-bg: #24221f;
+  --band-ink: #e0ddd8;
 }
 .field-main .notes-band h2 {
   max-width: 14ch;

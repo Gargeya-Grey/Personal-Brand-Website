@@ -60,7 +60,7 @@ export function NewsletterSignup({
         role="status"
         className={
           dark
-            ? 'rounded-xl border border-white/15 bg-white/[0.06] p-4 font-body text-sm text-[#f3f1ea]'
+            ? 'rounded-xl border border-white/15 bg-white/[0.06] p-4 font-body text-sm text-[var(--band-ink,#f3f1ea)]'
             : 'rounded-xl border border-[var(--rule)] bg-[var(--sage)] p-4 font-body text-sm text-[var(--ink)]'
         }
       >
@@ -86,7 +86,7 @@ export function NewsletterSignup({
           autoComplete="email"
           className={
             dark
-              ? 'h-12 min-w-0 flex-grow rounded-md border border-white/20 bg-white/[0.06] px-4 text-base text-[#f3f1ea] placeholder:text-[#bdb7b0] focus:border-[#f3f1ea] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:opacity-50'
+              ? 'h-12 min-w-0 flex-grow rounded-md border border-white/20 bg-white/[0.06] px-4 text-base text-[var(--band-ink,#f3f1ea)] placeholder:text-[#bdb7b0] focus:border-[var(--band-ink,#f3f1ea)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:opacity-50'
               : 'h-12 min-w-0 flex-grow rounded-md border border-[var(--rule)] bg-[var(--paper-raised)] px-4 text-base text-[var(--ink)] placeholder:text-[var(--ink-2)] focus:border-[var(--ink-2)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:opacity-50'
           }
         />
@@ -95,7 +95,7 @@ export function NewsletterSignup({
           disabled={subscribing}
           className={
             dark
-              ? 'group inline-flex h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-[#f3f1ea] px-6 text-sm font-medium text-[#1b1a18] transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:cursor-not-allowed disabled:opacity-50'
+              ? 'group inline-flex h-12 shrink-0 cursor-pointer items-center justify-center gap-2 rounded-md bg-[color:var(--band-ink,#f3f1ea)] px-6 text-sm font-medium text-[#1b1a18] transition-opacity hover:opacity-90 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--leaf)] disabled:cursor-not-allowed disabled:opacity-50'
               : 'btn-accent notes-signup-button group inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-md px-6 text-sm font-medium disabled:cursor-not-allowed disabled:opacity-50'
           }
         >
