@@ -24,6 +24,10 @@ export interface WorkProject extends ProjectMedia {
   related?: { href: string; label: string };
   /** What the project holds, as a short table of contents. Read from the project's repository. */
   facets?: WorkFacets;
+  /** Search title and snippet for this page, when the on-page wording is not the best search wording. */
+  seo?: { title: string; description: string };
+  /** Marks the page up as downloadable software for search engines. Only set where the facts are on the page. */
+  software?: { operatingSystem: string; version: string; license: string };
 }
 
 export interface WorkFacets {
@@ -35,6 +39,8 @@ export interface WorkFacets {
   keyStyle: 'keyboard' | 'label';
   items: readonly { key: string; title: string; note: string }[];
 }
+
+const APACHE_2 = 'https://www.apache.org/licenses/LICENSE-2.0';
 
 /** One record supplies the project page, Playground entry, and sitemap. */
 export const allWork: readonly WorkProject[] = [
@@ -83,8 +89,18 @@ export const allWork: readonly WorkProject[] = [
     decision:
       'Private by default. Dictation can run entirely on your computer with local Whisper; Gemini Transcribe is an option. AI is optional too: a local Ollama model, or OpenRouter, Gemini, or Groq with your own key. In a terminal, Odicto types the text instead of pasting it, so a paste shortcut never interrupts what is running.',
     state:
-      'Version 1.0.1 is a public release, with one-command installers for Windows, macOS, and Linux (X11) and a setup page for providers and keys. No telemetry. Odicto Mobile, for Android, has its own repository.',
+      'Version 1.0.1 is a public, open-source release under Apache 2.0, with one-command installers for Windows, macOS, and Linux (X11) and a setup page for providers and keys. No telemetry. Odicto Mobile, for Android, has its own repository.',
     stage: 'v1.0.1, public release',
+    seo: {
+      title: 'Odicto: voice typing for any app',
+      description:
+        'Hold a hotkey, speak, and text appears at your cursor on Windows, macOS and Linux. Local Whisper, private by default, free and open source.',
+    },
+    software: {
+      operatingSystem: 'Windows, macOS, Linux',
+      version: '1.0.1',
+      license: APACHE_2,
+    },
     steps: ['Tap the hotkey', 'Speak', 'Tap again', 'Text at your cursor'],
     tags: ['Python', 'PySide6', 'Whisper', 'Ollama · OpenRouter · Gemini · Groq'],
     source: 'https://github.com/Gargeya-Grey/Odicto',
@@ -94,6 +110,7 @@ export const allWork: readonly WorkProject[] = [
       youtubeId: 'mbXbTn3tXTo',
       title: 'Don’t be frustrated at your keyboard, Just talk to your PC now!',
       duration: '1:08',
+      uploadDate: '2026-10-14',
       caption:
         'A one-minute demo on the desktop: tap, speak, tap again, and the text appears where the cursor is.',
     },
@@ -154,6 +171,12 @@ export const allWork: readonly WorkProject[] = [
     state:
       'Version 1.1.1 is a beta APK for Android 6.0 and newer, on the GitHub releases page. You need a Groq key; Gemini and OpenRouter keys add AI, Live, and Polish. Physical testing so far covers a Samsung Galaxy S24 Ultra and one Samsung tablet. iOS is not available.',
     stage: 'Beta APK, v1.1.1',
+    seo: {
+      title: 'Odicto Mobile: a voice keyboard for Android',
+      description:
+        'An Android voice keyboard. Speak, ask AI to edit your text, or watch words appear live. Your own keys, no Odicto server, free and open source.',
+    },
+    software: { operatingSystem: 'Android 6.0+', version: '1.1.1', license: APACHE_2 },
     steps: ['Type', 'Dictate', 'Ask AI', 'Transcribe live'],
     tags: ['Kotlin', 'React · Capacitor', 'Groq · Gemini · OpenRouter'],
     source: 'https://github.com/Gargeya-Grey/Odicto-Mobile',
@@ -164,6 +187,7 @@ export const allWork: readonly WorkProject[] = [
       title:
         'Introducing Odicto-Mobile (How I made my first demo video with Claude Opus 5.5 agents)',
       duration: '1:15',
+      uploadDate: '2026-10-13',
       caption: 'Odicto Mobile, introduced on an Android phone in a little over a minute.',
     },
     related: { href: '/playground/odicto', label: 'Odicto, for the desktop' },

@@ -27,6 +27,8 @@ export interface ProjectFilm {
   duration: string;
   /** One sentence on what the film shows. */
   caption: string;
+  /** The day the film went up on YouTube (YYYY-MM-DD). Search engines need it to list the video. */
+  uploadDate: string;
 }
 
 export interface ProjectMedia {

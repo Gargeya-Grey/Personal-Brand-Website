@@ -21,6 +21,8 @@ function sameAsLinks(): string[] {
     links.github,
     links.youtube,
     links.cv,
+    // Edudojo's founder page, so both sites name the same person in structured data.
+    `${links.edudojo}/about`,
   ].filter(Boolean);
 }
 
@@ -36,6 +38,13 @@ export function getPersonJsonLd() {
     jobTitle: siteConfig.authorRole,
     description: siteConfig.description,
     sameAs: sameAsLinks(),
+    knowsAbout: [
+      'AI in education',
+      'Socratic learning',
+      'Process-based assessment',
+      'Voice and speech interfaces',
+      'Computer vision',
+    ],
     worksFor: {
       '@type': 'Organization',
       name: 'Edudojo',
@@ -70,6 +79,67 @@ export function getProfilePageJsonLd() {
     name: `About ${siteConfig.name}`,
     isPartOf: { '@id': `${origin}/#website` },
     mainEntity: getPersonJsonLd(),
+  };
+}
+
+/** Downloadable software on a project page. The facts come from the page's own record. */
+export function getSoftwareApplicationJsonLd(work: {
+  id: string;
+  title: string;
+  description: string;
+  source?: string;
+  software: { operatingSystem: string; version: string; license: string };
+}) {
+  const origin = getSiteOrigin();
+  const pageUrl = absoluteUrl(`/playground/${work.id}`);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareApplication',
+    '@id': `${pageUrl}#software`,
+    name: work.title,
+    description: work.description,
+    url: pageUrl,
+    applicationCategory: 'UtilitiesApplication',
+    operatingSystem: work.software.operatingSystem,
+    softwareVersion: work.software.version,
+    isAccessibleForFree: true,
+    license: work.software.license,
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    author: { '@id': `${origin}/#person` },
+    ...(work.source ? { codeRepository: work.source } : {}),
+  };
+}
+
+/** Turns a running time such as `1:08` into the ISO 8601 form search engines read (`PT1M8S`). */
+function isoDuration(shown: string): string | undefined {
+  const parts = shown.split(':').map(Number);
+  if (parts.some((n) => !Number.isInteger(n) || n < 0) || parts.length < 2 || parts.length > 3) {
+    return undefined;
+  }
+  const [h, m, sec] = parts.length === 3 ? parts : [0, parts[0], parts[1]];
+  return `PT${h ? `${h}H` : ''}${m ? `${m}M` : ''}${sec ? `${sec}S` : ''}` || undefined;
+}
+
+/** The project's own demo film on YouTube, so the video can appear in video results. */
+export function getVideoObjectJsonLd(work: {
+  id: string;
+  film: { youtubeId: string; title: string; duration: string; caption: string; uploadDate: string };
+}) {
+  const origin = getSiteOrigin();
+  const { film } = work;
+  const duration = isoDuration(film.duration);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'VideoObject',
+    name: film.title,
+    description: film.caption,
+    thumbnailUrl: `https://i.ytimg.com/vi/${film.youtubeId}/hqdefault.jpg`,
+    uploadDate: film.uploadDate,
+    ...(duration ? { duration } : {}),
+    embedUrl: `https://www.youtube.com/embed/${film.youtubeId}`,
+    contentUrl: `https://www.youtube.com/watch?v=${film.youtubeId}`,
+    publisher: { '@id': `${origin}/#person` },
+    isPartOf: { '@id': `${absoluteUrl(`/playground/${work.id}`)}#software` },
   };
 }
 
